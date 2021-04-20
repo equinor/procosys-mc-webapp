@@ -59,9 +59,10 @@ const NewPunch = (): JSX.Element => {
     const [submitPunchStatus, setSubmitPunchStatus] = useState(
         AsyncStatus.INACTIVE
     );
-    const [checklistDetails, setChecklistDetails] = useState<
-        ChecklistDetails
-    >();
+    const [
+        checklistDetails,
+        setChecklistDetails,
+    ] = useState<ChecklistDetails>();
     const [tempAttachments, setTempAttachments] = useState<TempAttachment[]>(
         []
     );
