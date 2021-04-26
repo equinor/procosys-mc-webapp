@@ -1,6 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-import { CommAppContextProvider } from './contexts/McAppContext';
+import { McAppContextProvider } from './contexts/McAppContext';
 import GeneralRouter from './GeneralRouter';
 import ErrorBoundary from './components/error/ErrorBoundary';
 import { IAuthService } from './services/authService';
@@ -41,10 +41,7 @@ const App = ({
 
     return (
         <AppInsightsContext.Provider value={reactPlugin}>
-            <CommAppContextProvider
-                api={procosysApiInstance}
-                auth={authInstance}
-            >
+            <McAppContextProvider api={procosysApiInstance} auth={authInstance}>
                 <Router basename={rootDirectory}>
                     <ErrorBoundary>
                         <Switch>
@@ -56,7 +53,7 @@ const App = ({
                         </Switch>
                     </ErrorBoundary>
                 </Router>
-            </CommAppContextProvider>
+            </McAppContextProvider>
         </AppInsightsContext.Provider>
     );
 };

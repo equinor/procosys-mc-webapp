@@ -3,7 +3,7 @@ import axios, { CancelToken } from 'axios';
 import PlantContext from '../../contexts/PlantContext';
 import { CommPkgSearchResults } from '../../services/apiTypes';
 import { ProcosysApiService } from '../../services/procosysApi';
-import CommAppContext from '../../contexts/McAppContext';
+import McAppContext from '../../contexts/McAppContext';
 
 export enum SearchStatus {
     INACTIVE,
@@ -78,7 +78,7 @@ const fetchHits = async (
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const useSearchPageFacade = () => {
-    const { api } = useContext(CommAppContext);
+    const { api } = useContext(McAppContext);
     const [{ hits, searchStatus }, dispatch] = useReducer(fetchReducer, {
         hits: { maxAvailable: 0, items: [] },
         searchStatus: SearchStatus.INACTIVE,

@@ -6,7 +6,7 @@ import { Plant } from '../services/apiTypes';
 import { IAuthService } from '../services/authService';
 import { ProcosysApiService } from '../services/procosysApi';
 
-type CommAppContextProps = {
+type McAppContextProps = {
     availablePlants: Plant[];
     fetchPlantsStatus: AsyncStatus;
     api: ProcosysApiService;
@@ -21,19 +21,19 @@ export enum AsyncStatus {
     EMPTY_RESPONSE,
 }
 
-const CommAppContext = React.createContext({} as CommAppContextProps);
+const McAppContext = React.createContext({} as McAppContextProps);
 
-type CommAppContextProviderProps = {
+type McAppContextProviderProps = {
     children: ReactNode;
     auth: IAuthService;
     api: ProcosysApiService;
 };
 
-export const CommAppContextProvider: React.FC<CommAppContextProviderProps> = ({
+export const McAppContextProvider: React.FC<McAppContextProviderProps> = ({
     children,
     auth,
     api,
-}: CommAppContextProviderProps) => {
+}: McAppContextProviderProps) => {
     const [availablePlants, setAvailablePlants] = useState<Plant[]>([]);
     const [fetchPlantsStatus, setFetchPlantsStatus] = useState<AsyncStatus>(
         AsyncStatus.LOADING
@@ -71,7 +71,7 @@ export const CommAppContextProvider: React.FC<CommAppContextProviderProps> = ({
         );
     }
     return (
-        <CommAppContext.Provider
+        <McAppContext.Provider
             value={{
                 fetchPlantsStatus,
                 availablePlants,
@@ -80,8 +80,8 @@ export const CommAppContextProvider: React.FC<CommAppContextProviderProps> = ({
             }}
         >
             {children}
-        </CommAppContext.Provider>
+        </McAppContext.Provider>
     );
 };
 
-export default CommAppContext;
+export default McAppContext;
