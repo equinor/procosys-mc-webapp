@@ -11,13 +11,14 @@ import {
     ReactPlugin,
 } from '@microsoft/applicationinsights-react-js';
 
-export type CommParams = {
+export type McParams = {
     plant: string;
     project: string;
     commPkg: string;
     taskId: string;
     checklistId: string;
     punchItemId: string;
+    searchType: string;
 };
 
 type AppProps = {

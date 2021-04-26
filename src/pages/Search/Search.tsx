@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useEffect, useRef } from 'react';
+import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { Search as SearchField } from '@equinor/eds-core-react';
 import withAccessControl from '../../services/withAccessControl';
 import styled from 'styled-components';
@@ -6,6 +6,8 @@ import useSearchPageFacade, { SearchStatus } from './useSearchPageFacade';
 import SearchResults from './SearchResults/SearchResults';
 import Navbar from '../../components/navigation/Navbar';
 import PageHeader from '../../components/PageHeader';
+import useCommonHooks from '../../utils/useCommonHooks';
+import { Redirect, Route, Switch } from 'react-router-dom';
 
 const SearchPageWrapper = styled.main`
     padding: 0 4%;
@@ -18,47 +20,50 @@ const SearchPageWrapper = styled.main`
     }
 `;
 
+export enum SearchType {
+    SAVED,
+    PO = 'PO',
+    MC = 'MC',
+    WO = 'WO nr',
+    TAG = 'tag nr',
+}
+
+export const getSearchType = (param: string): SearchType => {
+    switch (param) {
+        case 'POSearch':
+            return SearchType.PO;
+        case 'MCSearch':
+            return SearchType.MC;
+        case 'WOSearch':
+            return SearchType.WO;
+        case 'TagSearch':
+            return SearchType.TAG;
+        default:
+            return SearchType.SAVED;
+    }
+};
+
 const Search = (): JSX.Element => {
-    const { hits, searchStatus, query, setQuery } = useSearchPageFacade();
-    const searchbarRef = useRef<HTMLInputElement>(
-        document.createElement('input')
+    const { path, params } = useCommonHooks();
+    const [searchType, setSearchType] = useState(
+        params.searchType ? getSearchType(params.searchType) : SearchType.SAVED
     );
 
-    useEffect(() => {
-        searchbarRef.current?.focus();
-    }, []);
-
-    const searchHeaderToRender = (): JSX.Element => {
-        if (searchStatus === SearchStatus.SUCCESS) {
-            return (
-                <h4>
-                    Displaying {hits.items.length} out of {hits.maxAvailable}{' '}
-                    packages
-                </h4>
-            );
-        }
-        if (searchStatus === SearchStatus.LOADING) {
-            return <h4>Loading</h4>;
-        }
-        return <PageHeader title="Search" subtitle="Find a comm. pkg" />;
-    };
     return (
         <>
-            <Navbar leftContent={{ name: 'back', label: 'Bookmarks' }} />
+            <Navbar
+                leftContent={{
+                    name:
+                        searchType === SearchType.SAVED ? 'hamburger' : 'back',
+                }}
+            />
             <SearchPageWrapper>
-                {searchHeaderToRender()}
-                <SearchField
-                    placeholder={'For example: "1002-D01"'}
-                    value={query}
-                    onChange={(e: ChangeEvent<HTMLInputElement>): void =>
-                        setQuery(e.target.value)
-                    }
-                    ref={searchbarRef}
-                />
-                <SearchResults
-                    commPackages={hits.items}
-                    searchStatus={searchStatus}
-                />
+                {
+                    // TODO: add buttons and other stuff that should be the same for both search views (buttons)
+                }
+                {
+                    // TODO: add a router that routes to different components based on url info
+                }
             </SearchPageWrapper>
         </>
     );
