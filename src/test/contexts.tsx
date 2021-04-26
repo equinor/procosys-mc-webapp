@@ -1,7 +1,7 @@
 import React from 'react';
 import { MemoryRouter } from 'react-router-dom';
 import PlantContext from '../contexts/PlantContext';
-import CommAppContext, { AsyncStatus } from '../contexts/CommAppContext';
+import CommAppContext, { AsyncStatus } from '../contexts/McAppContext';
 import * as Msal from '@azure/msal-browser';
 import { Plant, Project } from '../services/apiTypes';
 import baseApiService from '../services/baseApi';

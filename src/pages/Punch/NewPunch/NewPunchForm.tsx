@@ -2,7 +2,7 @@ import { Button, NativeSelect, TextField } from '@equinor/eds-core-react';
 import React from 'react';
 import styled from 'styled-components';
 import { CardWrapper } from '../../../components/EdsCard';
-import { AsyncStatus } from '../../../contexts/CommAppContext';
+import { AsyncStatus } from '../../../contexts/McAppContext';
 import {
     PunchCategory,
     PunchOrganization,

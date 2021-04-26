@@ -3,7 +3,7 @@ import { CheckItem } from '../../../services/apiTypes';
 import { Button } from '@equinor/eds-core-react';
 import EdsIcon from '../../../components/icons/EdsIcon';
 import styled from 'styled-components';
-import { AsyncStatus } from '../../../contexts/CommAppContext';
+import { AsyncStatus } from '../../../contexts/McAppContext';
 import useCommonHooks from '../../../utils/useCommonHooks';
 
 const StyledCheckAllButton = styled(Button)`

@@ -7,7 +7,7 @@ import {
     Typography,
 } from '@equinor/eds-core-react';
 import styled from 'styled-components';
-import { AsyncStatus } from '../../contexts/CommAppContext';
+import { AsyncStatus } from '../../contexts/McAppContext';
 import {
     determineHelperText,
     determineVariant,

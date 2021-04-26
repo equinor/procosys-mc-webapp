@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { TextField } from '@equinor/eds-core-react';
-import { AsyncStatus } from '../../../../../contexts/CommAppContext';
+import { AsyncStatus } from '../../../../../contexts/McAppContext';
 import styled from 'styled-components';
 import useCommonHooks from '../../../../../utils/useCommonHooks';
 

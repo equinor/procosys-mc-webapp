@@ -7,7 +7,7 @@ import useBookmarks from '../Bookmarks/useBookmarks';
 import { COLORS, SHADOW } from '../../style/GlobalStyles';
 import { PackageStatusIcon } from '../../components/icons/PackageStatusIcon';
 import useCommonHooks from '../../utils/useCommonHooks';
-import { AsyncStatus } from '../../contexts/CommAppContext';
+import { AsyncStatus } from '../../contexts/McAppContext';
 import DetailsCardShell from './DetailsCardShell';
 import axios from 'axios';
 
