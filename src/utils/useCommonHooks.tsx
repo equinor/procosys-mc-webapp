@@ -1,7 +1,7 @@
 import { useContext } from 'react';
 import { useHistory, useParams, useRouteMatch } from 'react-router-dom';
 import { McParams } from '../App';
-import CommAppContext from '../contexts/CommAppContext';
+import CommAppContext from '../contexts/McAppContext';
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const useCommonHooks = () => {

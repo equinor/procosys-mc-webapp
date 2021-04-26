@@ -3,7 +3,7 @@ import axios, { CancelToken } from 'axios';
 import PlantContext from '../../contexts/PlantContext';
 import { CommPkgSearchResults } from '../../services/apiTypes';
 import { ProcosysApiService } from '../../services/procosysApi';
-import CommAppContext from '../../contexts/CommAppContext';
+import CommAppContext from '../../contexts/McAppContext';
 
 export enum SearchStatus {
     INACTIVE,

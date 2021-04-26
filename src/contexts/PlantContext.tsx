@@ -4,7 +4,7 @@ import { Plant, Project } from '../services/apiTypes';
 import { StorageKey } from '../pages/Bookmarks/useBookmarks';
 import matchPlantInURL from '../utils/matchPlantInURL';
 import matchProjectInURL from '../utils/matchProjectInURL';
-import CommAppContext, { AsyncStatus } from './CommAppContext';
+import CommAppContext, { AsyncStatus } from './McAppContext';
 import useCommonHooks from '../utils/useCommonHooks';
 import ErrorPage from '../components/error/ErrorPage';
 import Navbar from '../components/navigation/Navbar';

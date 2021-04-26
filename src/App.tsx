@@ -1,6 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-import { CommAppContextProvider } from './contexts/CommAppContext';
+import { CommAppContextProvider } from './contexts/McAppContext';
 import GeneralRouter from './GeneralRouter';
 import ErrorBoundary from './components/error/ErrorBoundary';
 import { IAuthService } from './services/authService';
