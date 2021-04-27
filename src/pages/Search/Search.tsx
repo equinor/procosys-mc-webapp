@@ -1,5 +1,5 @@
 import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
-import { Search as SearchField } from '@equinor/eds-core-react';
+import { Button, Search as SearchField } from '@equinor/eds-core-react';
 import withAccessControl from '../../services/withAccessControl';
 import styled from 'styled-components';
 import useSearchPageFacade, { SearchStatus } from './useSearchPageFacade';
@@ -7,47 +7,63 @@ import SearchResults from './SearchResults/SearchResults';
 import Navbar from '../../components/navigation/Navbar';
 import PageHeader from '../../components/PageHeader';
 import useCommonHooks from '../../utils/useCommonHooks';
-import { Redirect, Route, Switch } from 'react-router-dom';
+import { Link, Redirect, Route, Switch, useParams } from 'react-router-dom';
+import SearchArea from './SearchArea/SearchArea';
 
 const SearchPageWrapper = styled.main`
     padding: 0 4%;
-    & h4 {
-        text-align: center;
-    }
-    & span {
-        height: 60px;
-        margin-bottom: 10px;
+`;
+
+const ButtonsWrapper = styled.div`
+    margin-bottom: 5px;
+    display: flex;
+    height: 60px;
+    & > button {
+        margin-right: 10px;
+        flex: 1;
+        height: 100%;
     }
 `;
 
 export enum SearchType {
-    SAVED,
+    SAVED = 'SAVED',
     PO = 'PO',
-    MC = 'MC',
-    WO = 'WO nr',
-    TAG = 'tag nr',
+    //MC = 'MC',
+    //WO = 'WO',
+    //Tag = 'tag',
 }
 
-export const getSearchType = (param: string): SearchType => {
-    switch (param) {
-        case 'POSearch':
-            return SearchType.PO;
-        case 'MCSearch':
-            return SearchType.MC;
-        case 'WOSearch':
-            return SearchType.WO;
-        case 'TagSearch':
-            return SearchType.TAG;
-        default:
-            return SearchType.SAVED;
-    }
+type McParams = {
+    plant: string;
+    project: string;
+    searchType: string;
 };
 
 const Search = (): JSX.Element => {
-    const { path, params } = useCommonHooks();
-    const [searchType, setSearchType] = useState(
-        params.searchType ? getSearchType(params.searchType) : SearchType.SAVED
-    );
+    const { path, params, url, history } = useCommonHooks();
+    const [searchType, setSearchType] = useState<any>(SearchType.SAVED);
+
+    const buttonsToRender: JSX.Element[] = [];
+
+    for (const type in SearchType) {
+        // TODO: style buttons to look right!
+        if (type != SearchType.SAVED) {
+            buttonsToRender.push(
+                <Button
+                    variant={'outlined'}
+                    onClick={(): void => {
+                        history.push(`${url}/${type}`);
+                        setSearchType(
+                            Object.values(SearchType).find((x) => x === type)
+                        );
+                    }}
+                    key={type}
+                >
+                    {type}
+                </Button>
+            );
+        }
+    }
 
     return (
         <>
@@ -58,12 +74,23 @@ const Search = (): JSX.Element => {
                 }}
             />
             <SearchPageWrapper>
-                {
-                    // TODO: add buttons and other stuff that should be the same for both search views (buttons)
-                }
-                {
-                    // TODO: add a router that routes to different components based on url info
-                }
+                <p>Search for</p>
+                <ButtonsWrapper>{buttonsToRender}</ButtonsWrapper>
+                <Switch>
+                    <Redirect
+                        exact
+                        path={'/:plant/:project'}
+                        to={`${path}/search`}
+                    />
+                    <Route
+                        exact
+                        path={`${path}/:searchType`}
+                        component={SearchArea}
+                    />
+                    {
+                        // TODO: add a route to the saved search component
+                    }
+                </Switch>
             </SearchPageWrapper>
         </>
     );

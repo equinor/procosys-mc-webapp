@@ -1,5 +1,5 @@
 import React from 'react';
-import { Route, Switch } from 'react-router-dom';
+import { Redirect, Route, Switch } from 'react-router-dom';
 import { PlantContextProvider } from './contexts/PlantContext';
 import SelectProject from './pages/SelectProject/SelectProject';
 import Search from './pages/Search/Search';
@@ -12,7 +12,11 @@ const CommRouter = (): JSX.Element => {
             <Switch>
                 <Route exact path={'/'} component={SelectPlant} />
                 <Route exact path={'/:plant'} component={SelectProject} />
-                <Route exact path={'/:plant/:project'} component={Search} />
+                <Redirect
+                    exact
+                    path={'/:plant/:project'}
+                    to={`/:plant/:project/search`}
+                />
                 <Route path={'/:plant/:project/search'} component={Search} />
                 <Route
                     path={'/:plant/:project/:commPkg'}

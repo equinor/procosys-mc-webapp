@@ -10,6 +10,7 @@ import {
     AppInsightsContext,
     ReactPlugin,
 } from '@microsoft/applicationinsights-react-js';
+import { SearchType } from './pages/Search/Search';
 
 export type McParams = {
     plant: string;
@@ -18,7 +19,7 @@ export type McParams = {
     taskId: string;
     checklistId: string;
     punchItemId: string;
-    searchType: string;
+    searchType: SearchType;
 };
 
 type AppProps = {
