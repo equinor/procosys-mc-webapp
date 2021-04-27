@@ -40,21 +40,26 @@ type McParams = {
 };
 
 const Search = (): JSX.Element => {
-    const { path, params, url, history } = useCommonHooks();
-    const [searchType, setSearchType] = useState<any>(SearchType.SAVED);
+    const [searchType, setSearchType] = useState<SearchType | undefined>(
+        SearchType.SAVED
+    );
 
     const buttonsToRender: JSX.Element[] = [];
 
     for (const type in SearchType) {
         // TODO: style buttons to look right!
+        // TODO: fill button when selected
         if (type != SearchType.SAVED) {
             buttonsToRender.push(
                 <Button
                     variant={'outlined'}
                     onClick={(): void => {
-                        history.push(`${url}/${type}`);
                         setSearchType(
-                            Object.values(SearchType).find((x) => x === type)
+                            type === searchType
+                                ? SearchType.SAVED
+                                : Object.values(SearchType).find(
+                                      (x) => x === type
+                                  )
                         );
                     }}
                     key={type}
@@ -65,32 +70,24 @@ const Search = (): JSX.Element => {
         }
     }
 
+    const determineComponent = (): JSX.Element => {
+        if (searchType === SearchType.SAVED || searchType === undefined) {
+            return <></>;
+        }
+        return <SearchArea />;
+    };
+
     return (
         <>
             <Navbar
                 leftContent={{
-                    name:
-                        searchType === SearchType.SAVED ? 'hamburger' : 'back',
+                    name: 'hamburger',
                 }}
             />
             <SearchPageWrapper>
                 <p>Search for</p>
                 <ButtonsWrapper>{buttonsToRender}</ButtonsWrapper>
-                <Switch>
-                    <Redirect
-                        exact
-                        path={'/:plant/:project'}
-                        to={`${path}/search`}
-                    />
-                    <Route
-                        exact
-                        path={`${path}/:searchType`}
-                        component={SearchArea}
-                    />
-                    {
-                        // TODO: add a route to the saved search component
-                    }
-                </Switch>
+                {determineComponent()}
             </SearchPageWrapper>
         </>
     );

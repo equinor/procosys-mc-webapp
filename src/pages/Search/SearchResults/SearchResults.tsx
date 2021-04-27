@@ -45,6 +45,10 @@ type SearchResultsProps = {
     commPackages: CommPkgPreview[];
 };
 
+{
+    // TODO: change to work for all search types
+}
+
 const SearchResults = ({
     searchStatus,
     commPackages,

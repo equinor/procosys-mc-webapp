@@ -15,6 +15,9 @@ const SearchArea = (): JSX.Element => {
 
     return (
         <>
+            {
+                // TODO: Change placeholder based on search type
+            }
             <SearchField
                 placeholder={'For example: "1002-D01"'}
                 value={query}
@@ -23,6 +26,9 @@ const SearchArea = (): JSX.Element => {
                 }
                 ref={searchbarRef}
             />
+            {
+                // TODO: pass needed props
+            }
             <SearchResults
                 commPackages={hits.items}
                 searchStatus={searchStatus}
