@@ -6,7 +6,7 @@ import Search from './pages/Search/Search';
 import SelectPlant from './pages/SelectPlant/SelectPlant';
 import CommPkgRouter from './CommPkgRouter';
 
-const CommRouter = (): JSX.Element => {
+const McRouter = (): JSX.Element => {
     return (
         <PlantContextProvider>
             <Switch>
@@ -27,4 +27,4 @@ const CommRouter = (): JSX.Element => {
     );
 };
 
-export default CommRouter;
+export default McRouter;
