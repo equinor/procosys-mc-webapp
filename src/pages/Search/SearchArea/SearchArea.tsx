@@ -2,12 +2,19 @@ import React, { ChangeEvent, useEffect, useRef } from 'react';
 import { Search as SearchField } from '@equinor/eds-core-react';
 import useSearchPageFacade from '../useSearchPageFacade';
 import SearchResults from '../SearchResults/SearchResults';
+import { SearchType } from '../Search';
 
-const SearchArea = (): JSX.Element => {
+type SearchAreaProps = {
+    searchType: SearchType;
+};
+
+const SearchArea = ({ searchType }: SearchAreaProps): JSX.Element => {
     const searchbarRef = useRef<HTMLInputElement>(
         document.createElement('input')
     );
-    const { hits, searchStatus, query, setQuery } = useSearchPageFacade();
+    const { hits, searchStatus, query, setQuery } = useSearchPageFacade(
+        searchType
+    );
 
     useEffect(() => {
         searchbarRef.current?.focus();
@@ -26,12 +33,10 @@ const SearchArea = (): JSX.Element => {
                 }
                 ref={searchbarRef}
             />
-            {
-                // TODO: pass needed props
-            }
             <SearchResults
-                commPackages={hits.items}
                 searchStatus={searchStatus}
+                searchResults={hits.items}
+                searchType={searchType}
             />
         </>
     );

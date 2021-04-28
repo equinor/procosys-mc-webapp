@@ -96,18 +96,21 @@ export const testTasks: TaskPreview[] = [
     },
 ];
 
-// TODO: rewrite for MC pcg instead
+// TODO: rename
 export const testCommPkgPreview: McPkgPreview[] = [
     {
         id: 1,
-        commPkgNo: 'Test comm pkg number',
+        mcPkgNo: 'Test MC pkg number',
         description: 'Test description',
-        mcStatus: CompletionStatus.OK,
-        commStatus: CompletionStatus.OK,
+        status: CompletionStatus.OK,
+        commPkgNo: 'Test comm pkg number',
+        responsibleCode: 'Test resp. code',
         commissioningHandoverStatus: 'OK',
         operationHandoverStatus: 'OK',
     },
 ];
+
+// TODO: add tests for other previews
 
 export const testScope: ChecklistPreview[] = [
     {

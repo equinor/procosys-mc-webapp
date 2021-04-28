@@ -27,8 +27,8 @@ const ButtonsWrapper = styled.div`
 
 export enum SearchType {
     SAVED = 'SAVED',
-    PO = 'PO',
-    //MC = 'MC',
+    //PO = 'PO',
+    MC = 'MC',
     //WO = 'WO',
     //Tag = 'tag',
 }
@@ -74,7 +74,7 @@ const Search = (): JSX.Element => {
         if (searchType === SearchType.SAVED || searchType === undefined) {
             return <></>;
         }
-        return <SearchArea />;
+        return <SearchArea searchType={searchType} />;
     };
 
     return (

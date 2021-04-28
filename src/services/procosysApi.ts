@@ -73,7 +73,7 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
         return data as string[];
     };
 
-    const searchForCommPackage = async (
+    const searchForMcPackage = async (
         query: string,
         projectId: number,
         plantId: string,
@@ -82,7 +82,7 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
         const {
             data,
         } = await axios.get(
-            `CommPkg/Search?plantId=${plantId}&startsWithCommPkgNo=${query}&includeClosedProjects=false&projectId=${projectId}${apiVersion}`,
+            `McPkg/Search?plantId=${plantId}&startsWithMcPkgNo=${query}&includeClosedProjects=false&projectId=${projectId}${apiVersion}`,
             { cancelToken }
         );
 
@@ -623,7 +623,7 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
         putTaskComment,
         putTaskParameter,
         putUpdatePunch,
-        searchForCommPackage,
+        searchForMcPackage,
     };
 };
 

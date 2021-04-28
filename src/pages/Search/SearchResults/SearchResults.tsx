@@ -6,6 +6,7 @@ import { McPkgPreview } from '../../../services/apiTypes';
 import SkeletonLoadingPage from '../../../components/loading/SkeletonLoader';
 import { PackageStatusIcon } from '../../../components/icons/PackageStatusIcon';
 import { COLORS } from '../../../style/GlobalStyles';
+import Search, { SearchType } from '../Search';
 
 const SearchResult = styled.article`
     cursor: pointer;
@@ -42,7 +43,8 @@ const StatusImageWrapper = styled.div`
 
 type SearchResultsProps = {
     searchStatus: SearchStatus;
-    commPackages: McPkgPreview[];
+    searchResults: McPkgPreview[]; // TODO: add other previews as props
+    searchType: SearchType;
 };
 
 {
@@ -51,37 +53,47 @@ type SearchResultsProps = {
 
 const SearchResults = ({
     searchStatus,
-    commPackages,
+    searchResults,
+    searchType,
 }: SearchResultsProps): JSX.Element => {
     const history = useHistory();
-    if (searchStatus === SearchStatus.LOADING) {
-        return <SkeletonLoadingPage fullWidth />;
-    }
-    if (searchStatus === SearchStatus.SUCCESS && commPackages.length > 0) {
+
+    const determineSearchResultType = (): JSX.Element => {
         return (
             <SearchResultsWrapper>
-                {commPackages.map((commPackage) => {
-                    return (
-                        <SearchResult
-                            onClick={(): void =>
-                                history.push(`${commPackage.id}`)
-                            }
-                            key={commPackage.id}
-                        >
-                            <StatusImageWrapper>
-                                <PackageStatusIcon
-                                    mcStatus={commPackage.mcStatus}
-                                    commStatus={commPackage.commStatus}
-                                />
-                            </StatusImageWrapper>
-
-                            <h6>{commPackage.commPkgNo}</h6>
-                            <p>{commPackage.description}</p>
-                        </SearchResult>
-                    );
+                {searchResults.map((searchResult) => {
+                    if (searchType === SearchType.MC) {
+                        return (
+                            <SearchResult
+                                onClick={(): void =>
+                                    history.push(`${searchResult.id}`)
+                                }
+                                key={searchResult.id}
+                            >
+                                {/*
+                                TODO: need one that shows mc package status instead of commpkg status
+                                <StatusImageWrapper>
+                                    <PackageStatusIcon
+                                        mcStatus={searchResult.mcStatus}
+                                        commStatus={searchResult.commStatus}
+                                    />
+                                </StatusImageWrapper>
+                                */}
+                                <h6>{searchResult.commPkgNo}</h6>
+                                <p>{searchResult.description}</p>
+                            </SearchResult>
+                        );
+                    }
                 })}
             </SearchResultsWrapper>
         );
+    };
+
+    if (searchStatus === SearchStatus.LOADING) {
+        return <SkeletonLoadingPage fullWidth />;
+    }
+    if (searchStatus === SearchStatus.SUCCESS && searchResults.length > 0) {
+        return determineSearchResultType(); // TODO: determine if the content of the function should just be moved here
     }
     if (searchStatus === SearchStatus.INACTIVE) {
         return (
