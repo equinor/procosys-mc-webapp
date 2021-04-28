@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { SearchStatus } from '../useSearchPageFacade';
 import { McPkgPreview } from '../../../services/apiTypes';
 import SkeletonLoadingPage from '../../../components/loading/SkeletonLoader';
-import { PackageStatusIcon } from '../../../components/icons/PackageStatusIcon';
+import { McPackageStatusIcon } from '../../../components/icons/PackageStatusIcon';
 import { COLORS } from '../../../style/GlobalStyles';
 import Search, { SearchType } from '../Search';
 

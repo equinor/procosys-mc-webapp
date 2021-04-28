@@ -30,7 +30,7 @@ const determineMCImage = (status: CompletionStatus): string => {
     return '';
 };
 
-export const PackageStatusIcon = ({
+export const McPackageStatusIcon = ({
     mcStatus,
     commStatus,
 }: PackageStatusIconProps): JSX.Element => {
