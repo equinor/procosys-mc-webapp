@@ -19,7 +19,7 @@ export interface Plant {
 }
 
 //SEARCH
-export interface CommPkgPreview {
+export interface McPkgPreview {
     id: number;
     commPkgNo: string;
     description: string;
@@ -31,7 +31,7 @@ export interface CommPkgPreview {
 
 export type SearchResults = {
     maxAvailable: number;
-    items: CommPkgPreview[];
+    items: McPkgPreview[];
 };
 
 // COMM PKG AND LISTS

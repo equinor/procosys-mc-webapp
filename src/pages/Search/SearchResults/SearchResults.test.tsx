@@ -2,7 +2,7 @@ import { render } from '@testing-library/react';
 import React from 'react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { SearchStatus } from '../useSearchPageFacade';
-import { CommPkgPreview, CompletionStatus } from '../../../services/apiTypes';
+import { McPkgPreview, CompletionStatus } from '../../../services/apiTypes';
 import SearchPage from './SearchResults';
 import { testCommPkgPreview } from '../../../test/dummyData';
 

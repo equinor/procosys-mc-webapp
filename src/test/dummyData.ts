@@ -8,7 +8,7 @@ import {
     Project,
     PunchPreview,
     TaskPreview,
-    CommPkgPreview,
+    McPkgPreview,
 } from '../services/apiTypes';
 
 type DummyMetatableData = {
@@ -96,7 +96,8 @@ export const testTasks: TaskPreview[] = [
     },
 ];
 
-export const testCommPkgPreview: CommPkgPreview[] = [
+// TODO: rewrite for MC pcg instead
+export const testCommPkgPreview: McPkgPreview[] = [
     {
         id: 1,
         commPkgNo: 'Test comm pkg number',
