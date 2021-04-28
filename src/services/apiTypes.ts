@@ -18,7 +18,7 @@ export interface Plant {
     projects?: Project[];
 }
 
-//COMM PKG SEARCH
+//SEARCH
 export interface CommPkgPreview {
     id: number;
     commPkgNo: string;
@@ -29,7 +29,7 @@ export interface CommPkgPreview {
     operationHandoverStatus: string;
 }
 
-export type CommPkgSearchResults = {
+export type SearchResults = {
     maxAvailable: number;
     items: CommPkgPreview[];
 };

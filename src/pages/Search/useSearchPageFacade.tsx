@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useReducer, useState } from 'react';
 import axios, { CancelToken } from 'axios';
 import PlantContext from '../../contexts/PlantContext';
-import { CommPkgSearchResults } from '../../services/apiTypes';
+import { SearchResults } from '../../services/apiTypes';
 import { ProcosysApiService } from '../../services/procosysApi';
 import McAppContext from '../../contexts/McAppContext';
 
@@ -14,12 +14,12 @@ export enum SearchStatus {
 
 type SearchState = {
     searchStatus: SearchStatus;
-    hits: CommPkgSearchResults;
+    hits: SearchResults;
 };
 
 type Action =
     | { type: 'FETCH_START' }
-    | { type: 'FETCH_SUCCESS'; payload: CommPkgSearchResults }
+    | { type: 'FETCH_SUCCESS'; payload: SearchResults }
     | { type: 'FETCH_ERROR'; error: string }
     | { type: 'FETCH_INACTIVE' };
 

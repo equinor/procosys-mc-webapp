@@ -9,7 +9,7 @@ import { TaskParameterDto } from '../pages/Task/TaskParameters/TaskParameters';
 import {
     Plant,
     Project,
-    CommPkgSearchResults,
+    SearchResults,
     CommPkg,
     ChecklistPreview,
     TaskPreview,
@@ -78,7 +78,7 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
         projectId: number,
         plantId: string,
         cancelToken?: CancelToken
-    ): Promise<CommPkgSearchResults> => {
+    ): Promise<SearchResults> => {
         const {
             data,
         } = await axios.get(
@@ -86,7 +86,7 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
             { cancelToken }
         );
 
-        return data as CommPkgSearchResults;
+        return data as SearchResults;
     };
 
     const getCommPackageDetails = async (
