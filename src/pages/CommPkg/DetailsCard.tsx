@@ -5,7 +5,7 @@ import EdsIcon from '../../components/icons/EdsIcon';
 import { Button, DotProgress } from '@equinor/eds-core-react';
 import useBookmarks from '../Bookmarks/useBookmarks';
 import { COLORS, SHADOW } from '../../style/GlobalStyles';
-import { McPackageStatusIcon } from '../../components/icons/PackageStatusIcon';
+import { McPackageStatusIcon } from '../../components/icons/McPackageStatusIcon';
 import useCommonHooks from '../../utils/useCommonHooks';
 import { AsyncStatus } from '../../contexts/McAppContext';
 import DetailsCardShell from './DetailsCardShell';
@@ -118,10 +118,7 @@ const DetailsCard = ({
                     <h4>{details.description}</h4>
                 </Description>
                 <StatusIconWrapper>
-                    <McPackageStatusIcon
-                        mcStatus={details.mcStatus}
-                        commStatus={details.commStatus}
-                    />
+                    <McPackageStatusIcon status={details.mcStatus} />
                 </StatusIconWrapper>
                 <BookmarkIconWrapper>
                     <Button

@@ -4,9 +4,10 @@ import styled from 'styled-components';
 import { SearchStatus } from '../useSearchPageFacade';
 import { McPkgPreview } from '../../../services/apiTypes';
 import SkeletonLoadingPage from '../../../components/loading/SkeletonLoader';
-import { McPackageStatusIcon } from '../../../components/icons/PackageStatusIcon';
+import { McPackageStatusIcon } from '../../../components/icons/McPackageStatusIcon';
 import { COLORS } from '../../../style/GlobalStyles';
 import Search, { SearchType } from '../Search';
+import useCommonHooks from '../../../utils/useCommonHooks';
 
 const SearchResult = styled.article`
     cursor: pointer;
@@ -66,21 +67,23 @@ const SearchResults = ({
                         return (
                             <SearchResult
                                 onClick={(): void =>
-                                    history.push(`${searchResult.id}`)
+                                    history.push(`MC/${searchResult.id}`)
                                 }
                                 key={searchResult.id}
                             >
-                                {/*
-                                TODO: need one that shows mc package status instead of commpkg status
                                 <StatusImageWrapper>
-                                    <PackageStatusIcon
-                                        mcStatus={searchResult.mcStatus}
-                                        commStatus={searchResult.commStatus}
+                                    <McPackageStatusIcon
+                                        status={searchResult.status}
                                     />
+                                    {
+                                        // TODO: figure out where the C & O comes from and add here (?)
+                                    }
                                 </StatusImageWrapper>
-                                */}
-                                <h6>{searchResult.commPkgNo}</h6>
+                                <h6>{searchResult.mcPkgNo}</h6>
+                                <p>{searchResult.commPkgNo}</p>
+                                <p>{searchResult.responsibleCode}</p>
                                 <p>{searchResult.description}</p>
+                                <p>{searchResult.phaseCode}</p>
                             </SearchResult>
                         );
                     }

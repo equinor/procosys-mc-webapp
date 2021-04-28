@@ -25,6 +25,7 @@ export interface McPkgPreview {
     description: string;
     status: CompletionStatus; // TODO: find out which statuses (stati? ;P) an MC pkg can have
     commPkgNo: string;
+    phaseCode: string;
     responsibleCode: string;
     commissioningHandoverStatus: string; // TODO: find out why these are here
     operationHandoverStatus: string; // They aren't used anywhere except in dummy data???

@@ -12,7 +12,12 @@ const McRouter = (): JSX.Element => {
             <Switch>
                 <Route exact path={'/'} component={SelectPlant} />
                 <Route exact path={'/:plant'} component={SelectProject} />
-                <Route path={'/:plant/:project'} component={Search} />
+                <Route exact path={'/:plant/:project'} component={Search} />
+                <Redirect
+                    exact
+                    path={'/:plant/:project/:itemType'}
+                    to={'/:plant/:project/'}
+                />
             </Switch>
         </PlantContextProvider>
     );

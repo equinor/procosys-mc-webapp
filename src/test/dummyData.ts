@@ -104,6 +104,7 @@ export const testCommPkgPreview: McPkgPreview[] = [
         description: 'Test description',
         status: CompletionStatus.OK,
         commPkgNo: 'Test comm pkg number',
+        phaseCode: 'Test phase code',
         responsibleCode: 'Test resp. code',
         commissioningHandoverStatus: 'OK',
         operationHandoverStatus: 'OK',
