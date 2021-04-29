@@ -19,7 +19,6 @@ const ButtonsWrapper = styled.div`
     display: flex;
     height: 60px;
     & > button {
-        margin-right: 10px;
         flex: 1;
         height: 100%;
     }

@@ -11,34 +11,51 @@ import useCommonHooks from '../../../utils/useCommonHooks';
 
 const SearchResult = styled.article`
     cursor: pointer;
-    width: 100%;
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     border-top: 1px solid ${COLORS.lightGrey};
-    & p {
-        flex: auto;
-        width: 200px;
-    }
-    & h6 {
-        margin: 12px;
-        white-space: nowrap;
-        width: 120px;
-    }
+    padding: 12px;
+    margin: 0;
     &:hover {
         opacity: 0.7;
     }
 `;
 
-const SearchResultsWrapper = styled.div`
-    width: 100%;
-`;
-
 const StatusImageWrapper = styled.div`
     display: flex;
-    padding: 12px;
+    padding-right: 12px;
     & img {
         height: 20px;
-        margin-left: -2px;
+    }
+`;
+
+const SearchResultDetailsWrapper = styled.div`
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    background-color: red;
+    & p {
+        margin-bottom: 0;
+        margin-top: 0;
+    }
+`;
+
+const SearchResultHeaderWrapper = styled.div`
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    align-items: center;
+    background-color: blue;
+    margin-bottom: 6;
+    & h6 {
+        margin: 0;
+        flex: 1.5;
+        background-color: yellow;
+    }
+    & p {
+        margin: 0;
+        flex: 1;
+        text-align: center;
     }
 `;
 
@@ -61,7 +78,7 @@ const SearchResults = ({
 
     const determineSearchResultType = (): JSX.Element => {
         return (
-            <SearchResultsWrapper>
+            <div>
                 {searchResults.map((searchResult) => {
                     if (searchType === SearchType.MC) {
                         return (
@@ -79,16 +96,20 @@ const SearchResults = ({
                                         // TODO: figure out where the C & O comes from and add here (?)
                                     }
                                 </StatusImageWrapper>
-                                <h6>{searchResult.mcPkgNo}</h6>
-                                <p>{searchResult.commPkgNo}</p>
-                                <p>{searchResult.responsibleCode}</p>
-                                <p>{searchResult.description}</p>
-                                <p>{searchResult.phaseCode}</p>
+                                <SearchResultDetailsWrapper>
+                                    <SearchResultHeaderWrapper>
+                                        <h6>{searchResult.mcPkgNo}</h6>
+                                        <p>{searchResult.commPkgNo}</p>
+                                        <p>{searchResult.responsibleCode}</p>
+                                    </SearchResultHeaderWrapper>
+                                    <p>{searchResult.description}</p>
+                                    <p>{searchResult.phaseCode} bad</p>
+                                </SearchResultDetailsWrapper>
                             </SearchResult>
                         );
                     }
                 })}
-            </SearchResultsWrapper>
+            </div>
         );
     };
 
@@ -100,36 +121,36 @@ const SearchResults = ({
     }
     if (searchStatus === SearchStatus.INACTIVE) {
         return (
-            <SearchResultsWrapper>
+            <div>
                 <p>
                     <i>
                         Start typing your Commissioning Package number in the
                         field above. <br />
                     </i>
                 </p>
-            </SearchResultsWrapper>
+            </div>
         );
     }
 
     if (searchStatus === SearchStatus.ERROR) {
         return (
-            <SearchResultsWrapper>
+            <div>
                 <p>
                     <i>
                         An error occurred, please refresh this page and try
                         again.
                     </i>
                 </p>
-            </SearchResultsWrapper>
+            </div>
         );
     }
 
     return (
-        <SearchResultsWrapper>
+        <div>
             <p>
                 <i>No packages found for this search.</i>
             </p>
-        </SearchResultsWrapper>
+        </div>
     );
 };
 
