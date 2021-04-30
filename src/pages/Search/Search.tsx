@@ -9,6 +9,7 @@ import PageHeader from '../../components/PageHeader';
 import useCommonHooks from '../../utils/useCommonHooks';
 import { Link, Redirect, Route, Switch, useParams } from 'react-router-dom';
 import SearchArea from './SearchArea/SearchArea';
+import { COLORS } from '../../style/GlobalStyles';
 
 const SearchPageWrapper = styled.main`
     padding: 0 4%;
@@ -18,18 +19,24 @@ const ButtonsWrapper = styled.div`
     margin-bottom: 5px;
     display: flex;
     height: 60px;
-    & > button {
-        flex: 1;
-        height: 100%;
+    & > button:not(:last-child) {
+        margin-right: 10px;
     }
+`;
+
+const SearchTypeButton = styled(Button)<{ active: boolean }>`
+    background-color: ${(props): string =>
+        props.active ? COLORS.fadedBlue : COLORS.white};
+    flex: 1;
+    height: 100%;
 `;
 
 export enum SearchType {
     SAVED = 'SAVED',
-    //PO = 'PO',
+    PO = 'PO',
     MC = 'MC',
-    //WO = 'WO',
-    //Tag = 'tag',
+    WO = 'WO',
+    Tag = 'Tag',
 }
 
 type McParams = {
@@ -50,7 +57,7 @@ const Search = (): JSX.Element => {
         // TODO: fill button when selected
         if (type != SearchType.SAVED) {
             buttonsToRender.push(
-                <Button
+                <SearchTypeButton
                     variant={'outlined'}
                     onClick={(): void => {
                         setSearchType(
@@ -62,9 +69,11 @@ const Search = (): JSX.Element => {
                         );
                     }}
                     key={type}
+                    active={type === searchType}
+                    disabled={type != SearchType.MC}
                 >
                     {type}
-                </Button>
+                </SearchTypeButton>
             );
         }
     }

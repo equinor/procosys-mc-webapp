@@ -69,6 +69,7 @@ type SearchResultProps = {
     searchResult: McPkgPreview; // TODO: add other types once made
 };
 
+// TODO: decide whether this should be used for all search types or whether it should just be used for MC search
 const SearchResult = ({
     searchResult,
     searchType,

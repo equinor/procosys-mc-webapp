@@ -31,13 +31,17 @@ const SearchResults = ({
         return <SkeletonLoadingPage fullWidth />;
     }
     if (searchStatus === SearchStatus.SUCCESS && searchResults.length > 0) {
-        searchResults.map((searchResult) => (
-            <SearchResult
-                key={searchResult.id}
-                searchResult={searchResult}
-                searchType={searchType}
-            />
-        ));
+        return (
+            <div>
+                {searchResults.map((searchResult) => (
+                    <SearchResult
+                        key={searchResult.id}
+                        searchResult={searchResult}
+                        searchType={searchType}
+                    />
+                ))}
+            </div>
+        );
     }
     if (searchStatus === SearchStatus.INACTIVE) {
         return (
