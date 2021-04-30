@@ -33,6 +33,9 @@ const SearchArea = ({ searchType }: SearchAreaProps): JSX.Element => {
                 }
                 ref={searchbarRef}
             />
+            {
+                // TODO: add nr. of search results here
+            }
             <SearchResults
                 searchStatus={searchStatus}
                 searchResults={hits.items}

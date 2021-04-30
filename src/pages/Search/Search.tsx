@@ -1,13 +1,8 @@
-import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
-import { Button, Search as SearchField } from '@equinor/eds-core-react';
+import React, { useState } from 'react';
+import { Button } from '@equinor/eds-core-react';
 import withAccessControl from '../../services/withAccessControl';
 import styled from 'styled-components';
-import useSearchPageFacade, { SearchStatus } from './useSearchPageFacade';
-import SearchResults from './SearchResults/SearchResults';
 import Navbar from '../../components/navigation/Navbar';
-import PageHeader from '../../components/PageHeader';
-import useCommonHooks from '../../utils/useCommonHooks';
-import { Link, Redirect, Route, Switch, useParams } from 'react-router-dom';
 import SearchArea from './SearchArea/SearchArea';
 import { COLORS } from '../../style/GlobalStyles';
 
@@ -39,12 +34,6 @@ export enum SearchType {
     Tag = 'Tag',
 }
 
-type McParams = {
-    plant: string;
-    project: string;
-    searchType: string;
-};
-
 const Search = (): JSX.Element => {
     const [searchType, setSearchType] = useState<SearchType | undefined>(
         SearchType.SAVED
@@ -53,8 +42,6 @@ const Search = (): JSX.Element => {
     const buttonsToRender: JSX.Element[] = [];
 
     for (const type in SearchType) {
-        // TODO: style buttons to look right!
-        // TODO: fill button when selected
         if (type != SearchType.SAVED) {
             buttonsToRender.push(
                 <SearchTypeButton

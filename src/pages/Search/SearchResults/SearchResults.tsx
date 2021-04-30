@@ -1,20 +1,13 @@
 import React from 'react';
-import { useHistory } from 'react-router-dom';
-import styled from 'styled-components';
 import { SearchStatus } from '../useSearchPageFacade';
 import { McPkgPreview } from '../../../services/apiTypes';
 import SkeletonLoadingPage from '../../../components/loading/SkeletonLoader';
-import { McPackageStatusIcon } from '../../../components/icons/McPackageStatusIcon';
-import { COLORS } from '../../../style/GlobalStyles';
 import Search, { SearchType } from '../Search';
-import useCommonHooks from '../../../utils/useCommonHooks';
-import { accessible } from '@equinor/eds-icons';
-import { Typography } from '@equinor/eds-core-react';
 import SearchResult from './SearchResult';
 
 type SearchResultsProps = {
     searchStatus: SearchStatus;
-    searchResults: McPkgPreview[]; // TODO: add other previews as props
+    searchResults: McPkgPreview[];
     searchType: SearchType;
 };
 
@@ -23,10 +16,6 @@ const SearchResults = ({
     searchResults,
     searchType,
 }: SearchResultsProps): JSX.Element => {
-    const history = useHistory();
-
-    console.log(searchStatus.valueOf());
-
     if (searchStatus === SearchStatus.LOADING) {
         return <SkeletonLoadingPage fullWidth />;
     }

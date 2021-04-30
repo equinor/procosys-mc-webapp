@@ -66,7 +66,7 @@ const SearchResultHeaderWrapper = styled.div`
 
 type SearchResultProps = {
     searchType: SearchType;
-    searchResult: McPkgPreview; // TODO: add other types once made
+    searchResult: McPkgPreview;
 };
 
 // TODO: decide whether this should be used for all search types or whether it should just be used for MC search
