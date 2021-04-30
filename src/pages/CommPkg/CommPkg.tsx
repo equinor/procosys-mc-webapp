@@ -72,14 +72,9 @@ const CommPkg = (): JSX.Element => {
                     <FooterButton
                         active={true}
                         goTo={(): void => history.push(url)}
-                        icon={
-                            <EdsIcon
-                                name="check_circle_outlined"
-                                color={COLORS.mossGreen}
-                            />
-                        }
+                        icon={<EdsIcon name="list" color={COLORS.mossGreen} />}
                         label="Scope"
-                        numberOfItems={234}
+                        numberOfItems={43}
                     />
                     <FooterButton
                         active={false}

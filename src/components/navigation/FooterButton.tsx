@@ -6,22 +6,16 @@ const FooterButtonWrapper = styled.button<{ active: boolean }>`
     display: flex;
     flex-direction: column;
     align-items: center;
-    border: none;
     flex: 1;
+    border: none;
     cursor: pointer;
-    height: 75px;
-    padding: 20px 0 10px 0;
+    padding: 12px 0 10px 0;
     background-color: ${(props): string =>
         props.active ? COLORS.fadedBlue : COLORS.white};
     position: relative;
-    & img {
-        width: 24px;
-        height: 24px;
-        object-fit: contain;
-    }
+
     & p {
         margin: 0;
-        margin-bottom: ${(props): string => (props.active ? '3px' : 'initial')};
     }
     &:focus,
     &:hover,
@@ -31,26 +25,25 @@ const FooterButtonWrapper = styled.button<{ active: boolean }>`
     }
 `;
 
-const ItemCount = styled.span`
+const ItemCount = styled.span<{ active: boolean }>`
     position: absolute;
-    top: 10px;
-    left: calc(50% + 10px);
-    background-color: #f0f0f0;
+    top: 8px;
+    left: calc(50% + 7px);
+    background-color: ${(props): string =>
+        props.active ? COLORS.mossGreen : COLORS.fadedBlue};
     border-radius: 15px;
     min-width: 16px;
-    padding: 4px 5px 2px 5px;
+    padding: 4px 5px 1px 5px;
     margin: 0;
     & p {
         text-align: center;
         font-size: 12px;
-        color: ${COLORS.black};
+        color: ${(props): string =>
+            props.active ? COLORS.white : COLORS.black};
         border: none;
     }
 `;
 
-const ButtonText = styled.div`
-    position: relative;
-`;
 type FooterButtonProps = {
     active: boolean;
     goTo: () => void;
@@ -70,11 +63,11 @@ const FooterButton = ({
         <FooterButtonWrapper active={active} onClick={goTo}>
             {icon}
             <p>{label}</p>
-            {numberOfItems && (
-                <ItemCount>
+            {numberOfItems ? (
+                <ItemCount active={active}>
                     <p>{numberOfItems}</p>
                 </ItemCount>
-            )}
+            ) : null}
         </FooterButtonWrapper>
     );
 };

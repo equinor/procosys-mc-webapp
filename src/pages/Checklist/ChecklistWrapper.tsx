@@ -44,6 +44,7 @@ const ChecklistWrapper = (): JSX.Element => {
                     goTo={(): void => history.push(`${url}/scope`)}
                     icon={<EdsIcon name="list" />}
                     label={'Checklist'}
+                    numberOfItems={312}
                 />
                 <FooterButton
                     active={false}
@@ -54,7 +55,7 @@ const ChecklistWrapper = (): JSX.Element => {
                 <FooterButton
                     active={false}
                     goTo={(): void => history.push(`${url}/scope`)}
-                    icon={<EdsIcon name="warning_filled" size={48} />}
+                    icon={<EdsIcon name="warning_filled" />}
                     label={'Punch list'}
                     numberOfItems={234}
                 />

@@ -5,7 +5,7 @@ import { NavigationFooterBase } from './NavigationFooter';
 const NavigationFooterShellWrapper = styled(NavigationFooterBase)`
     justify-content: center;
     align-items: center;
-    height: 75px;
+    height: 66px;
 `;
 
 type NavigationFooterShellProps = {
