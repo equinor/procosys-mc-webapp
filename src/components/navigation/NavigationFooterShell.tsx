@@ -1,10 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
-import { CommPkgFooterBase } from './NavigationFooter';
+import { NavigationFooterBase } from './NavigationFooter';
 
-const NavigationFooterShellWrapper = styled(CommPkgFooterBase)`
+const NavigationFooterShellWrapper = styled(NavigationFooterBase)`
     justify-content: center;
-    align-items: centeR;
+    align-items: center;
+    height: 66px;
 `;
 
 type NavigationFooterShellProps = {
