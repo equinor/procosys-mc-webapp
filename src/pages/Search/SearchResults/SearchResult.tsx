@@ -62,7 +62,7 @@ const SearchResultHeaderWrapper = styled.div`
         flex: 1.4;
         color: ${COLORS.mossGreen};
     }
-    & > caption {
+    & > p {
         margin: 0;
         flex: 1;
         text-align: right;
@@ -111,8 +111,12 @@ const SearchResult = ({
                 <SearchResultDetailsWrapper>
                     <SearchResultHeaderWrapper>
                         <h6>{searchResult.mcPkgNo}</h6>
-                        <caption>{searchResult.commPkgNo}</caption>
-                        <caption>{searchResult.responsibleCode}</caption>
+                        <Typography variant="caption">
+                            {searchResult.commPkgNo}
+                        </Typography>
+                        <Typography variant="caption">
+                            {searchResult.responsibleCode}
+                        </Typography>
                     </SearchResultHeaderWrapper>
                     <Typography variant="caption">
                         {searchResult.description}
