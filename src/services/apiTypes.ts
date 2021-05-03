@@ -23,19 +23,17 @@ export interface McPkgPreview {
     id: number;
     mcPkgNo: string;
     description: string;
-    status: CompletionStatus; // TODO: find out which statuses (stati? ;P) an MC pkg can have
+    status: CompletionStatus;
     commPkgNo: string;
     phaseCode: string;
     responsibleCode: string;
-    commissioningHandoverStatus: string; // TODO: find out why these are here
-    operationHandoverStatus: string; // They aren't used anywhere except in dummy data???
+    commissioningHandoverStatus: string;
+    operationHandoverStatus: string;
 }
-
-// TODO: add other previews
 
 export type SearchResults = {
     maxAvailable: number;
-    items: McPkgPreview[]; // TODO: add other previews as possible values
+    items: McPkgPreview[];
 };
 
 // COMM PKG AND LISTS

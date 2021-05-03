@@ -38,7 +38,7 @@ const SearchArea = ({ searchType }: SearchAreaProps): JSX.Element => {
             }
             <SearchResults
                 searchStatus={searchStatus}
-                searchResults={hits.items}
+                searchResults={hits}
                 searchType={searchType}
             />
         </>

@@ -9,6 +9,7 @@ import {
     PunchPreview,
     TaskPreview,
     McPkgPreview,
+    SearchResults,
 } from '../services/apiTypes';
 
 type DummyMetatableData = {
@@ -96,7 +97,6 @@ export const testTasks: TaskPreview[] = [
     },
 ];
 
-// TODO: rename
 export const testMcPkgPreview: McPkgPreview[] = [
     {
         id: 1,
@@ -111,7 +111,10 @@ export const testMcPkgPreview: McPkgPreview[] = [
     },
 ];
 
-// TODO: add tests for other previews
+export const testMcPkgSearch: SearchResults = {
+    maxAvailable: 1,
+    items: testMcPkgPreview,
+};
 
 export const testScope: ChecklistPreview[] = [
     {

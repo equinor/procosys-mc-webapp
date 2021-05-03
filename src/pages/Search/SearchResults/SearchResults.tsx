@@ -1,13 +1,19 @@
 import React from 'react';
 import { SearchStatus } from '../useSearchPageFacade';
-import { McPkgPreview } from '../../../services/apiTypes';
+import { SearchResults as SearchResultsType } from '../../../services/apiTypes';
 import SkeletonLoadingPage from '../../../components/loading/SkeletonLoader';
 import { SearchType } from '../Search';
 import SearchResult from './SearchResult';
+import styled from 'styled-components';
+
+const SearchResultAmountWrapper = styled.h6`
+    text-align: center;
+    margin: 12px 0px;
+`;
 
 type SearchResultsProps = {
     searchStatus: SearchStatus;
-    searchResults: McPkgPreview[];
+    searchResults: SearchResultsType;
     searchType: SearchType;
 };
 
@@ -33,10 +39,17 @@ const SearchResults = ({
     if (searchStatus === SearchStatus.LOADING) {
         return <SkeletonLoadingPage fullWidth />;
     }
-    if (searchStatus === SearchStatus.SUCCESS && searchResults.length > 0) {
+    if (
+        searchStatus === SearchStatus.SUCCESS &&
+        searchResults.items.length > 0
+    ) {
         return (
             <div>
-                {searchResults.map((searchResult) => (
+                <SearchResultAmountWrapper>
+                    Displaying {searchResults.items.length} out of{' '}
+                    {searchResults.maxAvailable} {getSearchResultType()}
+                </SearchResultAmountWrapper>
+                {searchResults.items.map((searchResult) => (
                     <SearchResult
                         key={searchResult.id}
                         searchResult={searchResult}

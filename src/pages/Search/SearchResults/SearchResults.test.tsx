@@ -4,7 +4,7 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import { SearchStatus } from '../useSearchPageFacade';
 import { McPkgPreview, CompletionStatus } from '../../../services/apiTypes';
 import SearchResults from './SearchResults';
-import { testMcPkgPreview } from '../../../test/dummyData';
+import { testMcPkgSearch } from '../../../test/dummyData';
 import { SearchType } from '../Search';
 
 describe('<SearchResult/>', () => {
@@ -13,7 +13,7 @@ describe('<SearchResult/>', () => {
             <Router>
                 <SearchResults
                     searchStatus={SearchStatus.INACTIVE}
-                    searchResults={testMcPkgPreview}
+                    searchResults={testMcPkgSearch}
                     searchType={SearchType.MC}
                 />
             </Router>
@@ -29,7 +29,10 @@ describe('<SearchResult/>', () => {
             <Router>
                 <SearchResults
                     searchStatus={SearchStatus.SUCCESS}
-                    searchResults={[]}
+                    searchResults={{
+                        maxAvailable: 0,
+                        items: [],
+                    }}
                     searchType={SearchType.MC}
                 />
             </Router>
@@ -43,7 +46,10 @@ describe('<SearchResult/>', () => {
             <Router>
                 <SearchResults
                     searchStatus={SearchStatus.ERROR}
-                    searchResults={[]}
+                    searchResults={{
+                        maxAvailable: 0,
+                        items: [],
+                    }}
                     searchType={SearchType.MC}
                 />
             </Router>
@@ -54,24 +60,31 @@ describe('<SearchResult/>', () => {
             )
         ).toBeInTheDocument();
     });
-    it('Renders an MC package preview upon successful search containing search results', () => {
+    it('Renders an MC package preview and search result count upon successful search containing search results', () => {
         const { getByText } = render(
             <Router>
                 <SearchResults
                     searchStatus={SearchStatus.SUCCESS}
-                    searchResults={testMcPkgPreview}
+                    searchResults={testMcPkgSearch}
                     searchType={SearchType.MC}
                 />
             </Router>
         );
-        expect(getByText(testMcPkgPreview[0].description)).toBeInTheDocument();
+        expect(
+            getByText(testMcPkgSearch.items[0].description)
+        ).toBeInTheDocument();
+        expect(
+            getByText(
+                `Displaying ${testMcPkgSearch.items.length} out of ${testMcPkgSearch.maxAvailable} MC packages`
+            )
+        ).toBeInTheDocument();
     });
     it('Renders a loading screen while awaiting search results', () => {
         const { getByTestId } = render(
             <Router>
                 <SearchResults
-                    searchStatus={SearchStatus.SUCCESS}
-                    searchResults={testMcPkgPreview}
+                    searchStatus={SearchStatus.LOADING}
+                    searchResults={testMcPkgSearch}
                     searchType={SearchType.MC}
                 />
             </Router>

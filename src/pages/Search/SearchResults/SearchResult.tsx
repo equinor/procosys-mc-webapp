@@ -57,7 +57,7 @@ const SearchResultHeaderWrapper = styled.div`
         margin: 0;
         flex: 1.3; // TODO: make this text the correct color blue
     }
-    & p {
+    & > p {
         margin: 0;
         flex: 1;
         text-align: center;
