@@ -20,22 +20,23 @@ const SearchArea = ({ searchType }: SearchAreaProps): JSX.Element => {
         searchbarRef.current?.focus();
     }, []);
 
+    const getPlaceholderText = (): string => {
+        if (searchType === SearchType.MC) {
+            return '1002-A001';
+        }
+        return '';
+    };
+
     return (
         <>
-            {
-                // TODO: Change placeholder based on search type
-            }
             <SearchField
-                placeholder={'For example: "1002-D01"'}
+                placeholder={`For example: "${getPlaceholderText()}"`}
                 value={query}
                 onChange={(e: ChangeEvent<HTMLInputElement>): void =>
                     setQuery(e.target.value)
                 }
                 ref={searchbarRef}
             />
-            {
-                // TODO: add nr. of search results here
-            }
             <SearchResults
                 searchStatus={searchStatus}
                 searchResults={hits}
