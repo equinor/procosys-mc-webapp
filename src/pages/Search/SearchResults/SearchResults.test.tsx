@@ -2,7 +2,6 @@ import { render, screen } from '@testing-library/react';
 import React from 'react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { SearchStatus } from '../useSearchPageFacade';
-import { McPkgPreview, CompletionStatus } from '../../../services/apiTypes';
 import SearchResults from './SearchResults';
 import { testMcPkgSearch } from '../../../test/dummyData';
 import { SearchType } from '../Search';

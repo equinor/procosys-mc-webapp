@@ -4,7 +4,6 @@ import { PlantContextProvider } from './contexts/PlantContext';
 import SelectProject from './pages/SelectProject/SelectProject';
 import Search from './pages/Search/Search';
 import SelectPlant from './pages/SelectPlant/SelectPlant';
-import CommPkgRouter from './CommPkgRouter';
 
 const McRouter = (): JSX.Element => {
     return (

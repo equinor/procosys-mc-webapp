@@ -6,7 +6,6 @@ import { SearchType } from '../Search';
 import { McPackageStatusIcon } from '../../../components/icons/McPackageStatusIcon';
 import { Typography } from '@equinor/eds-core-react';
 import { useHistory } from 'react-router';
-import { colors } from '@equinor/eds-core-react/dist/types/components/Typography/Typography.tokens';
 
 const SearchResultWrapper = styled.article`
     cursor: pointer;

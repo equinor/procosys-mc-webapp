@@ -1,6 +1,5 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import React from 'react';
-import { BrowserRouter as Router } from 'react-router-dom';
 import { withPlantContext } from '../../../test/contexts';
 import { testMcPkgPreview } from '../../../test/dummyData';
 import { causeApiError, ENDPOINTS } from '../../../test/setupServer';
