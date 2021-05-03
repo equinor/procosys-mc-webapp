@@ -3,44 +3,48 @@ import React from 'react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { SearchStatus } from '../useSearchPageFacade';
 import { McPkgPreview, CompletionStatus } from '../../../services/apiTypes';
-import SearchPage from './SearchResults';
-import { testCommPkgPreview } from '../../../test/dummyData';
+import SearchResults from './SearchResults';
+import { testMcPkgPreview } from '../../../test/dummyData';
+import { SearchType } from '../Search';
 
 describe('<SearchResult/>', () => {
-    it('Renders placeholder text before user starts typing', () => {
+    it('Renders placeholder text before user starts typing an MC package number', () => {
         const { getByText } = render(
             <Router>
-                <SearchPage
+                <SearchResults
                     searchStatus={SearchStatus.INACTIVE}
-                    commPackages={testCommPkgPreview}
+                    searchResults={testMcPkgPreview}
+                    searchType={SearchType.MC}
                 />
             </Router>
         );
         expect(
             getByText(
-                'Start typing your Commissioning Package number in the field above.'
+                'Start typing your mechanical completion package number in the field above.'
             )
         ).toBeInTheDocument();
     });
-    it('Renders placeholder text when no matching comm pkgs are found', () => {
+    it('Renders placeholder text when no matching MC packages are found', () => {
         const { getByText } = render(
             <Router>
-                <SearchPage
+                <SearchResults
                     searchStatus={SearchStatus.SUCCESS}
-                    commPackages={[]}
+                    searchResults={[]}
+                    searchType={SearchType.MC}
                 />
             </Router>
         );
         expect(
-            getByText('No packages found for this search.')
+            getByText('No MC packages found for this search.')
         ).toBeInTheDocument();
     });
     it('Renders an error message if search could not be performed', () => {
         const { getByText } = render(
             <Router>
-                <SearchPage
+                <SearchResults
                     searchStatus={SearchStatus.ERROR}
-                    commPackages={[]}
+                    searchResults={[]}
+                    searchType={SearchType.MC}
                 />
             </Router>
         );
@@ -50,25 +54,25 @@ describe('<SearchResult/>', () => {
             )
         ).toBeInTheDocument();
     });
-    it('Renders a comm package preview upon successful search containing search results', () => {
+    it('Renders an MC package preview upon successful search containing search results', () => {
         const { getByText } = render(
             <Router>
-                <SearchPage
+                <SearchResults
                     searchStatus={SearchStatus.SUCCESS}
-                    commPackages={testCommPkgPreview}
+                    searchResults={testMcPkgPreview}
+                    searchType={SearchType.MC}
                 />
             </Router>
         );
-        expect(
-            getByText(testCommPkgPreview[0].description)
-        ).toBeInTheDocument();
+        expect(getByText(testMcPkgPreview[0].description)).toBeInTheDocument();
     });
     it('Renders a loading screen while awaiting search results', () => {
         const { getByTestId } = render(
             <Router>
-                <SearchPage
-                    searchStatus={SearchStatus.LOADING}
-                    commPackages={testCommPkgPreview}
+                <SearchResults
+                    searchStatus={SearchStatus.SUCCESS}
+                    searchResults={testMcPkgPreview}
+                    searchType={SearchType.MC}
                 />
             </Router>
         );

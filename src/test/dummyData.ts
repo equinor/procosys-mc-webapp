@@ -97,7 +97,7 @@ export const testTasks: TaskPreview[] = [
 ];
 
 // TODO: rename
-export const testCommPkgPreview: McPkgPreview[] = [
+export const testMcPkgPreview: McPkgPreview[] = [
     {
         id: 1,
         mcPkgNo: 'Test MC pkg number',

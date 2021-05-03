@@ -2,7 +2,7 @@ import React from 'react';
 import { SearchStatus } from '../useSearchPageFacade';
 import { McPkgPreview } from '../../../services/apiTypes';
 import SkeletonLoadingPage from '../../../components/loading/SkeletonLoader';
-import Search, { SearchType } from '../Search';
+import { SearchType } from '../Search';
 import SearchResult from './SearchResult';
 
 type SearchResultsProps = {
@@ -16,6 +16,20 @@ const SearchResults = ({
     searchResults,
     searchType,
 }: SearchResultsProps): JSX.Element => {
+    const getPlaceholderTextType = (): string => {
+        if (searchType === SearchType.MC) {
+            return 'mechanical completion package number';
+        }
+        return '';
+    };
+
+    const getSearchResultType = (): string => {
+        if (searchType === SearchType.MC) {
+            return 'MC packages';
+        }
+        return '';
+    };
+
     if (searchStatus === SearchStatus.LOADING) {
         return <SkeletonLoadingPage fullWidth />;
     }
@@ -37,7 +51,7 @@ const SearchResults = ({
             <div>
                 <p>
                     <i>
-                        Start typing your Commissioning Package number in the
+                        Start typing your {getPlaceholderTextType()} in the
                         field above. <br />
                     </i>
                 </p>
@@ -61,7 +75,7 @@ const SearchResults = ({
     return (
         <div>
             <p>
-                <i>No packages found for this search.</i>
+                <i>No {getSearchResultType()} found for this search.</i>
             </p>
         </div>
     );
