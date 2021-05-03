@@ -11,7 +11,7 @@ const SearchPageWrapper = styled.main`
 `;
 
 const ButtonsWrapper = styled.div`
-    margin-bottom: 5px;
+    margin-bottom: 10px;
     display: flex;
     height: 60px;
     & > button:not(:last-child) {

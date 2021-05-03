@@ -7,8 +7,7 @@ import SearchResult from './SearchResult';
 import styled from 'styled-components';
 
 const SearchResultAmountWrapper = styled.h6`
-    text-align: center;
-    margin: 12px 0px;
+    margin: 10px 0px;
 `;
 
 type SearchResultsProps = {

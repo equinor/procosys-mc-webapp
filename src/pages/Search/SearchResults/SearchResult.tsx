@@ -6,6 +6,7 @@ import { SearchType } from '../Search';
 import { McPackageStatusIcon } from '../../../components/icons/McPackageStatusIcon';
 import { Typography } from '@equinor/eds-core-react';
 import { useHistory } from 'react-router';
+import { colors } from '@equinor/eds-core-react/dist/types/components/Typography/Typography.tokens';
 
 const SearchResultWrapper = styled.article`
     cursor: pointer;
@@ -23,6 +24,7 @@ const StatusImageWrapper = styled.div`
     display: flex;
     flex-direction: column;
     padding-right: 12px;
+    padding-bottom: 5px;
     & > img {
         height: 20px;
     }
@@ -36,7 +38,10 @@ const StatusTextWrapper = styled.div`
 `;
 
 const HandoverStatus = styled.p<{ accepted: boolean }>`
-    font-weight: ${(props): string => (props.accepted ? 'bolder' : 'normal')};
+    font-weight: bolder;
+    font-size: 0.75rem;
+    color: ${(props): string =>
+        props.accepted ? COLORS.black : COLORS.lightGrey};
 `;
 
 const SearchResultDetailsWrapper = styled.div`
@@ -50,17 +55,17 @@ const SearchResultDetailsWrapper = styled.div`
 
 const SearchResultHeaderWrapper = styled.div`
     display: flex;
-    flex: 1;
     align-items: baseline;
-    margin-bottom: 6;
+    margin-bottom: 0px;
     & > h6 {
         margin: 0;
-        flex: 1.3; // TODO: make this text the correct color blue
+        flex: 1.4;
+        color: ${COLORS.mossGreen};
     }
-    & > p {
+    & > caption {
         margin: 0;
         flex: 1;
-        text-align: center;
+        text-align: right;
     }
 `;
 
@@ -106,12 +111,8 @@ const SearchResult = ({
                 <SearchResultDetailsWrapper>
                     <SearchResultHeaderWrapper>
                         <h6>{searchResult.mcPkgNo}</h6>
-                        <Typography variant="caption">
-                            {searchResult.commPkgNo}
-                        </Typography>
-                        <Typography variant="caption">
-                            {searchResult.responsibleCode}
-                        </Typography>
+                        <caption>{searchResult.commPkgNo}</caption>
+                        <caption>{searchResult.responsibleCode}</caption>
                     </SearchResultHeaderWrapper>
                     <Typography variant="caption">
                         {searchResult.description}

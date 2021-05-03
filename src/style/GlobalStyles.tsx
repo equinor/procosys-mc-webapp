@@ -44,6 +44,9 @@ const GlobalStyles = createGlobalStyle`
     p {
         ${tokens.typography.paragraph.body_short as CSSObject}
     }
+    caption {
+        ${tokens.typography.paragraph.caption as CSSObject}
+    }
     a {
         ${tokens.typography.paragraph.body_short_link as CSSObject}
     }
