@@ -1,6 +1,6 @@
 import React from 'react';
 import { Route, Switch, useRouteMatch } from 'react-router-dom';
-import Checklist from './pages/Checklist/Checklist';
+import ChecklistWrapper from './pages/Checklist/ChecklistWrapper';
 import CommPkg from './pages/CommPkg/CommPkg';
 import NewPunch from './pages/Punch/NewPunch/NewPunch';
 import ClearPunch from './pages/Punch/ClearPunch/ClearPunch';
@@ -14,7 +14,7 @@ const CommPkgRouter = (): JSX.Element => {
             <Route
                 exact
                 path={`${path}/scope/:checklistId`}
-                component={Checklist}
+                component={ChecklistWrapper}
             />
             <Route
                 exact
