@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import styled from 'styled-components';
-import DetailsCard from '../CommPkg/DetailsCard';
+import DetailsCard from '../Scope/DetailsCard';
 import PageHeader from '../../components/PageHeader';
 import { getCurrentBookmarks } from './useBookmarks';
 import { Button } from '@equinor/eds-core-react';
