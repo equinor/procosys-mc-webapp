@@ -8,6 +8,8 @@ import { ChecklistPreview } from '../../../services/apiTypes';
 import useCommonHooks from '../../../utils/useCommonHooks';
 import AsyncPage from '../../../components/AsyncPage';
 
+// TODO: rename everything comm pkg related
+
 export const CommPkgListWrapper = styled.div`
     padding-bottom: 85px;
     & h3 {

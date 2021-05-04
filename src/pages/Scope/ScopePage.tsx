@@ -23,9 +23,11 @@ import FooterButton from '../../components/navigation/FooterButton';
 import EdsIcon from '../../components/icons/EdsIcon';
 import { COLORS } from '../../style/GlobalStyles';
 
+// TODO: rename everything Comm pkg related
+
 const CommPkgWrapper = styled.main``;
 
-const CommPkg = (): JSX.Element => {
+const ScopePage = (): JSX.Element => {
     const { api, params, path, history, url } = useCommonHooks();
     const [scope, setScope] = useState<ChecklistPreview[]>();
     const [tasks, setTasks] = useState<TaskPreview[]>();
@@ -60,6 +62,7 @@ const CommPkg = (): JSX.Element => {
         };
     }, [api, params.plant, params.commPkg]);
 
+    // TODO: change footer to actually work & to not have constant values
     const determineFooterToRender = (): JSX.Element => {
         if (
             fetchFooterDataStatus === AsyncStatus.SUCCESS &&
@@ -104,14 +107,23 @@ const CommPkg = (): JSX.Element => {
             </NavigationFooterShell>
         );
     };
-
     return (
         <CommPkgWrapper>
+            {
+                // TODO: change navbar label & probably add page title (different one for each scope type)
+            }
             <Navbar
                 noBorder
                 leftContent={{ name: 'back', label: 'Bookmarks' }}
             />
+            {
+                // TODO: replace with the SearchResult component (or with a searchresult component if there are several)
+            }
             <DetailsCard commPkgId={params.commPkg} />
+            {
+                // TODO: do we need to use routing to choose component?
+                // TODO: decide on how URL is supposed to look like for the different vews
+            }
             <Switch>
                 <Redirect exact path={path} to={`${path}/scope`} />
                 <Route exact path={`${path}/scope`} component={Scope} />
@@ -127,7 +139,8 @@ const CommPkg = (): JSX.Element => {
     );
 };
 
-export default withAccessControl(CommPkg, [
+// TODO: change access control stuff
+export default withAccessControl(ScopePage, [
     'COMMPKG/READ',
     'CPCL/READ',
     'RUNNING_LOGS/READ',
