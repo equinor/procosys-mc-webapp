@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
-import { Button } from '@equinor/eds-core-react';
 import withAccessControl from '../../services/withAccessControl';
 import styled from 'styled-components';
 import Navbar from '../../components/navigation/Navbar';
 import SearchArea from './SearchArea/SearchArea';
-import { COLORS } from '../../style/GlobalStyles';
+import SearchTypeButton from './SearchTypeButton';
 
 const SearchPageWrapper = styled.main`
     padding: 0 4%;
@@ -19,13 +18,6 @@ const ButtonsWrapper = styled.div`
     }
 `;
 
-const SearchTypeButton = styled(Button)<{ active: boolean }>`
-    background-color: ${(props): string =>
-        props.active ? COLORS.fadedBlue : COLORS.white};
-    flex: 1;
-    height: 100%;
-`;
-
 export enum SearchType {
     SAVED = 'SAVED',
     PO = 'PO',
@@ -35,35 +27,7 @@ export enum SearchType {
 }
 
 const Search = (): JSX.Element => {
-    const [searchType, setSearchType] = useState<SearchType | undefined>(
-        SearchType.SAVED
-    );
-
-    const buttonsToRender: JSX.Element[] = [];
-
-    for (const type in SearchType) {
-        if (type != SearchType.SAVED) {
-            buttonsToRender.push(
-                <SearchTypeButton
-                    variant={'outlined'}
-                    onClick={(): void => {
-                        setSearchType(
-                            type === searchType
-                                ? SearchType.SAVED
-                                : Object.values(SearchType).find(
-                                      (x) => x === type
-                                  )
-                        );
-                    }}
-                    key={type}
-                    active={type === searchType}
-                    disabled={type != SearchType.MC}
-                >
-                    {type}
-                </SearchTypeButton>
-            );
-        }
-    }
+    const [searchType, setSearchType] = useState<SearchType>(SearchType.SAVED);
 
     const determineComponent = (): JSX.Element => {
         if (searchType === SearchType.SAVED || searchType === undefined) {
@@ -81,11 +45,32 @@ const Search = (): JSX.Element => {
             />
             <SearchPageWrapper>
                 <p>Search for</p>
-                <ButtonsWrapper>{buttonsToRender}</ButtonsWrapper>
+                <ButtonsWrapper>
+                    <SearchTypeButton
+                        searchType={SearchType.PO}
+                        currentSearchType={searchType}
+                        setCurrentSearchType={setSearchType}
+                    />
+                    <SearchTypeButton
+                        searchType={SearchType.MC}
+                        currentSearchType={searchType}
+                        setCurrentSearchType={setSearchType}
+                    />
+                    <SearchTypeButton
+                        searchType={SearchType.WO}
+                        currentSearchType={searchType}
+                        setCurrentSearchType={setSearchType}
+                    />
+                    <SearchTypeButton
+                        searchType={SearchType.Tag}
+                        currentSearchType={searchType}
+                        setCurrentSearchType={setSearchType}
+                    />
+                </ButtonsWrapper>
                 {determineComponent()}
             </SearchPageWrapper>
         </>
     );
 };
 
-export default withAccessControl(Search, ['COMMPKG/READ']);
+export default withAccessControl(Search, ['MCPKG/READ']);
