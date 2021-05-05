@@ -3,8 +3,8 @@ import axios, { CancelToken } from 'axios';
 import PlantContext from '../../contexts/PlantContext';
 import { SearchResults } from '../../services/apiTypes';
 import { ProcosysApiService } from '../../services/procosysApi';
-import McAppContext from '../../contexts/McAppContext';
 import { SearchType } from './Search';
+import useCommonHooks from '../../utils/useCommonHooks';
 
 export enum SearchStatus {
     INACTIVE,
@@ -88,7 +88,7 @@ const fetchHits = async (
 // TODO: the search type must be passed as a prop, unless added to URL (?)
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const useSearchPageFacade = (searchType: SearchType) => {
-    const { api } = useContext(McAppContext);
+    const { api } = useCommonHooks();
     const [{ hits, searchStatus }, dispatch] = useReducer(fetchReducer, {
         hits: { maxAvailable: 0, items: [] },
         searchStatus: SearchStatus.INACTIVE,

@@ -4,7 +4,7 @@ import { Caption, COLORS } from '../../../style/GlobalStyles';
 import { McPkgPreview } from '../../../services/apiTypes';
 import { SearchType } from '../Search';
 import { McPackageStatusIcon } from '../../../components/icons/McPackageStatusIcon';
-import { useHistory } from 'react-router';
+import useCommonHooks from '../../../utils/useCommonHooks';
 
 const SearchResultWrapper = styled.article`
     cursor: pointer;
@@ -53,7 +53,6 @@ const SearchResultDetailsWrapper = styled.div`
 const SearchResultHeaderWrapper = styled.div`
     display: flex;
     align-items: baseline;
-    margin: 0;
     & > h6 {
         margin: 0;
         flex: 1.4;
@@ -76,7 +75,7 @@ const SearchResult = ({
     searchResult,
     searchType,
 }: SearchResultProps): JSX.Element => {
-    const history = useHistory();
+    const { history } = useCommonHooks();
 
     if (searchType === SearchType.MC) {
         return (
