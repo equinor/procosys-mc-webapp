@@ -115,7 +115,7 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
     //------------
     // CHECKLIST
     // -----------
-
+    // TODO: change to work for MC app scope types, see getSearchResults for inspo
     const getScope = async (
         plantId: string,
         commPkgId: string
@@ -297,7 +297,7 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
     //------------
     // PUNCH ITEMS
     // -----------
-
+    // TODO: change to work for all MC app scope types, see getSearchResults
     const getPunchList = async (
         plantId: string,
         commPkgId: string

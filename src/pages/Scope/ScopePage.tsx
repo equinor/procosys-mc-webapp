@@ -24,6 +24,7 @@ import EdsIcon from '../../components/icons/EdsIcon';
 import { COLORS } from '../../style/GlobalStyles';
 
 // TODO: rename everything Comm pkg related
+// TODO: remove everything task related
 
 const CommPkgWrapper = styled.main``;
 
@@ -45,9 +46,9 @@ const ScopePage = (): JSX.Element => {
                     tasksFromApi,
                     punchListFromApi,
                 ] = await Promise.all([
-                    api.getScope(params.plant, params.commPkg),
+                    api.getScope(params.plant, params.commPkg), // TODO: change based on scope type (can get scope type from params)
                     api.getTasks(source.token, params.plant, params.commPkg),
-                    api.getPunchList(params.plant, params.commPkg),
+                    api.getPunchList(params.plant, params.commPkg), // TODO: change based on scope type
                 ]);
                 setScope(scopeFromApi);
                 setTasks(tasksFromApi);
@@ -62,7 +63,7 @@ const ScopePage = (): JSX.Element => {
         };
     }, [api, params.plant, params.commPkg]);
 
-    // TODO: change footer to actually work & to not have constant values
+    // TODO: change footer to actually work & to not have constant values (see prev. version before changes to navigation footer)
     const determineFooterToRender = (): JSX.Element => {
         if (
             fetchFooterDataStatus === AsyncStatus.SUCCESS &&
@@ -121,7 +122,7 @@ const ScopePage = (): JSX.Element => {
             }
             <DetailsCard commPkgId={params.commPkg} />
             {
-                // TODO: do we need to use routing to choose component?
+                // TODO: do we need to use routing to choose component? can we just to conditional rendering?
                 // TODO: decide on how URL is supposed to look like for the different vews
             }
             <Switch>

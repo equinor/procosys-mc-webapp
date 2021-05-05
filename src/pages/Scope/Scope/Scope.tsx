@@ -18,6 +18,7 @@ export const CommPkgListWrapper = styled.div`
     }
 `;
 
+// TODO: make it look like the figma design
 export const PreviewButton = styled(Link)`
     display: flex;
     align-items: center;
@@ -61,7 +62,7 @@ const Scope = (): JSX.Element => {
                 const scopeFromApi = await api.getScope(
                     params.plant,
                     params.commPkg
-                );
+                ); // TODO: change based on scope type
                 const sortedScope = scopeFromApi.sort((a, b) =>
                     a.tagNo.localeCompare(b.tagNo)
                 );
@@ -77,6 +78,7 @@ const Scope = (): JSX.Element => {
         })();
     }, [params.plant, params.commPkg, api]);
 
+    // TODO: check whether the different scope types return different values
     return (
         <CommPkgListWrapper>
             <AsyncPage

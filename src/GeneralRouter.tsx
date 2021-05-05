@@ -7,6 +7,7 @@ import SelectPlant from './pages/SelectPlant/SelectPlant';
 import CommPkgRouter from './CommPkgRouter';
 import Bookmarks from './pages/Bookmarks/Bookmarks';
 
+// TODO: decide on how the routing should be for scope page (even better if we can decide on something for the whole project)
 const CommRouter = (): JSX.Element => {
     return (
         <PlantContextProvider>
