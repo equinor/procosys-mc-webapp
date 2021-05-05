@@ -4,6 +4,7 @@ import {
     UpdatePunchData,
     UpdatePunchEndpoint,
 } from '../pages/Punch/ClearPunch/useClearPunchFacade';
+import { SearchType } from '../pages/Search/Search';
 import { TaskCommentDto } from '../pages/Task/TaskDescription';
 import { TaskParameterDto } from '../pages/Task/TaskParameters/TaskParameters';
 import {
@@ -73,19 +74,20 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
         return data as string[];
     };
 
-    const searchForMcPackage = async (
+    const getSearchResults = async (
         query: string,
         projectId: number,
         plantId: string,
+        searchType: SearchType,
         cancelToken?: CancelToken
     ): Promise<SearchResults> => {
-        const {
-            data,
-        } = await axios.get(
-            `McPkg/Search?plantId=${plantId}&startsWithMcPkgNo=${query}&includeClosedProjects=false&projectId=${projectId}${apiVersion}`,
-            { cancelToken }
-        );
-
+        let url = '';
+        if (searchType === SearchType.MC) {
+            url = `McPkg/Search?plantId=${plantId}&startsWithMcPkgNo=${query}&includeClosedProjects=false&projectId=${projectId}${apiVersion}`;
+        } else {
+            throw new Error();
+        }
+        const { data } = await axios.get(url, { cancelToken });
         return data as SearchResults;
     };
 
@@ -623,7 +625,7 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
         putTaskComment,
         putTaskParameter,
         putUpdatePunch,
-        searchForMcPackage,
+        getSearchResults,
     };
 };
 

@@ -64,10 +64,11 @@ const fetchHits = async (
     dispatch({ type: 'FETCH_START' });
     try {
         if (searchType === SearchType.MC) {
-            const mcPackages = await api.searchForMcPackage(
+            const mcPackages = await api.getSearchResults(
                 query,
                 projectID,
                 plantID,
+                searchType,
                 cancelToken
             );
             dispatch({
