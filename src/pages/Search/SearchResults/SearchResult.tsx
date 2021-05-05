@@ -1,10 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
-import { COLORS } from '../../../style/GlobalStyles';
+import { Caption, COLORS } from '../../../style/GlobalStyles';
 import { McPkgPreview } from '../../../services/apiTypes';
 import { SearchType } from '../Search';
 import { McPackageStatusIcon } from '../../../components/icons/McPackageStatusIcon';
-import { Typography } from '@equinor/eds-core-react';
 import { useHistory } from 'react-router';
 
 const SearchResultWrapper = styled.article`
@@ -47,15 +46,14 @@ const SearchResultDetailsWrapper = styled.div`
     flex-direction: column;
     flex: 1;
     & > p {
-        margin-bottom: 0;
-        margin-top: 0;
+        margin: 0;
     }
 `;
 
 const SearchResultHeaderWrapper = styled.div`
     display: flex;
     align-items: baseline;
-    margin-bottom: 0px;
+    margin: 0;
     & > h6 {
         margin: 0;
         flex: 1.4;
@@ -110,19 +108,11 @@ const SearchResult = ({
                 <SearchResultDetailsWrapper>
                     <SearchResultHeaderWrapper>
                         <h6>{searchResult.mcPkgNo}</h6>
-                        <Typography variant="caption">
-                            {searchResult.commPkgNo}
-                        </Typography>
-                        <Typography variant="caption">
-                            {searchResult.responsibleCode}
-                        </Typography>
+                        <Caption>{searchResult.commPkgNo}</Caption>
+                        <Caption>{searchResult.responsibleCode}</Caption>
                     </SearchResultHeaderWrapper>
-                    <Typography variant="caption">
-                        {searchResult.description}
-                    </Typography>
-                    <Typography variant="caption">
-                        {searchResult.phaseCode}
-                    </Typography>
+                    <Caption>{searchResult.description}</Caption>
+                    <Caption>{searchResult.phaseCode}</Caption>
                 </SearchResultDetailsWrapper>
             </SearchResultWrapper>
         );
