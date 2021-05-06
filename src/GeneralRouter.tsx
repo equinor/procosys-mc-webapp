@@ -4,7 +4,10 @@ import { PlantContextProvider } from './contexts/PlantContext';
 import SelectProject from './pages/SelectProject/SelectProject';
 import Search from './pages/Search/Search';
 import SelectPlant from './pages/SelectPlant/SelectPlant';
+import ScopePage from './pages/Scope/ScopePage';
 
+// TODO: decide on routing for the different pages
+// TODO: what happens if something else after itemId now??
 const McRouter = (): JSX.Element => {
     return (
         <PlantContextProvider>
@@ -14,8 +17,13 @@ const McRouter = (): JSX.Element => {
                 <Route exact path={'/:plant/:project'} component={Search} />
                 <Redirect
                     exact
-                    path={'/:plant/:project/:itemType'}
+                    path={'/:plant/:project/:scopeType'}
                     to={'/:plant/:project/'}
+                />
+                <Route
+                    exact
+                    path={'/:plant/:project/:scopeType/itemId'}
+                    component={ScopePage}
                 />
             </Switch>
         </PlantContextProvider>

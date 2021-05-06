@@ -75,12 +75,14 @@ const SearchResult = ({
     searchResult,
     searchType,
 }: SearchResultProps): JSX.Element => {
-    const { history } = useCommonHooks();
+    const { history, url } = useCommonHooks();
 
     if (searchType === SearchType.MC) {
         return (
             <SearchResultWrapper
-                onClick={(): void => history.push(`MC/${searchResult.id}`)}
+                onClick={(): void =>
+                    history.push(`${url}/MC/${searchResult.id}`)
+                }
                 key={searchResult.id}
             >
                 <StatusImageWrapper>
