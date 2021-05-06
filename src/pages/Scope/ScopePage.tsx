@@ -26,7 +26,7 @@ import { COLORS } from '../../style/GlobalStyles';
 // TODO: rename everything Comm pkg related
 // TODO: remove everything task related
 
-const CommPkgWrapper = styled.main``;
+const ScopePageWrapper = styled.main``;
 
 const ScopePage = (): JSX.Element => {
     const { api, params, path, history, url } = useCommonHooks();
@@ -62,6 +62,11 @@ const ScopePage = (): JSX.Element => {
             source.cancel();
         };
     }, [api, params.plant, params.commPkg]);
+
+    const determinePageTitle = (): string => {
+        // TODO: once search merged: test params.searchType
+        return 'MC package';
+    };
 
     // TODO: change footer to actually work & to not have constant values (see prev. version before changes to navigation footer)
     const determineFooterToRender = (): JSX.Element => {
@@ -109,13 +114,14 @@ const ScopePage = (): JSX.Element => {
         );
     };
     return (
-        <CommPkgWrapper>
+        <ScopePageWrapper>
             {
-                // TODO: change navbar label & probably add page title (different one for each scope type)
+                // TODO: Should navbar label be Saved Searches or Search?
             }
             <Navbar
                 noBorder
-                leftContent={{ name: 'back', label: 'Bookmarks' }}
+                leftContent={{ name: 'back', label: 'Search' }}
+                midContent={determinePageTitle()}
             />
             {
                 // TODO: replace with the SearchResult component (or with a searchresult component if there are several)
@@ -136,7 +142,7 @@ const ScopePage = (): JSX.Element => {
                 />
             </Switch>
             {determineFooterToRender()}
-        </CommPkgWrapper>
+        </ScopePageWrapper>
     );
 };
 

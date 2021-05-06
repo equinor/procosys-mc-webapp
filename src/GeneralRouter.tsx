@@ -6,6 +6,7 @@ import Search from './pages/Search/Search';
 import SelectPlant from './pages/SelectPlant/SelectPlant';
 import CommPkgRouter from './CommPkgRouter';
 import Bookmarks from './pages/Bookmarks/Bookmarks';
+import ScopePage from './pages/Scope/ScopePage';
 
 // TODO: decide on how the routing should be for scope page (even better if we can decide on something for the whole project)
 const CommRouter = (): JSX.Element => {
@@ -19,6 +20,14 @@ const CommRouter = (): JSX.Element => {
                     exact
                     path={'/:plant/:project/search'}
                     component={Search}
+                />
+                {
+                    // TODO: remove this temp. route once search has been merged
+                }
+                <Route
+                    exact
+                    path={'/:plant/:project/Scope/:searchType'}
+                    component={ScopePage}
                 />
                 <Route
                     path={'/:plant/:project/:commPkg'}
