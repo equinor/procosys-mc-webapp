@@ -100,7 +100,7 @@ export const testTasks: TaskPreview[] = [
 export const testMcPkgPreview: McPkgPreview[] = [
     {
         id: 1,
-        mcPkgNo: 'Test MC pkg number',
+        mcPkgNo: '21',
         description: 'Test description',
         status: CompletionStatus.OK,
         commPkgNo: 'Test comm pkg number',

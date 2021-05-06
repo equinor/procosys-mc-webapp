@@ -14,7 +14,7 @@ const SearchTypeButtonWrapper = styled(Button)<{ active: boolean }>`
 type SearchTypeButtonProps = {
     searchType: SearchType;
     currentSearchType: SearchType;
-    setCurrentSearchType: (searchType: SearchType) => void;
+    setCurrentSearchType: React.Dispatch<React.SetStateAction<SearchType>>;
 };
 
 const SearchTypeButton = ({
