@@ -1,7 +1,7 @@
 import { Button, DotProgress, Scrim } from '@equinor/eds-core-react';
 import React, { Dispatch, SetStateAction, useRef, useState } from 'react';
 import styled from 'styled-components';
-import { AsyncStatus } from '../contexts/CommAppContext';
+import { AsyncStatus } from '../contexts/McAppContext';
 import { TempAttachment } from '../pages/Punch/NewPunch/NewPunch';
 import { ProcosysApiService } from '../services/procosysApi';
 import { COLORS } from '../style/GlobalStyles';

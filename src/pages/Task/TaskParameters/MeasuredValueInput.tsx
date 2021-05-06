@@ -1,6 +1,6 @@
 import { TextField } from '@equinor/eds-core-react';
 import React, { useState } from 'react';
-import { AsyncStatus } from '../../../contexts/CommAppContext';
+import { AsyncStatus } from '../../../contexts/McAppContext';
 import { TaskParameter } from '../../../services/apiTypes';
 import useCommonHooks from '../../../utils/useCommonHooks';
 import { TaskParameterDto } from './TaskParameters';

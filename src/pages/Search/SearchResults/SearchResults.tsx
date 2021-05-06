@@ -1,116 +1,95 @@
 import React from 'react';
-import { useHistory } from 'react-router-dom';
-import styled from 'styled-components';
 import { SearchStatus } from '../useSearchPageFacade';
-import { CommPkgPreview } from '../../../services/apiTypes';
+import { SearchResults as SearchResultsType } from '../../../services/apiTypes';
 import SkeletonLoadingPage from '../../../components/loading/SkeletonLoader';
-import { PackageStatusIcon } from '../../../components/icons/PackageStatusIcon';
-import { COLORS } from '../../../style/GlobalStyles';
+import { SearchType } from '../Search';
+import SearchResult from './SearchResult';
+import styled from 'styled-components';
 
-const SearchResult = styled.article`
-    cursor: pointer;
-    width: 100%;
-    display: flex;
-    align-items: center;
-    border-top: 1px solid ${COLORS.lightGrey};
-    & p {
-        flex: auto;
-        width: 200px;
-    }
-    & h6 {
-        margin: 12px;
-        white-space: nowrap;
-        width: 120px;
-    }
-    &:hover {
-        opacity: 0.7;
-    }
-`;
-
-const SearchResultsWrapper = styled.div`
-    width: 100%;
-`;
-
-const StatusImageWrapper = styled.div`
-    display: flex;
-    padding: 12px;
-    & img {
-        height: 20px;
-        margin-left: -2px;
-    }
+const SearchResultAmountWrapper = styled.h6`
+    margin: 10px 0px;
 `;
 
 type SearchResultsProps = {
     searchStatus: SearchStatus;
-    commPackages: CommPkgPreview[];
+    searchResults: SearchResultsType;
+    searchType: SearchType;
 };
 
 const SearchResults = ({
     searchStatus,
-    commPackages,
+    searchResults,
+    searchType,
 }: SearchResultsProps): JSX.Element => {
-    const history = useHistory();
+    const getPlaceholderTextType = (): string => {
+        if (searchType === SearchType.MC) {
+            return 'mechanical completion package number';
+        }
+        return '';
+    };
+
+    const getSearchResultType = (): string => {
+        if (searchType === SearchType.MC) {
+            return 'MC packages';
+        }
+        return '';
+    };
+
     if (searchStatus === SearchStatus.LOADING) {
         return <SkeletonLoadingPage fullWidth />;
     }
-    if (searchStatus === SearchStatus.SUCCESS && commPackages.length > 0) {
+    if (
+        searchStatus === SearchStatus.SUCCESS &&
+        searchResults.items.length > 0
+    ) {
         return (
-            <SearchResultsWrapper>
-                {commPackages.map((commPackage) => {
-                    return (
-                        <SearchResult
-                            onClick={(): void =>
-                                history.push(`${commPackage.id}`)
-                            }
-                            key={commPackage.id}
-                        >
-                            <StatusImageWrapper>
-                                <PackageStatusIcon
-                                    mcStatus={commPackage.mcStatus}
-                                    commStatus={commPackage.commStatus}
-                                />
-                            </StatusImageWrapper>
-
-                            <h6>{commPackage.commPkgNo}</h6>
-                            <p>{commPackage.description}</p>
-                        </SearchResult>
-                    );
-                })}
-            </SearchResultsWrapper>
+            <div>
+                <SearchResultAmountWrapper>
+                    Displaying {searchResults.items.length} out of{' '}
+                    {searchResults.maxAvailable} {getSearchResultType()}
+                </SearchResultAmountWrapper>
+                {searchResults.items.map((searchResult) => (
+                    <SearchResult
+                        key={searchResult.id}
+                        searchResult={searchResult}
+                        searchType={searchType}
+                    />
+                ))}
+            </div>
         );
     }
     if (searchStatus === SearchStatus.INACTIVE) {
         return (
-            <SearchResultsWrapper>
+            <div>
                 <p>
                     <i>
-                        Start typing your Commissioning Package number in the
+                        Start typing your {getPlaceholderTextType()} in the
                         field above. <br />
                     </i>
                 </p>
-            </SearchResultsWrapper>
+            </div>
         );
     }
 
     if (searchStatus === SearchStatus.ERROR) {
         return (
-            <SearchResultsWrapper>
+            <div>
                 <p>
                     <i>
                         An error occurred, please refresh this page and try
                         again.
                     </i>
                 </p>
-            </SearchResultsWrapper>
+            </div>
         );
     }
 
     return (
-        <SearchResultsWrapper>
+        <div>
             <p>
-                <i>No packages found for this search.</i>
+                <i>No {getSearchResultType()} found for this search.</i>
             </p>
-        </SearchResultsWrapper>
+        </div>
     );
 };
 

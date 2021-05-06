@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import EdsIcon from '../../components/icons/EdsIcon';
 import ErrorPage from '../../components/error/ErrorPage';
-import CommAppContext from '../../contexts/CommAppContext';
+import CommAppContext from '../../contexts/McAppContext';
 import { COLORS } from '../../style/GlobalStyles';
 import PageHeader from '../../components/PageHeader';
 import Navbar from '../../components/navigation/Navbar';

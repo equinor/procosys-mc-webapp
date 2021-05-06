@@ -4,7 +4,7 @@ import { Plant, Project } from '../services/apiTypes';
 import { StorageKey } from '../pages/Bookmarks/useBookmarks';
 import matchPlantInURL from '../utils/matchPlantInURL';
 import matchProjectInURL from '../utils/matchProjectInURL';
-import CommAppContext, { AsyncStatus } from './CommAppContext';
+import McAppContext, { AsyncStatus } from './McAppContext';
 import useCommonHooks from '../utils/useCommonHooks';
 import ErrorPage from '../components/error/ErrorPage';
 import Navbar from '../components/navigation/Navbar';
@@ -24,7 +24,7 @@ export const PlantContextProvider: React.FC<{ children: ReactNode }> = ({
 }) => {
     const { params, api, history } = useCommonHooks();
     const [currentPlant, setCurrentPlant] = useState<Plant | undefined>();
-    const { availablePlants } = useContext(CommAppContext);
+    const { availablePlants } = useContext(McAppContext);
     const [availableProjects, setAvailableProjects] = useState<Project[]>([]);
     const [permissions, setPermissions] = useState<string[]>([]);
     const [currentProject, setCurrentProject] = useState<Project | undefined>();
