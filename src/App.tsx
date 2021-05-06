@@ -1,6 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-import { CommAppContextProvider } from './contexts/CommAppContext';
+import { McAppContextProvider } from './contexts/McAppContext';
 import GeneralRouter from './GeneralRouter';
 import ErrorBoundary from './components/error/ErrorBoundary';
 import { IAuthService } from './services/authService';
@@ -10,14 +10,16 @@ import {
     AppInsightsContext,
     ReactPlugin,
 } from '@microsoft/applicationinsights-react-js';
+import { SearchType } from './pages/Search/Search';
 
-export type CommParams = {
+export type McParams = {
     plant: string;
     project: string;
     commPkg: string;
     taskId: string;
     checklistId: string;
     punchItemId: string;
+    searchType: SearchType;
 };
 
 type AppProps = {
@@ -40,10 +42,7 @@ const App = ({
 
     return (
         <AppInsightsContext.Provider value={reactPlugin}>
-            <CommAppContextProvider
-                api={procosysApiInstance}
-                auth={authInstance}
-            >
+            <McAppContextProvider api={procosysApiInstance} auth={authInstance}>
                 <Router basename={rootDirectory}>
                     <ErrorBoundary>
                         <Switch>
@@ -55,7 +54,7 @@ const App = ({
                         </Switch>
                     </ErrorBoundary>
                 </Router>
-            </CommAppContextProvider>
+            </McAppContextProvider>
         </AppInsightsContext.Provider>
     );
 };

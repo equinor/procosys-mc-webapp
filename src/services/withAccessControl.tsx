@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext, ReactElement } from 'react';
 import ErrorPage from '../components/error/ErrorPage';
 import SkeletonLoader from '../components/loading/SkeletonLoader';
 import PlantContext from '../contexts/PlantContext';
-import { AsyncStatus } from '../contexts/CommAppContext';
+import { AsyncStatus } from '../contexts/McAppContext';
 
 const withAccessControl = (
     WrappedComponent: () => ReactElement,

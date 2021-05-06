@@ -1,6 +1,6 @@
 import { render } from '@testing-library/react';
 import React from 'react';
-import { AsyncStatus } from '../../contexts/CommAppContext';
+import { AsyncStatus } from '../../contexts/McAppContext';
 import { withPlantContext } from '../../test/contexts';
 import { testProjects } from '../../test/dummyData';
 import SelectProject from '../SelectProject/SelectProject';

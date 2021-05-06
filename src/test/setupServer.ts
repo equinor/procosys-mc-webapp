@@ -14,6 +14,7 @@ import {
     dummyPunchOrganizations,
     dummyPunchTypes,
     dummyPunchItemUncleared,
+    testMcPkgSearch,
 } from './dummyData';
 import objectToCamelCase from '../utils/objectToCamelCase';
 
@@ -23,6 +24,9 @@ export const ENDPOINTS = {
     getCommPkgDetails: `${baseURL}/CommPkg`,
     getPermissions: `${baseURL}/Permissions`,
     getProjects: `${baseURL}/Projects`,
+
+    //Search
+    searchForMcPackage: `${baseURL}/McPkg/Search`,
 
     // Checklist
     putMetaTableCell: `${baseURL}/CheckList/Item/MetaTableCell`,
@@ -84,6 +88,11 @@ export const server = setupServer(
     }),
     rest.get(ENDPOINTS.getPermissions, (_, response, context) => {
         return response(context.json(['COMMPKG/READ']), context.status(200));
+    }),
+
+    //Search
+    rest.get(ENDPOINTS.searchForMcPackage, (_, response, context) => {
+        return response(context.json(testMcPkgSearch), context.status(200));
     }),
 
     //Checklist

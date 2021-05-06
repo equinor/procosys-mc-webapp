@@ -8,7 +8,8 @@ import {
     Project,
     PunchPreview,
     TaskPreview,
-    CommPkgPreview,
+    McPkgPreview,
+    SearchResults,
 } from '../services/apiTypes';
 
 type DummyMetatableData = {
@@ -58,7 +59,7 @@ export const testPlants: Plant[] = [
     { id: 'Two', title: 'Test plant 2', slug: 'yet-another-slug' },
 ];
 
-export const dummyPermissions: string[] = ['COMMPKG/READ'];
+export const dummyPermissions: string[] = ['COMMPKG/READ', 'MCPKG/READ'];
 
 export const testProjects: Project[] = [
     { id: 1, title: 'Test project 1', description: 'this-is-a-description' },
@@ -96,17 +97,24 @@ export const testTasks: TaskPreview[] = [
     },
 ];
 
-export const testCommPkgPreview: CommPkgPreview[] = [
+export const testMcPkgPreview: McPkgPreview[] = [
     {
         id: 1,
-        commPkgNo: 'Test comm pkg number',
+        mcPkgNo: '21',
         description: 'Test description',
-        mcStatus: CompletionStatus.OK,
-        commStatus: CompletionStatus.OK,
+        status: CompletionStatus.OK,
+        commPkgNo: 'Test comm pkg number',
+        phaseCode: 'Test phase code',
+        responsibleCode: 'Test resp. code',
         commissioningHandoverStatus: 'OK',
         operationHandoverStatus: 'OK',
     },
 ];
+
+export const testMcPkgSearch: SearchResults = {
+    maxAvailable: 1,
+    items: testMcPkgPreview,
+};
 
 export const testScope: ChecklistPreview[] = [
     {

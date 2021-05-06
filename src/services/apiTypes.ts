@@ -18,20 +18,22 @@ export interface Plant {
     projects?: Project[];
 }
 
-//COMM PKG SEARCH
-export interface CommPkgPreview {
+//SEARCH
+export interface McPkgPreview {
     id: number;
-    commPkgNo: string;
+    mcPkgNo: string;
     description: string;
-    mcStatus: CompletionStatus;
-    commStatus: CompletionStatus;
+    status: CompletionStatus;
+    commPkgNo: string;
+    phaseCode: string;
+    responsibleCode: string;
     commissioningHandoverStatus: string;
     operationHandoverStatus: string;
 }
 
-export type CommPkgSearchResults = {
+export type SearchResults = {
     maxAvailable: number;
-    items: CommPkgPreview[];
+    items: McPkgPreview[];
 };
 
 // COMM PKG AND LISTS

@@ -1,9 +1,10 @@
 import React, { useContext, useEffect, useReducer, useState } from 'react';
 import axios, { CancelToken } from 'axios';
 import PlantContext from '../../contexts/PlantContext';
-import { CommPkgSearchResults } from '../../services/apiTypes';
+import { SearchResults } from '../../services/apiTypes';
 import { ProcosysApiService } from '../../services/procosysApi';
-import CommAppContext from '../../contexts/CommAppContext';
+import { SearchType } from './Search';
+import useCommonHooks from '../../utils/useCommonHooks';
 
 export enum SearchStatus {
     INACTIVE,
@@ -14,12 +15,12 @@ export enum SearchStatus {
 
 type SearchState = {
     searchStatus: SearchStatus;
-    hits: CommPkgSearchResults;
+    hits: SearchResults;
 };
 
 type Action =
     | { type: 'FETCH_START' }
-    | { type: 'FETCH_SUCCESS'; payload: CommPkgSearchResults }
+    | { type: 'FETCH_SUCCESS'; payload: SearchResults }
     | { type: 'FETCH_ERROR'; error: string }
     | { type: 'FETCH_INACTIVE' };
 
@@ -57,28 +58,38 @@ const fetchHits = async (
     plantID: string,
     projectID: number,
     cancelToken: CancelToken,
-    api: ProcosysApiService
+    api: ProcosysApiService,
+    searchType: SearchType
 ): Promise<void> => {
     dispatch({ type: 'FETCH_START' });
     try {
-        const commPackages = await api.searchForCommPackage(
-            query,
-            projectID,
-            plantID,
-            cancelToken
-        );
-        dispatch({
-            type: 'FETCH_SUCCESS',
-            payload: commPackages,
-        });
+        if (searchType === SearchType.MC) {
+            const mcPackages = await api.getSearchResults(
+                query,
+                projectID,
+                plantID,
+                searchType,
+                cancelToken
+            );
+            dispatch({
+                type: 'FETCH_SUCCESS',
+                payload: mcPackages,
+            });
+        } else {
+            dispatch({
+                type: 'FETCH_ERROR',
+                error: 'Nonexistent search type',
+            });
+        }
     } catch (err) {
         dispatch({ type: 'FETCH_ERROR', error: 'err' });
     }
 };
 
+// TODO: the search type must be passed as a prop, unless added to URL (?)
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-const useSearchPageFacade = () => {
-    const { api } = useContext(CommAppContext);
+const useSearchPageFacade = (searchType: SearchType) => {
+    const { api } = useCommonHooks();
     const [{ hits, searchStatus }, dispatch] = useReducer(fetchReducer, {
         hits: { maxAvailable: 0, items: [] },
         searchStatus: SearchStatus.INACTIVE,
@@ -101,7 +112,8 @@ const useSearchPageFacade = () => {
                     currentPlant.id,
                     currentProject.id,
                     token,
-                    api
+                    api,
+                    searchType
                 ),
             300
         );
