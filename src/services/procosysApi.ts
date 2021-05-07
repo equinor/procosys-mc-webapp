@@ -7,6 +7,7 @@ import {
 import { SearchType } from '../pages/Search/Search';
 import { TaskCommentDto } from '../pages/Task/TaskDescription';
 import { TaskParameterDto } from '../pages/Task/TaskParameters/TaskParameters';
+import { isCorrectPreview, isCorrectSearchResults } from './apiTypeGuards';
 import {
     Plant,
     Project,
@@ -24,6 +25,7 @@ import {
     Task,
     TaskParameter,
     Attachment,
+    McPkgPreview,
 } from './apiTypes';
 
 type PostAttachmentProps = {
@@ -88,20 +90,29 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
             throw new Error();
         }
         const { data } = await axios.get(url, { cancelToken });
-        return data as SearchResults;
+        if (!isCorrectSearchResults(data, searchType)) {
+            throw new Error();
+        }
+        return data;
     };
 
-    const getCommPackageDetails = async (
-        cancelToken: CancelToken,
+    const getItemDetails = async (
         plantId: string,
-        commPkgId: string
-    ): Promise<CommPkg> => {
-        const { data } = await axios.get(
-            `CommPkg?plantId=PCS$${plantId}&commPkgId=${commPkgId}${apiVersion}
-`,
-            { cancelToken: cancelToken }
-        );
-        return data as CommPkg;
+        searchType: string,
+        itemId: string,
+        cancelToken?: CancelToken
+    ): Promise<McPkgPreview> => {
+        let url = '';
+        if (searchType === SearchType.MC) {
+            url = `McPkg?plantId=PCS$${plantId}&mcPkgId=${itemId}${apiVersion}`;
+        } else {
+            throw new Error();
+        }
+        const { data } = await axios.get(url, { cancelToken });
+        if (!isCorrectPreview(data, searchType)) {
+            throw new Error();
+        }
+        return data;
     };
 
     const getAttachments = async (
@@ -599,7 +610,6 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
         getProjectsForPlant,
         getPermissionsForPlant,
         getChecklist,
-        getCommPackageDetails,
         getPunchOrganizations,
         getPunchList,
         getPunchTypes,
@@ -626,6 +636,7 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
         putTaskParameter,
         putUpdatePunch,
         getSearchResults,
+        getItemDetails,
     };
 };
 

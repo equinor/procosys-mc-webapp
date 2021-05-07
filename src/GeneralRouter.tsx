@@ -22,7 +22,7 @@ const McRouter = (): JSX.Element => {
                 />
                 <Route
                     exact
-                    path={'/:plant/:project/:scopeType/itemId'}
+                    path={'/:plant/:project/:scopeType/:itemId'}
                     component={ScopePage}
                 />
             </Switch>

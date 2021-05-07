@@ -81,9 +81,9 @@ const SearchResult = ({
         return (
             <SearchResultWrapper
                 onClick={(): void =>
-                    history.push(`${url}/MC/${searchResult.id}`)
+                    history.push(`${url}/MC/${searchResult.mcPkgNo}`)
                 }
-                key={searchResult.id}
+                key={searchResult.mcPkgNo}
             >
                 <StatusImageWrapper>
                     <McPackageStatusIcon status={searchResult.status} />

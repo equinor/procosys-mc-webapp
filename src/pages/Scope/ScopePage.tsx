@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import DetailsCard from './DetailsCard';
 import { Redirect, Route, Switch } from 'react-router-dom';
 import Scope from './Scope/Scope';
 import Tasks from './Tasks/Tasks';
@@ -12,6 +11,7 @@ import {
     ChecklistPreview,
     TaskPreview,
     PunchPreview,
+    McPkgPreview,
 } from '../../services/apiTypes';
 import { DotProgress } from '@equinor/eds-core-react';
 import NavigationFooterShell from '../../components/navigation/NavigationFooterShell';
@@ -22,17 +22,17 @@ import NavigationFooter from '../../components/navigation/NavigationFooter';
 import FooterButton from '../../components/navigation/FooterButton';
 import EdsIcon from '../../components/icons/EdsIcon';
 import { COLORS } from '../../style/GlobalStyles';
+import { SearchType } from '../Search/Search';
 
 // TODO: rename everything Comm pkg related
-// TODO: remove everything task related
 
 const ScopePageWrapper = styled.main``;
 
 const ScopePage = (): JSX.Element => {
     const { api, params, path, history, url } = useCommonHooks();
     const [scope, setScope] = useState<ChecklistPreview[]>();
-    const [tasks, setTasks] = useState<TaskPreview[]>();
     const [punchList, setPunchList] = useState<PunchPreview[]>();
+    const [details, setDetails] = useState<McPkgPreview>();
     const [fetchFooterDataStatus, setFetchFooterDataStatus] = useState(
         AsyncStatus.LOADING
     );
@@ -43,16 +43,20 @@ const ScopePage = (): JSX.Element => {
             try {
                 const [
                     scopeFromApi,
-                    tasksFromApi,
                     punchListFromApi,
+                    detailsFromApi,
                 ] = await Promise.all([
                     api.getScope(params.plant, params.commPkg), // TODO: change based on scope type (can get scope type from params)
-                    api.getTasks(source.token, params.plant, params.commPkg),
                     api.getPunchList(params.plant, params.commPkg), // TODO: change based on scope type
+                    api.getItemDetails(
+                        params.plant,
+                        params.searchType,
+                        params.itemId
+                    ),
                 ]);
                 setScope(scopeFromApi);
-                setTasks(tasksFromApi);
                 setPunchList(punchListFromApi);
+                setDetails(detailsFromApi);
                 setFetchFooterDataStatus(AsyncStatus.SUCCESS);
             } catch {
                 setFetchFooterDataStatus(AsyncStatus.ERROR);
@@ -61,18 +65,17 @@ const ScopePage = (): JSX.Element => {
         return (): void => {
             source.cancel();
         };
-    }, [api, params.plant, params.commPkg]);
+    }, [api, params.plant, params.searchType, params.itemId]);
 
     const determinePageTitle = (): string => {
-        // TODO: once search merged: test params.searchType
-        return 'MC package';
+        if (params.searchType === SearchType.MC) return 'MC package';
+        return '';
     };
 
     // TODO: change footer to actually work & to not have constant values (see prev. version before changes to navigation footer)
     const determineFooterToRender = (): JSX.Element => {
         if (
             fetchFooterDataStatus === AsyncStatus.SUCCESS &&
-            tasks &&
             scope &&
             punchList
         ) {
@@ -125,12 +128,13 @@ const ScopePage = (): JSX.Element => {
             />
             {
                 // TODO: replace with the SearchResult component (or with a searchresult component if there are several)
+                // <DetailsCard commPkgId={params.commPkg} />
             }
-            <DetailsCard commPkgId={params.commPkg} />
             {
                 // TODO: do we need to use routing to choose component? can we just to conditional rendering?
                 // TODO: decide on how URL is supposed to look like for the different vews
             }
+            {/*
             <Switch>
                 <Redirect exact path={path} to={`${path}/scope`} />
                 <Route exact path={`${path}/scope`} component={Scope} />
@@ -141,16 +145,11 @@ const ScopePage = (): JSX.Element => {
                     component={PunchList}
                 />
             </Switch>
+            */}
             {determineFooterToRender()}
         </ScopePageWrapper>
     );
 };
 
 // TODO: change access control stuff
-export default withAccessControl(ScopePage, [
-    'COMMPKG/READ',
-    'CPCL/READ',
-    'RUNNING_LOGS/READ',
-    'DOCUMENT/READ',
-    'PUNCHLISTITEM/READ',
-]);
+export default withAccessControl(ScopePage, ['MCPKG/READ']);
