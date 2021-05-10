@@ -23,6 +23,7 @@ import FooterButton from '../../components/navigation/FooterButton';
 import EdsIcon from '../../components/icons/EdsIcon';
 import { COLORS } from '../../style/GlobalStyles';
 import { SearchType } from '../Search/Search';
+import SearchResult from '../Search/SearchResults/SearchResult';
 
 // TODO: rename everything Comm pkg related
 
@@ -38,6 +39,7 @@ const ScopePage = (): JSX.Element => {
     );
 
     useEffect(() => {
+        console.log('side effect ' + params.searchType);
         const source = Axios.CancelToken.source();
         (async (): Promise<void> => {
             try {
@@ -64,6 +66,7 @@ const ScopePage = (): JSX.Element => {
                 ]);
                 setScope(scopeFromApi);
                 setPunchList(punchListFromApi);
+                console.log('setting details');
                 setDetails(detailsFromApi);
                 setFetchFooterDataStatus(AsyncStatus.SUCCESS);
             } catch {
@@ -78,6 +81,21 @@ const ScopePage = (): JSX.Element => {
     const determinePageTitle = (): string => {
         if (params.searchType === SearchType.MC) return 'MC package';
         return '';
+    };
+
+    const determineDetailsToRender = (): JSX.Element => {
+        console.log('details:');
+        console.log(details);
+        if (details != undefined) {
+            return (
+                <SearchResult
+                    key={details.id}
+                    searchResult={details}
+                    searchType={params.searchType}
+                />
+            );
+        }
+        return <p>Unable to load details. Please reload</p>;
     };
 
     const determineFooterToRender = (): JSX.Element => {
@@ -137,6 +155,7 @@ const ScopePage = (): JSX.Element => {
                 // TODO: replace with the SearchResult component (or with a searchresult component if there are several)
                 // <DetailsCard commPkgId={params.commPkg} />
             }
+            {determineDetailsToRender()}
             {
                 // TODO: do we need to use routing to choose component? can we just to conditional rendering?
                 // TODO: decide on how URL is supposed to look like for the different vews

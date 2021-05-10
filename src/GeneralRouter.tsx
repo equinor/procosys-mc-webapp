@@ -17,12 +17,12 @@ const McRouter = (): JSX.Element => {
                 <Route exact path={'/:plant/:project'} component={Search} />
                 <Redirect
                     exact
-                    path={'/:plant/:project/:scopeType'}
-                    to={'/:plant/:project/'}
+                    path={'/:plant/:project/:searchType'}
+                    to={'/:plant/:project'}
                 />
                 <Route
                     exact
-                    path={'/:plant/:project/:scopeType/:itemId'}
+                    path={'/:plant/:project/:searchType/:itemId'}
                     component={ScopePage}
                 />
             </Switch>
