@@ -56,11 +56,15 @@ export type ChecklistPreview = {
     id: number;
     tagNo: string;
     tagDescription: string;
+    responsibleCode: string;
     status: CompletionStatus;
     formularType: string;
-    formularGroup: string;
-    isRestrictedForUser: boolean;
-    hasElectronicForm: boolean;
+    formularGroup: string; // TODO: check if needed
+    isRestrictedForUser: boolean; // TODO: check if needed
+    hasElectronicForm: boolean; // TODO: check if needed
+    attachmentCount: number;
+    isSigned: boolean;
+    isVerified: boolean;
 };
 
 export type PunchPreview = {

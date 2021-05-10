@@ -7,7 +7,11 @@ import {
 import { SearchType } from '../pages/Search/Search';
 import { TaskCommentDto } from '../pages/Task/TaskDescription';
 import { TaskParameterDto } from '../pages/Task/TaskParameters/TaskParameters';
-import { isCorrectPreview, isCorrectSearchResults } from './apiTypeGuards';
+import {
+    isArrayOfChecklistPreview,
+    isCorrectPreview,
+    isCorrectSearchResults,
+} from './apiTypeGuards';
 import {
     Plant,
     Project,
@@ -128,15 +132,22 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
     //------------
     // CHECKLIST
     // -----------
-    // TODO: change to work for MC app scope types, see getSearchResults for inspo
     const getScope = async (
         plantId: string,
-        commPkgId: string
+        searchType: SearchType,
+        itemId: string
     ): Promise<ChecklistPreview[]> => {
-        const { data } = await axios.get(
-            `CommPkg/Checklists?plantId=PCS$${plantId}&commPkgId=${commPkgId}${apiVersion}`
-        );
-        return data as ChecklistPreview[];
+        let url = '';
+        if (searchType === SearchType.MC) {
+            url = `McPkg/CheckLists?plantId=PCS$${plantId}&mcPkgId=${itemId}${apiVersion}`;
+        } else {
+            throw new Error();
+        }
+        const { data } = await axios.get(url);
+        if (!isArrayOfChecklistPreview(data)) {
+            throw new Error();
+        }
+        return data;
     };
 
     const getChecklist = async (

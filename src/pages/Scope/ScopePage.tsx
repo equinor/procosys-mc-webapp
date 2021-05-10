@@ -46,8 +46,12 @@ const ScopePage = (): JSX.Element => {
                     punchListFromApi,
                     detailsFromApi,
                 ] = await Promise.all([
-                    api.getScope(params.plant, params.commPkg), // TODO: change based on scope type (can get scope type from params)
-                    api.getPunchList(params.plant, params.commPkg), // TODO: change based on scope type
+                    api.getScope(
+                        params.plant,
+                        params.searchType,
+                        params.itemId
+                    ),
+                    api.getPunchList(params.plant, params.commPkg), // TODO: change after api call fixed
                     api.getItemDetails(
                         params.plant,
                         params.searchType,
@@ -72,7 +76,6 @@ const ScopePage = (): JSX.Element => {
         return '';
     };
 
-    // TODO: change footer to actually work & to not have constant values (see prev. version before changes to navigation footer)
     const determineFooterToRender = (): JSX.Element => {
         if (
             fetchFooterDataStatus === AsyncStatus.SUCCESS &&
@@ -83,14 +86,14 @@ const ScopePage = (): JSX.Element => {
                 <NavigationFooter>
                     <FooterButton
                         active={true}
-                        goTo={(): void => history.push(url)}
+                        goTo={(): void => history.push(url)} // TODO: change url after meeting about it
                         icon={<EdsIcon name="list" color={COLORS.mossGreen} />}
                         label="Scope"
-                        numberOfItems={43}
+                        numberOfItems={scope.length}
                     />
                     <FooterButton
                         active={false}
-                        goTo={(): void => history.push(url)}
+                        goTo={(): void => history.push(url)} // TODO: change after meeting
                         icon={
                             <EdsIcon
                                 name="warning_filled"
@@ -98,7 +101,7 @@ const ScopePage = (): JSX.Element => {
                             />
                         }
                         label="Punch list"
-                        numberOfItems={321}
+                        numberOfItems={321} // TODO: change after fixing api call
                     />
                 </NavigationFooter>
             );

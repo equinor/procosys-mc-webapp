@@ -61,8 +61,9 @@ const Scope = (): JSX.Element => {
             try {
                 const scopeFromApi = await api.getScope(
                     params.plant,
-                    params.commPkg
-                ); // TODO: change based on scope type
+                    params.searchType,
+                    params.itemId
+                );
                 const sortedScope = scopeFromApi.sort((a, b) =>
                     a.tagNo.localeCompare(b.tagNo)
                 );

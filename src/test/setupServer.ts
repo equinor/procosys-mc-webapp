@@ -28,6 +28,11 @@ export const ENDPOINTS = {
     //Search
     searchForMcPackage: `${baseURL}/McPkg/Search`,
 
+    //Scope
+    // TODO: create api mock for these:
+    getMcPkgDetails: `${baseURL}/McPkg`,
+    getMcScope: `${baseURL}/McPkg/CheckLists`,
+
     // Checklist
     putMetaTableCell: `${baseURL}/CheckList/Item/MetaTableCell`,
     getChecklist: `${baseURL}/CheckList/Comm`,

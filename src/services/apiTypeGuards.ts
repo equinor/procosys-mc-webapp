@@ -1,6 +1,6 @@
+// TODO: sorting
 import { SearchType } from '../pages/Search/Search';
-import objectToCamelCase from '../utils/objectToCamelCase';
-import { McPkgPreview, SearchResults } from './apiTypes';
+import { ChecklistPreview, McPkgPreview, SearchResults } from './apiTypes';
 
 export const isCorrectPreview = (
     data: unknown,
@@ -15,7 +15,7 @@ export const isCorrectPreview = (
     }
 };
 
-export const isArraryOfCorrectPreview = (
+const isArraryOfCorrectPreview = (
     data: unknown,
     searchType: SearchType
 ): data is McPkgPreview[] => {
@@ -37,4 +37,17 @@ export const isCorrectSearchResults = (
         data != undefined &&
         isArraryOfCorrectPreview((data as SearchResults).items, searchType)
     );
+};
+
+const isChecklistPreview = (data: unknown): data is ChecklistPreview => {
+    return (
+        data != null &&
+        typeof (data as ChecklistPreview).attachmentCount === 'number'
+    );
+};
+
+export const isArrayOfChecklistPreview = (
+    data: unknown
+): data is ChecklistPreview[] => {
+    return Array.isArray(data) && data.every(isChecklistPreview);
 };

@@ -121,11 +121,15 @@ export const testScope: ChecklistPreview[] = [
         id: 1,
         tagNo: 'Test tag number',
         tagDescription: 'Test tag description',
+        responsibleCode: 'Respcode',
         status: CompletionStatus.OK,
         formularGroup: 'Test formular group',
         formularType: 'Test formular type',
         isRestrictedForUser: false,
         hasElectronicForm: true,
+        attachmentCount: 1,
+        isSigned: false,
+        isVerified: false,
     },
 ];
 
