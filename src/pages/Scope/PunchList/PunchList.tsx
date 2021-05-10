@@ -32,7 +32,8 @@ const PunchList = (): JSX.Element => {
             try {
                 const punchListFromApi = await api.getPunchList(
                     params.plant,
-                    params.commPkg
+                    params.searchType,
+                    params.itemId
                 );
                 setPunchList(punchListFromApi);
                 if (punchListFromApi.length < 1) {

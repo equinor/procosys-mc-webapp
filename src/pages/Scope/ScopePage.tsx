@@ -51,7 +51,11 @@ const ScopePage = (): JSX.Element => {
                         params.searchType,
                         params.itemId
                     ),
-                    api.getPunchList(params.plant, params.commPkg), // TODO: change after api call fixed
+                    api.getPunchList(
+                        params.plant,
+                        params.searchType,
+                        params.itemId
+                    ),
                     api.getItemDetails(
                         params.plant,
                         params.searchType,
@@ -101,7 +105,7 @@ const ScopePage = (): JSX.Element => {
                             />
                         }
                         label="Punch list"
-                        numberOfItems={321} // TODO: change after fixing api call
+                        numberOfItems={punchList.length}
                     />
                 </NavigationFooter>
             );

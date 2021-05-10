@@ -59,9 +59,9 @@ export type ChecklistPreview = {
     responsibleCode: string;
     status: CompletionStatus;
     formularType: string;
-    formularGroup: string; // TODO: check if needed
-    isRestrictedForUser: boolean; // TODO: check if needed
-    hasElectronicForm: boolean; // TODO: check if needed
+    formularGroup: string;
+    isRestrictedForUser: boolean;
+    hasElectronicForm: boolean;
     attachmentCount: number;
     isSigned: boolean;
     isVerified: boolean;
@@ -75,10 +75,15 @@ export type PunchPreview = {
     tagDescription: string;
     tagId: number;
     tagNo: string;
+    formularType: string;
+    responsibleCode: string;
     isRestrictedForUser: boolean;
     cleared: boolean;
     rejected: boolean;
+    verified: boolean;
     statusControlledBySwcr: boolean;
+    attachmentCount: number;
+    callOffNo?: string;
 };
 
 export type TaskPreview = {

@@ -139,13 +139,17 @@ export const testPunchList: PunchPreview[] = [
         status: CompletionStatus.OK,
         description: 'Test punch description',
         systemModule: 'Test punch system module',
+        tagDescription: 'Test tag description',
         tagId: 1,
         tagNo: 'Test tag number',
-        tagDescription: 'Test tag description',
+        formularType: 'test formular type',
+        responsibleCode: 'test responsible code',
         isRestrictedForUser: false,
         cleared: true,
         rejected: false,
+        verified: false,
         statusControlledBySwcr: true,
+        attachmentCount: 2,
     },
 ];
 

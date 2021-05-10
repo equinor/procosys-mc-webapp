@@ -1,6 +1,11 @@
 // TODO: sorting
 import { SearchType } from '../pages/Search/Search';
-import { ChecklistPreview, McPkgPreview, SearchResults } from './apiTypes';
+import {
+    ChecklistPreview,
+    McPkgPreview,
+    PunchPreview,
+    SearchResults,
+} from './apiTypes';
 
 export const isCorrectPreview = (
     data: unknown,
@@ -50,4 +55,17 @@ export const isArrayOfChecklistPreview = (
     data: unknown
 ): data is ChecklistPreview[] => {
     return Array.isArray(data) && data.every(isChecklistPreview);
+};
+
+const isPunchPreview = (data: unknown): data is PunchPreview => {
+    return (
+        data != null &&
+        typeof (data as PunchPreview).statusControlledBySwcr === 'boolean'
+    );
+};
+
+export const isArrayOfPunchPreview = (
+    data: unknown
+): data is PunchPreview[] => {
+    return Array.isArray(data) && data.every(isPunchPreview);
 };

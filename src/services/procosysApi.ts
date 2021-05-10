@@ -9,6 +9,7 @@ import { TaskCommentDto } from '../pages/Task/TaskDescription';
 import { TaskParameterDto } from '../pages/Task/TaskParameters/TaskParameters';
 import {
     isArrayOfChecklistPreview,
+    isArrayOfPunchPreview,
     isCorrectPreview,
     isCorrectSearchResults,
 } from './apiTypeGuards';
@@ -324,12 +325,20 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
     // TODO: change to work for all MC app scope types, see getSearchResults
     const getPunchList = async (
         plantId: string,
-        commPkgId: string
+        searchType: SearchType,
+        itemId: string
     ): Promise<PunchPreview[]> => {
-        const { data } = await axios.get(
-            `CommPkg/PunchList?plantId=PCS$${plantId}&commPkgId=${commPkgId}${apiVersion}`
-        );
-        return data as PunchPreview[];
+        let url = '';
+        if (searchType === SearchType.MC) {
+            url = `McPkg/PunchList?plantId=PCS$${plantId}&mcPkgId=${itemId}${apiVersion}`;
+        } else {
+            throw new Error();
+        }
+        const { data } = await axios.get(url);
+        if (!isArrayOfPunchPreview(data)) {
+            throw new Error();
+        }
+        return data;
     };
 
     const getPunchCategories = async (
