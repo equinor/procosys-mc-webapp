@@ -322,7 +322,6 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
     //------------
     // PUNCH ITEMS
     // -----------
-    // TODO: change to work for all MC app scope types, see getSearchResults
     const getPunchList = async (
         plantId: string,
         searchType: SearchType,

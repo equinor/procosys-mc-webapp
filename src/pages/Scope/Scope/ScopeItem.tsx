@@ -51,8 +51,12 @@ const DetailsHeaderWrapper = styled.div`
 
 const DetailsBodyWrapper = styled.div`
     display: flex;
+    margin: 0;
     & > div {
         margin-left: auto;
+    }
+    & p {
+        margin: 0;
     }
 `;
 
@@ -84,14 +88,18 @@ const ScopeItem = ({ checklist }: ScopeItemProps): JSX.Element => {
                 </DetailsHeaderWrapper>
                 <DetailsBodyWrapper>
                     <Caption>{checklist.tagDescription}</Caption>
-                    <AttachmentWrapper>
-                        <Caption>{checklist.attachmentCount}</Caption>
-                        <EdsIcon
-                            name={'attach_file'}
-                            size={16}
-                            color={COLORS.black}
-                        />
-                    </AttachmentWrapper>
+                    {checklist.attachmentCount > 0 ? (
+                        <AttachmentWrapper>
+                            <Caption>{checklist.attachmentCount}</Caption>
+                            <EdsIcon
+                                name={'attach_file'}
+                                size={16}
+                                color={COLORS.black}
+                            />
+                        </AttachmentWrapper>
+                    ) : (
+                        <></>
+                    )}
                 </DetailsBodyWrapper>
             </DetailsWrapper>
         </PreviewButton>
