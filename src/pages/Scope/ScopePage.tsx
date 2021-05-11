@@ -34,10 +34,8 @@ const ScopePage = (): JSX.Element => {
     const [scope, setScope] = useState<ChecklistPreview[]>();
     const [punchList, setPunchList] = useState<PunchPreview[]>();
     const [details, setDetails] = useState<McPkgPreview>();
-    // TODO: rename & also use in the result card thingy, like in the details card
-    const [fetchFooterDataStatus, setFetchFooterDataStatus] = useState(
-        AsyncStatus.LOADING
-    );
+    // TODO: should details and footer fetch status be split into two??
+    const [fetchStatus, setFetchStatus] = useState(AsyncStatus.LOADING);
 
     useEffect(() => {
         const source = Axios.CancelToken.source();
@@ -67,9 +65,9 @@ const ScopePage = (): JSX.Element => {
                 setScope(scopeFromApi);
                 setPunchList(punchListFromApi);
                 setDetails(detailsFromApi);
-                setFetchFooterDataStatus(AsyncStatus.SUCCESS);
+                setFetchStatus(AsyncStatus.SUCCESS);
             } catch {
-                setFetchFooterDataStatus(AsyncStatus.ERROR);
+                setFetchStatus(AsyncStatus.ERROR);
             }
         })();
         return (): void => {
@@ -83,7 +81,7 @@ const ScopePage = (): JSX.Element => {
     };
 
     const determineDetailsToRender = (): JSX.Element => {
-        if (details != undefined) {
+        if (fetchStatus === AsyncStatus.SUCCESS && details != undefined) {
             return (
                 <SearchResult
                     key={details.id}
@@ -93,15 +91,18 @@ const ScopePage = (): JSX.Element => {
                 />
             );
         }
-        return <p>Unable to load details. Please reload</p>;
+        if (fetchStatus === AsyncStatus.ERROR) {
+            return <p>Unable to load details. Please reload</p>; // TODO: style this
+        }
+        return (
+            <p>
+                <DotProgress color="primary" />
+            </p>
+        ); // TODO: style this
     };
 
     const determineFooterToRender = (): JSX.Element => {
-        if (
-            fetchFooterDataStatus === AsyncStatus.SUCCESS &&
-            scope &&
-            punchList
-        ) {
+        if (fetchStatus === AsyncStatus.SUCCESS && scope && punchList) {
             return (
                 <NavigationFooter>
                     <FooterButton
@@ -130,7 +131,7 @@ const ScopePage = (): JSX.Element => {
                 </NavigationFooter>
             );
         }
-        if (fetchFooterDataStatus === AsyncStatus.ERROR) {
+        if (fetchStatus === AsyncStatus.ERROR) {
             return (
                 <NavigationFooterShell>
                     <p>Unable to load footer. Please reload</p>
@@ -153,9 +154,6 @@ const ScopePage = (): JSX.Element => {
                 leftContent={{ name: 'back', label: 'Search' }}
                 midContent={determinePageTitle()}
             />
-            {
-                // TODO: check whether its actually the same things in the details in both scope and search results. If not, i'll need to make a new one
-            }
             {determineDetailsToRender()}
             {
                 <Switch>
