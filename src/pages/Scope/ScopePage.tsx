@@ -39,7 +39,6 @@ const ScopePage = (): JSX.Element => {
     );
 
     useEffect(() => {
-        console.log('side effect ' + params.searchType);
         const source = Axios.CancelToken.source();
         (async (): Promise<void> => {
             try {
@@ -66,7 +65,6 @@ const ScopePage = (): JSX.Element => {
                 ]);
                 setScope(scopeFromApi);
                 setPunchList(punchListFromApi);
-                console.log('setting details');
                 setDetails(detailsFromApi);
                 setFetchFooterDataStatus(AsyncStatus.SUCCESS);
             } catch {
@@ -84,14 +82,13 @@ const ScopePage = (): JSX.Element => {
     };
 
     const determineDetailsToRender = (): JSX.Element => {
-        console.log('details:');
-        console.log(details);
         if (details != undefined) {
             return (
                 <SearchResult
                     key={details.id}
                     searchResult={details}
                     searchType={params.searchType}
+                    clickable={false}
                 />
             );
         }
@@ -151,27 +148,17 @@ const ScopePage = (): JSX.Element => {
                 leftContent={{ name: 'back', label: 'Search' }}
                 midContent={determinePageTitle()}
             />
-            {
-                // TODO: replace with the SearchResult component (or with a searchresult component if there are several)
-                // <DetailsCard commPkgId={params.commPkg} />
-            }
             {determineDetailsToRender()}
             {
-                // TODO: do we need to use routing to choose component? can we just to conditional rendering?
-                // TODO: decide on how URL is supposed to look like for the different vews
+                <Switch>
+                    <Route exact path={`${path}`} component={Scope} />
+                    <Route
+                        exact
+                        path={`${path}/punch-list`}
+                        component={PunchList}
+                    />
+                </Switch>
             }
-            {/*
-            <Switch>
-                <Redirect exact path={path} to={`${path}/scope`} />
-                <Route exact path={`${path}/scope`} component={Scope} />
-                <Route exact path={`${path}/tasks`} component={Tasks} />
-                <Route
-                    exact
-                    path={`${path}/punch-list`}
-                    component={PunchList}
-                />
-            </Switch>
-            */}
             {determineFooterToRender()}
         </ScopePageWrapper>
     );

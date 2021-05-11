@@ -107,7 +107,6 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
         itemId: string,
         cancelToken?: CancelToken
     ): Promise<McPkgPreview> => {
-        console.log('get details ' + searchType);
         let url = '';
         if (searchType === SearchType.MC) {
             url = `McPkg?plantId=PCS$${plantId}&mcPkgId=${itemId}${apiVersion}`;
@@ -116,10 +115,8 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
         }
         const { data } = await axios.get(url, { cancelToken });
         if (!isCorrectPreview(data, searchType)) {
-            console.log('details error');
             throw new Error();
         }
-        console.log(data);
         return data;
     };
 

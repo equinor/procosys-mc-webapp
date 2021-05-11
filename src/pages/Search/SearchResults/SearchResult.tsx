@@ -6,7 +6,7 @@ import { SearchType } from '../Search';
 import { McPackageStatusIcon } from '../../../components/icons/McPackageStatusIcon';
 import useCommonHooks from '../../../utils/useCommonHooks';
 
-const SearchResultWrapper = styled.article`
+const SearchResultWrapper = styled.article<{ clickable: boolean }>`
     cursor: pointer;
     display: flex;
     align-items: flex-start;
@@ -14,7 +14,7 @@ const SearchResultWrapper = styled.article`
     padding: 12px;
     margin: 0;
     &:hover {
-        opacity: 0.7;
+        opacity: ${(props): number => (props.clickable ? 0.7 : 1)};
     }
 `;
 
@@ -50,13 +50,14 @@ const SearchResultDetailsWrapper = styled.div`
     }
 `;
 
-const SearchResultHeaderWrapper = styled.div`
+const SearchResultHeaderWrapper = styled.div<{ clickable: boolean }>`
     display: flex;
     align-items: baseline;
     & > h6 {
         margin: 0;
         flex: 1.4;
-        color: ${COLORS.mossGreen};
+        color: ${(props): string =>
+            props.clickable ? COLORS.mossGreen : COLORS.black};
     }
     & > p {
         margin: 0;
@@ -68,22 +69,27 @@ const SearchResultHeaderWrapper = styled.div`
 type SearchResultProps = {
     searchType: SearchType;
     searchResult: McPkgPreview;
+    clickable?: boolean;
 };
 
 // TODO: decide whether this should be used for all search types or whether it should just be used for MC search
 const SearchResult = ({
     searchResult,
     searchType,
+    clickable = true,
 }: SearchResultProps): JSX.Element => {
     const { history, url } = useCommonHooks();
 
     if (searchType === SearchType.MC) {
         return (
             <SearchResultWrapper
-                onClick={(): void =>
-                    history.push(`${url}/MC/${searchResult.mcPkgNo}`)
-                }
+                onClick={(): void => {
+                    if (clickable) {
+                        history.push(`${url}/MC/${searchResult.id}`);
+                    }
+                }}
                 key={searchResult.mcPkgNo}
+                clickable={clickable}
             >
                 <StatusImageWrapper>
                     <McPackageStatusIcon status={searchResult.status} />
@@ -107,7 +113,7 @@ const SearchResult = ({
                     </StatusTextWrapper>
                 </StatusImageWrapper>
                 <SearchResultDetailsWrapper>
-                    <SearchResultHeaderWrapper>
+                    <SearchResultHeaderWrapper clickable={clickable}>
                         <h6>{searchResult.mcPkgNo}</h6>
                         <Caption>{searchResult.commPkgNo}</Caption>
                         <Caption>{searchResult.responsibleCode}</Caption>
