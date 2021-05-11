@@ -52,8 +52,6 @@ const FooterButton = ({
     icon,
     label,
 }: FooterButtonProps): JSX.Element => {
-    console.log(numberOfItems);
-    console.log(active);
     return (
         <FooterButtonWrapper active={active} onClick={goTo}>
             {icon}

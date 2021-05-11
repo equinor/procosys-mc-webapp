@@ -18,7 +18,7 @@ const SearchResultWrapper = styled.article<{ clickable: boolean }>`
     }
 `;
 
-const StatusImageWrapper = styled.div`
+export const StatusImageWrapper = styled.div`
     display: flex;
     flex-direction: column;
     padding-right: 12px;
@@ -42,7 +42,7 @@ const HandoverStatus = styled.p<{ accepted: boolean }>`
         props.accepted ? COLORS.black : COLORS.lightGrey};
 `;
 
-const SearchResultDetailsWrapper = styled.div`
+export const DetailsWrapper = styled.div`
     flex-direction: column;
     flex: 1;
     & > p {
@@ -112,7 +112,7 @@ const SearchResult = ({
                         </HandoverStatus>
                     </StatusTextWrapper>
                 </StatusImageWrapper>
-                <SearchResultDetailsWrapper>
+                <DetailsWrapper>
                     <SearchResultHeaderWrapper clickable={clickable}>
                         <h6>{searchResult.mcPkgNo}</h6>
                         <Caption>{searchResult.commPkgNo}</Caption>
@@ -120,7 +120,7 @@ const SearchResult = ({
                     </SearchResultHeaderWrapper>
                     <Caption>{searchResult.description}</Caption>
                     <Caption>{searchResult.phaseCode}</Caption>
-                </SearchResultDetailsWrapper>
+                </DetailsWrapper>
             </SearchResultWrapper>
         );
     } else {

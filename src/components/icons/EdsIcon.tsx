@@ -37,6 +37,8 @@ import {
     hourglass_empty,
     check,
     assignment_turned_in,
+    attachment,
+    attach_file,
 } from '@equinor/eds-icons';
 import { Icon } from '@equinor/eds-core-react';
 import React from 'react';
@@ -80,6 +82,8 @@ Icon.add({
     error_filled,
     hourglass_empty,
     check,
+    attachment,
+    attach_file,
 });
 
 type IconProps = {

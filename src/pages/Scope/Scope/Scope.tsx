@@ -7,6 +7,7 @@ import { AsyncStatus } from '../../../contexts/McAppContext';
 import { ChecklistPreview } from '../../../services/apiTypes';
 import useCommonHooks from '../../../utils/useCommonHooks';
 import AsyncPage from '../../../components/AsyncPage';
+import ScopeItem from './ScopeItem';
 
 // TODO: rename everything comm pkg related
 
@@ -18,7 +19,7 @@ export const CommPkgListWrapper = styled.div`
     }
 `;
 
-// TODO: make it look like the figma design
+// TODO: copy and change in punch list
 export const PreviewButton = styled(Link)`
     display: flex;
     align-items: center;
@@ -44,13 +45,8 @@ export const PreviewButton = styled(Link)`
     }
 `;
 
-const FormulaTypeText = styled.p`
-    padding-left: 12px;
-    flex: 1;
-`;
-
 const Scope = (): JSX.Element => {
-    const { params, api, url } = useCommonHooks();
+    const { params, api } = useCommonHooks();
     const [scope, setScope] = useState<ChecklistPreview[]>();
     const [fetchScopeStatus, setFetchScopeStatus] = useState(
         AsyncStatus.LOADING
@@ -77,9 +73,8 @@ const Scope = (): JSX.Element => {
                 setFetchScopeStatus(AsyncStatus.ERROR);
             }
         })();
-    }, [params.plant, params.commPkg, api]);
+    }, [params.plant, params.searchType, params.itemId, api]);
 
-    // TODO: check whether the different scope types return different values
     return (
         <CommPkgListWrapper>
             <AsyncPage
@@ -87,24 +82,17 @@ const Scope = (): JSX.Element => {
                 emptyContentMessage={'The scope is empty.'}
                 fetchStatus={fetchScopeStatus}
             >
-                <>
+                {
+                    // add filter (and # of forms??)
+                }
+                <div>
+                    {
+                        // TODO: style div above to look more like search results list
+                    }
                     {scope?.map((checklist) => (
-                        <PreviewButton
-                            key={checklist.id}
-                            to={`${url}/${checklist.id}`}
-                        >
-                            <CompletionStatusIcon status={checklist.status} />
-                            <div>
-                                <label>{checklist.tagNo}</label>
-                                <p>{checklist.tagDescription}</p>
-                            </div>
-                            <FormulaTypeText>
-                                {checklist.formularType}
-                            </FormulaTypeText>
-                            <EdsIcon name="chevron_right" />
-                        </PreviewButton>
+                        <ScopeItem checklist={checklist} key={checklist.id} />
                     ))}
-                </>
+                </div>
             </AsyncPage>
         </CommPkgListWrapper>
     );
