@@ -34,6 +34,7 @@ const ScopePage = (): JSX.Element => {
     const [scope, setScope] = useState<ChecklistPreview[]>();
     const [punchList, setPunchList] = useState<PunchPreview[]>();
     const [details, setDetails] = useState<McPkgPreview>();
+    // TODO: rename & also use in the result card thingy, like in the details card
     const [fetchFooterDataStatus, setFetchFooterDataStatus] = useState(
         AsyncStatus.LOADING
     );
@@ -104,15 +105,19 @@ const ScopePage = (): JSX.Element => {
             return (
                 <NavigationFooter>
                     <FooterButton
-                        active={true}
-                        goTo={(): void => history.push(url)} // TODO: change url after meeting about it
+                        active={
+                            !history.location.pathname.includes('/punch-list')
+                        }
+                        goTo={(): void => history.push(url)} // TODO: possibly change url after meeting about it
                         icon={<EdsIcon name="list" color={COLORS.mossGreen} />}
                         label="Scope"
                         numberOfItems={scope.length}
                     />
                     <FooterButton
-                        active={false}
-                        goTo={(): void => history.push(url)} // TODO: change after meeting
+                        active={history.location.pathname.includes(
+                            '/punch-list'
+                        )}
+                        goTo={(): void => history.push(`${url}/punch-list`)} // TODO: possibly change after meeting
                         icon={
                             <EdsIcon
                                 name="warning_filled"
@@ -148,6 +153,9 @@ const ScopePage = (): JSX.Element => {
                 leftContent={{ name: 'back', label: 'Search' }}
                 midContent={determinePageTitle()}
             />
+            {
+                // TODO: check whether its actually the same things in the details in both scope and search results. If not, i'll need to make a new one
+            }
             {determineDetailsToRender()}
             {
                 <Switch>

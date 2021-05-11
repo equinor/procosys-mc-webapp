@@ -1,3 +1,4 @@
+// TODO: delete (if not needed anywhere else) or move to where it's used
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { CommPkg } from '../../services/apiTypes';

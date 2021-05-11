@@ -5,6 +5,7 @@ import SelectProject from './pages/SelectProject/SelectProject';
 import Search from './pages/Search/Search';
 import SelectPlant from './pages/SelectPlant/SelectPlant';
 import ScopePage from './pages/Scope/ScopePage';
+import Bookmarks from './pages/Bookmarks/Bookmarks';
 
 // TODO: decide on routing for the different pages
 // TODO: what happens if something else after itemId now??
@@ -20,8 +21,14 @@ const McRouter = (): JSX.Element => {
                     path={'/:plant/:project/:searchType'}
                     to={'/:plant/:project'}
                 />
+                {
+                    // TODO: use the blueprint route below to route to more specific routes than the scope page
+                }
                 <Route
-                    exact
+                    path={'/:plant/:project/:searchType/:itemId/bookmark'}
+                    component={Bookmarks}
+                />
+                <Route
                     path={'/:plant/:project/:searchType/:itemId'}
                     component={ScopePage}
                 />
