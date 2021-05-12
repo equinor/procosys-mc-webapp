@@ -85,7 +85,7 @@ const Scope = (): JSX.Element => {
                 {
                     // add filter (and # of forms??)
                 }
-                <div>
+                <div data-testid="scope">
                     {
                         // TODO: style div above to look more like search results list
                     }

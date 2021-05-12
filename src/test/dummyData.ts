@@ -245,6 +245,7 @@ export const dummySignedChecklistResponse = {
     CheckItems: [],
 };
 
+// TODO: either replace with just testScope in setupServer, og rewrite to match new checklist preview type
 export const dummyScopeResponse = [
     {
         Id: 321,
@@ -268,6 +269,7 @@ export const dummyTasksResponse = [
     },
 ];
 
+// TODO: needs changing? Need different ones for different search types?
 export const dummyPunchListResponse = [
     {
         Id: 645645,

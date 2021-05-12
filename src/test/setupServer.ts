@@ -2,7 +2,6 @@ import { setupServer } from 'msw/node';
 import { rest } from 'msw';
 import {
     dummyChecklistResponse,
-    dummyCommPkgDetailsResponse,
     dummyPunchListResponse,
     dummyScopeResponse,
     dummyAttachmentsResponse,
@@ -15,37 +14,37 @@ import {
     dummyPunchTypes,
     dummyPunchItemUncleared,
     testMcPkgSearch,
+    testMcPkgPreview,
+    dummyCommPkgDetailsResponse,
 } from './dummyData';
 import objectToCamelCase from '../utils/objectToCamelCase';
 
 export const baseURL = 'https://test-url.com';
 export const ENDPOINTS = {
     //General
-    getCommPkgDetails: `${baseURL}/CommPkg`,
+    getMcPkgDetails: `${baseURL}/McPkg`,
+    getCommPkgDetails: `${baseURL}/CommPkg`, // TODO: remove
     getPermissions: `${baseURL}/Permissions`,
     getProjects: `${baseURL}/Projects`,
 
     //Search
     searchForMcPackage: `${baseURL}/McPkg/Search`,
 
-    //Scope
-    // TODO: create api mock for these:
-    getMcPkgDetails: `${baseURL}/McPkg`,
-    getMcScope: `${baseURL}/McPkg/CheckLists`,
-
     // Checklist
     putMetaTableCell: `${baseURL}/CheckList/Item/MetaTableCell`,
-    getChecklist: `${baseURL}/CheckList/Comm`,
     getChecklistAttachments: `${baseURL}/CheckList/Attachments`,
-    putChecklistComment: `${baseURL}/CheckList/Comm/Comment`,
     postSetNA: `${baseURL}/CheckList/Item/SetNA`,
     postSetOk: `${baseURL}/CheckList/Item/SetOk`,
     postClear: `${baseURL}/CheckList/Item/Clear`,
+    getMcScope: `${baseURL}/McPkg/CheckLists`,
+    // TODO: remove the endpoints below
+    getChecklist: `${baseURL}/CheckList/Comm`,
+    putChecklistComment: `${baseURL}/CheckList/Comm/Comment`,
     postSign: `${baseURL}/CheckList/Comm/Sign`,
     postUnsign: `${baseURL}/CheckList/Comm/Unsign`,
     getScope: `${baseURL}/CommPkg/CheckLists`,
 
-    //Task
+    //Task TODO: remove all (?)
     getTasks: `${baseURL}/CommPkg/Tasks`,
     getTask: `${baseURL}/CommPkg/Task`,
     getTaskParameters: `${baseURL}/CommPkg/Task/Parameters`,
@@ -57,7 +56,8 @@ export const ENDPOINTS = {
     postTaskUnsign: `${baseURL}/CommPkg/Task/Unsign`,
 
     //PUNCH
-    getPunchList: `${baseURL}/CommPkg/PunchList`,
+    getMcPunchList: `${baseURL}/McPkg/PunchList`,
+    getPunchList: `${baseURL}/CommPkg/PunchList`, // TODO: remove
     getPunchAttachment: `${baseURL}/PunchListItem/Attachment`,
     deletePunchAttachment: `${baseURL}/PunchListItem/Attachment`,
     postTempPunchAttachment: `${baseURL}/PunchListItem/TempAttachment`,
@@ -80,8 +80,15 @@ export const ENDPOINTS = {
     postPunchReject: `${baseURL}/PunchListItem/Reject`,
 };
 
+// TODO: remove all that use aen endpoint that needs removal
 export const server = setupServer(
     //General
+    rest.get(ENDPOINTS.getMcPkgDetails, (_, response, context) => {
+        return response(
+            context.json(objectToCamelCase(testMcPkgPreview[0])),
+            context.status(200)
+        );
+    }),
     rest.get(ENDPOINTS.getCommPkgDetails, (_, response, context) => {
         return response(
             context.json(objectToCamelCase(dummyCommPkgDetailsResponse)),
@@ -125,6 +132,12 @@ export const server = setupServer(
     }),
     rest.post(ENDPOINTS.postClear, (_, response, context) => {
         return response(context.status(200));
+    }),
+    rest.get(ENDPOINTS.getMcScope, (_, response, context) => {
+        return response(
+            context.json(objectToCamelCase(dummyScopeResponse)),
+            context.status(200)
+        );
     }),
     rest.put(ENDPOINTS.putChecklistComment, (_, response, context) => {
         return response(context.status(200));
@@ -181,6 +194,12 @@ export const server = setupServer(
     }),
 
     // PUNCH
+    rest.get(ENDPOINTS.getMcPunchList, (_, response, context) => {
+        return response(
+            context.json(objectToCamelCase(dummyPunchListResponse)),
+            context.status(200)
+        );
+    }),
     rest.get(ENDPOINTS.getPunchList, (_, response, context) => {
         return response(
             context.json(objectToCamelCase(dummyPunchListResponse)),
