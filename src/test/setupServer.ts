@@ -16,6 +16,7 @@ import {
     testMcPkgSearch,
     testMcPkgPreview,
     dummyCommPkgDetailsResponse,
+    testScope,
 } from './dummyData';
 import objectToCamelCase from '../utils/objectToCamelCase';
 
@@ -135,7 +136,7 @@ export const server = setupServer(
     }),
     rest.get(ENDPOINTS.getMcScope, (_, response, context) => {
         return response(
-            context.json(objectToCamelCase(dummyScopeResponse)),
+            context.json(objectToCamelCase(testScope)), // TODO: use dummy response??
             context.status(200)
         );
     }),
