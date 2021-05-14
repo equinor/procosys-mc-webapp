@@ -33,6 +33,9 @@ const NavbarWrapper = styled.nav<{ noBorder: boolean }>`
     }
     & h4 {
         margin: 0;
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
     }
     & button {
         padding: 0;
