@@ -104,7 +104,7 @@ const ScopePage = (): JSX.Element => {
                         active={
                             !history.location.pathname.includes('/punch-list')
                         }
-                        goTo={(): void => history.push(url)} // TODO: possibly change url after meeting about it
+                        goTo={(): void => history.push(url)}
                         icon={<EdsIcon name="list" color={COLORS.mossGreen} />}
                         label="Scope"
                         numberOfItems={scope.length}
@@ -113,7 +113,7 @@ const ScopePage = (): JSX.Element => {
                         active={history.location.pathname.includes(
                             '/punch-list'
                         )}
-                        goTo={(): void => history.push(`${url}/punch-list`)} // TODO: possibly change after meeting
+                        goTo={(): void => history.push(`${url}/punch-list`)}
                         icon={
                             <EdsIcon
                                 name="warning_filled"
@@ -141,9 +141,6 @@ const ScopePage = (): JSX.Element => {
     };
     return (
         <ScopePageWrapper>
-            {
-                // TODO: Should navbar label be Saved Searches or Search?
-            }
             <Navbar
                 noBorder
                 leftContent={{ name: 'back', label: 'Search' }}
@@ -165,5 +162,9 @@ const ScopePage = (): JSX.Element => {
     );
 };
 
-// TODO: change access control stuff
-export default withAccessControl(ScopePage, ['MCPKG/READ']);
+// TODO: add more when adding the other scope types
+export default withAccessControl(ScopePage, [
+    'MCPKG/READ',
+    'MCCR/READ',
+    'PUNCHLISTITEM/READ',
+]);
