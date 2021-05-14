@@ -25,16 +25,18 @@ import { COLORS } from '../../style/GlobalStyles';
 import { SearchType } from '../Search/Search';
 import SearchResult from '../Search/SearchResults/SearchResult';
 
-// TODO: rename everything Comm pkg related
-
 const ScopePageWrapper = styled.main``;
+
+const DetailsWrapper = styled.p`
+    text-align: center;
+    padding: 12px;
+`;
 
 const ScopePage = (): JSX.Element => {
     const { api, params, path, history, url } = useCommonHooks();
     const [scope, setScope] = useState<ChecklistPreview[]>();
     const [punchList, setPunchList] = useState<PunchPreview[]>();
     const [details, setDetails] = useState<McPkgPreview>();
-    // TODO: should details and footer fetch status be split into two?? <= would need to split api call thing too
     const [fetchStatus, setFetchStatus] = useState(AsyncStatus.LOADING);
 
     useEffect(() => {
@@ -87,13 +89,17 @@ const ScopePage = (): JSX.Element => {
             );
         }
         if (fetchStatus === AsyncStatus.ERROR) {
-            return <p>Unable to load details. Please reload</p>; // TODO: style this
+            return (
+                <DetailsWrapper>
+                    Unable to load details. Please reload
+                </DetailsWrapper>
+            );
         }
         return (
-            <p>
+            <DetailsWrapper>
                 <DotProgress color="primary" />
-            </p>
-        ); // TODO: style this
+            </DetailsWrapper>
+        );
     };
 
     const determineFooterToRender = (): JSX.Element => {

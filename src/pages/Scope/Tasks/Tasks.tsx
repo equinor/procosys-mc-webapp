@@ -1,7 +1,7 @@
 // TODO: remove this and all references to this (?)
 import React from 'react';
 import styled from 'styled-components';
-import { CommPkgListWrapper, PreviewButton } from '../Scope/Scope';
+import { ScopeWrapper, PreviewButton } from '../Scope/Scope';
 import { Typography } from '@equinor/eds-core-react';
 import EdsIcon from '../../../components/icons/EdsIcon';
 import CompletionStatusIcon from '../../../components/icons/CompletionStatusIcon';
@@ -27,7 +27,7 @@ const Tasks = (): JSX.Element => {
     );
 
     return (
-        <CommPkgListWrapper>
+        <ScopeWrapper>
             <AsyncPage
                 errorMessage={'Unable to load tasks. Please try again.'}
                 fetchStatus={fetchStatus}
@@ -59,7 +59,7 @@ const Tasks = (): JSX.Element => {
                     ))}
                 </>
             </AsyncPage>
-        </CommPkgListWrapper>
+        </ScopeWrapper>
     );
 };
 

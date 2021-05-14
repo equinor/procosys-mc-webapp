@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { CommPkgListWrapper, PreviewButton } from '../Scope/Scope';
+import { ScopeWrapper, PreviewButton } from '../Scope/Scope';
 import styled from 'styled-components';
 import EdsIcon from '../../../components/icons/EdsIcon';
 import { Typography } from '@equinor/eds-core-react';
@@ -48,7 +48,7 @@ const PunchList = (): JSX.Element => {
     }, [params.commPkg, params.plant, api]);
 
     return (
-        <CommPkgListWrapper>
+        <ScopeWrapper>
             <AsyncPage
                 fetchStatus={fetchPunchListStatus}
                 errorMessage={
@@ -93,7 +93,7 @@ const PunchList = (): JSX.Element => {
                     ))}
                 </>
             </AsyncPage>
-        </CommPkgListWrapper>
+        </ScopeWrapper>
     );
 };
 

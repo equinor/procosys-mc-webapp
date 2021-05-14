@@ -52,7 +52,7 @@ describe('<ScopePage> general and Scope component', () => {
             await screen.findByText('Unable to load details. Please reload')
         ).toBeInTheDocument();
     });
-    it('Shows an error message in footer, and MC pkg details card if getMcPkgDetails API call fails', async () => {
+    it('Shows an error message in footer, and MC pkg details card, but not in the Scope component if getMcPkgDetails API call fails', async () => {
         causeApiError(ENDPOINTS.getMcPkgDetails, 'get');
         renderScope(SearchType.MC);
         expect(
@@ -121,8 +121,8 @@ describe('<ScopePage> general and Scope component', () => {
 });
 
 describe('<SearchPage> in-page routing', () => {
-    // This test fails when using the jest extension, but doesn't when using yarn test
     it('Renders the PunchList component if the punch list button is clicked', async () => {
+        // This test fails when using the jest extension, but doesn't when using yarn test
         renderScope(SearchType.MC);
         expect(
             await screen.findByText(testMcPkgPreview[0].mcPkgNo)

@@ -28,7 +28,7 @@ const StatusTextWrapper = styled.div`
     display: flex;
     & > p {
         margin: 0;
-        background-color: ${COLORS.lightGrey}; // TODO: create a mid gray
+        background-color: ${COLORS.lightGrey};
         font-size: 0.75rem;
     }
 `;

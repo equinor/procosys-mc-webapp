@@ -9,9 +9,7 @@ import useCommonHooks from '../../../utils/useCommonHooks';
 import AsyncPage from '../../../components/AsyncPage';
 import ScopeItem from './ScopeItem';
 
-// TODO: rename everything comm pkg related
-
-export const CommPkgListWrapper = styled.div`
+export const ScopeWrapper = styled.div`
     padding-bottom: 85px;
     & h3 {
         text-align: center;
@@ -76,7 +74,7 @@ const Scope = (): JSX.Element => {
     }, [params.plant, params.searchType, params.itemId, api]);
 
     return (
-        <CommPkgListWrapper>
+        <ScopeWrapper>
             <AsyncPage
                 errorMessage={'Unable to load scope. Please try again.'}
                 emptyContentMessage={'The scope is empty.'}
@@ -85,7 +83,7 @@ const Scope = (): JSX.Element => {
                 {
                     // add filter (and # of forms??)
                 }
-                <div data-testid="scope">
+                <div>
                     {
                         // TODO: style div above to look more like search results list
                     }
@@ -94,7 +92,7 @@ const Scope = (): JSX.Element => {
                     ))}
                 </div>
             </AsyncPage>
-        </CommPkgListWrapper>
+        </ScopeWrapper>
     );
 };
 

@@ -8,7 +8,6 @@ import ScopePage from './pages/Scope/ScopePage';
 import Bookmarks from './pages/Bookmarks/Bookmarks';
 import ChecklistWrapper from './pages/Checklist/ChecklistWrapper';
 
-// TODO: decide on routing for the different pages
 const McRouter = (): JSX.Element => {
     return (
         <PlantContextProvider>
