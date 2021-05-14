@@ -13,6 +13,8 @@ const SearchResultWrapper = styled.article<{ clickable: boolean }>`
     border-top: 1px solid ${COLORS.lightGrey};
     padding: 12px;
     margin: 0;
+    background-color: ${(props): string =>
+        props.clickable ? COLORS.white : COLORS.fadedBlue};
     &:hover {
         opacity: ${(props): number => (props.clickable ? 0.7 : 1)};
     }
@@ -39,7 +41,7 @@ const HandoverStatus = styled.p<{ accepted: boolean }>`
     font-weight: bolder;
     font-size: 0.75rem;
     color: ${(props): string =>
-        props.accepted ? COLORS.black : COLORS.lightGrey};
+        props.accepted ? COLORS.black : COLORS.darkerGrey};
 `;
 
 export const DetailsWrapper = styled.div`
