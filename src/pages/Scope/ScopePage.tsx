@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Redirect, Route, Switch } from 'react-router-dom';
+import { Route, Switch } from 'react-router-dom';
 import Scope from './Scope/Scope';
 import PunchList from './PunchList/PunchList';
 import Navbar from '../../components/navigation/Navbar';
@@ -8,7 +8,6 @@ import useCommonHooks from '../../utils/useCommonHooks';
 import { AsyncStatus } from '../../contexts/McAppContext';
 import {
     ChecklistPreview,
-    TaskPreview,
     PunchPreview,
     McPkgPreview,
 } from '../../services/apiTypes';
@@ -16,12 +15,10 @@ import { DotProgress } from '@equinor/eds-core-react';
 import NavigationFooterShell from '../../components/navigation/NavigationFooterShell';
 import withAccessControl from '../../services/withAccessControl';
 import Axios from 'axios';
-import calculateHighestStatus from '../../utils/calculateHighestStatus';
 import NavigationFooter from '../../components/navigation/NavigationFooter';
 import FooterButton from '../../components/navigation/FooterButton';
 import EdsIcon from '../../components/icons/EdsIcon';
 import { COLORS } from '../../style/GlobalStyles';
-import { SearchType } from '../Search/Search';
 import SearchResult from '../Search/SearchResults/SearchResult';
 
 const ScopePageWrapper = styled.main``;

@@ -1,13 +1,7 @@
 import { withPlantContext } from '../../test/contexts';
 import ScopePage from './ScopePage';
 import React from 'react';
-import {
-    act,
-    findByText,
-    render,
-    screen,
-    waitFor,
-} from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { rest } from 'msw';
 import { server, ENDPOINTS, causeApiError } from '../../test/setupServer';
 import { SearchType } from '../Search/Search';
@@ -122,7 +116,7 @@ describe('<ScopePage> general and Scope component', () => {
 
 describe('<ScopePage> in-page routing', () => {
     it('Renders the PunchList component if the punch list button is clicked', async () => {
-        // This test fails when using the jest extension, but doesn't when using yarn test
+        // This test sometimes fails when using the jest extension, but doesn't when using yarn test
         renderScope(SearchType.MC);
         expect(
             await screen.findByText(testMcPkgPreview[0].mcPkgNo)

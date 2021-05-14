@@ -83,6 +83,7 @@ const DetailsCard = ({
         const source = axios.CancelToken.source();
         (async (): Promise<void> => {
             try {
+                //Get details from API here
                 setFetchDetailsStatus(AsyncStatus.SUCCESS);
             } catch (error) {
                 if (!axios.isCancel(error)) {
