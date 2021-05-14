@@ -250,7 +250,6 @@ export const dummySignedChecklistResponse = {
     CheckItems: [],
 };
 
-// TODO: either replace with just testScope in setupServer, og rewrite to match new checklist preview type
 export const dummyScopeResponse = [
     {
         Id: 321,
@@ -274,20 +273,23 @@ export const dummyTasksResponse = [
     },
 ];
 
-// TODO: change to match new PunchPreview type
 export const dummyPunchListResponse = [
     {
-        Id: 645645,
-        Status: 'PB',
-        Description: 'dummy-punch-item-description',
-        SystemModule: 'dummy-punch-system-module',
-        TagDescription: 'dummy-punch-task-description',
-        TagId: 123,
-        TagNo: 'dummy-punch-tag-no',
-        IsRestrictedForUser: false,
-        Cleared: false,
-        Rejected: false,
-        StatusControlledBySwcr: false,
+        id: 1,
+        status: CompletionStatus.OK,
+        description: 'Test punch description',
+        systemModule: 'Test punch system module',
+        tagDescription: 'dummy-punch-tag-description',
+        tagId: 1,
+        tagNo: 'dummy-punch-tag number',
+        formularType: 'test formular type',
+        responsibleCode: 'dummy punch responsible code',
+        isRestrictedForUser: false,
+        cleared: true,
+        rejected: false,
+        verified: false,
+        statusControlledBySwcr: true,
+        attachmentCount: 2,
     },
 ];
 

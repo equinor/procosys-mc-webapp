@@ -1,4 +1,3 @@
-// TODO: sorting
 import { SearchType } from '../pages/Search/Search';
 import {
     ChecklistPreview,
@@ -7,6 +6,7 @@ import {
     SearchResults,
 } from './apiTypes';
 
+// SEARCH
 export const isCorrectPreview = (
     data: unknown,
     searchType: SearchType
@@ -44,6 +44,7 @@ export const isCorrectSearchResults = (
     );
 };
 
+//SCOPE
 const isChecklistPreview = (data: unknown): data is ChecklistPreview => {
     return (
         data != null &&

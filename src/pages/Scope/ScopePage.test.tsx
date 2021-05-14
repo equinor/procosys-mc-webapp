@@ -120,7 +120,7 @@ describe('<ScopePage> general and Scope component', () => {
     });
 });
 
-describe('<SearchPage> in-page routing', () => {
+describe('<ScopePage> in-page routing', () => {
     it('Renders the PunchList component if the punch list button is clicked', async () => {
         // This test fails when using the jest extension, but doesn't when using yarn test
         renderScope(SearchType.MC);
@@ -143,6 +143,6 @@ describe('<SearchPage> in-page routing', () => {
     // TODO: add test scope button renders scope component
 });
 
-describe('<SearchPage> punch list', () => {
+describe('<ScopePage> punch list', () => {
     // TODO: add tests for punch list once the component is finished
 });

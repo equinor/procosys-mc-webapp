@@ -136,7 +136,7 @@ export const server = setupServer(
     }),
     rest.get(ENDPOINTS.getMcScope, (_, response, context) => {
         return response(
-            context.json(objectToCamelCase(testScope)), // TODO: use dummy response??
+            context.json(objectToCamelCase(testScope)),
             context.status(200)
         );
     }),

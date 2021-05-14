@@ -11,17 +11,18 @@ import { AsyncStatus } from '../../contexts/McAppContext';
 import EdsIcon from '../../components/icons/EdsIcon';
 import AsyncCard from '../../components/AsyncCard';
 import useSnackbar from '../../utils/useSnackbar';
-import { TaskPreviewButton } from '../Scope/Tasks/Tasks';
 import { Banner, Typography } from '@equinor/eds-core-react';
 import Axios, { CancelToken } from 'axios';
 import useAsyncGet from '../../utils/useAsyncGet';
 import removeSubdirectories from '../../utils/removeSubdirectories';
+import { PreviewButton } from '../Scope/Scope/Scope';
 const { BannerIcon, BannerMessage } = Banner;
 
-const NextTaskButton = styled(TaskPreviewButton)`
+const NextTaskButton = styled(PreviewButton)`
     padding: 0;
     margin: 0;
     & > div {
+        flex: 2;
         margin: 0;
     }
 `;

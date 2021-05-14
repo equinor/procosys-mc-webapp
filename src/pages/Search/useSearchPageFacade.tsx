@@ -86,7 +86,6 @@ const fetchHits = async (
     }
 };
 
-// TODO: the search type must be passed as a prop, unless added to URL (?)
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const useSearchPageFacade = (searchType: SearchType) => {
     const { api } = useCommonHooks();
