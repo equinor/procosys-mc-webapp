@@ -34,7 +34,7 @@ const ScopePage = (): JSX.Element => {
     const [scope, setScope] = useState<ChecklistPreview[]>();
     const [punchList, setPunchList] = useState<PunchPreview[]>();
     const [details, setDetails] = useState<McPkgPreview>();
-    // TODO: should details and footer fetch status be split into two??
+    // TODO: should details and footer fetch status be split into two?? <= would need to split api call thing too
     const [fetchStatus, setFetchStatus] = useState(AsyncStatus.LOADING);
 
     useEffect(() => {
@@ -74,11 +74,6 @@ const ScopePage = (): JSX.Element => {
             source.cancel();
         };
     }, [api, params.plant, params.searchType, params.itemId]);
-
-    const determinePageTitle = (): string => {
-        if (params.searchType === SearchType.MC) return 'MC package';
-        return '';
-    };
 
     const determineDetailsToRender = (): JSX.Element => {
         if (fetchStatus === AsyncStatus.SUCCESS && details != undefined) {
@@ -152,7 +147,7 @@ const ScopePage = (): JSX.Element => {
             <Navbar
                 noBorder
                 leftContent={{ name: 'back', label: 'Search' }}
-                midContent={determinePageTitle()}
+                midContent={params.searchType}
             />
             {determineDetailsToRender()}
             {

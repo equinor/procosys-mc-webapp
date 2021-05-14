@@ -19,7 +19,7 @@ export const CommPkgListWrapper = styled.div`
     }
 `;
 
-// TODO: copy and change in punch list
+// TODO: copy and change in punch list and then remove
 export const PreviewButton = styled(Link)`
     display: flex;
     align-items: center;
