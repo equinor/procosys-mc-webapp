@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Redirect, Route, Switch } from 'react-router-dom';
 import Scope from './Scope/Scope';
-import Tasks from './Tasks/Tasks';
 import PunchList from './PunchList/PunchList';
 import Navbar from '../../components/navigation/Navbar';
 import styled from 'styled-components';
@@ -30,6 +29,10 @@ const ScopePageWrapper = styled.main``;
 const DetailsWrapper = styled.p`
     text-align: center;
     padding: 12px;
+`;
+
+const ContentWrapper = styled.div`
+    padding: 0 4%;
 `;
 
 const ScopePage = (): JSX.Element => {
@@ -153,22 +156,23 @@ const ScopePage = (): JSX.Element => {
                 midContent={params.searchType}
             />
             {determineDetailsToRender()}
-            {
-                <Switch>
-                    <Route exact path={`${path}`} component={Scope} />
-                    <Route
-                        exact
-                        path={`${path}/punch-list`}
-                        component={PunchList}
-                    />
-                </Switch>
-            }
+            <ContentWrapper>
+                {
+                    <Switch>
+                        <Route exact path={`${path}`} component={Scope} />
+                        <Route
+                            exact
+                            path={`${path}/punch-list`}
+                            component={PunchList}
+                        />
+                    </Switch>
+                }
+            </ContentWrapper>
             {determineFooterToRender()}
         </ScopePageWrapper>
     );
 };
 
-// TODO: add more when adding the other scope types
 export default withAccessControl(ScopePage, [
     'MCPKG/READ',
     'MCCR/READ',

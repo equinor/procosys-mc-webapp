@@ -80,13 +80,7 @@ const Scope = (): JSX.Element => {
                 emptyContentMessage={'The scope is empty.'}
                 fetchStatus={fetchScopeStatus}
             >
-                {
-                    // add filter (and # of forms??)
-                }
                 <div>
-                    {
-                        // TODO: style div above to look more like search results list
-                    }
                     {scope?.map((checklist) => (
                         <ScopeItem checklist={checklist} key={checklist.id} />
                     ))}
