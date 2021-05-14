@@ -1,4 +1,4 @@
-## Procosys Commissioning Webapp
+## Procosys Mecanical Completion Webapp
 Mobile application that integrates with Project Completion System (ProCoSys).
 The app provides users with a simple mobile interface for performing common commissioning tasks on the fly.
 Features include: 

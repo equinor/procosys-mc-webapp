@@ -20,6 +20,7 @@ export type McParams = {
     checklistId: string;
     punchItemId: string;
     searchType: SearchType;
+    itemId: string;
 };
 
 type AppProps = {

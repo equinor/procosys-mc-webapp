@@ -4,6 +4,7 @@ import { PlantContextProvider } from './contexts/PlantContext';
 import SelectProject from './pages/SelectProject/SelectProject';
 import Search from './pages/Search/Search';
 import SelectPlant from './pages/SelectPlant/SelectPlant';
+import PunchList from './pages/Scope/PunchList/PunchList';
 
 const McRouter = (): JSX.Element => {
     return (
@@ -16,6 +17,14 @@ const McRouter = (): JSX.Element => {
                     exact
                     path={'/:plant/:project/:itemType'}
                     to={'/:plant/:project/'}
+                />
+                {
+                    // TODO: remove temp. route below after pulling scope
+                }
+                <Route
+                    exact
+                    path={'/:plant/:project/:searchType/:itemId/punch-list'}
+                    component={PunchList}
                 />
             </Switch>
         </PlantContextProvider>

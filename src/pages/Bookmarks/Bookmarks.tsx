@@ -1,6 +1,5 @@
 import React, { useContext } from 'react';
 import styled from 'styled-components';
-import DetailsCard from '../CommPkg/DetailsCard';
 import PageHeader from '../../components/PageHeader';
 import { getCurrentBookmarks } from './useBookmarks';
 import { Button } from '@equinor/eds-core-react';
@@ -9,6 +8,7 @@ import Navbar from '../../components/navigation/Navbar';
 import EdsIcon from '../../components/icons/EdsIcon';
 import useCommonHooks from '../../utils/useCommonHooks';
 import withAccessControl from '../../services/withAccessControl';
+import DetailsCard from '../Scope/DetailsCard';
 
 const BookmarksWrapper = styled.main`
     display: flex;
