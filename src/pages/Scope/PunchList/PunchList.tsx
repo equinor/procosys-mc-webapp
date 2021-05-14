@@ -55,6 +55,9 @@ const PunchList = (): JSX.Element => {
                 }
                 emptyContentMessage={'The punch list is empty.'}
             >
+                {
+                    // TODO: create a PunchListItem component and use inside the punchList mapping
+                }
                 <>
                     {punchList?.map((punch) => (
                         <PreviewButton
