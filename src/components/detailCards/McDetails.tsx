@@ -53,7 +53,7 @@ export const DetailsWrapper = styled.div`
     }
 `;
 
-const SearchResultHeaderWrapper = styled.div<{ clickable: boolean }>`
+const HeaderWrapper = styled.div<{ clickable: boolean }>`
     display: flex;
     align-items: baseline;
     & > h6 {
@@ -69,67 +69,58 @@ const SearchResultHeaderWrapper = styled.div<{ clickable: boolean }>`
     }
 `;
 
-type SearchResultProps = {
-    searchType: SearchType;
+type McDetailsProps = {
     searchResult: McPkgPreview;
     clickable?: boolean;
 };
 
-// TODO: decide whether this should be used for all search types or whether it should just be used for MC search
-const SearchResult = ({
+const McDetails = ({
     searchResult,
-    searchType,
     clickable = true,
-}: SearchResultProps): JSX.Element => {
+}: McDetailsProps): JSX.Element => {
     const { history, url } = useCommonHooks();
-
-    if (searchType === SearchType.MC) {
-        return (
-            <McDetailsWrapper
-                onClick={(): void => {
-                    if (clickable) {
-                        history.push(`${url}/MC/${searchResult.id}`);
-                    }
-                }}
-                key={searchResult.mcPkgNo}
-                clickable={clickable}
-                as={clickable ? 'a' : 'article'}
-            >
-                <StatusImageWrapper>
-                    <McPackageStatusIcon status={searchResult.status} />
-                    <StatusTextWrapper>
-                        <HandoverStatus
-                            accepted={
-                                searchResult.commissioningHandoverStatus ==
-                                'ACCEPTED'
-                            }
-                        >
-                            C
-                        </HandoverStatus>
-                        <HandoverStatus
-                            accepted={
-                                searchResult.operationHandoverStatus ==
-                                'ACCEPTED'
-                            }
-                        >
-                            O
-                        </HandoverStatus>
-                    </StatusTextWrapper>
-                </StatusImageWrapper>
-                <DetailsWrapper>
-                    <SearchResultHeaderWrapper clickable={clickable}>
-                        <h6>{searchResult.mcPkgNo}</h6>
-                        <Caption>{searchResult.commPkgNo}</Caption>
-                        <Caption>{searchResult.responsibleCode}</Caption>
-                    </SearchResultHeaderWrapper>
-                    <Caption>{searchResult.description}</Caption>
-                    <Caption>{searchResult.phaseCode}</Caption>
-                </DetailsWrapper>
-            </McDetailsWrapper>
-        );
-    } else {
-        return <></>;
-    }
+    return (
+        <McDetailsWrapper
+            onClick={(): void => {
+                if (clickable) {
+                    history.push(`${url}/MC/${searchResult.id}`);
+                }
+            }}
+            key={searchResult.mcPkgNo}
+            clickable={clickable}
+            as={clickable ? 'a' : 'article'}
+        >
+            <StatusImageWrapper>
+                <McPackageStatusIcon status={searchResult.status} />
+                <StatusTextWrapper>
+                    <HandoverStatus
+                        accepted={
+                            searchResult.commissioningHandoverStatus ==
+                            'ACCEPTED'
+                        }
+                    >
+                        C
+                    </HandoverStatus>
+                    <HandoverStatus
+                        accepted={
+                            searchResult.operationHandoverStatus == 'ACCEPTED'
+                        }
+                    >
+                        O
+                    </HandoverStatus>
+                </StatusTextWrapper>
+            </StatusImageWrapper>
+            <DetailsWrapper>
+                <HeaderWrapper clickable={clickable}>
+                    <h6>{searchResult.mcPkgNo}</h6>
+                    <Caption>{searchResult.commPkgNo}</Caption>
+                    <Caption>{searchResult.responsibleCode}</Caption>
+                </HeaderWrapper>
+                <Caption>{searchResult.description}</Caption>
+                <Caption>{searchResult.phaseCode}</Caption>
+            </DetailsWrapper>
+        </McDetailsWrapper>
+    );
 };
 
-export default SearchResult;
+export default McDetails;

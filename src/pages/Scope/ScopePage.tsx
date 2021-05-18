@@ -19,7 +19,8 @@ import NavigationFooter from '../../components/navigation/NavigationFooter';
 import FooterButton from '../../components/navigation/FooterButton';
 import EdsIcon from '../../components/icons/EdsIcon';
 import { COLORS } from '../../style/GlobalStyles';
-import SearchResult from '../../components/detailCards/McDetails';
+import McDetails from '../../components/detailCards/McDetails';
+import { SearchType } from '../Search/Search';
 
 const ScopePageWrapper = styled.main``;
 
@@ -82,14 +83,15 @@ const ScopePage = (): JSX.Element => {
 
     const determineDetailsToRender = (): JSX.Element => {
         if (fetchStatus === AsyncStatus.SUCCESS && details != undefined) {
-            return (
-                <SearchResult
-                    key={details.id}
-                    searchResult={details}
-                    searchType={params.searchType}
-                    clickable={false}
-                />
-            );
+            if (params.searchType === SearchType.MC) {
+                return (
+                    <McDetails
+                        key={details.id}
+                        searchResult={details}
+                        clickable={false}
+                    />
+                );
+            }
         }
         if (fetchStatus === AsyncStatus.ERROR) {
             return (

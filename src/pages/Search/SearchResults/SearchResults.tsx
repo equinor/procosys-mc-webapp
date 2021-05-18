@@ -3,7 +3,7 @@ import { SearchStatus } from '../useSearchPageFacade';
 import { SearchResults as SearchResultsType } from '../../../services/apiTypes';
 import SkeletonLoadingPage from '../../../components/loading/SkeletonLoader';
 import { SearchType } from '../Search';
-import SearchResult from '../../../components/detailCards/McDetails';
+import McDetails from '../../../components/detailCards/McDetails';
 import styled from 'styled-components';
 
 const SearchResultAmountWrapper = styled.h6`
@@ -48,13 +48,16 @@ const SearchResults = ({
                     Displaying {searchResults.items.length} out of{' '}
                     {searchResults.maxAvailable} {getSearchResultType()}
                 </SearchResultAmountWrapper>
-                {searchResults.items.map((searchResult) => (
-                    <SearchResult
-                        key={searchResult.id}
-                        searchResult={searchResult}
-                        searchType={searchType}
-                    />
-                ))}
+                {searchResults.items.map((searchResult) => {
+                    if (searchType === SearchType.MC) {
+                        return (
+                            <McDetails
+                                key={searchResult.id}
+                                searchResult={searchResult}
+                            />
+                        );
+                    }
+                })}
             </div>
         );
     }
