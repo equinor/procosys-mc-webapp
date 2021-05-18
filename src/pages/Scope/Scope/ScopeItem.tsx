@@ -9,7 +9,7 @@ import useCommonHooks from '../../../utils/useCommonHooks';
 import {
     DetailsWrapper,
     StatusImageWrapper,
-} from '../../Search/SearchResults/SearchResult';
+} from '../../../components/detailCards/McDetails';
 
 const PreviewButton = styled(Link)`
     cursor: pointer;

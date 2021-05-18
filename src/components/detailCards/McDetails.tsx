@@ -1,12 +1,12 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Caption, COLORS } from '../../../style/GlobalStyles';
-import { McPkgPreview } from '../../../services/apiTypes';
-import { SearchType } from '../Search';
-import { McPackageStatusIcon } from '../../../components/icons/McPackageStatusIcon';
-import useCommonHooks from '../../../utils/useCommonHooks';
+import { Caption, COLORS } from '../../style/GlobalStyles';
+import { McPkgPreview } from '../../services/apiTypes';
+import { SearchType } from '../../pages/Search/Search';
+import { McPackageStatusIcon } from '../icons/McPackageStatusIcon';
+import useCommonHooks from '../../utils/useCommonHooks';
 
-const SearchResultWrapper = styled.article<{ clickable: boolean }>`
+const McDetailsWrapper = styled.article<{ clickable: boolean }>`
     cursor: pointer;
     display: flex;
     align-items: flex-start;
@@ -84,7 +84,7 @@ const SearchResult = ({
 
     if (searchType === SearchType.MC) {
         return (
-            <SearchResultWrapper
+            <McDetailsWrapper
                 onClick={(): void => {
                     if (clickable) {
                         history.push(`${url}/MC/${searchResult.id}`);
@@ -123,7 +123,7 @@ const SearchResult = ({
                     <Caption>{searchResult.description}</Caption>
                     <Caption>{searchResult.phaseCode}</Caption>
                 </DetailsWrapper>
-            </SearchResultWrapper>
+            </McDetailsWrapper>
         );
     } else {
         return <></>;

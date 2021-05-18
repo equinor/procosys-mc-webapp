@@ -19,7 +19,7 @@ import NavigationFooter from '../../components/navigation/NavigationFooter';
 import FooterButton from '../../components/navigation/FooterButton';
 import EdsIcon from '../../components/icons/EdsIcon';
 import { COLORS } from '../../style/GlobalStyles';
-import SearchResult from '../Search/SearchResults/SearchResult';
+import SearchResult from '../../components/detailCards/McDetails';
 
 const ScopePageWrapper = styled.main``;
 
