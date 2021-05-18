@@ -16,7 +16,7 @@ const PreviewButton = styled(Link)`
     display: flex;
     align-items: flex-start;
     border-top: 1px solid ${COLORS.lightGrey};
-    padding: 12px;
+    padding: 12px 0;
     margin: 0;
     text-decoration: none;
     &:hover {
