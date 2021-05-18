@@ -13,6 +13,7 @@ const McDetailsWrapper = styled.article<{ clickable: boolean }>`
     border-top: 1px solid ${COLORS.lightGrey};
     padding: 12px;
     margin: 0;
+    text-decoration: none;
     background-color: ${(props): string =>
         props.clickable ? COLORS.white : COLORS.fadedBlue};
     &:hover {
@@ -92,6 +93,7 @@ const SearchResult = ({
                 }}
                 key={searchResult.mcPkgNo}
                 clickable={clickable}
+                as={clickable ? 'a' : 'article'}
             >
                 <StatusImageWrapper>
                     <McPackageStatusIcon status={searchResult.status} />
