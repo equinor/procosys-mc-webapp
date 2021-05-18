@@ -87,11 +87,11 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
         if (searchType === SearchType.MC) {
             url = `McPkg/Search?plantId=${plantId}&startsWithMcPkgNo=${query}&includeClosedProjects=false&projectId=${projectId}${apiVersion}`;
         } else {
-            throw new Error();
+            throw new Error('The selected search type is not supported.');
         }
         const { data } = await axios.get(url, { cancelToken });
         if (!isCorrectSearchResults(data, searchType)) {
-            throw new Error();
+            throw new Error('An error occurred, please try again.');
         }
         return data;
     };
@@ -106,11 +106,11 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
         if (searchType === SearchType.MC) {
             url = `McPkg?plantId=PCS$${plantId}&mcPkgId=${itemId}${apiVersion}`;
         } else {
-            throw new Error();
+            throw new Error('The chosen scope type is not supported.');
         }
         const { data } = await axios.get(url, { cancelToken });
         if (!isCorrectPreview(data, searchType)) {
-            throw new Error();
+            throw new Error('An error occurred, please try again.');
         }
         return data;
     };
@@ -137,11 +137,11 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
         if (searchType === SearchType.MC) {
             url = `McPkg/CheckLists?plantId=PCS$${plantId}&mcPkgId=${itemId}${apiVersion}`;
         } else {
-            throw new Error();
+            throw new Error('The chosen scope type is not supported.');
         }
         const { data } = await axios.get(url);
         if (!isArrayOfChecklistPreview(data)) {
-            throw new Error();
+            throw new Error('An error occurred, please try again.');
         }
         return data;
     };
@@ -326,11 +326,11 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
         if (searchType === SearchType.MC) {
             url = `McPkg/PunchList?plantId=PCS$${plantId}&mcPkgId=${itemId}${apiVersion}`;
         } else {
-            throw new Error();
+            throw new Error('The chosen scope type is not supported.');
         }
         const { data } = await axios.get(url);
         if (!isArrayOfPunchPreview(data)) {
-            throw new Error();
+            throw new Error('An error occurred, please try again.');
         }
         return data;
     };

@@ -20,7 +20,7 @@ export const isCorrectPreview = (
     }
 };
 
-const isArraryOfCorrectPreview = (
+const isArrayOfCorrectPreview = (
     data: unknown,
     searchType: SearchType
 ): data is McPkgPreview[] => {
@@ -40,7 +40,7 @@ export const isCorrectSearchResults = (
     return (
         data != null &&
         data != undefined &&
-        isArraryOfCorrectPreview((data as SearchResults).items, searchType)
+        isArrayOfCorrectPreview((data as SearchResults).items, searchType)
     );
 };
 
