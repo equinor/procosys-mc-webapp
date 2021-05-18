@@ -42,7 +42,7 @@ const HandoverStatus = styled.p<{ accepted: boolean }>`
     font-weight: bolder;
     font-size: 0.75rem;
     color: ${(props): string =>
-        props.accepted ? COLORS.black : COLORS.darkerGrey};
+        props.accepted ? COLORS.black : COLORS.darkGrey};
 `;
 
 export const DetailsWrapper = styled.div`
