@@ -7,7 +7,6 @@ import {
     Plant,
     Project,
     PunchPreview,
-    TaskPreview,
     McPkgPreview,
     SearchResults,
 } from '../services/apiTypes';
@@ -84,23 +83,6 @@ export const testDetails: CommPkg = {
     operationHandoverStatus: 'Test operationHandoverStatus',
     systemId: 1,
 };
-
-export const testTasks: TaskPreview[] = [
-    {
-        id: 1,
-        number: 'Test task number',
-        title: 'Test task title',
-        chapter: 'Test task chapter',
-        isSigned: true,
-    },
-    {
-        id: 2,
-        number: 'Test task number 2',
-        title: 'Test task title 2',
-        chapter: 'Test task chapter 2',
-        isSigned: false,
-    },
-];
 
 export const testMcPkgPreview: McPkgPreview[] = [
     {
@@ -263,16 +245,6 @@ export const dummyScopeResponse = [
     },
 ];
 
-export const dummyTasksResponse = [
-    {
-        Id: 43242,
-        Number: 'dummy-task-number',
-        Title: 'dummy-task-title',
-        Chapter: 'dummy-task-chapter',
-        IsSigned: true,
-    },
-];
-
 export const dummyPunchListResponse = [
     {
         id: 1,
@@ -364,39 +336,6 @@ export const dummyCommPkgDetailsResponse = {
     System: '10|04',
     IsVoided: false,
 };
-
-export const dummyTaskResponse = {
-    Id: 111,
-    Number: '1.2-3',
-    Title: 'dummy-task-title',
-    DescriptionAsHtml: '<p>dummy-task-description</p>',
-    CommentAsHtml: '<p>dummy-task-comment</p>',
-    UpdatedByUser: 'dummy-task-user',
-    UpdatedAt: '2021-03-04T10:53:25Z',
-    UpdatedByFirstName: 'dummy-task-first-name',
-    UpdatedByLastName: 'dummy-task-last-name',
-    SignedByUser: null,
-    SignedByFirstName: null,
-    SignedByLastName: null,
-    SignedAt: null,
-};
-
-export const dummyTaskParametersResponse = [
-    {
-        Id: 123,
-        Description: 'dummy-parameter-description',
-        MeasuredValue: '123',
-        ReferenceValue: '123',
-        ReferenceUnit: 'V',
-    },
-    {
-        Id: 124,
-        Description: 'dummy-parameter-description-2',
-        MeasuredValue: '123',
-        ReferenceValue: '123',
-        ReferenceUnit: 'Ohm',
-    },
-];
 
 export const dummyAttachmentsResponse = [
     {

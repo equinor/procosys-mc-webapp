@@ -5,7 +5,6 @@ import ScopePage from './pages/Scope/ScopePage';
 import NewPunch from './pages/Punch/NewPunch/NewPunch';
 import ClearPunch from './pages/Punch/ClearPunch/ClearPunch';
 import VerifyPunch from './pages/Punch/VerifyPunch/VerifyPunch';
-import Task from './pages/Task/Task';
 
 const CommPkgRouter = (): JSX.Element => {
     const { path } = useRouteMatch();
@@ -21,7 +20,6 @@ const CommPkgRouter = (): JSX.Element => {
                 path={`${path}/scope/:checklistId/new-punch`}
                 component={NewPunch}
             />
-            <Route exact path={`${path}/tasks/:taskId`} component={Task} />
             <Route
                 exact
                 path={`${path}/punch-list/:punchItemId/clear`}

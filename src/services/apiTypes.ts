@@ -86,14 +86,6 @@ export type PunchPreview = {
     callOffNo?: string;
 };
 
-export type TaskPreview = {
-    id: number;
-    number: string;
-    title: string;
-    chapter: string;
-    isSigned: boolean;
-};
-
 // CHECKLIST
 export interface ChecklistDetails {
     id: number;
@@ -235,30 +227,6 @@ export interface PunchItem {
     statusControlledBySwcr: boolean;
     isRestrictedForUser: boolean;
     attachmentCount: number;
-}
-
-export interface Task {
-    id: number;
-    number: string;
-    title: string;
-    descriptionAsHtml: string;
-    commentAsHtml: string;
-    updatedByUser: string;
-    updatedAt: Date;
-    updatedByFirstName: string;
-    updatedByLastName: string;
-    signedByUser: string;
-    signedByFirstName: string;
-    signedByLastName: string;
-    signedAt: Date;
-}
-
-export interface TaskParameter {
-    id: number;
-    description: string;
-    measuredValue: string;
-    referenceValue: string;
-    referenceUnit: string;
 }
 
 export interface Attachment {

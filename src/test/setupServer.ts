@@ -5,9 +5,6 @@ import {
     dummyPunchListResponse,
     dummyScopeResponse,
     dummyAttachmentsResponse,
-    dummyTaskParametersResponse,
-    dummyTaskResponse,
-    dummyTasksResponse,
     testProjects,
     dummyPunchCategories,
     dummyPunchOrganizations,
@@ -44,17 +41,6 @@ export const ENDPOINTS = {
     postSign: `${baseURL}/CheckList/Comm/Sign`,
     postUnsign: `${baseURL}/CheckList/Comm/Unsign`,
     getScope: `${baseURL}/CommPkg/CheckLists`,
-
-    //Task TODO: remove all (?)
-    getTasks: `${baseURL}/CommPkg/Tasks`,
-    getTask: `${baseURL}/CommPkg/Task`,
-    getTaskParameters: `${baseURL}/CommPkg/Task/Parameters`,
-    putTaskParameter: `${baseURL}/CommPkg/Task/Parameters/Parameter`,
-    getTaskAttachments: `${baseURL}/CommPkg/Task/Attachments`,
-    getTaskAttachment: `${baseURL}/CommPkg/Task/Attachment`,
-    putTaskComment: `${baseURL}/CommPkg/Task/Comment`,
-    postTaskSign: `${baseURL}/CommPkg/Task/Sign`,
-    postTaskUnsign: `${baseURL}/CommPkg/Task/Unsign`,
 
     //PUNCH
     getMcPunchList: `${baseURL}/McPkg/PunchList`,
@@ -154,44 +140,6 @@ export const server = setupServer(
             context.json(objectToCamelCase(dummyScopeResponse)),
             context.status(200)
         );
-    }),
-
-    // Task
-    rest.get(ENDPOINTS.getTasks, (_, response, context) => {
-        return response(
-            context.json(objectToCamelCase(dummyTasksResponse)),
-            context.status(200)
-        );
-    }),
-    rest.get(ENDPOINTS.getTask, (_, response, context) => {
-        return response(context.json(dummyTaskResponse), context.status(200));
-    }),
-    rest.get(ENDPOINTS.getTaskAttachments, (_, response, context) => {
-        return response(
-            context.json(dummyAttachmentsResponse),
-            context.status(200)
-        );
-    }),
-    rest.get(ENDPOINTS.getTaskAttachment, (_, response, context) => {
-        return response(context.json(new Blob()), context.status(200));
-    }),
-    rest.get(ENDPOINTS.getTaskParameters, (_, response, context) => {
-        return response(
-            context.json(dummyTaskParametersResponse),
-            context.status(200)
-        );
-    }),
-    rest.put(ENDPOINTS.putTaskComment, (_, response, context) => {
-        return response(context.status(200));
-    }),
-    rest.post(ENDPOINTS.postTaskSign, (_, response, context) => {
-        return response(context.status(200));
-    }),
-    rest.post(ENDPOINTS.postTaskUnsign, (_, response, context) => {
-        return response(context.status(200));
-    }),
-    rest.put(ENDPOINTS.putTaskParameter, (_, response, context) => {
-        return response(context.status(200));
     }),
 
     // PUNCH

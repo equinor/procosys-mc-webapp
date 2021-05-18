@@ -130,9 +130,9 @@ describe('<ScopePage> in-page routing', () => {
         expect(
             await screen.findByText(testMcPkgPreview[0].mcPkgNo)
         ).toBeInTheDocument();
-        expect(screen.queryByText(testScope[0].tagNo)).not.toBeInTheDocument();
         // TODO: add an expect to test something from the punch list once the component is finished
         // ^ will both be a better test and remove the act error
+        expect(screen.queryByText(testScope[0].tagNo)).not.toBeInTheDocument();
     });
     it.todo('Renders Scope compoent if the scope button is clicked');
 });
