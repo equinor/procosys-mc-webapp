@@ -78,7 +78,7 @@ describe('<ScopePage> general and Scope component', () => {
                 return response(
                     context.json(testScope),
                     context.status(200),
-                    context.delay(200)
+                    context.delay(20)
                 );
             })
         );
@@ -117,6 +117,7 @@ describe('<ScopePage> general and Scope component', () => {
 describe('<ScopePage> in-page routing', () => {
     it('Renders the PunchList component if the punch list button is clicked', async () => {
         // This test sometimes fails when using the jest extension, but doesn't when using yarn test
+        // ^is most likely caused by the botttom expect being called too quickly (?) might be fixed once the test is completed
         renderScope(SearchType.MC);
         expect(
             await screen.findByText(testMcPkgPreview[0].mcPkgNo)
