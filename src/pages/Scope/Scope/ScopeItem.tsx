@@ -14,7 +14,6 @@ import {
 const PreviewButton = styled(Link)`
     cursor: pointer;
     display: flex;
-    align-items: flex-start;
     border-top: 1px solid ${COLORS.lightGrey};
     padding: 12px 0;
     margin: 0;
@@ -37,7 +36,6 @@ const DetailsHeaderWrapper = styled.div`
     display: flex;
     align-items: baseline;
     & > p:first-child {
-        margin: 0;
         flex: 2;
         color: ${COLORS.mossGreen};
         text-align: left;
