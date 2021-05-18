@@ -134,9 +134,12 @@ describe('<ScopePage> in-page routing', () => {
         // TODO: add an expect to test something from the punch list once the component is finished
         // ^ will both be a better test and remove the act error
     });
-    // TODO: add test scope button renders scope component
+    it.todo('Renders Scope compoent if the scope button is clicked');
 });
 
 describe('<ScopePage> punch list', () => {
-    // TODO: add tests for punch list once the component is finished
+    it.todo('Renders a list of punches');
+    it.todo('Renders a loading screen while awaiting API response');
+    it.todo('Shows an error message if X API call fails');
+    it.todo('Shows a placeholder message if punch list is empty');
 });
