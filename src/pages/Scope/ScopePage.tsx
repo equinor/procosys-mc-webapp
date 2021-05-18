@@ -51,17 +51,20 @@ const ScopePage = (): JSX.Element => {
                     api.getScope(
                         params.plant,
                         params.searchType,
-                        params.itemId
+                        params.itemId,
+                        source.token
                     ),
                     api.getPunchList(
                         params.plant,
                         params.searchType,
-                        params.itemId
+                        params.itemId,
+                        source.token
                     ),
                     api.getItemDetails(
                         params.plant,
                         params.searchType,
-                        params.itemId
+                        params.itemId,
+                        source.token
                     ),
                 ]);
                 setScope(scopeFromApi);

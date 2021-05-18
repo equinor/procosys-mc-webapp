@@ -8,6 +8,7 @@ import { AsyncStatus } from '../../../contexts/McAppContext';
 import { PunchPreview } from '../../../services/apiTypes';
 import useCommonHooks from '../../../utils/useCommonHooks';
 import AsyncPage from '../../../components/AsyncPage';
+import Axios from 'axios';
 
 const InfoRow = styled.div`
     &:first-child {
@@ -27,13 +28,15 @@ const PunchList = (): JSX.Element => {
     );
 
     useEffect(() => {
+        const source = Axios.CancelToken.source();
         (async (): Promise<void> => {
             setFetchPunchListStatus(AsyncStatus.LOADING);
             try {
                 const punchListFromApi = await api.getPunchList(
                     params.plant,
                     params.searchType,
-                    params.itemId
+                    params.itemId,
+                    source.token
                 );
                 setPunchList(punchListFromApi);
                 if (punchListFromApi.length < 1) {
@@ -45,6 +48,9 @@ const PunchList = (): JSX.Element => {
                 setFetchPunchListStatus(AsyncStatus.ERROR);
             }
         })();
+        return (): void => {
+            source.cancel();
+        };
     }, [params.commPkg, params.plant, api]);
 
     return (

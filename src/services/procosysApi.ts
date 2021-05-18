@@ -81,7 +81,7 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
         projectId: number,
         plantId: string,
         searchType: SearchType,
-        cancelToken?: CancelToken
+        cancelToken: CancelToken
     ): Promise<SearchResults> => {
         let url = '';
         if (searchType === SearchType.MC) {
@@ -100,7 +100,7 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
         plantId: string,
         searchType: string,
         itemId: string,
-        cancelToken?: CancelToken
+        cancelToken: CancelToken
     ): Promise<McPkgPreview> => {
         let url = '';
         if (searchType === SearchType.MC) {
@@ -131,7 +131,8 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
     const getScope = async (
         plantId: string,
         searchType: SearchType,
-        itemId: string
+        itemId: string,
+        cancelToken: CancelToken
     ): Promise<ChecklistPreview[]> => {
         let url = '';
         if (searchType === SearchType.MC) {
@@ -139,7 +140,7 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
         } else {
             throw new Error('The chosen scope type is not supported.');
         }
-        const { data } = await axios.get(url);
+        const { data } = await axios.get(url, { cancelToken });
         if (!isArrayOfChecklistPreview(data)) {
             throw new Error('An error occurred, please try again.');
         }
@@ -320,7 +321,8 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
     const getPunchList = async (
         plantId: string,
         searchType: SearchType,
-        itemId: string
+        itemId: string,
+        cancelToken: CancelToken
     ): Promise<PunchPreview[]> => {
         let url = '';
         if (searchType === SearchType.MC) {
@@ -328,7 +330,7 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
         } else {
             throw new Error('The chosen scope type is not supported.');
         }
-        const { data } = await axios.get(url);
+        const { data } = await axios.get(url, { cancelToken });
         if (!isArrayOfPunchPreview(data)) {
             throw new Error('An error occurred, please try again.');
         }
