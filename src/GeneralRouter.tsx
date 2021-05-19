@@ -4,7 +4,7 @@ import { PlantContextProvider } from './contexts/PlantContext';
 import SelectProject from './pages/SelectProject/SelectProject';
 import Search from './pages/Search/Search';
 import SelectPlant from './pages/SelectPlant/SelectPlant';
-import EntityPage from './pages/Scope/EntityPage';
+import EntityPage from './pages/Entity/EntityPage';
 import ChecklistWrapper from './pages/Checklist/ChecklistWrapper';
 
 const McRouter = (): JSX.Element => {
