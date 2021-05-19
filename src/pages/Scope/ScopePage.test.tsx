@@ -33,7 +33,7 @@ const renderScope = (searchType: SearchType): void => {
 };
 
 describe('<ScopePage> general and Scope component', () => {
-    it('Shows an error message in Scope component, footer, and MC pkg details card if getMcScope API call fails', async () => {
+    it('Shows an error message in Scope component, footer card if getMcScope API call fails', async () => {
         causeApiError(ENDPOINTS.getMcScope, 'get');
         renderScope(SearchType.MC);
         expect(
@@ -43,33 +43,33 @@ describe('<ScopePage> general and Scope component', () => {
             await screen.findByText('Unable to load footer. Please reload')
         ).toBeInTheDocument();
         expect(
-            await screen.findByText('Unable to load details. Please reload')
-        ).toBeInTheDocument();
+            screen.queryByText('Unable to load details. Please reload')
+        ).not.toBeInTheDocument();
     });
-    it('Shows an error message in footer, and MC pkg details card, but not in the Scope component if getMcPkgDetails API call fails', async () => {
+    it('Shows an error message in MC pkg details card if getMcPkgDetails API call fails', async () => {
         causeApiError(ENDPOINTS.getMcPkgDetails, 'get');
         renderScope(SearchType.MC);
+        expect(
+            await screen.findByText('Unable to load details. Please reload')
+        ).toBeInTheDocument();
         expect(
             screen.queryByText('Unable to load scope. Please try again.')
         ).not.toBeInTheDocument();
         expect(
-            await screen.findByText('Unable to load footer. Please reload')
-        ).toBeInTheDocument();
-        expect(
-            await screen.findByText('Unable to load details. Please reload')
-        ).toBeInTheDocument();
+            screen.queryByText('Unable to load footer. Please reload')
+        ).not.toBeInTheDocument();
     });
-    it('Shows an error message in footer, and MC pkg details card if getMcPunchList API call fails', async () => {
+    it('Shows an error message in footer if getMcPunchList API call fails', async () => {
         causeApiError(ENDPOINTS.getMcPunchList, 'get');
         renderScope(SearchType.MC);
         expect(
             screen.queryByText('Unable to load scope. Please try again.')
         ).not.toBeInTheDocument();
         expect(
-            await screen.findByText('Unable to load footer. Please reload')
-        ).toBeInTheDocument();
+            screen.queryByText('Unable to load details. Please reload')
+        ).not.toBeInTheDocument();
         expect(
-            await screen.findByText('Unable to load details. Please reload')
+            await screen.findByText('Unable to load footer. Please reload')
         ).toBeInTheDocument();
     });
     it('Renders a loading screen while awaiting API responses', async () => {
@@ -78,7 +78,7 @@ describe('<ScopePage> general and Scope component', () => {
                 return response(
                     context.json(testScope),
                     context.status(200),
-                    context.delay(20)
+                    context.delay(40)
                 );
             })
         );

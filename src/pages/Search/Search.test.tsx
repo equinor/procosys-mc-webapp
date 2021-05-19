@@ -90,7 +90,7 @@ describe('<Search> negative tests', () => {
                     return response(
                         context.json(testMcPkgSearch),
                         context.status(200),
-                        context.delay(20)
+                        context.delay(40)
                     );
                 }
             )
