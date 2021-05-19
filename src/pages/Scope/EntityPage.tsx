@@ -22,7 +22,7 @@ import { COLORS } from '../../style/GlobalStyles';
 import McDetails from '../../components/detailCards/McDetails';
 import { SearchType } from '../Search/Search';
 
-const ScopePageWrapper = styled.main``;
+const EntityPageWrapper = styled.main``;
 
 const DetailsWrapper = styled.p`
     text-align: center;
@@ -33,7 +33,7 @@ const ContentWrapper = styled.div`
     padding: 0 12px;
 `;
 
-const ScopePage = (): JSX.Element => {
+const EntityPage = (): JSX.Element => {
     const { api, params, path, history, url } = useCommonHooks();
     const [scope, setScope] = useState<ChecklistPreview[]>();
     const [punchList, setPunchList] = useState<PunchPreview[]>();
@@ -168,7 +168,7 @@ const ScopePage = (): JSX.Element => {
         );
     };
     return (
-        <ScopePageWrapper>
+        <EntityPageWrapper>
             <Navbar
                 noBorder
                 leftContent={{ name: 'back', label: 'Search' }}
@@ -188,11 +188,11 @@ const ScopePage = (): JSX.Element => {
                 }
             </ContentWrapper>
             {determineFooterToRender()}
-        </ScopePageWrapper>
+        </EntityPageWrapper>
     );
 };
 
-export default withAccessControl(ScopePage, [
+export default withAccessControl(EntityPage, [
     'MCPKG/READ',
     'MCCR/READ',
     'PUNCHLISTITEM/READ',

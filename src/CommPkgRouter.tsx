@@ -1,7 +1,7 @@
 import React from 'react';
 import { Route, Switch, useRouteMatch } from 'react-router-dom';
 import ChecklistWrapper from './pages/Checklist/ChecklistWrapper';
-import ScopePage from './pages/Scope/ScopePage';
+import EntityPage from './pages/Scope/EntityPage';
 import NewPunch from './pages/Punch/NewPunch/NewPunch';
 import ClearPunch from './pages/Punch/ClearPunch/ClearPunch';
 import VerifyPunch from './pages/Punch/VerifyPunch/VerifyPunch';
@@ -30,7 +30,7 @@ const CommPkgRouter = (): JSX.Element => {
                 path={`${path}/punch-list/:punchItemId/verify`}
                 component={VerifyPunch}
             />
-            <Route path={path} component={ScopePage} />
+            <Route path={path} component={EntityPage} />
         </Switch>
     );
 };

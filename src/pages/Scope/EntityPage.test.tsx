@@ -1,5 +1,5 @@
 import { withPlantContext } from '../../test/contexts';
-import ScopePage from './ScopePage';
+import EntityPage from './EntityPage';
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { rest } from 'msw';
@@ -21,10 +21,10 @@ const renderScope = (searchType: SearchType): void => {
                     initialEntries={[`/plant/project/${searchType}/33`]}
                 >
                     <Route path="/:plant/:project/:searchType/:itemId">
-                        <ScopePage />
+                        <EntityPage />
                     </Route>
                     <Route path="/:plant/:project/:searchType/:itemId/punch-list">
-                        <ScopePage />
+                        <EntityPage />
                     </Route>
                 </MemoryRouter>
             ),
@@ -32,7 +32,7 @@ const renderScope = (searchType: SearchType): void => {
     );
 };
 
-describe('<ScopePage> general and Scope component', () => {
+describe('<EntityPage> general and Scope component', () => {
     it('Shows an error message in Scope component, footer card if getMcScope API call fails', async () => {
         causeApiError(ENDPOINTS.getMcScope, 'get');
         renderScope(SearchType.MC);
@@ -114,7 +114,7 @@ describe('<ScopePage> general and Scope component', () => {
     });
 });
 
-describe('<ScopePage> in-page routing', () => {
+describe('<EntityPage> in-page routing', () => {
     it('Renders the PunchList component if the punch list button is clicked', async () => {
         // This test sometimes fails when using the jest extension, but doesn't when using yarn test
         // ^is most likely caused by the botttom expect being called too quickly (?) might be fixed once the test is completed
@@ -138,7 +138,7 @@ describe('<ScopePage> in-page routing', () => {
     it.todo('Renders Scope compoent if the scope button is clicked');
 });
 
-describe('<ScopePage> punch list', () => {
+describe('<EntityPage> punch list', () => {
     it.todo('Renders a list of punches');
     it.todo('Renders a loading screen while awaiting API response');
     it.todo('Shows an error message if X API call fails');

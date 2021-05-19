@@ -4,7 +4,7 @@ import { PlantContextProvider } from './contexts/PlantContext';
 import SelectProject from './pages/SelectProject/SelectProject';
 import Search from './pages/Search/Search';
 import SelectPlant from './pages/SelectPlant/SelectPlant';
-import ScopePage from './pages/Scope/ScopePage';
+import EntityPage from './pages/Scope/EntityPage';
 import ChecklistWrapper from './pages/Checklist/ChecklistWrapper';
 
 const McRouter = (): JSX.Element => {
@@ -32,7 +32,7 @@ const McRouter = (): JSX.Element => {
                 />
                 <Route
                     path={'/:plant/:project/:searchType/:itemId'}
-                    component={ScopePage}
+                    component={EntityPage}
                 />
             </Switch>
         </PlantContextProvider>
