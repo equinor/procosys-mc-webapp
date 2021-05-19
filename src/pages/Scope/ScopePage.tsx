@@ -38,17 +38,24 @@ const ScopePage = (): JSX.Element => {
     const [scope, setScope] = useState<ChecklistPreview[]>();
     const [punchList, setPunchList] = useState<PunchPreview[]>();
     const [details, setDetails] = useState<McPkgPreview>();
-    const [fetchStatus, setFetchStatus] = useState(AsyncStatus.LOADING);
+    const [fetchFooterStatus, setFetchFooterStatus] = useState(
+        AsyncStatus.LOADING
+    );
+    const [fetchDetailsStatus, setFetchDetailsStatus] = useState(
+        AsyncStatus.LOADING
+    );
+    const source = Axios.CancelToken.source();
 
     useEffect(() => {
-        const source = Axios.CancelToken.source();
+        return (): void => {
+            source.cancel();
+        };
+    }, []);
+
+    useEffect(() => {
         (async (): Promise<void> => {
             try {
-                const [
-                    scopeFromApi,
-                    punchListFromApi,
-                    detailsFromApi,
-                ] = await Promise.all([
+                const [scopeFromApi, punchListFromApi] = await Promise.all([
                     api.getScope(
                         params.plant,
                         params.searchType,
@@ -61,28 +68,38 @@ const ScopePage = (): JSX.Element => {
                         params.itemId,
                         source.token
                     ),
-                    api.getItemDetails(
-                        params.plant,
-                        params.searchType,
-                        params.itemId,
-                        source.token
-                    ),
                 ]);
                 setScope(scopeFromApi);
                 setPunchList(punchListFromApi);
-                setDetails(detailsFromApi);
-                setFetchStatus(AsyncStatus.SUCCESS);
+                setFetchFooterStatus(AsyncStatus.SUCCESS);
             } catch {
-                setFetchStatus(AsyncStatus.ERROR);
+                setFetchFooterStatus(AsyncStatus.ERROR);
             }
         })();
-        return (): void => {
-            source.cancel();
-        };
-    }, [api, params.plant, params.searchType, params.itemId]);
+    }, [api, params]);
+
+    useEffect(() => {
+        (async (): Promise<void> => {
+            try {
+                const detailsFromApi = await api.getItemDetails(
+                    params.plant,
+                    params.searchType,
+                    params.itemId,
+                    source.token
+                );
+                setDetails(detailsFromApi);
+                setFetchDetailsStatus(AsyncStatus.SUCCESS);
+            } catch {
+                setFetchDetailsStatus(AsyncStatus.ERROR);
+            }
+        })();
+    }, [api, params]);
 
     const determineDetailsToRender = (): JSX.Element => {
-        if (fetchStatus === AsyncStatus.SUCCESS && details != undefined) {
+        if (
+            fetchDetailsStatus === AsyncStatus.SUCCESS &&
+            details != undefined
+        ) {
             if (params.searchType === SearchType.MC) {
                 return (
                     <McDetails
@@ -93,7 +110,7 @@ const ScopePage = (): JSX.Element => {
                 );
             }
         }
-        if (fetchStatus === AsyncStatus.ERROR) {
+        if (fetchDetailsStatus === AsyncStatus.ERROR) {
             return (
                 <DetailsWrapper>
                     Unable to load details. Please reload
@@ -108,7 +125,7 @@ const ScopePage = (): JSX.Element => {
     };
 
     const determineFooterToRender = (): JSX.Element => {
-        if (fetchStatus === AsyncStatus.SUCCESS && scope && punchList) {
+        if (fetchFooterStatus === AsyncStatus.SUCCESS && scope && punchList) {
             return (
                 <NavigationFooter>
                     <FooterButton
@@ -137,7 +154,7 @@ const ScopePage = (): JSX.Element => {
                 </NavigationFooter>
             );
         }
-        if (fetchStatus === AsyncStatus.ERROR) {
+        if (fetchFooterStatus === AsyncStatus.ERROR) {
             return (
                 <NavigationFooterShell>
                     <p>Unable to load footer. Please reload</p>
