@@ -21,6 +21,7 @@ import EdsIcon from '../../components/icons/EdsIcon';
 import { COLORS } from '../../style/GlobalStyles';
 import McDetails from '../../components/detailCards/McDetails';
 import { SearchType } from '../Search/Search';
+import { URLError } from '../../utils/matchPlantInURL';
 
 const EntityPageWrapper = styled.main``;
 
@@ -94,6 +95,17 @@ const EntityPage = (): JSX.Element => {
             }
         })();
     }, [api, params]);
+
+    if (
+        params.searchType != SearchType.MC &&
+        params.searchType != SearchType.WO &&
+        params.searchType != SearchType.PO &&
+        params.searchType != SearchType.Tag
+    ) {
+        throw new URLError(
+            `The "${params.searchType}" item type is not supported. Please double check your URL and make sure the type of the item you're trying to reach is either MC, PO, WO or Tag.`
+        );
+    }
 
     const determineDetailsToRender = (): JSX.Element => {
         if (

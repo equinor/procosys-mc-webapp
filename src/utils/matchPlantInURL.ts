@@ -1,9 +1,9 @@
 import { Plant } from '../services/apiTypes';
 
-class URLError extends Error {
+export class URLError extends Error {
     constructor(message: string) {
         super(message);
-        this.name = 'Could not read plant from URL';
+        this.name = 'Could not read the URL';
     }
 }
 

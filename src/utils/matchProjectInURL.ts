@@ -1,11 +1,5 @@
 import { Project } from '../services/apiTypes';
-
-class URLError extends Error {
-    constructor(message: string) {
-        super(message);
-        this.name = 'Could not read project from URL';
-    }
-}
+import { URLError } from './matchPlantInURL';
 
 const matchProjectInURL = (
     availableProjects: Project[],
