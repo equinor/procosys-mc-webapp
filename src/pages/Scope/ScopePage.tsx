@@ -30,7 +30,7 @@ const DetailsWrapper = styled.p`
 `;
 
 const ContentWrapper = styled.div`
-    padding: 0 4%;
+    padding: 0 12px;
 `;
 
 const ScopePage = (): JSX.Element => {

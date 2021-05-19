@@ -2,14 +2,12 @@ import React from 'react';
 import styled from 'styled-components';
 import { Caption, COLORS } from '../../style/GlobalStyles';
 import { McPkgPreview } from '../../services/apiTypes';
-import { SearchType } from '../../pages/Search/Search';
 import { McPackageStatusIcon } from '../icons/McPackageStatusIcon';
 import useCommonHooks from '../../utils/useCommonHooks';
 
 const McDetailsWrapper = styled.article<{ clickable: boolean }>`
     cursor: pointer;
     display: flex;
-    align-items: flex-start;
     border-top: 1px solid ${COLORS.lightGrey};
     padding: 12px;
     margin: 0;
@@ -25,7 +23,7 @@ export const StatusImageWrapper = styled.div`
     display: flex;
     flex-direction: column;
     padding-right: 12px;
-    padding-bottom: 5px;
+    align-self: center;
     & > img {
         height: 20px;
     }
