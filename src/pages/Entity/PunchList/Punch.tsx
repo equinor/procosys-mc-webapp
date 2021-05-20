@@ -1,49 +1,64 @@
 import React from 'react';
+import {
+    DetailsWrapper,
+    StatusImageWrapper,
+} from '../../../components/detailCards/McDetails';
 import CompletionStatusIcon from '../../../components/icons/CompletionStatusIcon';
+import EdsIcon from '../../../components/icons/EdsIcon';
 import { PunchPreview } from '../../../services/apiTypes';
+import { Caption, COLORS } from '../../../style/GlobalStyles';
+import {
+    AttachmentWrapper,
+    DetailsBodyWrapper,
+    DetailsHeaderWrapper,
+    PreviewButton,
+    StatusTextWrapper,
+} from '../Scope/ScopeItem';
 
-const Punch = (punch: PunchPreview): JSX.Element => {
+type PunchProps = {
+    punch: PunchPreview;
+};
+
+const Punch = ({ punch }: PunchProps): JSX.Element => {
+    // TODO: add link to previewButton
     return (
-        <>
-            {
-                // TODO: exchange empty tag above w. preview button imported from scopeItem
-            }
-            <>
-                {
-                    // TODO: exchange empty tag above w. status image wrapper imported from McDetails
-                }
+        <PreviewButton to={``}>
+            <StatusImageWrapper>
                 <CompletionStatusIcon status={punch.status} />
-                <>
+                <StatusTextWrapper>
+                    {punch.cleared ? <Caption>C</Caption> : <></>}
+                    {punch.verified ? <Caption>V</Caption> : <></>}
+                </StatusTextWrapper>
+            </StatusImageWrapper>
+            <DetailsWrapper>
+                <DetailsHeaderWrapper>
+                    <Caption>{punch.id}</Caption>
                     {
-                        // TODO: exchange empty tag above w. statusTextWrapper imported from scopeItem
+                        // TODO: add caption with callOffNo
                     }
-                    {
-                        // TODO: add the status text things (once checked which they are & pulled the correct punch type version)
-                    }
-                </>
-            </>
-            <>
-                {
-                    // TODO: exchange empty tag above w. DetailsWrapper imported from McDetails
-                }
-                {
-                    // TODO: add caption containing punch nr.
-                }
-                <>
-                    {
-                        // TODO: exchange empty tag above w. DetailsHeaderWrapper imported from ScopeItem
-                    }
-                    {
-                        // TODO: add captions with: tagNo, formularType & responsibleCode
-                    }
-                </>
-                <>
-                    {
-                        // TODO: exchange empty tag above w. DetailsBodyWrapper imported from ScopeItem
-                    }
-                </>
-            </>
-        </>
+                </DetailsHeaderWrapper>
+                <DetailsHeaderWrapper>
+                    <Caption>{punch.tagNo}</Caption>
+                    <Caption>{punch.formularType}</Caption>
+                    <Caption>{punch.responsibleCode}</Caption>
+                </DetailsHeaderWrapper>
+                <DetailsBodyWrapper>
+                    <Caption>{punch.tagDescription}</Caption>
+                    {punch.attachmentCount > 0 ? (
+                        <AttachmentWrapper>
+                            <Caption>{punch.attachmentCount}</Caption>
+                            <EdsIcon
+                                name={'attach_file'}
+                                size={16}
+                                color={COLORS.black}
+                            />
+                        </AttachmentWrapper>
+                    ) : (
+                        <></>
+                    )}
+                </DetailsBodyWrapper>
+            </DetailsWrapper>
+        </PreviewButton>
     );
 };
 

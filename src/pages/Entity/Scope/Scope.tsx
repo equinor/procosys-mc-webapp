@@ -16,32 +16,6 @@ export const ScopeWrapper = styled.div`
     }
 `;
 
-// TODO: copy and change in punch list and then remove
-export const PreviewButton = styled(Link)`
-    display: flex;
-    align-items: center;
-    padding: 8px 0;
-    margin: 10px 4% 0 4%;
-    cursor: pointer;
-    text-decoration: none;
-    justify-content: space-between;
-    & img {
-        max-height: 20px;
-        object-fit: contain;
-        flex: 0.1;
-    }
-    & > div {
-        margin-left: 24px;
-        flex: 3;
-        & p {
-            margin: 0;
-        }
-    }
-    & svg {
-        flex: 0.5;
-    }
-`;
-
 const Scope = (): JSX.Element => {
     const { params, api } = useCommonHooks();
     const [scope, setScope] = useState<ChecklistPreview[]>();
