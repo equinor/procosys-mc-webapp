@@ -1,10 +1,10 @@
-## Procosys Commissioning Webapp
+## Procosys Mechanical Completion Webapp
 Mobile application that integrates with Project Completion System (ProCoSys).
-The app provides users with a simple mobile interface for performing common commissioning tasks on the fly.
+The app provides users with a simple mobile interface for performing common MCCR-related tasks on the fly.
 Features include: 
+* Searching for and viewing scopes for Work Orders, MC packages, Purchase orders and Tags.
 * Filling out, signing and adding attachments to checklists.
 * Viewing, adding, clearing, verifying and rejecting punch items.
-* Viewing, editing parameters and signing tasks.
 
 #### Setup
 `yarn install`
