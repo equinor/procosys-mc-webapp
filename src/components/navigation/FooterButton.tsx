@@ -13,15 +13,8 @@ const FooterButtonWrapper = styled.button<{ active: boolean }>`
     background-color: ${(props): string =>
         props.active ? COLORS.fadedBlue : COLORS.white};
     position: relative;
-
     & p {
         margin: 0;
-    }
-    &:focus,
-    &:hover,
-    &:active {
-        background-color: initial;
-        outline: none;
     }
 `;
 

@@ -15,10 +15,10 @@ resources:
 # Global variables for the pipeline
 variables:
   - template: templates/variables/procosys-global-variables.yml@templates
-  - template: templates/variables/comm-webapp-variables.yml@templates
+  - template: templates/variables/mc-webapp-variables.yml@templates
 
   - name: 'repositoryName'
-    value: procosys/comm-webapp
+    value: procosys/mc-webapp
 
 stages:
 # Build Stage
@@ -34,7 +34,7 @@ stages:
 
   jobs:
   # Docker Build
-  - template: /templates/pipelines/dockerbuild-comm-webapp.yml@templates
+  - template: /templates/pipelines/dockerbuild-mc-webapp.yml@templates
     parameters:
       dependsOn: ''
       deploymentName: 'docker_build'
@@ -47,7 +47,7 @@ stages:
       dockerRegistryServiceConnection: '$(dockerRegistryServiceConnectionName)'
 
   # Docker Build and Push
-  - template: /templates/pipelines/dockerbuild-comm-webapp.yml@templates
+  - template: /templates/pipelines/dockerbuild-mc-webapp.yml@templates
     parameters:
       dependsOn: ''
       deploymentName: 'docker_build_push'
@@ -74,7 +74,7 @@ stages:
 
   jobs:
   # Deploy to AKS
-  - template: /templates/pipelines/kubernetes/comm-webapp-deploy.yml@templates
+  - template: /templates/pipelines/kubernetes/mc-webapp-deploy.yml@templates
     parameters:
       deploymentName: 'deploy_to_k8s'
       dependsOn: ''
@@ -102,7 +102,7 @@ stages:
 
   jobs:
   # Deploy to AKS
-  - template: /templates/pipelines/kubernetes/comm-webapp-deploy.yml@templates
+  - template: /templates/pipelines/kubernetes/mc-webapp-deploy.yml@templates
     parameters:
       deploymentName: 'deploy_to_k8s'
       dependsOn: ''
@@ -130,7 +130,7 @@ stages:
 
   jobs:
   # Deploy to AKS
-  - template: /templates/pipelines/kubernetes/comm-webapp-deploy.yml@templates
+  - template: /templates/pipelines/kubernetes/mc-webapp-deploy.yml@templates
     parameters:
       deploymentName: 'deploy_to_k8s'
       dependsOn: ''

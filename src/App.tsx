@@ -16,7 +16,6 @@ export type McParams = {
     plant: string;
     project: string;
     commPkg: string;
-    taskId: string;
     checklistId: string;
     punchItemId: string;
     searchType: SearchType;

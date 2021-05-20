@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
-import EdsIcon from '../../../components/icons/EdsIcon';
-import CompletionStatusIcon from '../../../components/icons/CompletionStatusIcon';
 import { AsyncStatus } from '../../../contexts/McAppContext';
 import { ChecklistPreview } from '../../../services/apiTypes';
 import useCommonHooks from '../../../utils/useCommonHooks';
 import AsyncPage from '../../../components/AsyncPage';
+import ScopeItem from './ScopeItem';
+import Axios from 'axios';
 
-export const CommPkgListWrapper = styled.div`
+export const ScopeWrapper = styled.div`
     padding-bottom: 85px;
     & h3 {
         text-align: center;
@@ -16,6 +16,7 @@ export const CommPkgListWrapper = styled.div`
     }
 `;
 
+// TODO: copy and change in punch list and then remove
 export const PreviewButton = styled(Link)`
     display: flex;
     align-items: center;
@@ -41,24 +42,22 @@ export const PreviewButton = styled(Link)`
     }
 `;
 
-const FormulaTypeText = styled.p`
-    padding-left: 12px;
-    flex: 1;
-`;
-
 const Scope = (): JSX.Element => {
-    const { params, api, url } = useCommonHooks();
+    const { params, api } = useCommonHooks();
     const [scope, setScope] = useState<ChecklistPreview[]>();
     const [fetchScopeStatus, setFetchScopeStatus] = useState(
         AsyncStatus.LOADING
     );
     useEffect(() => {
+        const source = Axios.CancelToken.source();
         (async (): Promise<void> => {
             setFetchScopeStatus(AsyncStatus.LOADING);
             try {
                 const scopeFromApi = await api.getScope(
                     params.plant,
-                    params.commPkg
+                    params.searchType,
+                    params.itemId,
+                    source.token
                 );
                 const sortedScope = scopeFromApi.sort((a, b) =>
                     a.tagNo.localeCompare(b.tagNo)
@@ -73,35 +72,25 @@ const Scope = (): JSX.Element => {
                 setFetchScopeStatus(AsyncStatus.ERROR);
             }
         })();
-    }, [params.plant, params.commPkg, api]);
+        return (): void => {
+            source.cancel();
+        };
+    }, [params.plant, params.searchType, params.itemId, api]);
 
     return (
-        <CommPkgListWrapper>
+        <ScopeWrapper>
             <AsyncPage
                 errorMessage={'Unable to load scope. Please try again.'}
                 emptyContentMessage={'The scope is empty.'}
                 fetchStatus={fetchScopeStatus}
             >
-                <>
+                <div>
                     {scope?.map((checklist) => (
-                        <PreviewButton
-                            key={checklist.id}
-                            to={`${url}/${checklist.id}`}
-                        >
-                            <CompletionStatusIcon status={checklist.status} />
-                            <div>
-                                <label>{checklist.tagNo}</label>
-                                <p>{checklist.tagDescription}</p>
-                            </div>
-                            <FormulaTypeText>
-                                {checklist.formularType}
-                            </FormulaTypeText>
-                            <EdsIcon name="chevron_right" />
-                        </PreviewButton>
+                        <ScopeItem checklist={checklist} key={checklist.id} />
                     ))}
-                </>
+                </div>
             </AsyncPage>
-        </CommPkgListWrapper>
+        </ScopeWrapper>
     );
 };
 
