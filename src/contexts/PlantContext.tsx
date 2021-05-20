@@ -1,13 +1,19 @@
 import React, { ReactNode, useContext, useEffect, useState } from 'react';
 import LoadingPage from '../components/loading/LoadingPage';
 import { Plant, Project } from '../services/apiTypes';
-import { StorageKey } from '../pages/Bookmarks/useBookmarks';
 import matchPlantInURL from '../utils/matchPlantInURL';
 import matchProjectInURL from '../utils/matchProjectInURL';
 import McAppContext, { AsyncStatus } from './McAppContext';
 import useCommonHooks from '../utils/useCommonHooks';
 import ErrorPage from '../components/error/ErrorPage';
 import Navbar from '../components/navigation/Navbar';
+
+export enum StorageKey {
+    PLANT = 'currentPlant',
+    PROJECT = 'currentProject',
+    BOOKMARK = 'Procosys Bookmark',
+    REDIRECTPATH = 'ProCoSys-CWA-redirectPath',
+}
 
 export type PlantContextProps = {
     fetchProjectsAndPermissionsStatus: AsyncStatus;

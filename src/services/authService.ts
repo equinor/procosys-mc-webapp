@@ -1,6 +1,6 @@
 import * as Msal from '@azure/msal-browser';
 import { AccountInfo } from '@azure/msal-browser';
-import { StorageKey } from '../pages/Bookmarks/useBookmarks';
+import { StorageKey } from '../contexts/PlantContext';
 export interface IAuthService {
     login: () => Promise<void>;
     logout: () => Promise<void>;
