@@ -1,7 +1,7 @@
 import React from 'react';
 import { Route, Switch, useRouteMatch } from 'react-router-dom';
 import ChecklistWrapper from './pages/Checklist/ChecklistWrapper';
-import CommPkg from './pages/Scope/CommPkg';
+import CommPkg from './pages/Entity/CommPkg';
 import NewPunch from './pages/Punch/NewPunch/NewPunch';
 import ClearPunch from './pages/Punch/ClearPunch/ClearPunch';
 import VerifyPunch from './pages/Punch/VerifyPunch/VerifyPunch';

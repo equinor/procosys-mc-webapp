@@ -11,7 +11,7 @@ import { AsyncStatus } from '../../contexts/McAppContext';
 import EdsIcon from '../../components/icons/EdsIcon';
 import AsyncCard from '../../components/AsyncCard';
 import useSnackbar from '../../utils/useSnackbar';
-import { TaskPreviewButton } from '../Scope/Tasks/Tasks';
+import { TaskPreviewButton } from '../Entity/Tasks/Tasks';
 import { Banner, Typography } from '@equinor/eds-core-react';
 import Axios, { CancelToken } from 'axios';
 import useAsyncGet from '../../utils/useAsyncGet';

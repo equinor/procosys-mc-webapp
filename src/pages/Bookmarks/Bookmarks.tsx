@@ -8,7 +8,7 @@ import Navbar from '../../components/navigation/Navbar';
 import EdsIcon from '../../components/icons/EdsIcon';
 import useCommonHooks from '../../utils/useCommonHooks';
 import withAccessControl from '../../services/withAccessControl';
-import DetailsCard from '../Scope/DetailsCard';
+import DetailsCard from '../Entity/DetailsCard';
 
 const BookmarksWrapper = styled.main`
     display: flex;
