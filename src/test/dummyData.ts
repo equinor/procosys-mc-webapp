@@ -7,7 +7,6 @@ import {
     Plant,
     Project,
     PunchPreview,
-    TaskPreview,
     McPkgPreview,
     SearchResults,
 } from '../services/apiTypes';
@@ -59,7 +58,12 @@ export const testPlants: Plant[] = [
     { id: 'Two', title: 'Test plant 2', slug: 'yet-another-slug' },
 ];
 
-export const dummyPermissions: string[] = ['COMMPKG/READ', 'MCPKG/READ'];
+export const dummyPermissions: string[] = [
+    'COMMPKG/READ',
+    'MCPKG/READ',
+    'MCCR/READ',
+    'PUNCHLISTITEM/READ',
+];
 
 export const testProjects: Project[] = [
     { id: 1, title: 'Test project 1', description: 'this-is-a-description' },
@@ -79,23 +83,6 @@ export const testDetails: CommPkg = {
     operationHandoverStatus: 'Test operationHandoverStatus',
     systemId: 1,
 };
-
-export const testTasks: TaskPreview[] = [
-    {
-        id: 1,
-        number: 'Test task number',
-        title: 'Test task title',
-        chapter: 'Test task chapter',
-        isSigned: true,
-    },
-    {
-        id: 2,
-        number: 'Test task number 2',
-        title: 'Test task title 2',
-        chapter: 'Test task chapter 2',
-        isSigned: false,
-    },
-];
 
 export const testMcPkgPreview: McPkgPreview[] = [
     {
@@ -121,11 +108,15 @@ export const testScope: ChecklistPreview[] = [
         id: 1,
         tagNo: 'Test tag number',
         tagDescription: 'Test tag description',
+        responsibleCode: 'Respcode',
         status: CompletionStatus.OK,
         formularGroup: 'Test formular group',
         formularType: 'Test formular type',
         isRestrictedForUser: false,
         hasElectronicForm: true,
+        attachmentCount: 1,
+        isSigned: false,
+        isVerified: false,
     },
 ];
 
@@ -135,13 +126,17 @@ export const testPunchList: PunchPreview[] = [
         status: CompletionStatus.OK,
         description: 'Test punch description',
         systemModule: 'Test punch system module',
+        tagDescription: 'Test tag description',
         tagId: 1,
         tagNo: 'Test tag number',
-        tagDescription: 'Test tag description',
+        formularType: 'test formular type',
+        responsibleCode: 'test responsible code',
         isRestrictedForUser: false,
         cleared: true,
         rejected: false,
+        verified: false,
         statusControlledBySwcr: true,
+        attachmentCount: 2,
     },
 ];
 
@@ -250,29 +245,23 @@ export const dummyScopeResponse = [
     },
 ];
 
-export const dummyTasksResponse = [
-    {
-        Id: 43242,
-        Number: 'dummy-task-number',
-        Title: 'dummy-task-title',
-        Chapter: 'dummy-task-chapter',
-        IsSigned: true,
-    },
-];
-
 export const dummyPunchListResponse = [
     {
-        Id: 645645,
-        Status: 'PB',
-        Description: 'dummy-punch-item-description',
-        SystemModule: 'dummy-punch-system-module',
-        TagDescription: 'dummy-punch-task-description',
-        TagId: 123,
-        TagNo: 'dummy-punch-tag-no',
-        IsRestrictedForUser: false,
-        Cleared: false,
-        Rejected: false,
-        StatusControlledBySwcr: false,
+        id: 1,
+        status: CompletionStatus.OK,
+        description: 'Test punch description',
+        systemModule: 'Test punch system module',
+        tagDescription: 'dummy-punch-tag-description',
+        tagId: 1,
+        tagNo: 'dummy-punch-tag number',
+        formularType: 'test formular type',
+        responsibleCode: 'dummy punch responsible code',
+        isRestrictedForUser: false,
+        cleared: true,
+        rejected: false,
+        verified: false,
+        statusControlledBySwcr: true,
+        attachmentCount: 2,
     },
 ];
 
@@ -347,39 +336,6 @@ export const dummyCommPkgDetailsResponse = {
     System: '10|04',
     IsVoided: false,
 };
-
-export const dummyTaskResponse = {
-    Id: 111,
-    Number: '1.2-3',
-    Title: 'dummy-task-title',
-    DescriptionAsHtml: '<p>dummy-task-description</p>',
-    CommentAsHtml: '<p>dummy-task-comment</p>',
-    UpdatedByUser: 'dummy-task-user',
-    UpdatedAt: '2021-03-04T10:53:25Z',
-    UpdatedByFirstName: 'dummy-task-first-name',
-    UpdatedByLastName: 'dummy-task-last-name',
-    SignedByUser: null,
-    SignedByFirstName: null,
-    SignedByLastName: null,
-    SignedAt: null,
-};
-
-export const dummyTaskParametersResponse = [
-    {
-        Id: 123,
-        Description: 'dummy-parameter-description',
-        MeasuredValue: '123',
-        ReferenceValue: '123',
-        ReferenceUnit: 'V',
-    },
-    {
-        Id: 124,
-        Description: 'dummy-parameter-description-2',
-        MeasuredValue: '123',
-        ReferenceValue: '123',
-        ReferenceUnit: 'Ohm',
-    },
-];
 
 export const dummyAttachmentsResponse = [
     {

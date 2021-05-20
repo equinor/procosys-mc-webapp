@@ -2,26 +2,26 @@ import { setupServer } from 'msw/node';
 import { rest } from 'msw';
 import {
     dummyChecklistResponse,
-    dummyCommPkgDetailsResponse,
     dummyPunchListResponse,
     dummyScopeResponse,
     dummyAttachmentsResponse,
-    dummyTaskParametersResponse,
-    dummyTaskResponse,
-    dummyTasksResponse,
     testProjects,
     dummyPunchCategories,
     dummyPunchOrganizations,
     dummyPunchTypes,
     dummyPunchItemUncleared,
     testMcPkgSearch,
+    testMcPkgPreview,
+    dummyCommPkgDetailsResponse,
+    testScope,
 } from './dummyData';
 import objectToCamelCase from '../utils/objectToCamelCase';
 
 export const baseURL = 'https://test-url.com';
 export const ENDPOINTS = {
     //General
-    getCommPkgDetails: `${baseURL}/CommPkg`,
+    getMcPkgDetails: `${baseURL}/McPkg`,
+    getCommPkgDetails: `${baseURL}/CommPkg`, // TODO: remove
     getPermissions: `${baseURL}/Permissions`,
     getProjects: `${baseURL}/Projects`,
 
@@ -30,29 +30,21 @@ export const ENDPOINTS = {
 
     // Checklist
     putMetaTableCell: `${baseURL}/CheckList/Item/MetaTableCell`,
-    getChecklist: `${baseURL}/CheckList/Comm`,
     getChecklistAttachments: `${baseURL}/CheckList/Attachments`,
-    putChecklistComment: `${baseURL}/CheckList/Comm/Comment`,
     postSetNA: `${baseURL}/CheckList/Item/SetNA`,
     postSetOk: `${baseURL}/CheckList/Item/SetOk`,
     postClear: `${baseURL}/CheckList/Item/Clear`,
+    getMcScope: `${baseURL}/McPkg/CheckLists`,
+    // TODO: remove the endpoints below
+    getChecklist: `${baseURL}/CheckList/Comm`,
+    putChecklistComment: `${baseURL}/CheckList/Comm/Comment`,
     postSign: `${baseURL}/CheckList/Comm/Sign`,
     postUnsign: `${baseURL}/CheckList/Comm/Unsign`,
     getScope: `${baseURL}/CommPkg/CheckLists`,
 
-    //Task
-    getTasks: `${baseURL}/CommPkg/Tasks`,
-    getTask: `${baseURL}/CommPkg/Task`,
-    getTaskParameters: `${baseURL}/CommPkg/Task/Parameters`,
-    putTaskParameter: `${baseURL}/CommPkg/Task/Parameters/Parameter`,
-    getTaskAttachments: `${baseURL}/CommPkg/Task/Attachments`,
-    getTaskAttachment: `${baseURL}/CommPkg/Task/Attachment`,
-    putTaskComment: `${baseURL}/CommPkg/Task/Comment`,
-    postTaskSign: `${baseURL}/CommPkg/Task/Sign`,
-    postTaskUnsign: `${baseURL}/CommPkg/Task/Unsign`,
-
     //PUNCH
-    getPunchList: `${baseURL}/CommPkg/PunchList`,
+    getMcPunchList: `${baseURL}/McPkg/PunchList`,
+    getPunchList: `${baseURL}/CommPkg/PunchList`, // TODO: remove
     getPunchAttachment: `${baseURL}/PunchListItem/Attachment`,
     deletePunchAttachment: `${baseURL}/PunchListItem/Attachment`,
     postTempPunchAttachment: `${baseURL}/PunchListItem/TempAttachment`,
@@ -75,8 +67,15 @@ export const ENDPOINTS = {
     postPunchReject: `${baseURL}/PunchListItem/Reject`,
 };
 
+// TODO: remove all that use aen endpoint that needs removal
 export const server = setupServer(
     //General
+    rest.get(ENDPOINTS.getMcPkgDetails, (_, response, context) => {
+        return response(
+            context.json(objectToCamelCase(testMcPkgPreview[0])),
+            context.status(200)
+        );
+    }),
     rest.get(ENDPOINTS.getCommPkgDetails, (_, response, context) => {
         return response(
             context.json(objectToCamelCase(dummyCommPkgDetailsResponse)),
@@ -121,6 +120,12 @@ export const server = setupServer(
     rest.post(ENDPOINTS.postClear, (_, response, context) => {
         return response(context.status(200));
     }),
+    rest.get(ENDPOINTS.getMcScope, (_, response, context) => {
+        return response(
+            context.json(objectToCamelCase(testScope)),
+            context.status(200)
+        );
+    }),
     rest.put(ENDPOINTS.putChecklistComment, (_, response, context) => {
         return response(context.status(200));
     }),
@@ -137,45 +142,13 @@ export const server = setupServer(
         );
     }),
 
-    // Task
-    rest.get(ENDPOINTS.getTasks, (_, response, context) => {
-        return response(
-            context.json(objectToCamelCase(dummyTasksResponse)),
-            context.status(200)
-        );
-    }),
-    rest.get(ENDPOINTS.getTask, (_, response, context) => {
-        return response(context.json(dummyTaskResponse), context.status(200));
-    }),
-    rest.get(ENDPOINTS.getTaskAttachments, (_, response, context) => {
-        return response(
-            context.json(dummyAttachmentsResponse),
-            context.status(200)
-        );
-    }),
-    rest.get(ENDPOINTS.getTaskAttachment, (_, response, context) => {
-        return response(context.json(new Blob()), context.status(200));
-    }),
-    rest.get(ENDPOINTS.getTaskParameters, (_, response, context) => {
-        return response(
-            context.json(dummyTaskParametersResponse),
-            context.status(200)
-        );
-    }),
-    rest.put(ENDPOINTS.putTaskComment, (_, response, context) => {
-        return response(context.status(200));
-    }),
-    rest.post(ENDPOINTS.postTaskSign, (_, response, context) => {
-        return response(context.status(200));
-    }),
-    rest.post(ENDPOINTS.postTaskUnsign, (_, response, context) => {
-        return response(context.status(200));
-    }),
-    rest.put(ENDPOINTS.putTaskParameter, (_, response, context) => {
-        return response(context.status(200));
-    }),
-
     // PUNCH
+    rest.get(ENDPOINTS.getMcPunchList, (_, response, context) => {
+        return response(
+            context.json(objectToCamelCase(dummyPunchListResponse)),
+            context.status(200)
+        );
+    }),
     rest.get(ENDPOINTS.getPunchList, (_, response, context) => {
         return response(
             context.json(objectToCamelCase(dummyPunchListResponse)),

@@ -4,6 +4,8 @@ import { PlantContextProvider } from './contexts/PlantContext';
 import SelectProject from './pages/SelectProject/SelectProject';
 import Search from './pages/Search/Search';
 import SelectPlant from './pages/SelectPlant/SelectPlant';
+import EntityPage from './pages/Entity/EntityPage';
+import ChecklistWrapper from './pages/Checklist/ChecklistWrapper';
 
 const McRouter = (): JSX.Element => {
     return (
@@ -14,8 +16,23 @@ const McRouter = (): JSX.Element => {
                 <Route exact path={'/:plant/:project'} component={Search} />
                 <Redirect
                     exact
-                    path={'/:plant/:project/:itemType'}
-                    to={'/:plant/:project/'}
+                    path={'/:plant/:project/:searchType'}
+                    to={'/:plant/:project'}
+                />
+                <Route
+                    path={
+                        '/:plant/:project/:searchType/:itemId/checklist/:checklistId'
+                    }
+                    component={ChecklistWrapper}
+                />
+                <Redirect
+                    exact
+                    path={'/:plant/:project/:searchType/:itemId/checklist'}
+                    to={'/:plant/:project/:searchType/:itemId'}
+                />
+                <Route
+                    path={'/:plant/:project/:searchType/:itemId'}
+                    component={EntityPage}
                 />
             </Switch>
         </PlantContextProvider>

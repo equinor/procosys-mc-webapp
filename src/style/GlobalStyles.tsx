@@ -11,7 +11,7 @@ export const COLORS = {
     danger: tokens.colors.interactive.danger__resting.hex,
     success: tokens.colors.interactive.success__resting.hex,
     white: '#fff',
-    darkGrey: '#777',
+    darkGrey: '#757575',
     lightGrey: '#fafafa',
     black: '#000',
 };

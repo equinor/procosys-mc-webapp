@@ -56,11 +56,15 @@ export type ChecklistPreview = {
     id: number;
     tagNo: string;
     tagDescription: string;
+    responsibleCode: string;
     status: CompletionStatus;
     formularType: string;
     formularGroup: string;
     isRestrictedForUser: boolean;
     hasElectronicForm: boolean;
+    attachmentCount: number;
+    isSigned: boolean;
+    isVerified: boolean;
 };
 
 export type PunchPreview = {
@@ -71,18 +75,15 @@ export type PunchPreview = {
     tagDescription: string;
     tagId: number;
     tagNo: string;
+    formularType: string;
+    responsibleCode: string;
     isRestrictedForUser: boolean;
     cleared: boolean;
     rejected: boolean;
+    verified: boolean;
     statusControlledBySwcr: boolean;
-};
-
-export type TaskPreview = {
-    id: number;
-    number: string;
-    title: string;
-    chapter: string;
-    isSigned: boolean;
+    attachmentCount: number;
+    callOffNo?: string;
 };
 
 // CHECKLIST
@@ -226,30 +227,6 @@ export interface PunchItem {
     statusControlledBySwcr: boolean;
     isRestrictedForUser: boolean;
     attachmentCount: number;
-}
-
-export interface Task {
-    id: number;
-    number: string;
-    title: string;
-    descriptionAsHtml: string;
-    commentAsHtml: string;
-    updatedByUser: string;
-    updatedAt: Date;
-    updatedByFirstName: string;
-    updatedByLastName: string;
-    signedByUser: string;
-    signedByFirstName: string;
-    signedByLastName: string;
-    signedAt: Date;
-}
-
-export interface TaskParameter {
-    id: number;
-    description: string;
-    measuredValue: string;
-    referenceValue: string;
-    referenceUnit: string;
 }
 
 export interface Attachment {
