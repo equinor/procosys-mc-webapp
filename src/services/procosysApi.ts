@@ -87,7 +87,7 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
         if (searchType === SearchType.MC) {
             url = `McPkg/Search?plantId=${plantId}&startsWithMcPkgNo=${query}&includeClosedProjects=false&projectId=${projectId}${apiVersion}`;
         } else {
-            throw new Error('The selected search type is not supported.');
+            throw new Error('An error occurred, please try again.');
         }
         const { data } = await axios.get(url, { cancelToken });
         if (!isCorrectSearchResults(data, searchType)) {
