@@ -163,8 +163,63 @@ describe('<EntityPage> in-page routing', () => {
 });
 
 describe('<EntityPage> punch list', () => {
-    it.todo('Renders a list of punches');
-    it.todo('Renders a loading screen while awaiting API response');
-    it.todo('Shows an error message if X API call fails');
-    it.todo('Shows a placeholder message if punch list is empty');
+    it('Renders a list of punches', async () => {
+        renderEntityPage(SearchType.MC, true);
+        expect(
+            await screen.findByText(testMcPkgPreview[0].mcPkgNo)
+        ).toBeInTheDocument();
+        expect(
+            await screen.findByRole('button', {
+                name: `Scope ${testScope.length}`,
+            })
+        ).toBeInTheDocument();
+        expect(
+            await screen.findByText(dummyPunchListResponse[0].tagDescription)
+        ).toBeInTheDocument();
+    });
+    it('Renders a loading screen while awaiting API response', async () => {
+        server.use(
+            rest.get(ENDPOINTS.getMcPunchList, (request, response, context) => {
+                return response(
+                    context.json(dummyPunchListResponse),
+                    context.status(200),
+                    context.delay(40)
+                );
+            })
+        );
+        renderEntityPage(SearchType.MC, true);
+        expect(await screen.findByTestId('skeleton-row')).toBeInTheDocument();
+        expect(
+            await screen.findByText(dummyPunchListResponse[0].tagNo)
+        ).toBeInTheDocument();
+    });
+    it('Shows an error message in footer and punch list if getPunchList API call fails', async () => {
+        causeApiError(ENDPOINTS.getMcPunchList, 'get');
+        renderEntityPage(SearchType.MC, true);
+        expect(
+            screen.queryByText('Unable to load details. Please reload')
+        ).not.toBeInTheDocument();
+        expect(
+            await screen.findByText(
+                'Error: Unable to get punch list. Please try again.'
+            )
+        ).toBeInTheDocument();
+        expect(
+            await screen.findByText('Unable to load footer. Please reload')
+        ).toBeInTheDocument();
+    });
+    it('Shows a placeholder message if punch list is empty', async () => {
+        server.use(
+            rest.get(ENDPOINTS.getMcPunchList, (request, response, context) => {
+                return response(context.json([]), context.status(200));
+            })
+        );
+        renderEntityPage(SearchType.MC, true);
+        expect(
+            await screen.findByText('The punch list is empty.')
+        ).toBeInTheDocument();
+        expect(
+            await screen.findByText(testMcPkgPreview[0].mcPkgNo)
+        ).toBeInTheDocument();
+    });
 });
