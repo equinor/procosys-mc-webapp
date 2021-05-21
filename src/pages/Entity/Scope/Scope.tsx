@@ -8,7 +8,6 @@ import ScopeItem from './ScopeItem';
 import Axios from 'axios';
 
 export const ScopeWrapper = styled.div`
-    padding-bottom: 85px;
     & h3 {
         text-align: center;
         margin-top: 16px;

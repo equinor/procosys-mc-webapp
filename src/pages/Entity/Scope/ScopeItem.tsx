@@ -43,7 +43,7 @@ export const DetailsHeaderWrapper = styled.div`
         text-align: left;
     }
     & > p {
-        margin: 0;
+        margin: 0 0 3px 0;
         flex: 1;
         text-align: right;
     }

@@ -31,7 +31,7 @@ const DetailsWrapper = styled.p`
 `;
 
 const ContentWrapper = styled.div`
-    padding: 0 12px;
+    padding: 12px 4% 85px 4%;
 `;
 
 const EntityPage = (): JSX.Element => {

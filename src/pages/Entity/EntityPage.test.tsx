@@ -82,7 +82,7 @@ describe('<EntityPage> general and Scope component', () => {
                 return response(
                     context.json(testScope),
                     context.status(200),
-                    context.delay(40)
+                    context.delay(60)
                 );
             })
         );
