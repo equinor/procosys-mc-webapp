@@ -1,9 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { ScopeWrapper } from '../Scope/Scope';
-import styled from 'styled-components';
-import EdsIcon from '../../../components/icons/EdsIcon';
-import { Typography } from '@equinor/eds-core-react';
-import CompletionStatusIcon from '../../../components/icons/CompletionStatusIcon';
 import { AsyncStatus } from '../../../contexts/McAppContext';
 import { PunchPreview } from '../../../services/apiTypes';
 import useCommonHooks from '../../../utils/useCommonHooks';
@@ -11,18 +7,8 @@ import AsyncPage from '../../../components/AsyncPage';
 import Axios from 'axios';
 import Punch from '../../../components/Punch';
 
-const InfoRow = styled.div`
-    &:first-child {
-        margin-right: 20px;
-    }
-`;
-
-const ModuleAndTagWrapper = styled.div`
-    display: flex;
-`;
-
 const PunchList = (): JSX.Element => {
-    const { api, url, params } = useCommonHooks();
+    const { api, params } = useCommonHooks();
     const [punchList, setPunchList] = useState<PunchPreview[]>();
     const [fetchPunchListStatus, setFetchPunchListStatus] = useState(
         AsyncStatus.LOADING
