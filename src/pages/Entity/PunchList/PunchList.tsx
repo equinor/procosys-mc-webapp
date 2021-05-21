@@ -9,7 +9,7 @@ import { PunchPreview } from '../../../services/apiTypes';
 import useCommonHooks from '../../../utils/useCommonHooks';
 import AsyncPage from '../../../components/AsyncPage';
 import Axios from 'axios';
-import Punch from './Punch';
+import Punch from '../../../components/Punch';
 
 const InfoRow = styled.div`
     &:first-child {

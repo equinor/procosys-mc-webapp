@@ -1,19 +1,16 @@
 import React from 'react';
-import {
-    DetailsWrapper,
-    StatusImageWrapper,
-} from '../../../components/detailCards/McDetails';
-import CompletionStatusIcon from '../../../components/icons/CompletionStatusIcon';
-import EdsIcon from '../../../components/icons/EdsIcon';
-import { PunchPreview } from '../../../services/apiTypes';
-import { Caption, COLORS } from '../../../style/GlobalStyles';
+import { DetailsWrapper, StatusImageWrapper } from './detailCards/McDetails';
+import CompletionStatusIcon from './icons/CompletionStatusIcon';
+import EdsIcon from './icons/EdsIcon';
+import { PunchPreview } from '../services/apiTypes';
+import { Caption, COLORS } from '../style/GlobalStyles';
 import {
     AttachmentWrapper,
     DetailsBodyWrapper,
     DetailsHeaderWrapper,
     PreviewButton,
     StatusTextWrapper,
-} from '../Scope/ScopeItem';
+} from '../pages/Entity/Scope/ScopeItem';
 
 type PunchProps = {
     punch: PunchPreview;
@@ -34,7 +31,7 @@ const Punch = ({ punch }: PunchProps): JSX.Element => {
                 <DetailsHeaderWrapper>
                     <Caption>{punch.id}</Caption>
                     {
-                        // TODO: add caption with callOffNo
+                        // TODO: add caption with callOffNo for PO punch
                     }
                 </DetailsHeaderWrapper>
                 <DetailsHeaderWrapper>
