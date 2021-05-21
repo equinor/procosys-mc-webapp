@@ -3,6 +3,11 @@ import { Search as SearchField } from '@equinor/eds-core-react';
 import useSearchPageFacade from '../useSearchPageFacade';
 import SearchResults from '../SearchResults/SearchResults';
 import { SearchType } from '../Search';
+import styled from 'styled-components';
+
+const TallSearchField = styled(SearchField)`
+    height: 54px;
+`;
 
 type SearchAreaProps = {
     searchType: SearchType;
@@ -29,7 +34,7 @@ const SearchArea = ({ searchType }: SearchAreaProps): JSX.Element => {
 
     return (
         <>
-            <SearchField
+            <TallSearchField
                 placeholder={`For example: "${getPlaceholderText()}"`}
                 value={query}
                 onChange={(e: ChangeEvent<HTMLInputElement>): void =>
