@@ -11,6 +11,7 @@ resources:
     type: github
     name: equinor/procosys-infra
     endpoint: 'equinor'
+    ref: new-app/mc
 
 # Global variables for the pipeline
 variables:

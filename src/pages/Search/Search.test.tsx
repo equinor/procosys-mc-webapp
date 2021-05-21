@@ -43,7 +43,7 @@ describe('<Search/> successes', () => {
         ).toBeInTheDocument();
         expect(
             await screen.findByText(
-                'Start typing your mechanical completion package number in the field above.'
+                'Start typing your MC Package number in the field above.'
             )
         ).toBeInTheDocument();
         userEvent.click(screen.getByRole('button', { name: 'MC' }));

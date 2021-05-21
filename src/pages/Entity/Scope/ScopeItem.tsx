@@ -76,8 +76,8 @@ const ScopeItem = ({ checklist }: ScopeItemProps): JSX.Element => {
             <StatusImageWrapper>
                 <CompletionStatusIcon status={checklist.status} />
                 <StatusTextWrapper>
-                    {checklist.isSigned ? <Caption>S</Caption> : <></>}
-                    {checklist.isVerified ? <Caption>V</Caption> : <></>}
+                    {checklist.isSigned ? <Caption>S</Caption> : null}
+                    {checklist.isVerified ? <Caption>V</Caption> : null}
                 </StatusTextWrapper>
             </StatusImageWrapper>
             <DetailsWrapper>
@@ -97,9 +97,7 @@ const ScopeItem = ({ checklist }: ScopeItemProps): JSX.Element => {
                                 color={COLORS.black}
                             />
                         </AttachmentWrapper>
-                    ) : (
-                        <></>
-                    )}
+                    ) : null}
                 </DetailsBodyWrapper>
             </DetailsWrapper>
         </PreviewButton>

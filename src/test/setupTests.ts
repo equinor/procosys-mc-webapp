@@ -12,7 +12,8 @@ declare global {
 }
 
 configure({
-    getElementError: (message: string, container) => {
+    getElementError: (message: string | null, container) => {
+        if (!message) return new Error();
         const error = new Error(message);
         error.name = 'TestingLibraryElementError';
         error.stack = undefined;
