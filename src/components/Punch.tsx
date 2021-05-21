@@ -11,6 +11,7 @@ import {
     PreviewButton,
     StatusTextWrapper,
 } from '../pages/Entity/Scope/ScopeItem';
+import { Typography } from '@equinor/eds-core-react';
 
 type PunchProps = {
     punch: PunchPreview;
@@ -40,7 +41,9 @@ const Punch = ({ punch }: PunchProps): JSX.Element => {
                     <Caption>{punch.responsibleCode}</Caption>
                 </DetailsHeaderWrapper>
                 <DetailsBodyWrapper>
-                    <Caption>{punch.tagDescription}</Caption>
+                    <Typography variant="caption" lines={3}>
+                        {punch.description}
+                    </Typography>
                     {punch.attachmentCount > 0 ? (
                         <AttachmentWrapper>
                             <Caption>{punch.attachmentCount}</Caption>

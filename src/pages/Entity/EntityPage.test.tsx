@@ -134,7 +134,7 @@ describe('<EntityPage> in-page routing', () => {
             await screen.findByText(testMcPkgPreview[0].mcPkgNo)
         ).toBeInTheDocument();
         expect(
-            await screen.findByText(dummyPunchListResponse[0].tagDescription)
+            await screen.findByText(dummyPunchListResponse[0].description)
         ).toBeInTheDocument();
         await waitFor(() =>
             expect(
@@ -148,7 +148,7 @@ describe('<EntityPage> in-page routing', () => {
             await screen.findByText(testMcPkgPreview[0].mcPkgNo)
         ).toBeInTheDocument();
         expect(
-            await screen.findByText(dummyPunchListResponse[0].tagDescription)
+            await screen.findByText(dummyPunchListResponse[0].description)
         ).toBeInTheDocument();
         const scopeButton = await screen.findByRole('button', {
             name: `Scope ${testScope.length}`,
@@ -174,7 +174,7 @@ describe('<EntityPage> punch list', () => {
             })
         ).toBeInTheDocument();
         expect(
-            await screen.findByText(dummyPunchListResponse[0].tagDescription)
+            await screen.findByText(dummyPunchListResponse[0].description)
         ).toBeInTheDocument();
     });
     it('Renders a loading screen while awaiting API response', async () => {
