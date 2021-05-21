@@ -6,7 +6,7 @@
     "@azure/msal-browser": "2.5.1",
     "@equinor/eds-core-react": "^0.10.1",
     "@equinor/eds-icons": "^0.6.2",
-    "@equinor/procosys-mc-checklist-module": "^1.1.0",
+    "@equinor/procosys-webapp-components": "^0.1.0",
     "@microsoft/applicationinsights-react-js": "^3.0.5",
     "@microsoft/applicationinsights-web": "^2.5.11",
     "@testing-library/jest-dom": "^5.11.4",

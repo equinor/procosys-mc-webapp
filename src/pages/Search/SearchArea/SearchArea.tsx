@@ -17,9 +17,8 @@ const SearchArea = ({ searchType }: SearchAreaProps): JSX.Element => {
     const searchbarRef = useRef<HTMLInputElement>(
         document.createElement('input')
     );
-    const { hits, searchStatus, query, setQuery } = useSearchPageFacade(
-        searchType
-    );
+    const { hits, searchStatus, query, setQuery } =
+        useSearchPageFacade(searchType);
 
     useEffect(() => {
         searchbarRef.current?.focus();
