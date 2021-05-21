@@ -23,7 +23,7 @@ const SearchResults = ({
 }: SearchResultsProps): JSX.Element => {
     const getPlaceholderTextType = (): string => {
         if (searchType === SearchType.MC) {
-            return 'mechanical completion package number';
+            return 'MC Package number';
         }
         return '';
     };
