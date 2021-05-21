@@ -3,8 +3,7 @@ import styled from 'styled-components';
 import { animated, AnimatedValue } from 'react-spring';
 import { Button } from '@equinor/eds-core-react';
 import EdsIcon from '../icons/EdsIcon';
-import PlantContext from '../../contexts/PlantContext';
-import { StorageKey } from '../../pages/Bookmarks/useBookmarks';
+import PlantContext, { StorageKey } from '../../contexts/PlantContext';
 import useCommonHooks from '../../utils/useCommonHooks';
 import { COLORS } from '../../style/GlobalStyles';
 

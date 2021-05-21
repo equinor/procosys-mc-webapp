@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Navbar from '../../components/navigation/Navbar';
-import Checklist from '@equinor/procosys-mc-checklist-module';
+import { Checklist } from '@equinor/procosys-webapp-components';
 import useCommonHooks from '../../utils/useCommonHooks';
 import NavigationFooter from '../../components/navigation/NavigationFooter';
 import FooterButton from '../../components/navigation/FooterButton';
@@ -13,7 +13,7 @@ const BottomSpacer = styled.div`
 `;
 
 const ChecklistWrapper = (): JSX.Element => {
-    const { auth, history, url } = useCommonHooks();
+    const { auth, history, params, url } = useCommonHooks();
     const [token, setToken] = useState('');
 
     useEffect(() => {
@@ -27,12 +27,13 @@ const ChecklistWrapper = (): JSX.Element => {
         <>
             <Navbar
                 leftContent={{ name: 'back' }}
+                midContent={'MCCR'}
                 rightContent={{ name: 'newPunch' }}
             />
             {token.length > 1 && (
                 <Checklist
-                    checklistId="24580832"
-                    plantId="NGPCS_TEST_BROWN"
+                    checklistId={params.checklistId}
+                    plantId={params.plant}
                     baseUrl={Settings.baseUrl}
                     accessToken={token}
                 />

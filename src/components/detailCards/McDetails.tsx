@@ -9,7 +9,7 @@ const McDetailsWrapper = styled.article<{ clickable: boolean }>`
     cursor: pointer;
     display: flex;
     border-top: 1px solid ${COLORS.lightGrey};
-    padding: 12px;
+    padding: 16px 4%;
     margin: 0;
     text-decoration: none;
     background-color: ${(props): string =>
