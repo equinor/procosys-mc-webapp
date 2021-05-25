@@ -53,9 +53,7 @@ const Punch = ({ punch }: PunchProps): JSX.Element => {
                                 color={COLORS.black}
                             />
                         </AttachmentWrapper>
-                    ) : (
-                        <></>
-                    )}
+                    ) : null}
                 </DetailsBodyWrapper>
             </DetailsWrapper>
         </PreviewButton>
