@@ -30,6 +30,10 @@ const DetailsWrapper = styled.p`
     padding: 12px;
 `;
 
+const ContentWrapper = styled.div`
+    padding: 12px 4% 85px 4%;
+`;
+
 const EntityPage = (): JSX.Element => {
     const { api, params, path, history, url } = useCommonHooks();
     const [scope, setScope] = useState<ChecklistPreview[]>();
@@ -183,7 +187,7 @@ const EntityPage = (): JSX.Element => {
                 midContent={params.searchType}
             />
             {determineDetailsToRender()}
-            <div>
+            <ContentWrapper>
                 {
                     <Switch>
                         <Route exact path={`${path}`} component={Scope} />
@@ -194,7 +198,7 @@ const EntityPage = (): JSX.Element => {
                         />
                     </Switch>
                 }
-            </div>
+            </ContentWrapper>
             {determineFooterToRender()}
         </EntityPageWrapper>
     );

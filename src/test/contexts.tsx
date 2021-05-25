@@ -81,7 +81,8 @@ export const withPlantContext = ({
         Component: (
             <PlantContext.Provider
                 value={{
-                    fetchProjectsAndPermissionsStatus: fetchProjectsAndPermissionsStatus,
+                    fetchProjectsAndPermissionsStatus:
+                        fetchProjectsAndPermissionsStatus,
                     permissions: permissions,
                     currentPlant: currentPlant,
                     availableProjects: availableProjects,
