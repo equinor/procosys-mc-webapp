@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import Axios from 'axios';
 import EdsIcon from '../../components/icons/EdsIcon';
 import FooterButton from '../../components/navigation/FooterButton';
 import Navbar from '../../components/navigation/Navbar';
@@ -8,6 +9,23 @@ import useCommonHooks from '../../utils/useCommonHooks';
 
 const ChecklistPage = (): JSX.Element => {
     const { history, url } = useCommonHooks();
+    // TODO: add fetch status things
+    const source = Axios.CancelToken.source();
+
+    useEffect(() => {
+        return (): void => {
+            source.cancel();
+        };
+    }, []);
+
+    useEffect(() => {
+        //TODO: get info about the checklist
+    });
+
+    useEffect(() => {
+        // TODO: get info about punch list
+    });
+
     return (
         <>
             {
@@ -62,4 +80,5 @@ const ChecklistPage = (): JSX.Element => {
     );
 };
 
+// TODO: add correct permisssions(?) (must also add to the test thing)
 export default withAccessControl(ChecklistPage, []);
