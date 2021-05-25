@@ -6,9 +6,13 @@ import Navbar from '../../components/navigation/Navbar';
 import NavigationFooter from '../../components/navigation/NavigationFooter';
 import withAccessControl from '../../services/withAccessControl';
 import useCommonHooks from '../../utils/useCommonHooks';
+import { Route, Switch } from 'react-router-dom';
+import ChecklistWrapper from './ChecklistWrapper';
+import NewPunch from '../Punch/NewPunch/NewPunch';
+import Scope from '../Entity/Scope/Scope';
 
 const ChecklistPage = (): JSX.Element => {
-    const { history, url } = useCommonHooks();
+    const { history, url, path } = useCommonHooks();
     // TODO: add fetch status things
     const source = Axios.CancelToken.source();
 
@@ -43,25 +47,39 @@ const ChecklistPage = (): JSX.Element => {
                 // TODO: ask whether all content needs the bottom spaces from checklist wrapper, is yes: add a wrapper to content
             }
             {
-                // TODO: add a switch that routes to the correct component
+                // TODO: add correct components to routes
             }
+            <Switch>
+                <Route exact path={`${path}`} component={ChecklistWrapper} />
+                <Route
+                    exact
+                    path={`${path}/tag-info`}
+                    component={ChecklistWrapper}
+                />
+                <Route
+                    exact
+                    path={`${path}/punch-list`}
+                    component={ChecklistWrapper}
+                />
+                <Route exact path={`${path}/new-punch`} component={NewPunch} />
+            </Switch>
             <NavigationFooter>
                 {
-                    // TODO: add correct urls
+                    // TODO: fix active state
                 }
                 {
                     // TODO: ask abour number of items in checklist footer button, what is it?
                 }
                 <FooterButton
                     active={true}
-                    goTo={(): void => history.push(`${url}/scope`)}
+                    goTo={(): void => history.push(`${url}`)}
                     icon={<EdsIcon name="list" />}
                     label={'Checklist'}
                     numberOfItems={312}
                 />
                 <FooterButton
                     active={false}
-                    goTo={(): void => history.push(`${url}/scope`)}
+                    goTo={(): void => history.push(`${url}/tag-info`)}
                     icon={<EdsIcon name="info_circle" />}
                     label={'Tag info'}
                 />
@@ -70,7 +88,7 @@ const ChecklistPage = (): JSX.Element => {
                 }
                 <FooterButton
                     active={false}
-                    goTo={(): void => history.push(`${url}/scope`)}
+                    goTo={(): void => history.push(`${url}/punch-list`)}
                     icon={<EdsIcon name="warning_filled" />}
                     label={'Punch list'}
                     numberOfItems={234}
