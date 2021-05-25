@@ -106,7 +106,7 @@ export const testMcPkgSearch: SearchResults = {
 export const testScope: ChecklistPreview[] = [
     {
         id: 1,
-        tagNo: 'Test tag number',
+        tagNo: 'Test tag number scope',
         tagDescription: 'Test tag description',
         responsibleCode: 'Respcode',
         status: CompletionStatus.OK,

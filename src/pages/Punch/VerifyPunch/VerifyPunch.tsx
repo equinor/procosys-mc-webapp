@@ -44,13 +44,13 @@ const VerifyPunch = (): JSX.Element => {
         AsyncStatus.INACTIVE
     );
     const [punchItem, setPunchItem] = useState<PunchItem>();
-    const {
-        attachments,
-        fetchAttachmentsStatus,
-        refreshAttachments,
-    } = useAttachments(
-        buildEndpoint().getPunchAttachments(params.plant, params.punchItemId)
-    );
+    const { attachments, fetchAttachmentsStatus, refreshAttachments } =
+        useAttachments(
+            buildEndpoint().getPunchAttachments(
+                params.plant,
+                params.punchItemId
+            )
+        );
     const { snackbar, setSnackbarText } = useSnackbar();
 
     useEffect(() => {
