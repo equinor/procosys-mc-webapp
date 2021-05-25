@@ -315,6 +315,21 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
         );
     };
 
+    const getChecklistPunchList = async (
+        plantId: string,
+        checklistId: string,
+        cancelToken: CancelToken
+    ): Promise<PunchPreview[]> => {
+        const { data } = await axios.get(
+            `CheckList/PunchList?plantId=PCS$${plantId}&checklistId=${checklistId}`,
+            { cancelToken }
+        );
+        if (!isArrayOfPunchPreview(data)) {
+            throw new Error('An error occurred, please try again.');
+        }
+        return data;
+    };
+
     //------------
     // PUNCH ITEMS
     // -----------
@@ -493,6 +508,7 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
         getPermissionsForPlant,
         getChecklist,
         getPunchOrganizations,
+        getChecklistPunchList,
         getPunchList,
         getPunchTypes,
         getPunchCategories,

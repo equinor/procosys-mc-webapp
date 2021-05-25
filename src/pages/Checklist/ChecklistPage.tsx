@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Axios from 'axios';
 import EdsIcon from '../../components/icons/EdsIcon';
 import FooterButton from '../../components/navigation/FooterButton';
@@ -10,9 +10,17 @@ import { Route, Switch } from 'react-router-dom';
 import ChecklistWrapper from './ChecklistWrapper';
 import NewPunch from '../Punch/NewPunch/NewPunch';
 import Scope from '../Entity/Scope/Scope';
+import { AsyncStatus } from '../../contexts/McAppContext';
+import { PunchPreview } from '../../services/apiTypes';
+import NavigationFooterShell from '../../components/navigation/NavigationFooterShell';
+import { DotProgress } from '@equinor/eds-core-react';
 
 const ChecklistPage = (): JSX.Element => {
-    const { history, url, path } = useCommonHooks();
+    const { history, url, path, api, params } = useCommonHooks();
+    const [punchList, setPunchList] = useState<PunchPreview[]>();
+    const [fetchFooterStatus, setFetchFooterStatus] = useState(
+        AsyncStatus.LOADING
+    );
     // TODO: add fetch status things
     const source = Axios.CancelToken.source();
 
@@ -27,8 +35,66 @@ const ChecklistPage = (): JSX.Element => {
     });
 
     useEffect(() => {
-        // TODO: get info about punch list
-    });
+        (async (): Promise<void> => {
+            try {
+                const punchListFromApi = await api.getChecklistPunchList(
+                    params.plant,
+                    params.checklistId,
+                    source.token
+                );
+                setPunchList(punchListFromApi);
+                setFetchFooterStatus(AsyncStatus.SUCCESS);
+            } catch {
+                setFetchFooterStatus(AsyncStatus.ERROR);
+            }
+        })();
+    }, [api, params]);
+
+    const determineFooterToRender = (): JSX.Element => {
+        if (
+            fetchFooterStatus === AsyncStatus.SUCCESS &&
+            punchList != undefined
+        ) {
+            return (
+                <NavigationFooter>
+                    {
+                        // TODO: fix active state
+                    }
+                    <FooterButton
+                        active={true}
+                        goTo={(): void => history.push(`${url}`)}
+                        icon={<EdsIcon name="list" />}
+                        label={'Checklist'}
+                    />
+                    <FooterButton
+                        active={false}
+                        goTo={(): void => history.push(`${url}/tag-info`)}
+                        icon={<EdsIcon name="info_circle" />}
+                        label={'Tag info'}
+                    />
+                    <FooterButton
+                        active={false}
+                        goTo={(): void => history.push(`${url}/punch-list`)}
+                        icon={<EdsIcon name="warning_filled" />}
+                        label={'Punch list'}
+                        numberOfItems={punchList.length}
+                    />
+                </NavigationFooter>
+            );
+        }
+        if (fetchFooterStatus === AsyncStatus.ERROR) {
+            return (
+                <NavigationFooterShell>
+                    <p>Unable to load footer. Please reload</p>
+                </NavigationFooterShell>
+            );
+        }
+        return (
+            <NavigationFooterShell>
+                <DotProgress color="primary" />
+            </NavigationFooterShell>
+        );
+    };
 
     return (
         <>
@@ -63,37 +129,7 @@ const ChecklistPage = (): JSX.Element => {
                 />
                 <Route exact path={`${path}/new-punch`} component={NewPunch} />
             </Switch>
-            <NavigationFooter>
-                {
-                    // TODO: fix active state
-                }
-                {
-                    // TODO: ask abour number of items in checklist footer button, what is it?
-                }
-                <FooterButton
-                    active={true}
-                    goTo={(): void => history.push(`${url}`)}
-                    icon={<EdsIcon name="list" />}
-                    label={'Checklist'}
-                    numberOfItems={312}
-                />
-                <FooterButton
-                    active={false}
-                    goTo={(): void => history.push(`${url}/tag-info`)}
-                    icon={<EdsIcon name="info_circle" />}
-                    label={'Tag info'}
-                />
-                {
-                    // TODO: change numberOfItems to length of punch list
-                }
-                <FooterButton
-                    active={false}
-                    goTo={(): void => history.push(`${url}/punch-list`)}
-                    icon={<EdsIcon name="warning_filled" />}
-                    label={'Punch list'}
-                    numberOfItems={234}
-                />
-            </NavigationFooter>
+            {determineFooterToRender()}
         </>
     );
 };
