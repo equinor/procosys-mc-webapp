@@ -61,19 +61,26 @@ const ChecklistPage = (): JSX.Element => {
                         // TODO: fix active state
                     }
                     <FooterButton
-                        active={true}
+                        active={
+                            !history.location.pathname.includes(
+                                '/punch-list'
+                            ) &&
+                            !history.location.pathname.includes('/tag-info')
+                        }
                         goTo={(): void => history.push(`${url}`)}
                         icon={<EdsIcon name="list" />}
                         label={'Checklist'}
                     />
                     <FooterButton
-                        active={false}
+                        active={history.location.pathname.includes('/tag-info')}
                         goTo={(): void => history.push(`${url}/tag-info`)}
                         icon={<EdsIcon name="info_circle" />}
                         label={'Tag info'}
                     />
                     <FooterButton
-                        active={false}
+                        active={history.location.pathname.includes(
+                            '/punch-list'
+                        )}
                         goTo={(): void => history.push(`${url}/punch-list`)}
                         icon={<EdsIcon name="warning_filled" />}
                         label={'Punch list'}

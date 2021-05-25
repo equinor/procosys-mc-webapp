@@ -321,7 +321,7 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
         cancelToken: CancelToken
     ): Promise<PunchPreview[]> => {
         const { data } = await axios.get(
-            `CheckList/PunchList?plantId=PCS$${plantId}&checklistId=${checklistId}`,
+            `CheckList/PunchList?plantId=PCS$${plantId}&checklistId=${checklistId}${apiVersion}`,
             { cancelToken }
         );
         if (!isArrayOfPunchPreview(data)) {
