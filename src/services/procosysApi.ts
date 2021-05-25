@@ -147,13 +147,16 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
         return data;
     };
 
+    // TODO: add all needed props
     const getChecklist = async (
         plantId: string,
         checklistId: string
     ): Promise<ChecklistResponse> => {
+        // TODO: change to correct enpoint(s?? MC and/or preservation??)
         const { data } = await axios.get(
             `Checklist/Comm?plantId=PCS$${plantId}&checklistId=${checklistId}${apiVersion}`
         );
+        // TODO: add type check
         return data as ChecklistResponse;
     };
 

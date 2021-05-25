@@ -147,6 +147,7 @@ export interface CheckItem {
     isNotApplicable: boolean;
 }
 
+// TODO: change to match the mc and/or preservation checklist instead of comm
 export interface ChecklistResponse {
     checkList: ChecklistDetails;
     checkItems: CheckItem[];

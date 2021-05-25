@@ -25,7 +25,7 @@ import { URLError } from '../../utils/matchPlantInURL';
 
 const EntityPageWrapper = styled.main``;
 
-const DetailsWrapper = styled.p`
+export const DetailsWrapper = styled.p`
     text-align: center;
     padding: 12px;
 `;

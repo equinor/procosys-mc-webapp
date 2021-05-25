@@ -14,14 +14,18 @@ import { AsyncStatus } from '../../contexts/McAppContext';
 import { PunchPreview } from '../../services/apiTypes';
 import NavigationFooterShell from '../../components/navigation/NavigationFooterShell';
 import { DotProgress } from '@equinor/eds-core-react';
+import { DetailsWrapper } from '../Entity/EntityPage';
 
 const ChecklistPage = (): JSX.Element => {
     const { history, url, path, api, params } = useCommonHooks();
     const [punchList, setPunchList] = useState<PunchPreview[]>();
+    const [details, setDetails] = useState<any>(); // TODO: figure out type the correct api call returns & add here
     const [fetchFooterStatus, setFetchFooterStatus] = useState(
         AsyncStatus.LOADING
     );
-    // TODO: add fetch status things
+    const [fetchDetailsStatus, setFetchDetailsStatus] = useState(
+        AsyncStatus.LOADING
+    );
     const source = Axios.CancelToken.source();
 
     useEffect(() => {
@@ -31,8 +35,20 @@ const ChecklistPage = (): JSX.Element => {
     }, []);
 
     useEffect(() => {
-        //TODO: get info about the checklist
-    });
+        (async (): Promise<void> => {
+            try {
+                const detailsFromApi = await api.getChecklist(
+                    params.plant,
+                    params.checklistId
+                    //source.token
+                );
+                setDetails(detailsFromApi);
+                setFetchDetailsStatus(AsyncStatus.SUCCESS);
+            } catch {
+                setFetchDetailsStatus(AsyncStatus.ERROR);
+            }
+        })();
+    }, [api, params]);
 
     useEffect(() => {
         (async (): Promise<void> => {
@@ -50,6 +66,27 @@ const ChecklistPage = (): JSX.Element => {
         })();
     }, [api, params]);
 
+    const determineDetailsToRender = (): JSX.Element => {
+        if (
+            fetchDetailsStatus === AsyncStatus.SUCCESS &&
+            details != undefined
+        ) {
+            // TODO: return the correct info card (do I have to make a new one??)
+        }
+        if (fetchDetailsStatus === AsyncStatus.ERROR) {
+            return (
+                <DetailsWrapper>
+                    Unable to load details. Please reload
+                </DetailsWrapper>
+            );
+        }
+        return (
+            <DetailsWrapper>
+                <DotProgress color="primary" />
+            </DetailsWrapper>
+        );
+    };
+
     const determineFooterToRender = (): JSX.Element => {
         if (
             fetchFooterStatus === AsyncStatus.SUCCESS &&
@@ -57,9 +94,6 @@ const ChecklistPage = (): JSX.Element => {
         ) {
             return (
                 <NavigationFooter>
-                    {
-                        // TODO: fix active state
-                    }
                     <FooterButton
                         active={
                             !history.location.pathname.includes(
@@ -113,9 +147,7 @@ const ChecklistPage = (): JSX.Element => {
                 midContent={'MCCR'}
                 rightContent={{ name: 'newPunch' }}
             />
-            {
-                // TODO: add details card (which one??)
-            }
+            {determineDetailsToRender()}
             {
                 // TODO: ask whether all content needs the bottom spaces from checklist wrapper, is yes: add a wrapper to content
             }
