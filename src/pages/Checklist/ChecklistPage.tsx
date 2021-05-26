@@ -169,10 +169,5 @@ const ChecklistPage = (): JSX.Element => {
 
 export default withAccessControl(ChecklistPage, [
     'MCCR/READ',
-    'CPCL/READ' ||
-        'RUNNING_LOGS/READ' ||
-        'DCCL/READ' ||
-        'MCCR/READ' ||
-        'PRESERVATION/READ',
     'PUNCHLISTITEM/READ',
 ]);
