@@ -281,7 +281,7 @@ export const dummyPunchListResponse = [
         rejected: false,
         verified: false,
         statusControlledBySwcr: true,
-        attachmentCount: 2,
+        attachmentCount: 0,
     },
 ];
 
