@@ -93,7 +93,7 @@ const isChecklistDetails = (data: unknown): data is ChecklistDetails => {
 };
 
 const isCheckItem = (data: unknown): data is CheckItem => {
-    return data != null && typeof (data as CheckItem).detailText === 'string';
+    return data != null && typeof (data as CheckItem).text === 'string';
 };
 
 const isArrayOfCheckItems = (data: unknown): data is CheckItem[] => {
@@ -113,6 +113,7 @@ const isArrayOfCustomCheckItems = (
 export const isChecklistResponse = (
     data: unknown
 ): data is ChecklistResponse => {
+    console.log('checking type');
     return (
         data != null &&
         isArrayOfLoopTags((data as ChecklistResponse).loopTags) &&
