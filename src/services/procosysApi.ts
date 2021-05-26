@@ -8,6 +8,7 @@ import { SearchType } from '../pages/Search/Search';
 import {
     isArrayOfChecklistPreview,
     isArrayOfPunchPreview,
+    isChecklistResponse,
     isCorrectPreview,
     isCorrectSearchResults,
 } from './apiTypeGuards';
@@ -147,17 +148,19 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
         return data;
     };
 
-    // TODO: add all needed props
     const getChecklist = async (
         plantId: string,
-        checklistId: string
+        checklistId: string,
+        cancelToken: CancelToken
     ): Promise<ChecklistResponse> => {
-        // TODO: change to correct enpoint(s?? MC and/or preservation??)
         const { data } = await axios.get(
-            `Checklist/Comm?plantId=PCS$${plantId}&checklistId=${checklistId}${apiVersion}`
+            `Checklist/MC?plantId=PCS$${plantId}&checklistId=${checklistId}${apiVersion}`,
+            { cancelToken }
         );
-        // TODO: add type check
-        return data as ChecklistResponse;
+        if (!isChecklistResponse(data)) {
+            throw new Error('An error occurred, please try again');
+        }
+        return data;
     };
 
     const postSetOk = async (

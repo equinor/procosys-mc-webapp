@@ -9,9 +9,8 @@ import useCommonHooks from '../../utils/useCommonHooks';
 import { Route, Switch } from 'react-router-dom';
 import ChecklistWrapper from './ChecklistWrapper';
 import NewPunch from '../Punch/NewPunch/NewPunch';
-import Scope from '../Entity/Scope/Scope';
 import { AsyncStatus } from '../../contexts/McAppContext';
-import { PunchPreview } from '../../services/apiTypes';
+import { ChecklistResponse, PunchPreview } from '../../services/apiTypes';
 import NavigationFooterShell from '../../components/navigation/NavigationFooterShell';
 import { DotProgress } from '@equinor/eds-core-react';
 import { DetailsWrapper } from '../Entity/EntityPage';
@@ -19,7 +18,7 @@ import { DetailsWrapper } from '../Entity/EntityPage';
 const ChecklistPage = (): JSX.Element => {
     const { history, url, path, api, params } = useCommonHooks();
     const [punchList, setPunchList] = useState<PunchPreview[]>();
-    const [details, setDetails] = useState<any>(); // TODO: figure out type the correct api call returns & add here
+    const [details, setDetails] = useState<ChecklistResponse>(); // TODO: figure out type the correct api call returns & add here
     const [fetchFooterStatus, setFetchFooterStatus] = useState(
         AsyncStatus.LOADING
     );
@@ -39,8 +38,8 @@ const ChecklistPage = (): JSX.Element => {
             try {
                 const detailsFromApi = await api.getChecklist(
                     params.plant,
-                    params.checklistId
-                    //source.token
+                    params.checklistId,
+                    source.token
                 );
                 setDetails(detailsFromApi);
                 setFetchDetailsStatus(AsyncStatus.SUCCESS);
@@ -139,18 +138,12 @@ const ChecklistPage = (): JSX.Element => {
 
     return (
         <>
-            {
-                // TODO: ask whether MCCR is the correct title for the page
-            }
             <Navbar
                 leftContent={{ name: 'back' }}
                 midContent={'MCCR'}
                 rightContent={{ name: 'newPunch' }}
             />
             {determineDetailsToRender()}
-            {
-                // TODO: ask whether all content needs the bottom spaces from checklist wrapper, is yes: add a wrapper to content
-            }
             {
                 // TODO: add correct components to routes
             }
@@ -173,5 +166,12 @@ const ChecklistPage = (): JSX.Element => {
     );
 };
 
-// TODO: add correct permisssions(?) (must also add to the test thing)
-export default withAccessControl(ChecklistPage, []);
+export default withAccessControl(ChecklistPage, [
+    'MCCR/READ',
+    'CPCL/READ' ||
+        'RUNNING_LOGS/READ' ||
+        'DCCL/READ' ||
+        'MCCR/READ' ||
+        'PRESERVATION/READ',
+    'PUNCHLISTITEM/READ',
+]);

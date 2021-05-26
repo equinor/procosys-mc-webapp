@@ -147,10 +147,23 @@ export interface CheckItem {
     isNotApplicable: boolean;
 }
 
-// TODO: change to match the mc and/or preservation checklist instead of comm
+export interface LoopTag {
+    tagId: number;
+    tagNo: string;
+}
+
+export interface CustomCheckItem {
+    id: number;
+    itemNo: string;
+    text: string;
+    isOk: boolean;
+}
+
 export interface ChecklistResponse {
+    loopTags: LoopTag[];
     checkList: ChecklistDetails;
     checkItems: CheckItem[];
+    customCheckItems: CustomCheckItem[];
 }
 
 export interface PunchCategory {
