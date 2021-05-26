@@ -140,10 +140,6 @@ const NewPunch = (): JSX.Element => {
         if (checklistDetails) {
             return (
                 <>
-                    <ChecklistDetailsCard
-                        details={checklistDetails}
-                        descriptionLabel={'New punch for:'}
-                    />
                     <NewPunchForm
                         categories={categories}
                         types={types}

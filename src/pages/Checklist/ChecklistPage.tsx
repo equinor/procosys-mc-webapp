@@ -14,6 +14,7 @@ import { ChecklistResponse, PunchPreview } from '../../services/apiTypes';
 import NavigationFooterShell from '../../components/navigation/NavigationFooterShell';
 import { DotProgress } from '@equinor/eds-core-react';
 import { DetailsWrapper } from '../Entity/EntityPage';
+import ChecklistDetailsCard from './ChecklistDetailsCard';
 
 const ChecklistPage = (): JSX.Element => {
     const { history, url, path, api, params } = useCommonHooks();
@@ -70,7 +71,7 @@ const ChecklistPage = (): JSX.Element => {
             fetchDetailsStatus === AsyncStatus.SUCCESS &&
             details != undefined
         ) {
-            // TODO: return the correct info card (do I have to make a new one??)
+            return <ChecklistDetailsCard details={details.checkList} />;
         }
         if (fetchDetailsStatus === AsyncStatus.ERROR) {
             return (
