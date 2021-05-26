@@ -11,7 +11,7 @@ import {
     StatusImageWrapper,
 } from '../../../components/detailCards/McDetails';
 
-const PreviewButton = styled(Link)`
+export const PreviewButton = styled(Link)`
     cursor: pointer;
     display: flex;
     padding: 12px 0;
@@ -22,16 +22,19 @@ const PreviewButton = styled(Link)`
     }
 `;
 
-const StatusTextWrapper = styled.div`
+export const StatusTextWrapper = styled.div`
     display: flex;
     & > p {
-        margin: 0;
+        margin: 4px 1px;
+        width: 12px;
+        height: 12px;
+        text-align: center;
         background-color: ${COLORS.lightGrey};
         font-size: 0.75rem;
     }
 `;
 
-const DetailsHeaderWrapper = styled.div`
+export const DetailsHeaderWrapper = styled.div`
     display: flex;
     align-items: baseline;
     & > p:first-child {
@@ -40,13 +43,13 @@ const DetailsHeaderWrapper = styled.div`
         text-align: left;
     }
     & > p {
-        margin: 0;
+        margin: 0 0 3px 0;
         flex: 1;
         text-align: right;
     }
 `;
 
-const DetailsBodyWrapper = styled.div`
+export const DetailsBodyWrapper = styled.div`
     display: flex;
     margin: 0;
     & > div {
@@ -57,7 +60,7 @@ const DetailsBodyWrapper = styled.div`
     }
 `;
 
-const AttachmentWrapper = styled.div`
+export const AttachmentWrapper = styled.div`
     display: flex;
     align-items: baseline;
 `;

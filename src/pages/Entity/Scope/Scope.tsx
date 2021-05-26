@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { AsyncStatus } from '../../../contexts/McAppContext';
 import { ChecklistPreview } from '../../../services/apiTypes';
@@ -9,36 +8,9 @@ import ScopeItem from './ScopeItem';
 import Axios from 'axios';
 
 export const ScopeWrapper = styled.div`
-    padding: 12px 4% 85px 4%;
     & h3 {
         text-align: center;
         margin-top: 16px;
-    }
-`;
-
-// TODO: copy and change in punch list and then remove
-export const PreviewButton = styled(Link)`
-    display: flex;
-    align-items: center;
-    padding: 8px 0;
-    margin: 10px 4% 0 4%;
-    cursor: pointer;
-    text-decoration: none;
-    justify-content: space-between;
-    & img {
-        max-height: 20px;
-        object-fit: contain;
-        flex: 0.1;
-    }
-    & > div {
-        margin-left: 24px;
-        flex: 3;
-        & p {
-            margin: 0;
-        }
-    }
-    & svg {
-        flex: 0.5;
     }
 `;
 
