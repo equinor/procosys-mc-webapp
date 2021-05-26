@@ -154,7 +154,7 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
         cancelToken: CancelToken
     ): Promise<ChecklistResponse> => {
         const { data } = await axios.get(
-            `Checklist/MC?plantId=PCS$${plantId}&checklistId=${checklistId}${apiVersion}`,
+            `CheckList/MC?plantId=PCS$${plantId}&checklistId=${checklistId}${apiVersion}`,
             { cancelToken }
         );
         if (!isChecklistResponse(data)) {

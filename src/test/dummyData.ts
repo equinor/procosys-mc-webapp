@@ -141,10 +141,17 @@ export const testPunchList: PunchPreview[] = [
 ];
 
 export const dummyChecklistResponse = {
+    LoopTags: [
+        {
+            TagId: 12,
+            TagNo: 'dummmy-checklist-loop-tag-no',
+        },
+    ],
     CheckList: {
         Id: 321421,
-        TagNo: 'dummy-tag-no',
+        TagNo: 'dummy-checklist-tag-no',
         TagDescription: 'dummy-tag-description',
+        McPkgNo: 'dummy-checklist-mcPkgNo',
         ResponsibleCode: 'dummy-responsible-code',
         ResponsibleDescription: 'dummy-responsible-description',
         Status: 'OS',
@@ -156,12 +163,17 @@ export const dummyChecklistResponse = {
         SignedByFirstName: null,
         SignedByLastName: null,
         SignedAt: null,
+        VerifiedByUser: null,
+        VerifiedFirstName: null,
+        VerifiedLastName: null,
+        VerifiedAt: null,
         UpdatedAt: '2021-02-05T09:05:09Z',
         UpdatedByUser: 'dummy-updated-user',
         UpdatedByFirstName: 'dummy-update-first-name',
         UpdatedByLastName: 'dummy-updated-last-name',
         IsRestrictedForUser: false,
         HasElectronicForm: true,
+        AttachmentCount: 0,
     },
     CheckItems: [
         {
@@ -202,6 +214,14 @@ export const dummyChecklistResponse = {
             MetaTable: null,
             IsOk: false,
             IsNotApplicable: false,
+        },
+    ],
+    CustomCheckItems: [
+        {
+            Id: 14,
+            ItemNo: 'custom-check-item-no',
+            Text: 'custom-check-item-text',
+            IsOk: true,
         },
     ],
 };

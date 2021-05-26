@@ -35,8 +35,8 @@ export const ENDPOINTS = {
     postSetOk: `${baseURL}/CheckList/Item/SetOk`,
     postClear: `${baseURL}/CheckList/Item/Clear`,
     getMcScope: `${baseURL}/McPkg/CheckLists`,
-    // TODO: remove the endpoints below
-    getChecklist: `${baseURL}/CheckList/Comm`,
+    getChecklist: `${baseURL}/CheckList/MC`,
+    // TODO: remove the endpoints below (?)
     putChecklistComment: `${baseURL}/CheckList/Comm/Comment`,
     postSign: `${baseURL}/CheckList/Comm/Sign`,
     postUnsign: `${baseURL}/CheckList/Comm/Unsign`,
