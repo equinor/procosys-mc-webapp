@@ -3,6 +3,7 @@ import React, { ReactNode, useEffect, useState } from 'react';
 import ErrorPage from '../components/error/ErrorPage';
 import LoadingPage from '../components/loading/LoadingPage';
 import { Plant } from '../services/apiTypes';
+import { ProcosysApiSettings } from '../services/appConfiguration';
 import { IAuthService } from '../services/authService';
 import { ProcosysApiService } from '../services/procosysApi';
 
@@ -11,6 +12,7 @@ type McAppContextProps = {
     fetchPlantsStatus: AsyncStatus;
     api: ProcosysApiService;
     auth: IAuthService;
+    procosysApiSettings: ProcosysApiSettings;
 };
 
 export enum AsyncStatus {
@@ -27,12 +29,14 @@ type McAppContextProviderProps = {
     children: ReactNode;
     auth: IAuthService;
     api: ProcosysApiService;
+    procosysApiSettings: ProcosysApiSettings;
 };
 
 export const McAppContextProvider: React.FC<McAppContextProviderProps> = ({
     children,
     auth,
     api,
+    procosysApiSettings,
 }: McAppContextProviderProps) => {
     const [availablePlants, setAvailablePlants] = useState<Plant[]>([]);
     const [fetchPlantsStatus, setFetchPlantsStatus] = useState<AsyncStatus>(
@@ -77,6 +81,7 @@ export const McAppContextProvider: React.FC<McAppContextProviderProps> = ({
                 availablePlants,
                 api,
                 auth,
+                procosysApiSettings,
             }}
         >
             {children}
