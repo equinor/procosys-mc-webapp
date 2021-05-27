@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import Axios from 'axios';
 import {
     ChecklistDetails,
     PunchCategory,
@@ -7,7 +8,6 @@ import {
 } from '../../../services/apiTypes';
 import { AsyncStatus } from '../../../contexts/McAppContext';
 import Navbar from '../../../components/navigation/Navbar';
-import ChecklistDetailsCard from '../../Checklist/ChecklistDetailsCard';
 import NewPunchForm from './NewPunchForm';
 import useFormFields from '../../../utils/useFormFields';
 import { NewPunch as NewPunchType } from '../../../services/apiTypes';
@@ -99,6 +99,7 @@ const NewPunch = (): JSX.Element => {
     };
 
     useEffect(() => {
+        const source = Axios.CancelToken.source();
         (async (): Promise<void> => {
             try {
                 const [
@@ -110,7 +111,11 @@ const NewPunch = (): JSX.Element => {
                     api.getPunchCategories(params.plant),
                     api.getPunchTypes(params.plant),
                     api.getPunchOrganizations(params.plant),
-                    api.getChecklist(params.plant, params.checklistId),
+                    api.getChecklist(
+                        params.plant,
+                        params.checklistId,
+                        source.token
+                    ),
                 ]);
                 setCategories(categoriesFromApi);
                 setTypes(typesFromApi);
@@ -121,6 +126,9 @@ const NewPunch = (): JSX.Element => {
                 setFetchNewPunchStatus(AsyncStatus.ERROR);
             }
         })();
+        return (): void => {
+            source.cancel();
+        };
     }, [params.plant, params.checklistId, api]);
 
     if (submitPunchStatus === AsyncStatus.SUCCESS) {
@@ -131,10 +139,6 @@ const NewPunch = (): JSX.Element => {
         if (checklistDetails) {
             return (
                 <>
-                    <ChecklistDetailsCard
-                        details={checklistDetails}
-                        descriptionLabel={'New punch for:'}
-                    />
                     <NewPunchForm
                         categories={categories}
                         types={types}

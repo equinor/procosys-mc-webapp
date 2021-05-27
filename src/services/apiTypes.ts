@@ -91,6 +91,7 @@ export interface ChecklistDetails {
     id: number;
     tagNo: string;
     tagDescription: string;
+    mcPkgNo: string;
     responsibleCode: string;
     responsibleDescription: string;
     status: CompletionStatus;
@@ -102,12 +103,17 @@ export interface ChecklistDetails {
     signedByFirstName: string;
     signedByLastName: string;
     signedAt: Date;
+    verifiedByUser: string;
+    verifiedByFirstName: string;
+    verifiedByLastName: string;
+    verifiedAt: Date;
     updatedAt: Date;
     updatedByUser: string;
     updatedByFirstName: string;
     updatedByLastName: string;
     isRestrictedForUser: boolean;
     hasElectronicForm: boolean;
+    attachmentCount: number;
 }
 
 export interface ColumnLabel {
@@ -147,9 +153,23 @@ export interface CheckItem {
     isNotApplicable: boolean;
 }
 
+export interface LoopTag {
+    tagId: number;
+    tagNo: string;
+}
+
+export interface CustomCheckItem {
+    id: number;
+    itemNo: string;
+    text: string;
+    isOk: boolean;
+}
+
 export interface ChecklistResponse {
+    loopTags: LoopTag[];
     checkList: ChecklistDetails;
     checkItems: CheckItem[];
+    customCheckItems: CustomCheckItem[];
 }
 
 export interface PunchCategory {
