@@ -8,7 +8,6 @@ import {
 } from '../../../services/apiTypes';
 import { AsyncStatus } from '../../../contexts/McAppContext';
 import Navbar from '../../../components/navigation/Navbar';
-import ChecklistDetailsCard from '../../Checklist/ChecklistDetailsCard';
 import NewPunchForm from './NewPunchForm';
 import useFormFields from '../../../utils/useFormFields';
 import { NewPunch as NewPunchType } from '../../../services/apiTypes';

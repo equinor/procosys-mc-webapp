@@ -113,7 +113,6 @@ const isArrayOfCustomCheckItems = (
 export const isChecklistResponse = (
     data: unknown
 ): data is ChecklistResponse => {
-    console.log('checking type');
     return (
         data != null &&
         isArrayOfLoopTags((data as ChecklistResponse).loopTags) &&

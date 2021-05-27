@@ -1,9 +1,7 @@
 import { withPlantContext } from '../../test/contexts';
 import React from 'react';
-import { render, screen, waitFor } from '@testing-library/react';
-import { rest } from 'msw';
-import { server, ENDPOINTS, causeApiError } from '../../test/setupServer';
-import { SearchType } from '../Search/Search';
+import { render, screen } from '@testing-library/react';
+import { ENDPOINTS, causeApiError } from '../../test/setupServer';
 import { MemoryRouter, Route } from 'react-router-dom';
 import ChecklistPage from './ChecklistPage';
 import { dummyChecklistResponse } from '../../test/dummyData';

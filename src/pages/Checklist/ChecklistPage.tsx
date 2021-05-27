@@ -19,7 +19,7 @@ import ChecklistDetailsCard from './ChecklistDetailsCard';
 const ChecklistPage = (): JSX.Element => {
     const { history, url, path, api, params } = useCommonHooks();
     const [punchList, setPunchList] = useState<PunchPreview[]>();
-    const [details, setDetails] = useState<ChecklistResponse>(); // TODO: figure out type the correct api call returns & add here
+    const [details, setDetails] = useState<ChecklistResponse>();
     const [fetchFooterStatus, setFetchFooterStatus] = useState(
         AsyncStatus.LOADING
     );
