@@ -340,12 +340,13 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
         return data;
     };
 
-    // TODO: add cancel token
     const getPunchCategories = async (
-        plantId: string
+        plantId: string,
+        cancelToken: CancelToken
     ): Promise<PunchCategory[]> => {
         const { data } = await axios.get(
-            `PunchListItem/Categories?plantId=PCS$${plantId}${apiVersion}`
+            `PunchListItem/Categories?plantId=PCS$${plantId}${apiVersion}`,
+            { cancelToken }
         );
         if (!isArrayOfPunchCategory(data)) {
             throw new Error('An error occurred, please try again.');
@@ -353,10 +354,13 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
         return data;
     };
 
-    // TODO: add cancel token
-    const getPunchTypes = async (plantId: string): Promise<PunchType[]> => {
+    const getPunchTypes = async (
+        plantId: string,
+        cancelToken: CancelToken
+    ): Promise<PunchType[]> => {
         const { data } = await axios.get(
-            `PunchListItem/Types?plantId=PCS$${plantId}${apiVersion}`
+            `PunchListItem/Types?plantId=PCS$${plantId}${apiVersion}`,
+            { cancelToken }
         );
         if (!isArrayOfPunchType(data)) {
             throw new Error('An error occurred, please try again.');
@@ -364,12 +368,13 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
         return data;
     };
 
-    // TODO: add cancel token
     const getPunchOrganizations = async (
-        plantId: string
+        plantId: string,
+        cancelToken: CancelToken
     ): Promise<PunchOrganization[]> => {
         const { data } = await axios.get(
-            `PunchListItem/Organizations?plantId=PCS$${plantId}${apiVersion}`
+            `PunchListItem/Organizations?plantId=PCS$${plantId}${apiVersion}`,
+            { cancelToken }
         );
         if (!isArrayOfPunchOrganization(data)) {
             throw new Error('An error occurred, please try again.');

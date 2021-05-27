@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import Axios from 'axios';
 import {
     ChecklistDetails,
     PunchCategory,
@@ -6,7 +7,6 @@ import {
     PunchType,
 } from '../../../services/apiTypes';
 import { AsyncStatus } from '../../../contexts/McAppContext';
-import Navbar from '../../../components/navigation/Navbar';
 import ChecklistDetailsCard from '../../Checklist/ChecklistDetailsCard';
 import NewPunchForm from './NewPunchForm';
 import useFormFields from '../../../utils/useFormFields';
@@ -100,18 +100,18 @@ const NewPunch = (): JSX.Element => {
     };
 
     useEffect(() => {
+        const source = Axios.CancelToken.source();
         (async (): Promise<void> => {
             try {
-                // TODO: fix all api functions except getChecklist
                 const [
                     categoriesFromApi,
                     typesFromApi,
                     organizationsFromApi,
                     checklistFromApi,
                 ] = await Promise.all([
-                    api.getPunchCategories(params.plant),
-                    api.getPunchTypes(params.plant),
-                    api.getPunchOrganizations(params.plant),
+                    api.getPunchCategories(params.plant, source.token),
+                    api.getPunchTypes(params.plant, source.token),
+                    api.getPunchOrganizations(params.plant, source.token),
                     api.getChecklist(params.plant, params.checklistId),
                 ]);
                 setCategories(categoriesFromApi);
@@ -226,10 +226,6 @@ const NewPunch = (): JSX.Element => {
 
     return (
         <>
-            <Navbar
-                noBorder
-                leftContent={{ name: 'back', label: 'Checklist' }}
-            />
             <AsyncPage
                 fetchStatus={fetchNewPunchStatus}
                 errorMessage={
