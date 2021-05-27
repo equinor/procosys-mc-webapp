@@ -9,7 +9,7 @@ import {
     PunchType,
 } from '../../../services/apiTypes';
 import { COLORS } from '../../../style/GlobalStyles';
-import { PunchFormData } from '../../Punch/NewPunch/NewPunch';
+import { PunchFormData } from './NewPunch';
 
 export const NewPunchFormWrapper = styled.form`
     background-color: ${COLORS.white};

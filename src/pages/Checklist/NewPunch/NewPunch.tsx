@@ -12,7 +12,7 @@ import useFormFields from '../../../utils/useFormFields';
 import { NewPunch as NewPunchType } from '../../../services/apiTypes';
 import NewPunchSuccessPage from './NewPunchSuccessPage';
 import useCommonHooks from '../../../utils/useCommonHooks';
-import { PunchWrapper } from '../ClearPunch/ClearPunch';
+import { PunchWrapper } from '../../Punch/ClearPunch/ClearPunch';
 import { Button, Scrim } from '@equinor/eds-core-react';
 import {
     AttachmentImage,
