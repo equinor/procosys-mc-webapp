@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import Navbar from '../../components/navigation/Navbar';
 import { Checklist } from '@equinor/procosys-webapp-components';
 import useCommonHooks from '../../utils/useCommonHooks';
@@ -6,22 +6,17 @@ import NavigationFooter from '../../components/navigation/NavigationFooter';
 import FooterButton from '../../components/navigation/FooterButton';
 import EdsIcon from '../../components/icons/EdsIcon';
 import styled from 'styled-components';
-const Settings = require('../../settings.json');
+import useSnackbar from '../../utils/useSnackbar';
 
 const BottomSpacer = styled.div`
     height: 70px;
 `;
 
 const ChecklistWrapper = (): JSX.Element => {
-    const { auth, history, params, url } = useCommonHooks();
-    const [token, setToken] = useState('');
-
-    useEffect(() => {
-        (async (): Promise<void> => {
-            const tempToken = await auth.getAccessToken(Settings.scope);
-            setToken(tempToken);
-        })();
-    }, []);
+    const { auth, history, params, url, procosysApiSettings } =
+        useCommonHooks();
+    const { snackbar, setSnackbarText } = useSnackbar();
+    const [checklistStatus, setChecklistStatus] = useState('OK');
 
     return (
         <>
@@ -30,14 +25,15 @@ const ChecklistWrapper = (): JSX.Element => {
                 midContent={'MCCR'}
                 rightContent={{ name: 'newPunch' }}
             />
-            {token.length > 1 && (
-                <Checklist
-                    checklistId={params.checklistId}
-                    plantId={params.plant}
-                    baseUrl={Settings.baseUrl}
-                    accessToken={token}
-                />
-            )}
+            <Checklist
+                checklistId={params.checklistId}
+                plantId={params.plant}
+                apiSettings={procosysApiSettings}
+                getAccessToken={auth.getAccessToken}
+                setSnackbarText={setSnackbarText}
+                setChecklistStatus={setChecklistStatus}
+            />
+            {snackbar}
             <BottomSpacer />
             <NavigationFooter>
                 <FooterButton

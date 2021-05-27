@@ -9,7 +9,7 @@ export type AuthSettings = {
     scopes: string[];
 };
 
-type ProcosysApiSettings = {
+export type ProcosysApiSettings = {
     baseUrl: string;
     apiVersion: string;
     scope: string[];
