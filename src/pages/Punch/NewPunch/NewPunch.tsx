@@ -7,7 +7,6 @@ import {
     PunchType,
 } from '../../../services/apiTypes';
 import { AsyncStatus } from '../../../contexts/McAppContext';
-import ChecklistDetailsCard from '../../Checklist/ChecklistDetailsCard';
 import NewPunchForm from './NewPunchForm';
 import useFormFields from '../../../utils/useFormFields';
 import { NewPunch as NewPunchType } from '../../../services/apiTypes';
@@ -112,7 +111,11 @@ const NewPunch = (): JSX.Element => {
                     api.getPunchCategories(params.plant, source.token),
                     api.getPunchTypes(params.plant, source.token),
                     api.getPunchOrganizations(params.plant, source.token),
-                    api.getChecklist(params.plant, params.checklistId),
+                    api.getChecklist(
+                        params.plant,
+                        params.checklistId,
+                        source.token
+                    ),
                 ]);
                 setCategories(categoriesFromApi);
                 setTypes(typesFromApi);
@@ -123,6 +126,9 @@ const NewPunch = (): JSX.Element => {
                 setFetchNewPunchStatus(AsyncStatus.ERROR);
             }
         })();
+        return (): void => {
+            source.cancel();
+        };
     }, [params.plant, params.checklistId, api]);
 
     if (submitPunchStatus === AsyncStatus.SUCCESS) {
@@ -134,10 +140,6 @@ const NewPunch = (): JSX.Element => {
         if (checklistDetails) {
             return (
                 <>
-                    <ChecklistDetailsCard
-                        details={checklistDetails}
-                        descriptionLabel={'New punch for:'}
-                    />
                     <NewPunchForm
                         categories={categories}
                         types={types}

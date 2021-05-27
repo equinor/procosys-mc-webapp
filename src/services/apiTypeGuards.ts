@@ -1,6 +1,11 @@
 import { SearchType } from '../pages/Search/Search';
 import {
+    CheckItem,
+    ChecklistDetails,
     ChecklistPreview,
+    ChecklistResponse,
+    CustomCheckItem,
+    LoopTag,
     McPkgPreview,
     PunchCategory,
     PunchOrganization,
@@ -101,4 +106,50 @@ export const isArrayOfPunchOrganization = (
     data: unknown
 ): data is PunchOrganization[] => {
     return Array.isArray(data) && data.every(isPunchOrganization);
+};
+
+//CHECKLIST
+const isLoopTag = (data: unknown): data is LoopTag => {
+    return data != null && typeof (data as LoopTag).tagId === 'number';
+};
+
+const isArrayOfLoopTags = (data: unknown): data is LoopTag[] => {
+    return Array.isArray(data) && data.every(isLoopTag);
+};
+
+const isChecklistDetails = (data: unknown): data is ChecklistDetails => {
+    return (
+        data != null &&
+        typeof (data as ChecklistDetails).hasElectronicForm === 'boolean'
+    );
+};
+
+const isCheckItem = (data: unknown): data is CheckItem => {
+    return data != null && typeof (data as CheckItem).text === 'string';
+};
+
+const isArrayOfCheckItems = (data: unknown): data is CheckItem[] => {
+    return Array.isArray(data) && data.every(isCheckItem);
+};
+
+const isCustomCheckItem = (data: unknown): data is CustomCheckItem => {
+    return data != null && typeof (data as CustomCheckItem).text === 'string';
+};
+
+const isArrayOfCustomCheckItems = (
+    data: unknown
+): data is CustomCheckItem[] => {
+    return Array.isArray(data) && data.every(isCustomCheckItem);
+};
+
+export const isChecklistResponse = (
+    data: unknown
+): data is ChecklistResponse => {
+    return (
+        data != null &&
+        isArrayOfLoopTags((data as ChecklistResponse).loopTags) &&
+        isChecklistDetails((data as ChecklistResponse).checkList) &&
+        isArrayOfCheckItems((data as ChecklistResponse).checkItems) &&
+        isArrayOfCustomCheckItems((data as ChecklistResponse).customCheckItems)
+    );
 };

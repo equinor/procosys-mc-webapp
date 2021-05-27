@@ -12,10 +12,17 @@ import authService from '../services/__mocks__/authService';
 import { testProjects, testPlants, dummyPermissions } from './dummyData';
 import { IAuthService } from '../services/authService';
 import { baseURL } from './setupServer';
+import { ProcosysApiSettings } from '../services/appConfiguration';
 
 const client = new Msal.PublicClientApplication({
     auth: { clientId: 'testId', authority: 'testAuthority' },
 });
+
+const dummyApiSettings: ProcosysApiSettings = {
+    baseUrl: 'testUrl',
+    scope: [''],
+    apiVersion: '',
+};
 
 const authInstance = authService({ MSAL: client, scopes: ['testScope'] });
 const baseApiInstance = baseApiService({
@@ -51,6 +58,7 @@ export const withCommAppContext = ({
                     fetchPlantsStatus: asyncStatus,
                     auth: auth,
                     api: api,
+                    procosysApiSettings: dummyApiSettings,
                 }}
             >
                 {Component}

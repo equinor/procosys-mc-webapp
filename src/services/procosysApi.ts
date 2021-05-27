@@ -11,6 +11,7 @@ import {
     isArrayOfPunchOrganization,
     isArrayOfPunchPreview,
     isArrayOfPunchType,
+    isChecklistResponse,
     isCorrectPreview,
     isCorrectSearchResults,
 } from './apiTypeGuards';
@@ -152,12 +153,17 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
 
     const getChecklist = async (
         plantId: string,
-        checklistId: string
+        checklistId: string,
+        cancelToken: CancelToken
     ): Promise<ChecklistResponse> => {
         const { data } = await axios.get(
-            `Checklist/Comm?plantId=PCS$${plantId}&checklistId=${checklistId}${apiVersion}`
+            `CheckList/MC?plantId=PCS$${plantId}&checklistId=${checklistId}${apiVersion}`,
+            { cancelToken }
         );
-        return data as ChecklistResponse;
+        if (!isChecklistResponse(data)) {
+            throw new Error('An error occurred, please try again');
+        }
+        return data;
     };
 
     const postSetOk = async (
@@ -316,6 +322,21 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
                 },
             }
         );
+    };
+
+    const getChecklistPunchList = async (
+        plantId: string,
+        checklistId: string,
+        cancelToken: CancelToken
+    ): Promise<PunchPreview[]> => {
+        const { data } = await axios.get(
+            `CheckList/PunchList?plantId=PCS$${plantId}&checklistId=${checklistId}${apiVersion}`,
+            { cancelToken }
+        );
+        if (!isArrayOfPunchPreview(data)) {
+            throw new Error('An error occurred, please try again.');
+        }
+        return data;
     };
 
     //------------
@@ -513,6 +534,7 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
         getPermissionsForPlant,
         getChecklist,
         getPunchOrganizations,
+        getChecklistPunchList,
         getPunchList,
         getPunchTypes,
         getPunchCategories,
