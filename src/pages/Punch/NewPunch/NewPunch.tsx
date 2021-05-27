@@ -67,7 +67,7 @@ const NewPunch = (): JSX.Element => {
     const [showUploadModal, setShowUploadModal] = useState(false);
     const { snackbar, setSnackbarText } = useSnackbar();
     const [showFullImageModal, setShowFullImageModal] = useState(false);
-    const [attachmentToShow, setAttachmentToShow] = useState<TempAttachment>();
+    const [attachmentToShow, setAttachmentToShow] = useState<TempAttachment>(); // TODO: figure out what this does/is used for
 
     const handleSubmit = async (e: React.FormEvent): Promise<void> => {
         e.preventDefault();
@@ -91,6 +91,7 @@ const NewPunch = (): JSX.Element => {
         }
     };
 
+    // TODO: figure out why attachments to be shown isn't changed here
     const handleDelete = (attachmentId: string): void => {
         setTempAttachments((attachments) =>
             attachments.filter((item) => item.id !== attachmentId)
@@ -101,6 +102,7 @@ const NewPunch = (): JSX.Element => {
     useEffect(() => {
         (async (): Promise<void> => {
             try {
+                // TODO: fix all api functions except getChecklist
                 const [
                     categoriesFromApi,
                     typesFromApi,
@@ -127,6 +129,7 @@ const NewPunch = (): JSX.Element => {
         return <NewPunchSuccessPage />;
     }
 
+    // TODO: pull changes made in checklist router once merged
     const content = (): JSX.Element => {
         if (checklistDetails) {
             return (
