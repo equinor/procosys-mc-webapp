@@ -35,8 +35,9 @@ export const ENDPOINTS = {
     postSetOk: `${baseURL}/CheckList/Item/SetOk`,
     postClear: `${baseURL}/CheckList/Item/Clear`,
     getMcScope: `${baseURL}/McPkg/CheckLists`,
-    // TODO: remove the endpoints below
-    getChecklist: `${baseURL}/CheckList/Comm`,
+    getChecklist: `${baseURL}/CheckList/MC`,
+    getChecklistPunchList: `${baseURL}/CheckList/PunchList`,
+    // TODO: remove the endpoints below (?)
     putChecklistComment: `${baseURL}/CheckList/Comm/Comment`,
     postSign: `${baseURL}/CheckList/Comm/Sign`,
     postUnsign: `${baseURL}/CheckList/Comm/Unsign`,
@@ -101,6 +102,12 @@ export const server = setupServer(
     rest.get(ENDPOINTS.getChecklist, (_, response, context) => {
         return response(
             context.json(objectToCamelCase(dummyChecklistResponse)),
+            context.status(200)
+        );
+    }),
+    rest.get(ENDPOINTS.getChecklistPunchList, (_, response, context) => {
+        return response(
+            context.json(dummyPunchListResponse),
             context.status(200)
         );
     }),

@@ -5,7 +5,7 @@ import SelectProject from './pages/SelectProject/SelectProject';
 import Search from './pages/Search/Search';
 import SelectPlant from './pages/SelectPlant/SelectPlant';
 import EntityPage from './pages/Entity/EntityPage';
-import ChecklistWrapper from './pages/Checklist/ChecklistWrapper';
+import ChecklistPage from './pages/Checklist/ChecklistPage';
 
 const McRouter = (): JSX.Element => {
     return (
@@ -23,7 +23,7 @@ const McRouter = (): JSX.Element => {
                     path={
                         '/:plant/:project/:searchType/:itemId/checklist/:checklistId'
                     }
-                    component={ChecklistWrapper}
+                    component={ChecklistPage}
                 />
                 <Redirect
                     exact
