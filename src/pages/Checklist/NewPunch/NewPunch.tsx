@@ -63,9 +63,9 @@ const NewPunch = (): JSX.Element => {
     const [categories, setCategories] = useState<PunchCategory[]>([]);
     const [types, setTypes] = useState<PunchType[]>([]);
     const [organizations, setOrganizations] = useState<PunchOrganization[]>([]);
-    const [persons, setPersons] = useState(null); // TODO: add type
-    const [sorts, setSorts] = useState(null); // TODO add type
-    const [priorities, setPriorities] = useState(null); // TODO: add type
+    const [persons, setPersons] = useState<any>(null); // TODO: add type
+    const [sorts, setSorts] = useState<any>(null); // TODO add type
+    const [priorities, setPriorities] = useState<any>(null); // TODO: add type
     const [fetchNewPunchStatus, setFetchNewPunchStatus] = useState(
         AsyncStatus.LOADING
     );
@@ -119,11 +119,15 @@ const NewPunch = (): JSX.Element => {
                     categoriesFromApi,
                     typesFromApi,
                     organizationsFromApi,
+                    sortsFromApi,
+                    prioritiesFromApi,
                     checklistFromApi,
                 ] = await Promise.all([
                     api.getPunchCategories(params.plant, source.token),
                     api.getPunchTypes(params.plant, source.token),
                     api.getPunchOrganizations(params.plant, source.token),
+                    api.getPunchSorts(params.plant, source.token),
+                    api.getPunchPriorities(params.plant, source.token),
                     api.getChecklist(
                         params.plant,
                         params.checklistId,
@@ -133,6 +137,8 @@ const NewPunch = (): JSX.Element => {
                 setCategories(categoriesFromApi);
                 setTypes(typesFromApi);
                 setOrganizations(organizationsFromApi);
+                setSorts(sortsFromApi);
+                setPriorities(prioritiesFromApi);
                 setChecklistDetails(checklistFromApi.checkList);
                 setFetchNewPunchStatus(AsyncStatus.SUCCESS);
             } catch (error) {
