@@ -28,20 +28,31 @@ import AsyncPage from '../../../components/AsyncPage';
 
 export type PunchFormData = {
     category: string;
-    type: string;
     description: string;
     raisedBy: string;
     clearingBy: string;
+    actionByPerson: number | null;
+    dueDate: Date | null;
+    type: string; // TODO: is a null value needed here?
+    sorting: number | null;
+    priority: number | null;
+    estimate: number | null; // TODO: decide how to do. Should be a number, but should be writeable and not selectable
 };
 
 export type TempAttachment = { id: string; file: File };
 
-const newPunchInitialValues = {
+// TODO: figure out whether 0 is a better initial value for number type
+const newPunchInitialValues: PunchFormData = {
     category: '',
-    type: '',
     description: '',
     raisedBy: '',
     clearingBy: '',
+    actionByPerson: null,
+    dueDate: null,
+    type: '',
+    sorting: null,
+    priority: null,
+    estimate: null,
 };
 
 const NewPunch = (): JSX.Element => {
@@ -52,6 +63,9 @@ const NewPunch = (): JSX.Element => {
     const [categories, setCategories] = useState<PunchCategory[]>([]);
     const [types, setTypes] = useState<PunchType[]>([]);
     const [organizations, setOrganizations] = useState<PunchOrganization[]>([]);
+    const [persons, setPersons] = useState(null); // TODO: add type
+    const [sorts, setSorts] = useState(null); // TODO add type
+    const [priorities, setPriorities] = useState(null); // TODO: add type
     const [fetchNewPunchStatus, setFetchNewPunchStatus] = useState(
         AsyncStatus.LOADING
     );
@@ -66,7 +80,7 @@ const NewPunch = (): JSX.Element => {
     const [showUploadModal, setShowUploadModal] = useState(false);
     const { snackbar, setSnackbarText } = useSnackbar();
     const [showFullImageModal, setShowFullImageModal] = useState(false);
-    const [attachmentToShow, setAttachmentToShow] = useState<TempAttachment>(); // TODO: figure out what this does/is used for
+    const [attachmentToShow, setAttachmentToShow] = useState<TempAttachment>();
 
     const handleSubmit = async (e: React.FormEvent): Promise<void> => {
         e.preventDefault();
@@ -90,7 +104,6 @@ const NewPunch = (): JSX.Element => {
         }
     };
 
-    // TODO: figure out why attachments to be shown isn't changed here
     const handleDelete = (attachmentId: string): void => {
         setTempAttachments((attachments) =>
             attachments.filter((item) => item.id !== attachmentId)
@@ -135,18 +148,20 @@ const NewPunch = (): JSX.Element => {
         return <NewPunchSuccessPage />;
     }
 
-    // TODO: pull changes made in checklist router once merged
     const content = (): JSX.Element => {
         if (checklistDetails) {
             return (
                 <>
                     <NewPunchForm
                         categories={categories}
-                        types={types}
                         organizations={organizations}
+                        persons={persons}
+                        types={types}
+                        sorts={sorts}
+                        priorities={priorities}
                         formData={formFields}
-                        createChangeHandler={createChangeHandler}
                         buttonText={'Create punch'}
+                        createChangeHandler={createChangeHandler}
                         handleSubmit={handleSubmit}
                         submitPunchStatus={submitPunchStatus}
                     >

@@ -30,9 +30,12 @@ export const NewPunchFormWrapper = styled.form`
 `;
 
 type NewPunchFormProps = {
-    types: PunchType[];
     categories: PunchCategory[];
     organizations: PunchOrganization[];
+    persons: any; // TODO: find out which type
+    types: PunchType[];
+    sorts: any; // TODO: find out type
+    priorities: any; // TODO: figure out type
     formData: PunchFormData;
     buttonText: string;
     createChangeHandler: (
@@ -49,13 +52,16 @@ type NewPunchFormProps = {
 
 const NewPunchForm = ({
     categories,
-    types,
     organizations,
+    persons,
+    types,
+    sorts,
+    priorities,
+    formData,
+    buttonText,
     createChangeHandler,
     handleSubmit,
     submitPunchStatus,
-    formData,
-    buttonText,
     children,
 }: NewPunchFormProps): JSX.Element => {
     return (
