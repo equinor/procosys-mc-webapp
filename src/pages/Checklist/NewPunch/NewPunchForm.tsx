@@ -1,4 +1,10 @@
-import { Button, NativeSelect, TextField } from '@equinor/eds-core-react';
+import {
+    Button,
+    Input,
+    Label,
+    NativeSelect,
+    TextField,
+} from '@equinor/eds-core-react';
 import React from 'react';
 import styled from 'styled-components';
 import { CardWrapper } from '../../../components/EdsCard';
@@ -46,6 +52,7 @@ type NewPunchFormProps = {
             | 'raisedBy'
             | 'clearingBy'
             | 'sorting'
+            | 'estimate'
     ) => (
         e: React.ChangeEvent<
             HTMLSelectElement | HTMLTextAreaElement | HTMLInputElement
@@ -71,6 +78,7 @@ const NewPunchForm = ({
     children,
 }: NewPunchFormProps): JSX.Element => {
     // TODO: figure out whether required fields should habe a star (*) in the label
+    // TODO: decide how to make optional fields clearable if filled out by mistake (an x in the right corner??) (see old app?)
     return (
         <NewPunchFormWrapper onSubmit={handleSubmit}>
             <NativeSelect
@@ -177,8 +185,14 @@ const NewPunchForm = ({
                 ))}
             </NativeSelect>
             {
-                // TODO: add estimate field uding eds input number type
+                // TODO: way to open a numbers-ony keyboard when editing the estimate text field?
             }
+            <TextField
+                type="number"
+                label="Estimate"
+                id="estimate"
+                onChange={createChangeHandler('estimate')}
+            />
             {children}
             <Button
                 type="submit"
