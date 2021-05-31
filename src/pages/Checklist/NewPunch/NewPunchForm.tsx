@@ -46,11 +46,12 @@ type NewPunchFormProps = {
     buttonText: string;
     createChangeHandler: (
         key:
-            | 'type'
             | 'category'
             | 'description'
             | 'raisedBy'
             | 'clearingBy'
+            | 'dueDate'
+            | 'type'
             | 'sorting'
             | 'estimate'
     ) => (
@@ -136,11 +137,14 @@ const NewPunchForm = ({
                 ))}
             </NativeSelect>
             {
-                // TODO: add persons field as its own component, because why not
+                // TODO: add persons field as its own component, because why not?
             }
-            {
-                // TODO: add due date field
-            }
+            <TextField
+                id="due-date"
+                type="date"
+                label="Due Date"
+                onChange={createChangeHandler('dueDate')}
+            />
             <NativeSelect
                 required
                 id="PunchTypeSelect"
