@@ -34,12 +34,18 @@ type NewPunchFormProps = {
     organizations: PunchOrganization[];
     persons: any; // TODO: find out which type
     types: PunchType[];
-    sorts: any; // TODO: find out type
-    priorities: any; // TODO: figure out type
+    sorts: PunchOrganization[]; // TODO: find out type
+    priorities: PunchOrganization[]; // TODO: figure out type
     formData: PunchFormData;
     buttonText: string;
     createChangeHandler: (
-        key: 'type' | 'category' | 'description' | 'raisedBy' | 'clearingBy'
+        key:
+            | 'type'
+            | 'category'
+            | 'description'
+            | 'raisedBy'
+            | 'clearingBy'
+            | 'sorting'
     ) => (
         e: React.ChangeEvent<
             HTMLSelectElement | HTMLTextAreaElement | HTMLInputElement
@@ -64,6 +70,7 @@ const NewPunchForm = ({
     submitPunchStatus,
     children,
 }: NewPunchFormProps): JSX.Element => {
+    // TODO: figure out whether required fields should habe a star (*) in the label
     return (
         <NewPunchFormWrapper onSubmit={handleSubmit}>
             <NativeSelect
@@ -79,21 +86,6 @@ const NewPunchForm = ({
                         key={category.id}
                         value={category.id}
                     >{`${category.description}`}</option>
-                ))}
-            </NativeSelect>
-            <NativeSelect
-                required
-                id="PunchTypeSelect"
-                label="Type"
-                disabled={submitPunchStatus === AsyncStatus.LOADING}
-                onChange={createChangeHandler('type')}
-            >
-                <option hidden disabled selected />
-                {types.map((type) => (
-                    <option
-                        key={type.id}
-                        value={type.id}
-                    >{`${type.code}. ${type.description}`}</option>
                 ))}
             </NativeSelect>
             <TextField
@@ -135,8 +127,59 @@ const NewPunchForm = ({
                     </option>
                 ))}
             </NativeSelect>
+            {
+                // TODO: add persons field as its own component, because why not
+            }
+            {
+                // TODO: add due date field
+            }
+            <NativeSelect
+                required
+                id="PunchTypeSelect"
+                label="Type"
+                disabled={submitPunchStatus === AsyncStatus.LOADING}
+                onChange={createChangeHandler('type')}
+            >
+                <option hidden disabled selected />
+                {types.map((type) => (
+                    <option
+                        key={type.id}
+                        value={type.id}
+                    >{`${type.code}. ${type.description}`}</option>
+                ))}
+            </NativeSelect>
+            <NativeSelect
+                id="PunchSortingSelect"
+                label="Sorting"
+                disabled={submitPunchStatus === AsyncStatus.LOADING}
+                onChange={createChangeHandler('sorting')}
+            >
+                <option disabled selected />
+                {sorts.map((sort) => (
+                    <option
+                        key={sort.id}
+                        value={sort.id}
+                    >{`${sort.code}. ${sort.description}`}</option>
+                ))}
+            </NativeSelect>
+            <NativeSelect
+                id="PunchPrioritySelect"
+                label="Priority"
+                disabled={submitPunchStatus === AsyncStatus.LOADING}
+                onChange={createChangeHandler('sorting')}
+            >
+                <option disabled selected />
+                {priorities.map((priority) => (
+                    <option
+                        key={priority.id}
+                        value={priority.id}
+                    >{`${priority.code}. ${priority.description}`}</option>
+                ))}
+            </NativeSelect>
+            {
+                // TODO: add estimate field uding eds input number type
+            }
             {children}
-
             <Button
                 type="submit"
                 disabled={submitPunchStatus === AsyncStatus.LOADING}

@@ -42,7 +42,7 @@ export type PunchFormData = {
 export type TempAttachment = { id: string; file: File };
 
 // TODO: figure out whether 0 is a better initial value for number type
-const newPunchInitialValues: PunchFormData = {
+const newPunchInitialValues = {
     category: '',
     description: '',
     raisedBy: '',
@@ -64,8 +64,8 @@ const NewPunch = (): JSX.Element => {
     const [types, setTypes] = useState<PunchType[]>([]);
     const [organizations, setOrganizations] = useState<PunchOrganization[]>([]);
     const [persons, setPersons] = useState<any>(null); // TODO: add type
-    const [sorts, setSorts] = useState<any>(null); // TODO add type
-    const [priorities, setPriorities] = useState<any>(null); // TODO: add type
+    const [sorts, setSorts] = useState<PunchOrganization[]>([]); // TODO add type
+    const [priorities, setPriorities] = useState<any[]>([]); // TODO: add type
     const [fetchNewPunchStatus, setFetchNewPunchStatus] = useState(
         AsyncStatus.LOADING
     );
@@ -83,6 +83,7 @@ const NewPunch = (): JSX.Element => {
     const [attachmentToShow, setAttachmentToShow] = useState<TempAttachment>();
 
     const handleSubmit = async (e: React.FormEvent): Promise<void> => {
+        // TODO: add new info to the NewPunchDTO
         e.preventDefault();
         const NewPunchDTO: NewPunchType = {
             CheckListId: parseInt(params.checklistId),
