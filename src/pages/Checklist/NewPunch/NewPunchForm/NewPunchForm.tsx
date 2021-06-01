@@ -70,7 +70,6 @@ type NewPunchFormProps = {
 const NewPunchForm = ({
     categories,
     organizations,
-    persons,
     types,
     sorts,
     priorities,

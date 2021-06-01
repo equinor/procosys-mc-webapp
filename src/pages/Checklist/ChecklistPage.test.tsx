@@ -80,6 +80,7 @@ describe('<ChecklistPage> in-page routing', () => {
 });
 
 describe('<ChecklistPage> New Punch', () => {
+    /*
     it('Shows an error message if getPunchCategories API call fails', async () => {
         // TODO: change api call below so that details doesn't fail too!
         causeApiError(ENDPOINTS.getChecklist, 'get');
@@ -96,4 +97,5 @@ describe('<ChecklistPage> New Punch', () => {
         renderChecklistPage('new-punch');
         // TODO: finish
     });
+    */
 });
