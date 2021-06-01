@@ -8,10 +8,15 @@ const BottomSpacer = styled.div`
     height: 70px;
 `;
 
-const ChecklistWrapper = (): JSX.Element => {
+type ChecklistWrapperProps = {
+    refreshChecklistStatus: React.Dispatch<React.SetStateAction<boolean>>;
+};
+
+const ChecklistWrapper = ({
+    refreshChecklistStatus,
+}: ChecklistWrapperProps): JSX.Element => {
     const { auth, params, procosysApiSettings } = useCommonHooks();
     const { snackbar, setSnackbarText } = useSnackbar();
-    const [checklistStatus, setChecklistStatus] = useState('OK');
 
     return (
         <>
@@ -21,7 +26,7 @@ const ChecklistWrapper = (): JSX.Element => {
                 apiSettings={procosysApiSettings}
                 getAccessToken={auth.getAccessToken}
                 setSnackbarText={setSnackbarText}
-                setChecklistStatus={setChecklistStatus}
+                refreshChecklistStatus={refreshChecklistStatus}
             />
             {snackbar}
             <BottomSpacer />
