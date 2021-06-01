@@ -26,6 +26,7 @@ const ChecklistPage = (): JSX.Element => {
     const [fetchDetailsStatus, setFetchDetailsStatus] = useState(
         AsyncStatus.LOADING
     );
+    const [refreshChecklistStatus, setRefreshChecklistStatus] = useState(false);
     const source = Axios.CancelToken.source();
 
     useEffect(() => {
@@ -48,7 +49,7 @@ const ChecklistPage = (): JSX.Element => {
                 setFetchDetailsStatus(AsyncStatus.ERROR);
             }
         })();
-    }, [api, params]);
+    }, [api, params, refreshChecklistStatus]);
 
     useEffect(() => {
         (async (): Promise<void> => {
@@ -145,20 +146,25 @@ const ChecklistPage = (): JSX.Element => {
                 rightContent={{ name: 'newPunch' }}
             />
             {determineDetailsToRender()}
-            {
-                // TODO: add correct components to routes
-            }
             <Switch>
-                <Route exact path={`${path}`} component={ChecklistWrapper} />
+                <Route
+                    exact
+                    path={`${path}`}
+                    render={(): JSX.Element => (
+                        <ChecklistWrapper
+                            refreshChecklistStatus={setRefreshChecklistStatus}
+                        />
+                    )}
+                />
                 <Route
                     exact
                     path={`${path}/tag-info`}
-                    component={ChecklistWrapper}
+                    render={(): JSX.Element => <h1>tag info</h1>}
                 />
                 <Route
                     exact
                     path={`${path}/punch-list`}
-                    component={ChecklistWrapper}
+                    render={(): JSX.Element => <h1>punch list</h1>}
                 />
                 <Route exact path={`${path}/new-punch`} component={NewPunch} />
             </Switch>
