@@ -38,7 +38,6 @@ export const NewPunchFormWrapper = styled.form`
 type NewPunchFormProps = {
     categories: PunchCategory[];
     organizations: PunchOrganization[];
-    persons: any; // TODO: find out which type
     types: PunchType[];
     sorts: PunchOrganization[]; // TODO: find out type
     priorities: PunchOrganization[]; // TODO: figure out type
@@ -67,7 +66,6 @@ type NewPunchFormProps = {
 const NewPunchForm = ({
     categories,
     organizations,
-    persons,
     types,
     sorts,
     priorities,

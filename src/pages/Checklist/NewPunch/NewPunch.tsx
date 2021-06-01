@@ -26,6 +26,7 @@ import EdsCard from '../../../components/EdsCard';
 import useSnackbar from '../../../utils/useSnackbar';
 import AsyncPage from '../../../components/AsyncPage';
 
+// TODO: fix types
 export type PunchFormData = {
     category: string;
     description: string;
@@ -33,15 +34,14 @@ export type PunchFormData = {
     clearingBy: string;
     actionByPerson: number | null;
     dueDate: Date | null;
-    type: string; // TODO: is a null value needed here?
+    type: string;
     sorting: number | null;
     priority: number | null;
-    estimate: number | null; // TODO: decide how to do. Should be a number, but should be writeable and not selectable
+    estimate: number | null;
 };
 
 export type TempAttachment = { id: string; file: File };
 
-// TODO: figure out whether 0 is a better initial value for number type
 const newPunchInitialValues = {
     category: '',
     description: '',
@@ -63,7 +63,6 @@ const NewPunch = (): JSX.Element => {
     const [categories, setCategories] = useState<PunchCategory[]>([]);
     const [types, setTypes] = useState<PunchType[]>([]);
     const [organizations, setOrganizations] = useState<PunchOrganization[]>([]);
-    const [persons, setPersons] = useState<any>(null); // TODO: add type
     const [sorts, setSorts] = useState<PunchOrganization[]>([]); // TODO add type
     const [priorities, setPriorities] = useState<any[]>([]); // TODO: add type
     const [fetchNewPunchStatus, setFetchNewPunchStatus] = useState(
@@ -162,7 +161,6 @@ const NewPunch = (): JSX.Element => {
                     <NewPunchForm
                         categories={categories}
                         organizations={organizations}
-                        persons={persons}
                         types={types}
                         sorts={sorts}
                         priorities={priorities}
