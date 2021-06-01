@@ -5,7 +5,7 @@ import SkeletonLoadingPage from '../../../components/loading/SkeletonLoader';
 import Navbar from '../../../components/navigation/Navbar';
 import { AsyncStatus } from '../../../contexts/McAppContext';
 import PunchDetailsCard from './PunchDetailsCard';
-import { NewPunchFormWrapper } from '../NewPunch/NewPunchForm';
+import { NewPunchFormWrapper } from '../../Checklist/NewPunch/NewPunchForm';
 import useClearPunchFacade, {
     UpdatePunchEndpoint,
 } from './useClearPunchFacade';

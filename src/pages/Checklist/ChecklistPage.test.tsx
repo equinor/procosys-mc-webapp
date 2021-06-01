@@ -66,3 +66,36 @@ describe('<ChecklistPage>', () => {
         // TODO: add an expect for content (in this case checklist) to remove act warning
     });
 });
+describe('<ChecklistPage> in-page routing', () => {
+    beforeEach(() => {
+        renderChecklistPage('new-punch');
+    });
+    it.todo('Shows the Checklist if the "Checklist" button is clicked');
+    it.todo('Shows the Tag info if the "Tag info" button is clicked');
+    it.todo('Shows the punch list if the "Punch list" button is clicked');
+    // TODO: do the test below in this PR
+    it.todo(
+        'Shows the NewPunch component if the "New punch" button is clicked'
+    );
+});
+
+describe('<ChecklistPage> New Punch', () => {
+    /*
+    it('Shows an error message if getPunchCategories API call fails', async () => {
+        // TODO: change api call below so that details doesn't fail too!
+        causeApiError(ENDPOINTS.getChecklist, 'get');
+        renderChecklistPage('new-punch');
+        expect(
+            await screen.findByText(
+                'Unable to load new punch. Please check your connection, permissions, or refresh this page.'
+            )
+        );
+        //await expectDetails();
+        await expectFooter();
+    });
+    it('Should be possible to create a new punch', async () => {
+        renderChecklistPage('new-punch');
+        // TODO: finish
+    });
+    */
+});

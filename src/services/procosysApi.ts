@@ -7,7 +7,10 @@ import {
 import { SearchType } from '../pages/Search/Search';
 import {
     isArrayOfChecklistPreview,
+    isArrayOfPunchCategory,
+    isArrayOfPunchOrganization,
     isArrayOfPunchPreview,
+    isArrayOfPunchType,
     isChecklistResponse,
     isCorrectPreview,
     isCorrectSearchResults,
@@ -359,28 +362,74 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
     };
 
     const getPunchCategories = async (
-        plantId: string
+        plantId: string,
+        cancelToken: CancelToken
     ): Promise<PunchCategory[]> => {
         const { data } = await axios.get(
-            `PunchListItem/Categories?plantId=PCS$${plantId}${apiVersion}`
+            `PunchListItem/Categories?plantId=PCS$${plantId}${apiVersion}`,
+            { cancelToken }
         );
-        return data as PunchCategory[];
+        if (!isArrayOfPunchCategory(data)) {
+            throw new Error('An error occurred, please try again.');
+        }
+        return data;
     };
 
-    const getPunchTypes = async (plantId: string): Promise<PunchType[]> => {
+    const getPunchTypes = async (
+        plantId: string,
+        cancelToken: CancelToken
+    ): Promise<PunchType[]> => {
         const { data } = await axios.get(
-            `PunchListItem/Types?plantId=PCS$${plantId}${apiVersion}`
+            `PunchListItem/Types?plantId=PCS$${plantId}${apiVersion}`,
+            { cancelToken }
         );
-        return data as PunchType[];
+        if (!isArrayOfPunchType(data)) {
+            throw new Error('An error occurred, please try again.');
+        }
+        return data;
     };
 
     const getPunchOrganizations = async (
-        plantId: string
+        plantId: string,
+        cancelToken: CancelToken
     ): Promise<PunchOrganization[]> => {
         const { data } = await axios.get(
-            `PunchListItem/Organizations?plantId=PCS$${plantId}${apiVersion}`
+            `PunchListItem/Organizations?plantId=PCS$${plantId}${apiVersion}`,
+            { cancelToken }
         );
-        return data as PunchOrganization[];
+        if (!isArrayOfPunchOrganization(data)) {
+            throw new Error('An error occurred, please try again.');
+        }
+        return data;
+    };
+
+    const getPunchSorts = async (
+        plantId: string,
+        cancelToken: CancelToken
+    ): Promise<PunchOrganization[]> => {
+        // TODO: is a different type (and type guard) needed for earch of the get calls?
+        const { data } = await axios.get(
+            `PunchListItem/Sorts?plantId=PCS$${plantId}${apiVersion}`,
+            { cancelToken }
+        );
+        if (!isArrayOfPunchOrganization(data)) {
+            throw new Error('An error occurred, please try again.');
+        }
+        return data;
+    };
+    const getPunchPriorities = async (
+        plantId: string,
+        cancelToken: CancelToken
+    ): Promise<PunchOrganization[]> => {
+        // TODO: is a different type (and type guard) needed for earch of the get calls?
+        const { data } = await axios.get(
+            `PunchListItem/Priorities?plantId=PCS$${plantId}${apiVersion}`,
+            { cancelToken }
+        );
+        if (!isArrayOfPunchOrganization(data)) {
+            throw new Error('An error occurred, please try again.');
+        }
+        return data;
     };
 
     const postNewPunch = async (
@@ -500,6 +549,21 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
         );
     };
 
+    const getPersonsByName = async (
+        plantId: string,
+        searchString: string,
+        cancelToken: CancelToken
+    ): Promise<PunchOrganization[]> => {
+        const { data } = await axios.get(
+            `Person/PersonSearch?plantId=PCS$${plantId}&searchString=${searchString}${apiVersion}`,
+            { cancelToken }
+        );
+        if (!isArrayOfPunchOrganization(data)) {
+            throw new Error('An error occurred, please try again.');
+        }
+        return data;
+    };
+
     return {
         deleteChecklistAttachment,
         deletePunchAttachment,
@@ -518,6 +582,8 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
         getPunchList,
         getPunchTypes,
         getPunchCategories,
+        getPunchSorts,
+        getPunchPriorities,
         getScope,
         postClear,
         postSetOk,
@@ -534,6 +600,7 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
         putUpdatePunch,
         getSearchResults,
         getItemDetails,
+        getPersonsByName,
     };
 };
 

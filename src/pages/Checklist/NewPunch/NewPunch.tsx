@@ -7,13 +7,12 @@ import {
     PunchType,
 } from '../../../services/apiTypes';
 import { AsyncStatus } from '../../../contexts/McAppContext';
-import Navbar from '../../../components/navigation/Navbar';
 import NewPunchForm from './NewPunchForm';
 import useFormFields from '../../../utils/useFormFields';
 import { NewPunch as NewPunchType } from '../../../services/apiTypes';
 import NewPunchSuccessPage from './NewPunchSuccessPage';
 import useCommonHooks from '../../../utils/useCommonHooks';
-import { PunchWrapper } from '../ClearPunch/ClearPunch';
+import { PunchWrapper } from '../../Punch/ClearPunch/ClearPunch';
 import { Button, Scrim } from '@equinor/eds-core-react';
 import {
     AttachmentImage,
@@ -27,22 +26,33 @@ import EdsCard from '../../../components/EdsCard';
 import useSnackbar from '../../../utils/useSnackbar';
 import AsyncPage from '../../../components/AsyncPage';
 
+// TODO: fix types
 export type PunchFormData = {
     category: string;
-    type: string;
     description: string;
     raisedBy: string;
     clearingBy: string;
+    actionByPerson: number | null;
+    dueDate: Date | null;
+    type: string;
+    sorting: number | null;
+    priority: number | null;
+    estimate: number | null;
 };
 
 export type TempAttachment = { id: string; file: File };
 
 const newPunchInitialValues = {
     category: '',
-    type: '',
     description: '',
     raisedBy: '',
     clearingBy: '',
+    actionByPerson: null,
+    dueDate: null,
+    type: '',
+    sorting: null,
+    priority: null,
+    estimate: null,
 };
 
 const NewPunch = (): JSX.Element => {
@@ -53,6 +63,8 @@ const NewPunch = (): JSX.Element => {
     const [categories, setCategories] = useState<PunchCategory[]>([]);
     const [types, setTypes] = useState<PunchType[]>([]);
     const [organizations, setOrganizations] = useState<PunchOrganization[]>([]);
+    const [sorts, setSorts] = useState<PunchOrganization[]>([]); // TODO add type
+    const [priorities, setPriorities] = useState<any[]>([]); // TODO: add type
     const [fetchNewPunchStatus, setFetchNewPunchStatus] = useState(
         AsyncStatus.LOADING
     );
@@ -70,6 +82,7 @@ const NewPunch = (): JSX.Element => {
     const [attachmentToShow, setAttachmentToShow] = useState<TempAttachment>();
 
     const handleSubmit = async (e: React.FormEvent): Promise<void> => {
+        // TODO: add new info to the NewPunchDTO
         e.preventDefault();
         const NewPunchDTO: NewPunchType = {
             CheckListId: parseInt(params.checklistId),
@@ -106,11 +119,15 @@ const NewPunch = (): JSX.Element => {
                     categoriesFromApi,
                     typesFromApi,
                     organizationsFromApi,
+                    sortsFromApi,
+                    prioritiesFromApi,
                     checklistFromApi,
                 ] = await Promise.all([
-                    api.getPunchCategories(params.plant),
-                    api.getPunchTypes(params.plant),
-                    api.getPunchOrganizations(params.plant),
+                    api.getPunchCategories(params.plant, source.token),
+                    api.getPunchTypes(params.plant, source.token),
+                    api.getPunchOrganizations(params.plant, source.token),
+                    api.getPunchSorts(params.plant, source.token),
+                    api.getPunchPriorities(params.plant, source.token),
                     api.getChecklist(
                         params.plant,
                         params.checklistId,
@@ -120,6 +137,8 @@ const NewPunch = (): JSX.Element => {
                 setCategories(categoriesFromApi);
                 setTypes(typesFromApi);
                 setOrganizations(organizationsFromApi);
+                setSorts(sortsFromApi);
+                setPriorities(prioritiesFromApi);
                 setChecklistDetails(checklistFromApi.checkList);
                 setFetchNewPunchStatus(AsyncStatus.SUCCESS);
             } catch (error) {
@@ -141,11 +160,13 @@ const NewPunch = (): JSX.Element => {
                 <>
                     <NewPunchForm
                         categories={categories}
-                        types={types}
                         organizations={organizations}
+                        types={types}
+                        sorts={sorts}
+                        priorities={priorities}
                         formData={formFields}
-                        createChangeHandler={createChangeHandler}
                         buttonText={'Create punch'}
+                        createChangeHandler={createChangeHandler}
                         handleSubmit={handleSubmit}
                         submitPunchStatus={submitPunchStatus}
                     >
@@ -227,10 +248,6 @@ const NewPunch = (): JSX.Element => {
 
     return (
         <>
-            <Navbar
-                noBorder
-                leftContent={{ name: 'back', label: 'Checklist' }}
-            />
             <AsyncPage
                 fetchStatus={fetchNewPunchStatus}
                 errorMessage={
