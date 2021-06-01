@@ -2,7 +2,7 @@ import React from 'react';
 import { Route, Switch, useRouteMatch } from 'react-router-dom';
 import ChecklistWrapper from './pages/Checklist/ChecklistWrapper';
 import EntityPage from './pages/Entity/EntityPage';
-import NewPunch from './pages/Punch/NewPunch/NewPunch';
+import NewPunch from './pages/Checklist/NewPunch/NewPunch';
 import ClearPunch from './pages/Punch/ClearPunch/ClearPunch';
 import VerifyPunch from './pages/Punch/VerifyPunch/VerifyPunch';
 

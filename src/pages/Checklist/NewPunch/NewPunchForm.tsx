@@ -1,4 +1,10 @@
-import { Button, NativeSelect, TextField } from '@equinor/eds-core-react';
+import {
+    Button,
+    Input,
+    Label,
+    NativeSelect,
+    TextField,
+} from '@equinor/eds-core-react';
 import React from 'react';
 import styled from 'styled-components';
 import { CardWrapper } from '../../../components/EdsCard';
@@ -9,7 +15,7 @@ import {
     PunchType,
 } from '../../../services/apiTypes';
 import { COLORS } from '../../../style/GlobalStyles';
-import { PunchFormData } from '../../Punch/NewPunch/NewPunch';
+import { PunchFormData } from './NewPunch';
 
 export const NewPunchFormWrapper = styled.form`
     background-color: ${COLORS.white};
@@ -30,13 +36,23 @@ export const NewPunchFormWrapper = styled.form`
 `;
 
 type NewPunchFormProps = {
-    types: PunchType[];
     categories: PunchCategory[];
     organizations: PunchOrganization[];
+    types: PunchType[];
+    sorts: PunchOrganization[]; // TODO: find out type
+    priorities: PunchOrganization[]; // TODO: figure out type
     formData: PunchFormData;
     buttonText: string;
     createChangeHandler: (
-        key: 'type' | 'category' | 'description' | 'raisedBy' | 'clearingBy'
+        key:
+            | 'category'
+            | 'description'
+            | 'raisedBy'
+            | 'clearingBy'
+            | 'dueDate'
+            | 'type'
+            | 'sorting'
+            | 'estimate'
     ) => (
         e: React.ChangeEvent<
             HTMLSelectElement | HTMLTextAreaElement | HTMLInputElement
@@ -49,15 +65,19 @@ type NewPunchFormProps = {
 
 const NewPunchForm = ({
     categories,
-    types,
     organizations,
+    types,
+    sorts,
+    priorities,
+    formData,
+    buttonText,
     createChangeHandler,
     handleSubmit,
     submitPunchStatus,
-    formData,
-    buttonText,
     children,
 }: NewPunchFormProps): JSX.Element => {
+    // TODO: figure out whether required fields should habe a star (*) in the label
+    // TODO: decide how to make optional fields clearable if filled out by mistake (an x in the right corner??) (see old app?)
     return (
         <NewPunchFormWrapper onSubmit={handleSubmit}>
             <NativeSelect
@@ -73,21 +93,6 @@ const NewPunchForm = ({
                         key={category.id}
                         value={category.id}
                     >{`${category.description}`}</option>
-                ))}
-            </NativeSelect>
-            <NativeSelect
-                required
-                id="PunchTypeSelect"
-                label="Type"
-                disabled={submitPunchStatus === AsyncStatus.LOADING}
-                onChange={createChangeHandler('type')}
-            >
-                <option hidden disabled selected />
-                {types.map((type) => (
-                    <option
-                        key={type.id}
-                        value={type.id}
-                    >{`${type.code}. ${type.description}`}</option>
                 ))}
             </NativeSelect>
             <TextField
@@ -129,8 +134,68 @@ const NewPunchForm = ({
                     </option>
                 ))}
             </NativeSelect>
+            {
+                // TODO: add persons field as its own component, because why not?
+            }
+            <TextField
+                id="due-date"
+                type="date"
+                label="Due Date"
+                onChange={createChangeHandler('dueDate')}
+            />
+            <NativeSelect
+                required
+                id="PunchTypeSelect"
+                label="Type"
+                disabled={submitPunchStatus === AsyncStatus.LOADING}
+                onChange={createChangeHandler('type')}
+            >
+                <option hidden disabled selected />
+                {types.map((type) => (
+                    <option
+                        key={type.id}
+                        value={type.id}
+                    >{`${type.code}. ${type.description}`}</option>
+                ))}
+            </NativeSelect>
+            <NativeSelect
+                id="PunchSortingSelect"
+                label="Sorting"
+                disabled={submitPunchStatus === AsyncStatus.LOADING}
+                onChange={createChangeHandler('sorting')}
+            >
+                <option disabled selected />
+                {sorts.map((sort) => (
+                    <option
+                        key={sort.id}
+                        value={sort.id}
+                    >{`${sort.code}. ${sort.description}`}</option>
+                ))}
+            </NativeSelect>
+            <NativeSelect
+                id="PunchPrioritySelect"
+                label="Priority"
+                disabled={submitPunchStatus === AsyncStatus.LOADING}
+                onChange={createChangeHandler('sorting')}
+            >
+                <option disabled selected />
+                {priorities.map((priority) => (
+                    <option
+                        key={priority.id}
+                        value={priority.id}
+                    >{`${priority.code}. ${priority.description}`}</option>
+                ))}
+            </NativeSelect>
+            {
+                // TODO: way to open a numbers-ony keyboard when editing the estimate text field?
+            }
+            <TextField
+                type="number"
+                label="Estimate"
+                id="estimate"
+                onChange={createChangeHandler('estimate')}
+            />
             {children}
-
             <Button
                 type="submit"
                 disabled={submitPunchStatus === AsyncStatus.LOADING}
