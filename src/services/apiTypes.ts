@@ -192,6 +192,19 @@ export interface PunchOrganization {
     description: string;
 }
 
+export interface PunchSort {
+    id: number;
+    parentId: number;
+    code: string;
+    description: string;
+}
+
+export interface PunchPriority {
+    id: number;
+    code: string;
+    description: string;
+}
+
 export interface NewPunch {
     CheckListId: number;
     CategoryId: number;
@@ -259,4 +272,13 @@ export interface Attachment {
     thumbnailAsBase64: string;
     hasFile: boolean;
     fileName: string;
+}
+
+export interface Person {
+    id: number;
+    azureOid: string;
+    username: string;
+    firstName: string;
+    lastName: string;
+    email: string;
 }

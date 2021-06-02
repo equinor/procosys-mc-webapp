@@ -7,9 +7,12 @@ import {
     CustomCheckItem,
     LoopTag,
     McPkgPreview,
+    Person,
     PunchCategory,
     PunchOrganization,
     PunchPreview,
+    PunchPriority,
+    PunchSort,
     PunchType,
     SearchResults,
 } from './apiTypes';
@@ -91,7 +94,7 @@ export const isArrayOfPunchCategory = (
 };
 
 const isPunchType = (data: unknown): data is PunchType => {
-    return data != null && typeof (data as PunchType).id === 'number';
+    return data != null && typeof (data as PunchType).parentId === 'number';
 };
 
 export const isArrayOfPunchType = (data: unknown): data is PunchType[] => {
@@ -99,13 +102,41 @@ export const isArrayOfPunchType = (data: unknown): data is PunchType[] => {
 };
 
 const isPunchOrganization = (data: unknown): data is PunchOrganization => {
-    return data != null && typeof (data as PunchOrganization).id === 'number';
+    return (
+        data != null && typeof (data as PunchOrganization).parentId === 'number'
+    );
 };
 
 export const isArrayOfPunchOrganization = (
     data: unknown
 ): data is PunchOrganization[] => {
     return Array.isArray(data) && data.every(isPunchOrganization);
+};
+
+const isPunchSort = (data: unknown): data is PunchSort => {
+    return data != null && typeof (data as PunchSort).parentId === 'number';
+};
+
+export const isArrayOfPunchSort = (data: unknown): data is PunchSort[] => {
+    return Array.isArray(data) && data.every(isPunchSort);
+};
+
+const isPunchPriority = (data: unknown): data is PunchPriority => {
+    return data != null && typeof (data as PunchPriority).id === 'number';
+};
+
+export const isArrayOfPunchPriority = (
+    data: unknown
+): data is PunchPriority[] => {
+    return Array.isArray(data) && data.every(isPunchPriority);
+};
+
+const isPerson = (data: unknown): data is Person => {
+    return data != null && typeof (data as Person).azureOid === 'string';
+};
+
+export const isArrayofPerson = (data: unknown): data is Person[] => {
+    return Array.isArray(data) && data.every(isPerson);
 };
 
 //CHECKLIST
