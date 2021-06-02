@@ -549,6 +549,7 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
         );
     };
 
+    // TODO: correct return type
     const getPersonsByName = async (
         plantId: string,
         searchString: string,

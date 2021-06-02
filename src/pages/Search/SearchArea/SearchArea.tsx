@@ -5,7 +5,7 @@ import SearchResults from '../SearchResults/SearchResults';
 import { SearchType } from '../Search';
 import styled from 'styled-components';
 
-const TallSearchField = styled(SearchField)`
+export const TallSearchField = styled(SearchField)`
     height: 54px;
 `;
 

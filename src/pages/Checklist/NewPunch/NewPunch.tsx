@@ -7,7 +7,7 @@ import {
     PunchType,
 } from '../../../services/apiTypes';
 import { AsyncStatus } from '../../../contexts/McAppContext';
-import NewPunchForm from './NewPunchForm/NewPunchForm';
+import NewPunchForm from './NewPunchForm';
 import useFormFields from '../../../utils/useFormFields';
 import { NewPunch as NewPunchType } from '../../../services/apiTypes';
 import NewPunchSuccessPage from './NewPunchSuccessPage';
