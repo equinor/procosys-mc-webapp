@@ -103,6 +103,7 @@ const NewPunch = (): JSX.Element => {
             PriorityId: parseInt(formFields.priority),
             Estimate: parseInt(formFields.estimate),
             DueDate: formFields.dueDate,
+            ActionByPerson: chosenPerson.id,
             TemporaryFileIds: tempIds,
         };
         setSubmitPunchStatus(AsyncStatus.LOADING);

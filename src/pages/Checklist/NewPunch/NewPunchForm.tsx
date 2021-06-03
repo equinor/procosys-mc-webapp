@@ -6,7 +6,7 @@ import {
     Search,
     TextField,
 } from '@equinor/eds-core-react';
-import React, { useState } from 'react';
+import React, { ChangeEvent, useState } from 'react';
 import styled from 'styled-components';
 import { CardWrapper } from '../../../components/EdsCard';
 import { AsyncStatus } from '../../../contexts/McAppContext';
@@ -106,7 +106,7 @@ const NewPunchForm = ({
                 <NativeSelect
                     required
                     id="PunchCategorySelect"
-                    label="Punch category"
+                    label="Punch category *"
                     disabled={submitPunchStatus === AsyncStatus.LOADING}
                     onChange={createChangeHandler('category')}
                 >
@@ -123,7 +123,7 @@ const NewPunchForm = ({
                     maxLength={255}
                     value={formData.description}
                     onChange={createChangeHandler('description')}
-                    label="Description"
+                    label="Description *"
                     multiline
                     rows={5}
                     id="NewPunchDescription"
@@ -131,7 +131,7 @@ const NewPunchForm = ({
                 />
                 <NativeSelect
                     required
-                    label="Raised by"
+                    label="Raised by *"
                     id="RaisedBySelect"
                     disabled={submitPunchStatus === AsyncStatus.LOADING}
                     onChange={createChangeHandler('raisedBy')}
@@ -146,7 +146,7 @@ const NewPunchForm = ({
                 <NativeSelect
                     required
                     id="ClearingBySelect"
-                    label="Clearing by"
+                    label="Clearing by *"
                     disabled={submitPunchStatus === AsyncStatus.LOADING}
                     onChange={createChangeHandler('clearingBy')}
                 >
@@ -157,7 +157,7 @@ const NewPunchForm = ({
                         </option>
                     ))}
                 </NativeSelect>
-                <div>
+                <div onClick={(): void => setShowPersonsSearch(true)}>
                     <label>Action by person</label>
                     {
                         // TODO: find a better way to do the search label, or style the label to match the other ones
@@ -167,8 +167,10 @@ const NewPunchForm = ({
                     }
                     <Search
                         id="actionByPerson"
-                        onClick={(): void => setShowPersonsSearch(true)}
                         value={chosenPerson.name}
+                        onChange={(e: ChangeEvent<HTMLInputElement>): void =>
+                            setChosenPerson({ id: null, name: '' })
+                        }
                     />
                 </div>
                 <TextField
