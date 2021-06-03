@@ -24,8 +24,9 @@ import PersonsSearch from './PersonsSearch/PersonsSearch';
 // TODO: check whether I need to change this into something else
 export const NewPunchFormWrapper = styled.form`
     background-color: ${COLORS.white};
-    margin-top: 32px;
+    margin-top: 32px; // TODO: is this the correct amount?
     padding: 0 4%;
+    margin-bottom: 85px; // TODO: change into the same as the height of the footer (+ a bit extra?)
     overflow: hidden;
     & ${CardWrapper}:first-of-type {
         margin-top: 16px;
@@ -60,6 +61,7 @@ type NewPunchFormProps = {
             | 'dueDate'
             | 'type'
             | 'sorting'
+            | 'priority'
             | 'estimate'
     ) => (
         e: React.ChangeEvent<
@@ -99,148 +101,141 @@ const NewPunchForm = ({
         <>
             {showPersonsSearch ? (
                 <PersonsSearch setChosenPerson={handlePersonChosen} />
-            ) : (
-                <NewPunchFormWrapper onSubmit={handleSubmit}>
-                    <NativeSelect
-                        required
-                        id="PunchCategorySelect"
-                        label="Punch category"
-                        disabled={submitPunchStatus === AsyncStatus.LOADING}
-                        onChange={createChangeHandler('category')}
-                    >
-                        <option hidden disabled selected />
-                        {categories.map((category) => (
-                            <option
-                                key={category.id}
-                                value={category.id}
-                            >{`${category.description}`}</option>
-                        ))}
-                    </NativeSelect>
-                    <TextField
-                        required
-                        maxLength={255}
-                        value={formData.description}
-                        onChange={createChangeHandler('description')}
-                        label="Description"
-                        multiline
-                        rows={5}
-                        id="NewPunchDescription"
-                        disabled={submitPunchStatus === AsyncStatus.LOADING}
-                    />
-                    <NativeSelect
-                        required
-                        label="Raised by"
-                        id="RaisedBySelect"
-                        disabled={submitPunchStatus === AsyncStatus.LOADING}
-                        onChange={createChangeHandler('raisedBy')}
-                    >
-                        <option hidden disabled selected />
-                        {organizations.map((organization) => (
-                            <option
-                                key={organization.id}
-                                value={organization.id}
-                            >
-                                {organization.description}
-                            </option>
-                        ))}
-                    </NativeSelect>
-                    <NativeSelect
-                        required
-                        id="ClearingBySelect"
-                        label="Clearing by"
-                        disabled={submitPunchStatus === AsyncStatus.LOADING}
-                        onChange={createChangeHandler('clearingBy')}
-                    >
-                        <option hidden disabled selected />
-                        {organizations.map((organization) => (
-                            <option
-                                key={organization.id}
-                                value={organization.id}
-                            >
-                                {organization.description}
-                            </option>
-                        ))}
-                    </NativeSelect>
-                    <div>
-                        <label>Action by person</label>
-                        {
-                            // TODO: find a better way to do the search label, or style the label to match the other ones
-                            // TODO: style the search field
-                            // TODO: click on x actually clears the field
-                        }
-                        <Search
-                            id="actionByPerson"
-                            onClick={(): void => setShowPersonsSearch(true)}
-                            value={chosenPerson.name}
-                        />
-                    </div>
-                    <TextField
-                        id="dueDate"
-                        type="date"
-                        label="Due Date"
-                        onChange={createChangeHandler('dueDate')}
-                    />
-                    <NativeSelect
-                        required
-                        id="PunchTypeSelect"
-                        label="Type"
-                        disabled={submitPunchStatus === AsyncStatus.LOADING}
-                        onChange={createChangeHandler('type')}
-                    >
-                        <option hidden disabled selected />
-                        {types.map((type) => (
-                            <option
-                                key={type.id}
-                                value={type.id}
-                            >{`${type.code}. ${type.description}`}</option>
-                        ))}
-                    </NativeSelect>
-                    <NativeSelect
-                        id="PunchSortingSelect"
-                        label="Sorting"
-                        disabled={submitPunchStatus === AsyncStatus.LOADING}
-                        onChange={createChangeHandler('sorting')}
-                    >
-                        <option disabled selected />
-                        {sorts.map((sort) => (
-                            <option
-                                key={sort.id}
-                                value={sort.id}
-                            >{`${sort.code}. ${sort.description}`}</option>
-                        ))}
-                    </NativeSelect>
-                    <NativeSelect
-                        id="PunchPrioritySelect"
-                        label="Priority"
-                        disabled={submitPunchStatus === AsyncStatus.LOADING}
-                        onChange={createChangeHandler('sorting')}
-                    >
-                        <option disabled selected />
-                        {priorities.map((priority) => (
-                            <option
-                                key={priority.id}
-                                value={priority.id}
-                            >{`${priority.code}. ${priority.description}`}</option>
-                        ))}
-                    </NativeSelect>
+            ) : null}
+            <NewPunchFormWrapper onSubmit={handleSubmit}>
+                <NativeSelect
+                    required
+                    id="PunchCategorySelect"
+                    label="Punch category"
+                    disabled={submitPunchStatus === AsyncStatus.LOADING}
+                    onChange={createChangeHandler('category')}
+                >
+                    <option hidden disabled selected />
+                    {categories.map((category) => (
+                        <option
+                            key={category.id}
+                            value={category.id}
+                        >{`${category.description}`}</option>
+                    ))}
+                </NativeSelect>
+                <TextField
+                    required
+                    maxLength={255}
+                    value={formData.description}
+                    onChange={createChangeHandler('description')}
+                    label="Description"
+                    multiline
+                    rows={5}
+                    id="NewPunchDescription"
+                    disabled={submitPunchStatus === AsyncStatus.LOADING}
+                />
+                <NativeSelect
+                    required
+                    label="Raised by"
+                    id="RaisedBySelect"
+                    disabled={submitPunchStatus === AsyncStatus.LOADING}
+                    onChange={createChangeHandler('raisedBy')}
+                >
+                    <option hidden disabled selected />
+                    {organizations.map((organization) => (
+                        <option key={organization.id} value={organization.id}>
+                            {organization.description}
+                        </option>
+                    ))}
+                </NativeSelect>
+                <NativeSelect
+                    required
+                    id="ClearingBySelect"
+                    label="Clearing by"
+                    disabled={submitPunchStatus === AsyncStatus.LOADING}
+                    onChange={createChangeHandler('clearingBy')}
+                >
+                    <option hidden disabled selected />
+                    {organizations.map((organization) => (
+                        <option key={organization.id} value={organization.id}>
+                            {organization.description}
+                        </option>
+                    ))}
+                </NativeSelect>
+                <div>
+                    <label>Action by person</label>
                     {
-                        // TODO: way to open a numbers-ony keyboard when editing the estimate text field?
+                        // TODO: find a better way to do the search label, or style the label to match the other ones
+                        // TODO: style the search field
+                        // TODO: click on x actually clears the field
+                        // TODO: move the onclick to the div around the label
                     }
-                    <TextField
-                        type="number"
-                        label="Estimate"
-                        id="estimate"
-                        onChange={createChangeHandler('estimate')}
+                    <Search
+                        id="actionByPerson"
+                        onClick={(): void => setShowPersonsSearch(true)}
+                        value={chosenPerson.name}
                     />
-                    {children}
-                    <Button
-                        type="submit"
-                        disabled={submitPunchStatus === AsyncStatus.LOADING}
-                    >
-                        {buttonText}
-                    </Button>
-                </NewPunchFormWrapper>
-            )}
+                </div>
+                <TextField
+                    id="dueDate"
+                    type="date"
+                    label="Due Date"
+                    onChange={createChangeHandler('dueDate')}
+                />
+                <NativeSelect
+                    id="PunchTypeSelect"
+                    label="Type"
+                    disabled={submitPunchStatus === AsyncStatus.LOADING}
+                    onChange={createChangeHandler('type')}
+                >
+                    <option hidden disabled selected />
+                    {types.map((type) => (
+                        <option
+                            key={type.id}
+                            value={type.id}
+                        >{`${type.code}. ${type.description}`}</option>
+                    ))}
+                </NativeSelect>
+                <NativeSelect
+                    id="PunchSortingSelect"
+                    label="Sorting"
+                    disabled={submitPunchStatus === AsyncStatus.LOADING}
+                    onChange={createChangeHandler('sorting')}
+                >
+                    <option hidden disabled selected />
+                    {sorts.map((sort) => (
+                        <option
+                            key={sort.id}
+                            value={sort.id}
+                        >{`${sort.code}. ${sort.description}`}</option>
+                    ))}
+                </NativeSelect>
+                <NativeSelect
+                    id="PunchPrioritySelect"
+                    label="Priority"
+                    disabled={submitPunchStatus === AsyncStatus.LOADING}
+                    onChange={createChangeHandler('priority')}
+                >
+                    <option hidden disabled selected />
+                    {priorities.map((priority) => (
+                        <option
+                            key={priority.id}
+                            value={priority.id}
+                        >{`${priority.code}. ${priority.description}`}</option>
+                    ))}
+                </NativeSelect>
+                {
+                    // TODO: way to open a numbers-ony keyboard when editing the estimate text field?
+                }
+                <TextField
+                    type="number"
+                    label="Estimate"
+                    id="estimate"
+                    onChange={createChangeHandler('estimate')}
+                />
+                {children}
+                <Button
+                    type="submit"
+                    //disabled={submitPunchStatus === AsyncStatus.LOADING}
+                >
+                    {buttonText}
+                </Button>
+            </NewPunchFormWrapper>
         </>
     );
 };

@@ -21,6 +21,7 @@ const NewPunchSuccess = styled.div`
     align-items: center;
 `;
 
+// TODO: change links!!
 const NewPunchSuccessPage = (): JSX.Element => {
     const { history, params, url } = useCommonHooks();
     return (

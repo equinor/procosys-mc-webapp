@@ -209,9 +209,14 @@ export interface NewPunch {
     CheckListId: number;
     CategoryId: number;
     Description: string;
-    TypeId: number;
+    TypeId?: number;
     RaisedByOrganizationId: number;
     ClearingByOrganizationId: number;
+    SortingId?: number;
+    PriorityId?: number;
+    ActionByPerson?: number;
+    DueDate?: string;
+    Estimate?: number;
     TemporaryFileIds: string[];
 }
 

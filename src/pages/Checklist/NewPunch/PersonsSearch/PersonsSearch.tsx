@@ -28,17 +28,11 @@ const PersonsSearch = ({
     const searchbarRef = useRef<HTMLInputElement>(
         document.createElement('input')
     );
-    // TODO: use searchStatus to show loading state (?) (see how it's done in SearchPage thing (search area/results))
     const { hits, searchStatus, query, setQuery } = usePersonsSearchFacade();
-
-    useEffect(() => {
-        console.log(hits);
-    }, [hits]);
 
     useEffect(() => {
         searchbarRef.current?.focus();
     }, []);
-    // TODO: call onChange with pertinent info when user clicks on a search result
 
     const determineContentToRender = (): JSX.Element => {
         if (searchStatus === SearchStatus.LOADING) {

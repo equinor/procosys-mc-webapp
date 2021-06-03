@@ -15,7 +15,7 @@ import { NewPunch as NewPunchType } from '../../../services/apiTypes';
 import NewPunchSuccessPage from './NewPunchSuccessPage';
 import useCommonHooks from '../../../utils/useCommonHooks';
 import { PunchWrapper } from '../../Punch/ClearPunch/ClearPunch';
-import { Button, Scrim } from '@equinor/eds-core-react';
+import { Button, Input, Scrim } from '@equinor/eds-core-react';
 import {
     AttachmentImage,
     AttachmentsWrapper,
@@ -41,11 +41,11 @@ export type PunchFormData = {
     raisedBy: string;
     clearingBy: string;
     actionByPerson: number | null; // TODO: decide if actuallly needed in form data
-    dueDate: Date | null;
+    dueDate: string;
     type: string;
     sorting: string;
     priority: string;
-    estimate: number | null;
+    estimate: string;
 };
 
 export type TempAttachment = { id: string; file: File };
@@ -57,11 +57,11 @@ const newPunchInitialValues = {
     raisedBy: '',
     clearingBy: '',
     actionByPerson: null,
-    dueDate: null,
+    dueDate: '',
     type: '',
     sorting: '',
     priority: '',
-    estimate: null,
+    estimate: '',
 };
 
 const NewPunch = (): JSX.Element => {
@@ -90,7 +90,7 @@ const NewPunch = (): JSX.Element => {
     const [tempIds, setTempIds] = useState<string[]>([]);
 
     const handleSubmit = async (e: React.FormEvent): Promise<void> => {
-        // TODO: add new info to the NewPunchDTO
+        // TODO: handle nan from parse int
         e.preventDefault();
         const NewPunchDTO: NewPunchType = {
             CheckListId: parseInt(params.checklistId),
@@ -99,6 +99,10 @@ const NewPunch = (): JSX.Element => {
             TypeId: parseInt(formFields.type),
             RaisedByOrganizationId: parseInt(formFields.raisedBy),
             ClearingByOrganizationId: parseInt(formFields.clearingBy),
+            SortingId: parseInt(formFields.sorting),
+            PriorityId: parseInt(formFields.priority),
+            Estimate: parseInt(formFields.estimate),
+            DueDate: formFields.dueDate,
             TemporaryFileIds: tempIds,
         };
         setSubmitPunchStatus(AsyncStatus.LOADING);
