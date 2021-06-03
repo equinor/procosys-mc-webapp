@@ -9,6 +9,7 @@ import {
 import React, { ChangeEvent, useState } from 'react';
 import styled from 'styled-components';
 import { CardWrapper } from '../../../components/EdsCard';
+import EdsIcon from '../../../components/icons/EdsIcon';
 import { AsyncStatus } from '../../../contexts/McAppContext';
 import {
     PunchCategory,
@@ -18,6 +19,8 @@ import {
     PunchType,
 } from '../../../services/apiTypes';
 import { COLORS } from '../../../style/GlobalStyles';
+import removeSubdirectories from '../../../utils/removeSubdirectories';
+import useCommonHooks from '../../../utils/useCommonHooks';
 import { ChosenPerson, PunchFormData } from './NewPunch';
 import PersonsSearch from './PersonsSearch/PersonsSearch';
 
@@ -88,10 +91,9 @@ const NewPunchForm = ({
     submitPunchStatus,
     children,
 }: NewPunchFormProps): JSX.Element => {
-    // TODO: figure out whether required fields should habe a star (*) in the label
-    // TODO: decide how to make optional fields clearable if filled out by mistake (an x in the right corner??) (see old app?)
-    // TODO: add function to handle return from persons search comopnent
     const [showPersonsSearch, setShowPersonsSearch] = useState(false);
+    const { url, history } = useCommonHooks();
+
     const handlePersonChosen = (id: number, name: string): void => {
         setChosenPerson({ id, name });
         setShowPersonsSearch(false);
@@ -157,22 +159,24 @@ const NewPunchForm = ({
                         </option>
                     ))}
                 </NativeSelect>
-                <div onClick={(): void => setShowPersonsSearch(true)}>
-                    <label>Action by person</label>
-                    {
-                        // TODO: find a better way to do the search label, or style the label to match the other ones
-                        // TODO: style the search field
-                        // TODO: click on x actually clears the field
-                        // TODO: move the onclick to the div around the label
+                <TextField
+                    id="actionByPerson"
+                    type="search"
+                    value={chosenPerson.name}
+                    inputIcon={
+                        chosenPerson.id ? (
+                            <div
+                                onClick={(): void =>
+                                    setChosenPerson({ id: null, name: '' })
+                                }
+                            >
+                                <EdsIcon name={'close'} color={COLORS.black} />
+                            </div>
+                        ) : null
                     }
-                    <Search
-                        id="actionByPerson"
-                        value={chosenPerson.name}
-                        onChange={(e: ChangeEvent<HTMLInputElement>): void =>
-                            setChosenPerson({ id: null, name: '' })
-                        }
-                    />
-                </div>
+                    onClick={(): void => setShowPersonsSearch(true)}
+                    label={'Action by person'}
+                />
                 <TextField
                     id="dueDate"
                     type="date"
@@ -233,7 +237,7 @@ const NewPunchForm = ({
                 {children}
                 <Button
                     type="submit"
-                    //disabled={submitPunchStatus === AsyncStatus.LOADING}
+                    disabled={submitPunchStatus === AsyncStatus.LOADING}
                 >
                     {buttonText}
                 </Button>

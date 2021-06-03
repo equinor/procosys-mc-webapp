@@ -28,19 +28,18 @@ import EdsCard from '../../../components/EdsCard';
 import useSnackbar from '../../../utils/useSnackbar';
 import AsyncPage from '../../../components/AsyncPage';
 import { TempAttachments } from '@equinor/procosys-webapp-components';
+import removeSubdirectories from '../../../utils/removeSubdirectories';
 
 export type ChosenPerson = {
     id: number | null;
     name: string;
 };
 
-// TODO: fix types
 export type PunchFormData = {
     category: string;
     description: string;
     raisedBy: string;
     clearingBy: string;
-    actionByPerson: number | null; // TODO: decide if actuallly needed in form data
     dueDate: string;
     type: string;
     sorting: string;
@@ -50,7 +49,6 @@ export type PunchFormData = {
 
 export type TempAttachment = { id: string; file: File };
 
-// TODO: figure out whether 0 is a better initial value for number type
 const newPunchInitialValues = {
     category: '',
     description: '',
@@ -65,7 +63,7 @@ const newPunchInitialValues = {
 };
 
 const NewPunch = (): JSX.Element => {
-    const { api, params } = useCommonHooks();
+    const { api, params, url, history } = useCommonHooks();
     const { formFields, createChangeHandler } = useFormFields(
         newPunchInitialValues
     );
@@ -90,7 +88,6 @@ const NewPunch = (): JSX.Element => {
     const [tempIds, setTempIds] = useState<string[]>([]);
 
     const handleSubmit = async (e: React.FormEvent): Promise<void> => {
-        // TODO: handle nan from parse int
         e.preventDefault();
         const NewPunchDTO: NewPunchType = {
             CheckListId: parseInt(params.checklistId),
@@ -155,7 +152,7 @@ const NewPunch = (): JSX.Element => {
     }, [params.plant, params.checklistId, api]);
 
     if (submitPunchStatus === AsyncStatus.SUCCESS) {
-        return <NewPunchSuccessPage />;
+        history.push(removeSubdirectories(url, 1));
     }
 
     const content = (): JSX.Element => {
