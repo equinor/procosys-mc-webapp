@@ -27,6 +27,7 @@ import UploadAttachment from '../../../components/UploadAttachment';
 import EdsCard from '../../../components/EdsCard';
 import useSnackbar from '../../../utils/useSnackbar';
 import AsyncPage from '../../../components/AsyncPage';
+import { TempAttachments } from '@equinor/procosys-webapp-components';
 
 export type ChosenPerson = {
     id: number | null;
@@ -85,13 +86,8 @@ const NewPunch = (): JSX.Element => {
     );
     const [checklistDetails, setChecklistDetails] =
         useState<ChecklistDetails>();
-    const [tempAttachments, setTempAttachments] = useState<TempAttachment[]>(
-        []
-    );
-    const [showUploadModal, setShowUploadModal] = useState(false);
     const { snackbar, setSnackbarText } = useSnackbar();
-    const [showFullImageModal, setShowFullImageModal] = useState(false);
-    const [attachmentToShow, setAttachmentToShow] = useState<TempAttachment>();
+    const [tempIds, setTempIds] = useState<string[]>([]);
 
     const handleSubmit = async (e: React.FormEvent): Promise<void> => {
         // TODO: add new info to the NewPunchDTO
@@ -103,9 +99,7 @@ const NewPunch = (): JSX.Element => {
             TypeId: parseInt(formFields.type),
             RaisedByOrganizationId: parseInt(formFields.raisedBy),
             ClearingByOrganizationId: parseInt(formFields.clearingBy),
-            TemporaryFileIds: tempAttachments.map((attachment) => {
-                return attachment.id;
-            }),
+            TemporaryFileIds: tempIds,
         };
         setSubmitPunchStatus(AsyncStatus.LOADING);
         try {
@@ -114,13 +108,6 @@ const NewPunch = (): JSX.Element => {
         } catch (error) {
             setSubmitPunchStatus(AsyncStatus.ERROR);
         }
-    };
-
-    const handleDelete = (attachmentId: string): void => {
-        setTempAttachments((attachments) =>
-            attachments.filter((item) => item.id !== attachmentId)
-        );
-        setShowFullImageModal(false);
     };
 
     useEffect(() => {
@@ -167,6 +154,7 @@ const NewPunch = (): JSX.Element => {
     }
 
     const content = (): JSX.Element => {
+        // TODO: remove this if (?)
         if (checklistDetails) {
             return (
                 <>
@@ -185,75 +173,25 @@ const NewPunch = (): JSX.Element => {
                         submitPunchStatus={submitPunchStatus}
                     >
                         <EdsCard title={'Add attachments'}>
-                            <AttachmentsWrapper>
-                                <UploadImageButton
-                                    onClick={(): void =>
-                                        setShowUploadModal(true)
-                                    }
-                                >
-                                    <EdsIcon name="camera_add_photo" />
-                                </UploadImageButton>
-                                {tempAttachments.map((attachment) => (
-                                    <>
-                                        <AttachmentImage
-                                            key={attachment.id}
-                                            src={URL.createObjectURL(
-                                                attachment.file
-                                            )}
-                                            alt={
-                                                'Temp attachment ' +
-                                                attachment.id
-                                            }
-                                            onClick={(): void => {
-                                                setAttachmentToShow(attachment);
-                                                setShowFullImageModal(true);
-                                            }}
-                                        />
-                                    </>
-                                ))}
-                            </AttachmentsWrapper>
-                        </EdsCard>
-                    </NewPunchForm>
-                    {showFullImageModal && attachmentToShow ? (
-                        <Scrim
-                            isDismissable
-                            onClose={(): void => setShowFullImageModal(false)}
-                        >
-                            <ImageModal>
-                                <img
-                                    src={URL.createObjectURL(
-                                        attachmentToShow?.file
-                                    )}
-                                    alt={
-                                        'Temp attachment ' + attachmentToShow.id
+                            <>
+                                <TempAttachments
+                                    setSnackbarText={setSnackbarText}
+                                    setTempAttachmentIds={setTempIds}
+                                    postTempAttachment={(
+                                        formData: FormData,
+                                        title: string
+                                    ): Promise<string> =>
+                                        api.postTempPunchAttachment({
+                                            data: formData,
+                                            plantId: params.plant,
+                                            parentId: params.checklistId,
+                                            title: title,
+                                        })
                                     }
                                 />
-                                <Button
-                                    onClick={(): void =>
-                                        handleDelete(attachmentToShow.id)
-                                    }
-                                >
-                                    Delete
-                                </Button>
-                                <Button
-                                    onClick={(): void =>
-                                        setShowFullImageModal(false)
-                                    }
-                                >
-                                    Close
-                                </Button>
-                            </ImageModal>
-                        </Scrim>
-                    ) : null}
-                    {showUploadModal ? (
-                        <UploadAttachment
-                            setShowModal={setShowUploadModal}
-                            postAttachment={api.postTempPunchAttachment}
-                            parentId={''}
-                            setSnackbarText={setSnackbarText}
-                            updateTempAttachments={setTempAttachments}
-                        />
-                    ) : null}
+                            </>
+                        </EdsCard>
+                    </NewPunchForm>
                 </>
             );
         }

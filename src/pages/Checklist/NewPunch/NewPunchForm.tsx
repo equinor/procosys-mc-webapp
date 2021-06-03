@@ -161,13 +161,11 @@ const NewPunchForm = ({
                             </option>
                         ))}
                     </NativeSelect>
-                    {
-                        // TODO: change value of search field to always be like a state value, and then just update the state value when wanting to change person??
-                    }
                     <div>
                         <label>Action by person</label>
                         {
                             // TODO: find a better way to do the search label, or style the label to match the other ones
+                            // TODO: style the search field
                         }
                         <Search
                             id="actionByPerson"
