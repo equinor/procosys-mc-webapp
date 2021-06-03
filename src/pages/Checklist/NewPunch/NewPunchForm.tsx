@@ -18,7 +18,7 @@ import {
     PunchType,
 } from '../../../services/apiTypes';
 import { COLORS } from '../../../style/GlobalStyles';
-import { PunchFormData } from './NewPunch';
+import { ChosenPerson, PunchFormData } from './NewPunch';
 import PersonsSearch from './PersonsSearch/PersonsSearch';
 
 // TODO: check whether I need to change this into something else
@@ -46,6 +46,8 @@ type NewPunchFormProps = {
     types: PunchType[];
     sorts: PunchSort[];
     priorities: PunchPriority[];
+    chosenPerson: ChosenPerson;
+    setChosenPerson: React.Dispatch<React.SetStateAction<ChosenPerson>>;
     formData: PunchFormData;
     buttonText: string;
     createChangeHandler: (
@@ -75,6 +77,8 @@ const NewPunchForm = ({
     types,
     sorts,
     priorities,
+    chosenPerson,
+    setChosenPerson,
     formData,
     buttonText,
     createChangeHandler,
@@ -84,19 +88,17 @@ const NewPunchForm = ({
 }: NewPunchFormProps): JSX.Element => {
     // TODO: figure out whether required fields should habe a star (*) in the label
     // TODO: decide how to make optional fields clearable if filled out by mistake (an x in the right corner??) (see old app?)
-    // TODO: add function to handle return from persons search comopnentc
-    // TODO: use stuff below to decide whether or not to render the PersonsSearch component
+    // TODO: add function to handle return from persons search comopnent
     const [showPersonsSearch, setShowPersonsSearch] = useState(false);
     // TODO: add args
-    const handlePersonChosen = (): void => {
-        // TODO: set value of the person search thing to the chosen name
-        createChangeHandler('actionByPerson');
+    const handlePersonChosen = (id: number, name: string): void => {
+        setChosenPerson({ id, name });
     };
 
     return (
         <>
             {showPersonsSearch ? (
-                <PersonsSearch onChange={handlePersonChosen} />
+                <PersonsSearch onChange={setChosenPerson} />
             ) : (
                 <NewPunchFormWrapper onSubmit={handleSubmit}>
                     <NativeSelect
@@ -170,6 +172,7 @@ const NewPunchForm = ({
                         <Search
                             id="actionByPerson"
                             onClick={(): void => setShowPersonsSearch(true)}
+                            value={chosenPerson.name}
                         />
                     </div>
                     <TextField

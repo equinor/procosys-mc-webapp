@@ -166,7 +166,7 @@ const ChecklistPage = (): JSX.Element => {
                     path={`${path}/punch-list`}
                     render={(): JSX.Element => <h1>punch list</h1>}
                 />
-                <Route exact path={`${path}/new-punch`} component={NewPunch} />
+                <Route path={`${path}/new-punch`} component={NewPunch} />
             </Switch>
             {determineFooterToRender()}
         </>

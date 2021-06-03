@@ -1,7 +1,10 @@
 import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
+import SkeletonLoadingPage from '../../../../components/loading/SkeletonLoader';
 import { COLORS } from '../../../../style/GlobalStyles';
 import { TallSearchField } from '../../../Search/SearchArea/SearchArea';
+import { SearchStatus } from '../../../Search/useSearchPageFacade';
+import { ChosenPerson } from '../NewPunch';
 import usePersonsSearchFacade from './usePersonsSearchFacade';
 
 const PersonsSearchWrapper = styled.div`
@@ -16,7 +19,7 @@ const PersonsSearchWrapper = styled.div`
 `;
 
 type PersonsSearchProps = {
-    onChange: () => void; // TODO: input value types to onChange
+    onChange: React.Dispatch<React.SetStateAction<ChosenPerson>>;
 };
 
 const PersonsSearch = ({ onChange }: PersonsSearchProps): JSX.Element => {
@@ -34,6 +37,68 @@ const PersonsSearch = ({ onChange }: PersonsSearchProps): JSX.Element => {
         searchbarRef.current?.focus();
     }, []);
     // TODO: call onChange with pertinent info when user clicks on a search result
+
+    const determineContentToRender = (): JSX.Element => {
+        if (searchStatus === SearchStatus.LOADING) {
+            return <SkeletonLoadingPage fullWidth />;
+        }
+        if (searchStatus === SearchStatus.SUCCESS && hits.persons.length > 0) {
+            return (
+                <div>
+                    {hits.persons.map((person) => {
+                        return (
+                            <>
+                                <p>Name of person</p>
+                                {
+                                    // TODO: add content here
+                                }
+                            </>
+                        );
+                    })}
+                </div>
+            );
+        }
+        if (searchStatus === SearchStatus.INACTIVE) {
+            return (
+                <div>
+                    <p>
+                        <i>
+                            {
+                                // TODO: change, as it doesn't have to be a name they search for
+                            }
+                            Start typing a name in the field above. <br />
+                        </i>
+                    </p>
+                </div>
+            );
+        }
+        if (searchStatus === SearchStatus.ERROR) {
+            return (
+                <div>
+                    <p>
+                        <i>
+                            {
+                                // TODO: change error message
+                            }
+                            An error occurred, please refresh this page and try
+                            again.
+                        </i>
+                    </p>
+                </div>
+            );
+        }
+        return (
+            <div>
+                <p>
+                    {
+                        // TODO: change empty message
+                    }
+                    <i>No persons found for this search.</i>
+                </p>
+            </div>
+        );
+    };
+
     return (
         <PersonsSearchWrapper>
             {
@@ -47,9 +112,7 @@ const PersonsSearch = ({ onChange }: PersonsSearchProps): JSX.Element => {
                 }
                 ref={searchbarRef}
             />
-            {
-                // TODO: add search results
-            }
+            {determineContentToRender()}
         </PersonsSearchWrapper>
     );
 };

@@ -130,7 +130,7 @@ export const isArrayOfPunchPriority = (
 };
 
 const isPerson = (data: unknown): data is Person => {
-    return data != null && typeof (data as Person).azureOid === 'string';
+    return data != null && typeof (data as Person).firstName === 'string';
 };
 
 export const isArrayofPerson = (data: unknown): data is Person[] => {

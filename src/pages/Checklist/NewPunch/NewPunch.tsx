@@ -4,6 +4,8 @@ import {
     ChecklistDetails,
     PunchCategory,
     PunchOrganization,
+    PunchPriority,
+    PunchSort,
     PunchType,
 } from '../../../services/apiTypes';
 import { AsyncStatus } from '../../../contexts/McAppContext';
@@ -26,17 +28,22 @@ import EdsCard from '../../../components/EdsCard';
 import useSnackbar from '../../../utils/useSnackbar';
 import AsyncPage from '../../../components/AsyncPage';
 
+export type ChosenPerson = {
+    id: number | null;
+    name: string;
+};
+
 // TODO: fix types
 export type PunchFormData = {
     category: string;
     description: string;
     raisedBy: string;
     clearingBy: string;
-    actionByPerson: number | null;
+    actionByPerson: number | null; // TODO: decide if actuallly needed in form data
     dueDate: Date | null;
     type: string;
-    sorting: number | null;
-    priority: number | null;
+    sorting: string;
+    priority: string;
     estimate: number | null;
 };
 
@@ -51,8 +58,8 @@ const newPunchInitialValues = {
     actionByPerson: null,
     dueDate: null,
     type: '',
-    sorting: null,
-    priority: null,
+    sorting: '',
+    priority: '',
     estimate: null,
 };
 
@@ -64,8 +71,12 @@ const NewPunch = (): JSX.Element => {
     const [categories, setCategories] = useState<PunchCategory[]>([]);
     const [types, setTypes] = useState<PunchType[]>([]);
     const [organizations, setOrganizations] = useState<PunchOrganization[]>([]);
-    const [sorts, setSorts] = useState<PunchOrganization[]>([]); // TODO add type
-    const [priorities, setPriorities] = useState<any[]>([]); // TODO: add type
+    const [sorts, setSorts] = useState<PunchSort[]>([]);
+    const [priorities, setPriorities] = useState<PunchPriority[]>([]);
+    const [chosenPerson, setChosenPerson] = useState<ChosenPerson>({
+        id: null,
+        name: '',
+    });
     const [fetchNewPunchStatus, setFetchNewPunchStatus] = useState(
         AsyncStatus.LOADING
     );
@@ -165,6 +176,8 @@ const NewPunch = (): JSX.Element => {
                         types={types}
                         sorts={sorts}
                         priorities={priorities}
+                        chosenPerson={chosenPerson}
+                        setChosenPerson={setChosenPerson}
                         formData={formFields}
                         buttonText={'Create punch'}
                         createChangeHandler={createChangeHandler}
