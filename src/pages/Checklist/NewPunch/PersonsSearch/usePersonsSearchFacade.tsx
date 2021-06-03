@@ -4,15 +4,20 @@ import { SearchStatus } from '../../../Search/useSearchPageFacade';
 import { ProcosysApiService } from '../../../../services/procosysApi';
 import useCommonHooks from '../../../../utils/useCommonHooks';
 import PlantContext from '../../../../contexts/PlantContext';
+import { Person } from '../../../../services/apiTypes';
+
+type SearchResult = {
+    persons: Person[];
+};
 
 type SearchState = {
     searchStatus: SearchStatus;
-    hits: any; // TODO: replace with type from the new api endpoint for persons search
+    hits: SearchResult;
 };
 
 type Action =
     | { type: 'FETCH_START' }
-    | { type: 'FETCH_SUCCESS'; payload: any } // TODO: replace type with type used in search state type above
+    | { type: 'FETCH_SUCCESS'; payload: SearchResult }
     | { type: 'FETCH_ERROR'; error: string }
     | { type: 'FETCH_INACTIVE' };
 
@@ -22,7 +27,7 @@ const fetchReducer = (state: SearchState, action: Action): SearchState => {
             return {
                 ...state,
                 searchStatus: SearchStatus.LOADING,
-                hits: { ...state.hits, items: [] },
+                hits: { ...state.hits, persons: [] },
             };
         case 'FETCH_SUCCESS':
             return {
@@ -39,7 +44,7 @@ const fetchReducer = (state: SearchState, action: Action): SearchState => {
             return {
                 ...state,
                 searchStatus: SearchStatus.INACTIVE,
-                hits: { ...state.hits, items: [] },
+                hits: { ...state.hits, persons: [] },
             };
     }
 };
@@ -56,7 +61,7 @@ const fetchHits = async (
         const persons = await api.getPersonsByName(plantID, query, cancelToken);
         dispatch({
             type: 'FETCH_SUCCESS',
-            payload: persons,
+            payload: { persons },
         });
     } catch (err) {
         dispatch({ type: 'FETCH_ERROR', error: 'err' });
@@ -67,7 +72,7 @@ const fetchHits = async (
 const usePersonsSearchFacade = () => {
     const { api } = useCommonHooks();
     const [{ hits, searchStatus }, dispatch] = useReducer(fetchReducer, {
-        hits: { maxAvailable: 0, items: [] }, // TODO: must change this once return type has been changed
+        hits: { persons: [] },
         searchStatus: SearchStatus.INACTIVE,
     });
     const [query, setQuery] = useState('');

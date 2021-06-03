@@ -2,11 +2,13 @@ import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { COLORS } from '../../../../style/GlobalStyles';
 import { TallSearchField } from '../../../Search/SearchArea/SearchArea';
+import usePersonsSearchFacade from './usePersonsSearchFacade';
 
 const PersonsSearchWrapper = styled.div`
     position: fixed;
     left: 0;
     top: 54px;
+    z-index: 20;
     height: 100%; // TODO: something better?? it's slightly too long
     width: 92%;
     background-color: ${COLORS.white};
@@ -18,25 +20,24 @@ type PersonsSearchProps = {
 };
 
 const PersonsSearch = ({ onChange }: PersonsSearchProps): JSX.Element => {
-    // TODO: make the search field something similar to the search thing from the search page, but with persons search instead
-    const [query, setQuery] = useState<string>('');
     const searchbarRef = useRef<HTMLInputElement>(
         document.createElement('input')
     );
+    // TODO: use searchStatus to show loading state (?) (see how it's done in SearchPage thing (search area/results))
+    const { hits, searchStatus, query, setQuery } = usePersonsSearchFacade();
+
+    useEffect(() => {
+        console.log(hits);
+    }, [hits]);
 
     useEffect(() => {
         searchbarRef.current?.focus();
     }, []);
-
-    // TODO: render search results in a list below the search field
     // TODO: call onChange with pertinent info when user clicks on a search result
     return (
         <PersonsSearchWrapper>
             {
                 // TODO: style the above div
-            }
-            {
-                // TODO: should the search field be the tall search field used in the search page??
             }
             <TallSearchField
                 placeholder={''}

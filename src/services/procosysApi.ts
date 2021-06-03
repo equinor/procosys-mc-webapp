@@ -559,7 +559,7 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
         cancelToken: CancelToken
     ): Promise<Person[]> => {
         const { data } = await axios.get(
-            `Person/PersonSearch?plantId=PCS$${plantId}&searchString=${searchString}${apiVersion}`,
+            `Person/PersonSearch?plantId=${plantId}&searchString=${searchString}${apiVersion}`,
             { cancelToken }
         );
         if (!isArrayofPerson(data)) {

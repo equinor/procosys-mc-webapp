@@ -94,7 +94,7 @@ export const isArrayOfPunchCategory = (
 };
 
 const isPunchType = (data: unknown): data is PunchType => {
-    return data != null && typeof (data as PunchType).parentId === 'number';
+    return data != null && typeof (data as PunchType).code === 'string';
 };
 
 export const isArrayOfPunchType = (data: unknown): data is PunchType[] => {
@@ -102,9 +102,7 @@ export const isArrayOfPunchType = (data: unknown): data is PunchType[] => {
 };
 
 const isPunchOrganization = (data: unknown): data is PunchOrganization => {
-    return (
-        data != null && typeof (data as PunchOrganization).parentId === 'number'
-    );
+    return data != null && typeof (data as PunchOrganization).code === 'string';
 };
 
 export const isArrayOfPunchOrganization = (
@@ -114,7 +112,7 @@ export const isArrayOfPunchOrganization = (
 };
 
 const isPunchSort = (data: unknown): data is PunchSort => {
-    return data != null && typeof (data as PunchSort).parentId === 'number';
+    return data != null && typeof (data as PunchSort).code === 'string';
 };
 
 export const isArrayOfPunchSort = (data: unknown): data is PunchSort[] => {

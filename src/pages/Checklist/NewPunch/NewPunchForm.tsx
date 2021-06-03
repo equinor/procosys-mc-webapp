@@ -13,6 +13,8 @@ import { AsyncStatus } from '../../../contexts/McAppContext';
 import {
     PunchCategory,
     PunchOrganization,
+    PunchPriority,
+    PunchSort,
     PunchType,
 } from '../../../services/apiTypes';
 import { COLORS } from '../../../style/GlobalStyles';
@@ -42,8 +44,8 @@ type NewPunchFormProps = {
     categories: PunchCategory[];
     organizations: PunchOrganization[];
     types: PunchType[];
-    sorts: PunchOrganization[]; // TODO: find out type
-    priorities: PunchOrganization[]; // TODO: figure out type
+    sorts: PunchSort[];
+    priorities: PunchPriority[];
     formData: PunchFormData;
     buttonText: string;
     createChangeHandler: (
