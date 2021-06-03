@@ -90,15 +90,15 @@ const NewPunchForm = ({
     // TODO: decide how to make optional fields clearable if filled out by mistake (an x in the right corner??) (see old app?)
     // TODO: add function to handle return from persons search comopnent
     const [showPersonsSearch, setShowPersonsSearch] = useState(false);
-    // TODO: add args
     const handlePersonChosen = (id: number, name: string): void => {
         setChosenPerson({ id, name });
+        setShowPersonsSearch(false);
     };
 
     return (
         <>
             {showPersonsSearch ? (
-                <PersonsSearch onChange={setChosenPerson} />
+                <PersonsSearch setChosenPerson={handlePersonChosen} />
             ) : (
                 <NewPunchFormWrapper onSubmit={handleSubmit}>
                     <NativeSelect
@@ -166,6 +166,7 @@ const NewPunchForm = ({
                         {
                             // TODO: find a better way to do the search label, or style the label to match the other ones
                             // TODO: style the search field
+                            // TODO: click on x actually clears the field
                         }
                         <Search
                             id="actionByPerson"

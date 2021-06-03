@@ -19,10 +19,12 @@ const PersonsSearchWrapper = styled.div`
 `;
 
 type PersonsSearchProps = {
-    onChange: React.Dispatch<React.SetStateAction<ChosenPerson>>;
+    setChosenPerson: (id: number, name: string) => void;
 };
 
-const PersonsSearch = ({ onChange }: PersonsSearchProps): JSX.Element => {
+const PersonsSearch = ({
+    setChosenPerson,
+}: PersonsSearchProps): JSX.Element => {
     const searchbarRef = useRef<HTMLInputElement>(
         document.createElement('input')
     );
@@ -47,12 +49,17 @@ const PersonsSearch = ({ onChange }: PersonsSearchProps): JSX.Element => {
                 <div>
                     {hits.persons.map((person) => {
                         return (
-                            <>
-                                <p>Name of person</p>
-                                {
-                                    // TODO: add content here
+                            <div
+                                key={person.id}
+                                onClick={(): void =>
+                                    setChosenPerson(
+                                        person.id,
+                                        `${person.firstName} ${person.lastName}`
+                                    )
                                 }
-                            </>
+                            >
+                                {person.firstName} {person.lastName}
+                            </div>
                         );
                     })}
                 </div>
