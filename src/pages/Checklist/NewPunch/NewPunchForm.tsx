@@ -27,9 +27,9 @@ import PersonsSearch from './PersonsSearch/PersonsSearch';
 // TODO: check whether I need to change this into something else
 export const NewPunchFormWrapper = styled.form`
     background-color: ${COLORS.white};
-    margin-top: 32px; // TODO: is this the correct amount?
+    //margin-top: 16px; // TODO: is this the correct amount?
     padding: 0 4%;
-    margin-bottom: 85px; // TODO: change into the same as the height of the footer (+ a bit extra?)
+    margin-bottom: 66px; // TODO: change into the same as the height of the footer (+ a bit extra?)
     overflow: hidden;
     & ${CardWrapper}:first-of-type {
         margin-top: 16px;
@@ -102,7 +102,10 @@ const NewPunchForm = ({
     return (
         <>
             {showPersonsSearch ? (
-                <PersonsSearch setChosenPerson={handlePersonChosen} />
+                <PersonsSearch
+                    setChosenPerson={handlePersonChosen}
+                    setShowPersonSearch={setShowPersonsSearch}
+                />
             ) : null}
             <NewPunchFormWrapper onSubmit={handleSubmit}>
                 <NativeSelect

@@ -148,7 +148,11 @@ const ChecklistPage = (): JSX.Element => {
                         : undefined,
                 }}
                 midContent={'MCCR'}
-                rightContent={{ name: 'newPunch' }}
+                rightContent={
+                    history.location.pathname.includes('/new-punch')
+                        ? undefined
+                        : { name: 'newPunch' }
+                }
             />
             {determineDetailsToRender()}
             <Switch>

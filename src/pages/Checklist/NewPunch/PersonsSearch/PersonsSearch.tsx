@@ -1,3 +1,4 @@
+import { Button } from '@equinor/eds-core-react';
 import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import SkeletonLoadingPage from '../../../../components/loading/SkeletonLoader';
@@ -10,20 +11,41 @@ import usePersonsSearchFacade from './usePersonsSearchFacade';
 const PersonsSearchWrapper = styled.div`
     position: fixed;
     left: 0;
-    top: 54px;
+    top: 0;
     z-index: 20;
-    height: 100%; // TODO: something better?? it's slightly too long
+    height: 100%;
     width: 92%;
     background-color: ${COLORS.white};
     padding: 16px 4%;
+    overflow-y: scroll;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+`;
+
+const StyledButton = styled(Button)`
+    align-self: flex-end;
+    margin-bottom: 32px;
+    min-height: 40px;
+`;
+
+const NameWrapper = styled.p`
+    display: flex;
+    padding: 8px 0;
+`;
+
+const Header = styled.h4`
+    margin: 0;
 `;
 
 type PersonsSearchProps = {
     setChosenPerson: (id: number, name: string) => void;
+    setShowPersonSearch: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 const PersonsSearch = ({
     setChosenPerson,
+    setShowPersonSearch,
 }: PersonsSearchProps): JSX.Element => {
     const searchbarRef = useRef<HTMLInputElement>(
         document.createElement('input')
@@ -43,7 +65,7 @@ const PersonsSearch = ({
                 <div>
                     {hits.persons.map((person) => {
                         return (
-                            <div
+                            <NameWrapper
                                 key={person.id}
                                 onClick={(): void =>
                                     setChosenPerson(
@@ -53,7 +75,7 @@ const PersonsSearch = ({
                                 }
                             >
                                 {person.firstName} {person.lastName}
-                            </div>
+                            </NameWrapper>
                         );
                     })}
                 </div>
@@ -64,10 +86,7 @@ const PersonsSearch = ({
                 <div>
                     <p>
                         <i>
-                            {
-                                // TODO: change, as it doesn't have to be a name they search for
-                            }
-                            Start typing a name in the field above. <br />
+                            Start typing in the field above to search. <br />
                         </i>
                     </p>
                 </div>
@@ -91,9 +110,6 @@ const PersonsSearch = ({
         return (
             <div>
                 <p>
-                    {
-                        // TODO: change empty message
-                    }
                     <i>No persons found for this search.</i>
                 </p>
             </div>
@@ -102,18 +118,21 @@ const PersonsSearch = ({
 
     return (
         <PersonsSearchWrapper>
-            {
-                // TODO: style the above div
-            }
-            <TallSearchField
-                placeholder={''}
-                value={query}
-                onChange={(e: ChangeEvent<HTMLInputElement>): void =>
-                    setQuery(e.target.value)
-                }
-                ref={searchbarRef}
-            />
-            {determineContentToRender()}
+            <div>
+                <Header>Person Search</Header>
+                <TallSearchField
+                    placeholder={''}
+                    value={query}
+                    onChange={(e: ChangeEvent<HTMLInputElement>): void =>
+                        setQuery(e.target.value)
+                    }
+                    ref={searchbarRef}
+                />
+                {determineContentToRender()}
+            </div>
+            <StyledButton onClick={(): void => setShowPersonSearch(false)}>
+                Cancel
+            </StyledButton>
         </PersonsSearchWrapper>
     );
 };
