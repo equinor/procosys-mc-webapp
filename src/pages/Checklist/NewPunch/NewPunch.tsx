@@ -152,6 +152,7 @@ const NewPunch = (): JSX.Element => {
     }, [params.plant, params.checklistId, api]);
 
     if (submitPunchStatus === AsyncStatus.SUCCESS) {
+        // TODO: in old app: redirects to a place to edit the punch (should we do this too??)
         history.push(removeSubdirectories(url, 1));
     }
 

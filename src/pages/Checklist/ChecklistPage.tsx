@@ -141,7 +141,12 @@ const ChecklistPage = (): JSX.Element => {
     return (
         <>
             <Navbar
-                leftContent={{ name: 'back' }}
+                leftContent={{
+                    name: 'back',
+                    url: history.location.pathname.includes('/new-punch')
+                        ? `/${params.plant}/${params.project}/${params.searchType}/${params.itemId}/checklist/${params.checklistId}/punch-list`
+                        : undefined,
+                }}
                 midContent={'MCCR'}
                 rightContent={{ name: 'newPunch' }}
             />
@@ -166,7 +171,11 @@ const ChecklistPage = (): JSX.Element => {
                     path={`${path}/punch-list`}
                     render={(): JSX.Element => <h1>punch list</h1>}
                 />
-                <Route path={`${path}/new-punch`} component={NewPunch} />
+                <Route
+                    exact
+                    path={`${path}/punch-list/new-punch`}
+                    component={NewPunch}
+                />
             </Switch>
             {determineFooterToRender()}
         </>
