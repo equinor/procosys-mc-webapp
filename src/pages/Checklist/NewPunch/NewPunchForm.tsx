@@ -164,8 +164,8 @@ const NewPunchForm = ({
                 </NativeSelect>
                 <TextField
                     id="actionByPerson"
-                    type="search"
                     value={chosenPerson.name}
+                    readOnly
                     inputIcon={
                         chosenPerson.id ? (
                             <div

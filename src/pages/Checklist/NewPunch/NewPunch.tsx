@@ -29,6 +29,13 @@ import useSnackbar from '../../../utils/useSnackbar';
 import AsyncPage from '../../../components/AsyncPage';
 import { TempAttachments } from '@equinor/procosys-webapp-components';
 import removeSubdirectories from '../../../utils/removeSubdirectories';
+import styled from 'styled-components';
+
+const AttachmentsHeader = styled.h5`
+    margin-top: 54px;
+    margin-bottom: 0px;
+    padding: 0px;
+`;
 
 export type ChosenPerson = {
     id: number | null;
@@ -157,48 +164,45 @@ const NewPunch = (): JSX.Element => {
     }
 
     const content = (): JSX.Element => {
-        // TODO: remove this if (?)
-        if (checklistDetails) {
-            return (
+        return (
+            <NewPunchForm
+                categories={categories}
+                organizations={organizations}
+                types={types}
+                sorts={sorts}
+                priorities={priorities}
+                chosenPerson={chosenPerson}
+                setChosenPerson={setChosenPerson}
+                formData={formFields}
+                buttonText={'Create punch'}
+                createChangeHandler={createChangeHandler}
+                handleSubmit={handleSubmit}
+                submitPunchStatus={submitPunchStatus}
+            >
                 <>
-                    <NewPunchForm
-                        categories={categories}
-                        organizations={organizations}
-                        types={types}
-                        sorts={sorts}
-                        priorities={priorities}
-                        chosenPerson={chosenPerson}
-                        setChosenPerson={setChosenPerson}
-                        formData={formFields}
-                        buttonText={'Create punch'}
-                        createChangeHandler={createChangeHandler}
-                        handleSubmit={handleSubmit}
-                        submitPunchStatus={submitPunchStatus}
-                    >
-                        <EdsCard title={'Add attachments'}>
-                            <>
-                                <TempAttachments
-                                    setSnackbarText={setSnackbarText}
-                                    setTempAttachmentIds={setTempIds}
-                                    postTempAttachment={(
-                                        formData: FormData,
-                                        title: string
-                                    ): Promise<string> =>
-                                        api.postTempPunchAttachment({
-                                            data: formData,
-                                            plantId: params.plant,
-                                            parentId: params.checklistId,
-                                            title: title,
-                                        })
-                                    }
-                                />
-                            </>
-                        </EdsCard>
-                    </NewPunchForm>
+                    <AttachmentsHeader>Attachments</AttachmentsHeader>
+                    {
+                        // TODO: attachments are too far from left side. Is the outside margin(?) needed? how do I add a margin(?) to only new punch form and not its children?
+                        // TODO: attachments are too far from the attachments header
+                    }
+                    <TempAttachments
+                        setSnackbarText={setSnackbarText}
+                        setTempAttachmentIds={setTempIds}
+                        postTempAttachment={(
+                            formData: FormData,
+                            title: string
+                        ): Promise<string> =>
+                            api.postTempPunchAttachment({
+                                data: formData,
+                                plantId: params.plant,
+                                parentId: params.checklistId,
+                                title: title,
+                            })
+                        }
+                    />
                 </>
-            );
-        }
-        return <></>;
+            </NewPunchForm>
+        );
     };
 
     return (
