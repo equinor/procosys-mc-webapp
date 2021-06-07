@@ -16,10 +16,12 @@ import {
     testScope,
     dummyPunchSorts,
     dummyPunchPriorities,
+    dummyPersonsSearch,
 } from './dummyData';
 import objectToCamelCase from '../utils/objectToCamelCase';
 
 export const baseURL = 'https://test-url.com';
+const npmBaseURL = 'http://localhost/testUrl';
 export const ENDPOINTS = {
     //General
     getMcPkgDetails: `${baseURL}/McPkg`,
@@ -71,7 +73,12 @@ export const ENDPOINTS = {
     postPunchUnverify: `${baseURL}/PunchListItem/Unverify`,
     postPunchReject: `${baseURL}/PunchListItem/Reject`,
 
+    //PERSON
     getPersons: `${baseURL}/Person/PersonSearch`,
+
+    //NPM MODULE ENDPOINTS
+    getChecklistNpm: `${npmBaseURL}/CheckList/MC`,
+    getChecklistAttachmentsNpm: `${npmBaseURL}/CheckList/Attachments`,
 };
 
 // TODO: remove all that use aen endpoint that needs removal
@@ -212,7 +219,21 @@ export const server = setupServer(
     }),
 
     rest.get(ENDPOINTS.getPersons, (_, response, context) => {
-        return response(context.json(dummyPunchSorts), context.status(200));
+        return response(context.json(dummyPersonsSearch), context.status(200));
+    }),
+
+    //NPM Module
+    rest.get(ENDPOINTS.getChecklistNpm, (_, response, context) => {
+        return response(
+            context.json(dummyChecklistResponse),
+            context.status(200)
+        );
+    }),
+    rest.get(ENDPOINTS.getChecklistAttachmentsNpm, (_, response, context) => {
+        return response(
+            context.json(dummyAttachmentsResponse),
+            context.status(200)
+        );
     })
 );
 

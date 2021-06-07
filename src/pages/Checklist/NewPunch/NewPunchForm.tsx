@@ -236,6 +236,7 @@ const NewPunchForm = ({
                     type="number"
                     label="Estimate"
                     id="estimate"
+                    value={formData.estimate}
                     onChange={createChangeHandler('estimate')}
                 />
                 {children}

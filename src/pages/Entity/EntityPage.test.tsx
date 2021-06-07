@@ -183,7 +183,7 @@ describe('<EntityPage> punch list', () => {
                 return response(
                     context.json(dummyPunchListResponse),
                     context.status(200),
-                    context.delay(40)
+                    context.delay(100)
                 );
             })
         );
