@@ -155,32 +155,39 @@ const ChecklistPage = (): JSX.Element => {
                 }
             />
             {determineDetailsToRender()}
-            <Switch>
-                <Route
-                    exact
-                    path={`${path}`}
-                    render={(): JSX.Element => (
-                        <ChecklistWrapper
-                            refreshChecklistStatus={setRefreshChecklistStatus}
-                        />
-                    )}
-                />
-                <Route
-                    exact
-                    path={`${path}/tag-info`}
-                    render={(): JSX.Element => <h1>tag info</h1>}
-                />
-                <Route
-                    exact
-                    path={`${path}/punch-list`}
-                    render={(): JSX.Element => <h1>punch list</h1>}
-                />
-                <Route
-                    exact
-                    path={`${path}/punch-list/new-punch`}
-                    component={NewPunch}
-                />
-            </Switch>
+            {
+                // TODO: remove/rename
+            }
+            <div data-testid="test">
+                <Switch>
+                    <Route
+                        exact
+                        path={`${path}`}
+                        render={(): JSX.Element => (
+                            <ChecklistWrapper
+                                refreshChecklistStatus={
+                                    setRefreshChecklistStatus
+                                }
+                            />
+                        )}
+                    />
+                    <Route
+                        exact
+                        path={`${path}/tag-info`}
+                        render={(): JSX.Element => <h1>tag info</h1>}
+                    />
+                    <Route
+                        exact
+                        path={`${path}/punch-list`}
+                        render={(): JSX.Element => <h1>punch list</h1>}
+                    />
+                    <Route
+                        exact
+                        path={`${path}/punch-list/new-punch`}
+                        component={NewPunch}
+                    />
+                </Switch>
+            </div>
             {determineFooterToRender()}
         </>
     );

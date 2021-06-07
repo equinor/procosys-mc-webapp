@@ -162,6 +162,7 @@ const NewPunchForm = ({
                         </option>
                     ))}
                 </NativeSelect>
+                <h5>Optional fields</h5>
                 <TextField
                     id="actionByPerson"
                     value={chosenPerson.name}

@@ -1,10 +1,13 @@
 import { withPlantContext } from '../../test/contexts';
 import React from 'react';
 import { render, screen } from '@testing-library/react';
-import { ENDPOINTS, causeApiError } from '../../test/setupServer';
+import { ENDPOINTS, causeApiError, server, rest } from '../../test/setupServer';
 import { MemoryRouter, Route } from 'react-router-dom';
 import ChecklistPage from './ChecklistPage';
-import { dummyChecklistResponse } from '../../test/dummyData';
+import {
+    dummyChecklistResponse,
+    dummyPunchCategories,
+} from '../../test/dummyData';
 
 const renderChecklistPage = (contentType?: string): void => {
     render(
@@ -46,6 +49,7 @@ describe('<ChecklistPage>', () => {
         await expectDetails();
         await expectFooter();
         // TODO: add an expect for content (in this case checklist) to remove act warning
+        // TODO: Problem with checklist rendering because of the api calls inside the checklist component from the npm package. Need to find a fix or else I won't be able to test checklist component here
     });
     it('Shows an error message in the details card if the getChecklist API call fails', async () => {
         causeApiError(ENDPOINTS.getChecklist, 'get');
@@ -66,6 +70,7 @@ describe('<ChecklistPage>', () => {
         // TODO: add an expect for content (in this case checklist) to remove act warning
     });
 });
+
 describe('<ChecklistPage> in-page routing', () => {
     beforeEach(() => {
         renderChecklistPage('new-punch');
@@ -80,19 +85,41 @@ describe('<ChecklistPage> in-page routing', () => {
 });
 
 describe('<ChecklistPage> New Punch', () => {
-    /*
     it('Shows an error message if getPunchCategories API call fails', async () => {
-        // TODO: change api call below so that details doesn't fail too!
-        causeApiError(ENDPOINTS.getChecklist, 'get');
-        renderChecklistPage('new-punch');
+        causeApiError(ENDPOINTS.getPunchCategories, 'get');
+        renderChecklistPage('punch-list/new-punch');
         expect(
             await screen.findByText(
                 'Unable to load new punch. Please check your connection, permissions, or refresh this page.'
             )
         );
-        //await expectDetails();
+        await expectDetails();
         await expectFooter();
     });
+    it('Shows a loading message while awaiting API response', async () => {
+        server.use(
+            rest.get(
+                ENDPOINTS.getPunchCategories,
+                (request, response, context) => {
+                    return response(
+                        context.json(dummyPunchCategories),
+                        context.status(200),
+                        context.delay(80)
+                    );
+                }
+            )
+        );
+        renderChecklistPage('punch-list/new-punch');
+        expect(
+            await screen.findByText('Loading new punch.')
+        ).toBeInTheDocument();
+        await expectDetails();
+        await expectFooter();
+        const test = await screen.findByTestId('test');
+        //console.log(test.innerHTML);
+        //expect(await screen.findByText('Attachments')).toBeInTheDocument();
+    });
+    /*
     it('Should be possible to create a new punch', async () => {
         renderChecklistPage('new-punch');
         // TODO: finish
