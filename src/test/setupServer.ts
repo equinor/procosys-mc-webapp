@@ -14,6 +14,9 @@ import {
     testMcPkgPreview,
     dummyCommPkgDetailsResponse,
     testScope,
+    dummyPunchSorts,
+    dummyPunchPriorities,
+    dummyPersonsSearch,
 } from './dummyData';
 import objectToCamelCase from '../utils/objectToCamelCase';
 
@@ -54,6 +57,8 @@ export const ENDPOINTS = {
     getPunchCategories: `${baseURL}/PunchListItem/Categories`,
     getPunchTypes: `${baseURL}/PunchListItem/Types`,
     getPunchOrganizations: `${baseURL}/PunchListItem/Organizations`,
+    getPunchSorts: `${baseURL}/PunchListItem/Sorts`,
+    getPunchPriorities: `${baseURL}/PunchListItem/Priorities`,
     postNewPunch: `${baseURL}/PunchListItem`,
     getPunchItem: `${baseURL}/PunchListItem`,
     putPunchClearingBy: `${baseURL}/PunchListItem/SetClearingBy`,
@@ -66,6 +71,9 @@ export const ENDPOINTS = {
     postPunchVerify: `${baseURL}/PunchListItem/Verify`,
     postPunchUnverify: `${baseURL}/PunchListItem/Unverify`,
     postPunchReject: `${baseURL}/PunchListItem/Reject`,
+
+    //PERSON
+    getPersons: `${baseURL}/Person/PersonSearch`,
 };
 
 // TODO: remove all that use aen endpoint that needs removal
@@ -192,8 +200,21 @@ export const server = setupServer(
             context.status(200)
         );
     }),
+    rest.get(ENDPOINTS.getPunchSorts, (_, response, context) => {
+        return response(context.json(dummyPunchSorts), context.status(200));
+    }),
+    rest.get(ENDPOINTS.getPunchPriorities, (_, response, context) => {
+        return response(
+            context.json(dummyPunchPriorities),
+            context.status(200)
+        );
+    }),
     rest.post(ENDPOINTS.postNewPunch, (_, response, context) => {
         return response(context.status(200));
+    }),
+
+    rest.get(ENDPOINTS.getPersons, (_, response, context) => {
+        return response(context.json(dummyPersonsSearch), context.status(200));
     })
 );
 

@@ -397,3 +397,32 @@ export const dummyPunchTypes = [
     { Id: 1, ParentId: null, Code: '1', Description: 'dummy-type-1' },
     { Id: 2, ParentId: null, Code: '2', Description: 'dummy-type-2' },
 ];
+
+export const dummyPunchSorts = [
+    { Id: 1, ParentId: null, Code: '1', Description: 'dummy-sort-1' },
+    { Id: 2, ParentId: null, Code: '2', Description: 'dummy-sort-2' },
+];
+
+export const dummyPunchPriorities = [
+    { Id: 1, Code: '1', Description: 'dummy-priority-1' },
+    { Id: 2, Code: '2', Description: 'dummy-priority-2' },
+];
+
+export const dummyPersonsSearch = [
+    {
+        Id: 1,
+        AzureOid: 'az-oid-1',
+        Username: 'dummy-username-1',
+        FirstName: 'dummy-firstname-1',
+        LastName: 'dummy-lastname-1',
+        email: 'dummy-email-1',
+    },
+    {
+        Id: 1,
+        AzureOid: 'az-oid-2',
+        Username: 'dummy-username-2',
+        FirstName: 'dummy-firstname-2',
+        LastName: 'dummy-lastname-2',
+        email: 'dummy-email-2',
+    },
+];
