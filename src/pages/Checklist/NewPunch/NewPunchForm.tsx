@@ -184,6 +184,7 @@ const NewPunchForm = ({
                 <TextField
                     id="dueDate"
                     type="date"
+                    role="datepicker"
                     label="Due Date"
                     onChange={createChangeHandler('dueDate')}
                 />

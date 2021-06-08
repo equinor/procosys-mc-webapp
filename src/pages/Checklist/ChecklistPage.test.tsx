@@ -1,11 +1,12 @@
 import { withPlantContext } from '../../test/contexts';
 import React from 'react';
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { ENDPOINTS, causeApiError, server, rest } from '../../test/setupServer';
 import { MemoryRouter, Route } from 'react-router-dom';
 import ChecklistPage from './ChecklistPage';
 import {
     dummyChecklistResponse,
+    dummyPersonsSearch,
     dummyPunchCategories,
     dummyPunchOrganizations,
     dummyPunchPriorities,
@@ -54,7 +55,7 @@ const expectTagInfoPage = async (): Promise<void> => {
 };
 
 const expectNewPunchPage = async (): Promise<void> => {
-    expect(await screen.findByText('Punch category *')).toBeInTheDocument();
+    expect(await screen.findByText('Due Date')).toBeInTheDocument();
     expect(await screen.findByText('Optional fields')).toBeInTheDocument();
     expect(await screen.findByText('Attachments')).toBeInTheDocument();
 };
@@ -179,20 +180,6 @@ describe('<ChecklistPage> New Punch', () => {
         await expectFooter();
         await expectNewPunchPage();
     });
-    it("Is not possible to create a new punch if the required fields in the new punch form haven't been filled", async () => {
-        renderChecklistPage('punch-list/new-punch');
-        await expectDetails();
-        await expectFooter();
-        await expectNewPunchPage();
-        const createPunchButton = await screen.findByRole('button', {
-            name: 'Create punch',
-        });
-        expect(createPunchButton).toBeInTheDocument();
-        userEvent.click(createPunchButton);
-        // TODO: expect post /put?? not to have been called??
-        // TODO: why does the line below fail??
-        //await expectNewPunchPage();
-    });
     it('Is possible to create a new punch', async () => {
         renderChecklistPage('punch-list/new-punch');
         await expectNewPunchPage();
@@ -224,8 +211,33 @@ describe('<ChecklistPage> New Punch', () => {
             dummyPunchOrganizations[0].Id.toString(),
             1
         );
-        // TODO: choose a person
-        // TODO: chose date
+        // Choosing a person
+        const personInput = await screen.findByRole('textbox', {
+            name: 'Action by person',
+        });
+        expect(personInput).toBeInTheDocument();
+        userEvent.click(personInput);
+        const personSearch = screen.getByRole('searchbox');
+        expect(personSearch).toBeInTheDocument();
+        userEvent.type(personSearch, 'name');
+        const person = await screen.findByText(
+            `${dummyPersonsSearch[0].FirstName} ${dummyPersonsSearch[0].LastName}`
+        );
+        expect(person).toBeInTheDocument();
+        userEvent.click(person);
+        expect(personSearch).not.toBeInTheDocument();
+        const personInputAfter = await screen.findByRole('textbox', {
+            name: 'Action by person',
+        });
+        await waitFor(() =>
+            expect((personInputAfter as HTMLInputElement).value).toEqual(
+                `${dummyPersonsSearch[0].FirstName} ${dummyPersonsSearch[0].LastName}`
+            )
+        );
+        // Choosing due date
+        const dateInput = await screen.findByRole('datepicker');
+        fireEvent.change(dateInput, { target: { value: '2021-05-05' } });
+        expect((dateInput as HTMLInputElement).value).toEqual('2021-05-05');
         // Choosing type, Sorting and Priority
         await selectOption(
             'Type',
@@ -250,15 +262,20 @@ describe('<ChecklistPage> New Punch', () => {
             name: 'Estimate',
         });
         userEvent.type(estimateBox, '5');
-        // submitting form
         expect((estimateBox as HTMLInputElement).value).toEqual('5');
+        // submitting form
         const createPunchButton = await screen.findByRole('button', {
             name: 'Create punch',
         });
         expect(createPunchButton).toBeInTheDocument();
         userEvent.click(createPunchButton);
-        // TODO: punch list on screen
-        // TODO: new punch not on screen
-        // TODO: new punch created with all info inputed
+        await expectDetails();
+        await expectPunchListPage();
+        await expectFooter();
+        await waitFor(() =>
+            expect(
+                screen.queryByText('Action by person')
+            ).not.toBeInTheDocument()
+        );
     });
 });
