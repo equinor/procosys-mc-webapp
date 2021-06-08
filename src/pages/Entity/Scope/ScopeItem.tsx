@@ -28,6 +28,7 @@ export const StatusTextWrapper = styled.div`
         margin: 4px 1px;
         width: 12px;
         height: 12px;
+        padding-top: 2px;
         text-align: center;
         background-color: ${COLORS.lightGrey};
         font-size: 0.75rem;
