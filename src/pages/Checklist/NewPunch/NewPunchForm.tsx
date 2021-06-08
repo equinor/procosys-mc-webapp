@@ -29,6 +29,12 @@ export const NewPunchFormWrapper = styled.form`
     }
 `;
 
+const DateField = styled(TextField)`
+    & > input {
+        min-height: 40px;
+    }
+`;
+
 type NewPunchFormProps = {
     categories: PunchCategory[];
     organizations: PunchOrganization[];
@@ -165,7 +171,7 @@ const NewPunchForm = ({
                     onClick={(): void => setShowPersonsSearch(true)}
                     label={'Action by person'}
                 />
-                <TextField
+                <DateField
                     id="dueDate"
                     type="date"
                     role="datepicker"
