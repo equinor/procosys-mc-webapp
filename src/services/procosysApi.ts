@@ -7,9 +7,12 @@ import {
 import { SearchType } from '../pages/Search/Search';
 import {
     isArrayOfChecklistPreview,
+    isArrayofPerson,
     isArrayOfPunchCategory,
     isArrayOfPunchOrganization,
     isArrayOfPunchPreview,
+    isArrayOfPunchPriority,
+    isArrayOfPunchSort,
     isArrayOfPunchType,
     isChecklistResponse,
     isCorrectPreview,
@@ -30,6 +33,9 @@ import {
     PunchItem,
     Attachment,
     McPkgPreview,
+    PunchSort,
+    PunchPriority,
+    Person,
 } from './apiTypes';
 
 type ProcosysApiServiceProps = {
@@ -386,13 +392,12 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
     const getPunchSorts = async (
         plantId: string,
         cancelToken: CancelToken
-    ): Promise<PunchOrganization[]> => {
-        // TODO: is a different type (and type guard) needed for earch of the get calls?
+    ): Promise<PunchSort[]> => {
         const { data } = await axios.get(
             `PunchListItem/Sorts?plantId=PCS$${plantId}${apiVersion}`,
             { cancelToken }
         );
-        if (!isArrayOfPunchOrganization(data)) {
+        if (!isArrayOfPunchSort(data)) {
             throw new Error('An error occurred, please try again.');
         }
         return data;
@@ -400,13 +405,12 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
     const getPunchPriorities = async (
         plantId: string,
         cancelToken: CancelToken
-    ): Promise<PunchOrganization[]> => {
-        // TODO: is a different type (and type guard) needed for earch of the get calls?
+    ): Promise<PunchPriority[]> => {
         const { data } = await axios.get(
             `PunchListItem/Priorities?plantId=PCS$${plantId}${apiVersion}`,
             { cancelToken }
         );
-        if (!isArrayOfPunchOrganization(data)) {
+        if (!isArrayOfPunchPriority(data)) {
             throw new Error('An error occurred, please try again.');
         }
         return data;
@@ -531,12 +535,12 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
         plantId: string,
         searchString: string,
         cancelToken: CancelToken
-    ): Promise<PunchOrganization[]> => {
+    ): Promise<Person[]> => {
         const { data } = await axios.get(
-            `Person/PersonSearch?plantId=PCS$${plantId}&searchString=${searchString}${apiVersion}`,
+            `Person/PersonSearch?plantId=${plantId}&searchString=${searchString}${apiVersion}`,
             { cancelToken }
         );
-        if (!isArrayOfPunchOrganization(data)) {
+        if (!isArrayofPerson(data)) {
             throw new Error('An error occurred, please try again.');
         }
         return data;

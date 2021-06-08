@@ -192,13 +192,31 @@ export interface PunchOrganization {
     description: string;
 }
 
+export interface PunchSort {
+    id: number;
+    parentId: number;
+    code: string;
+    description: string;
+}
+
+export interface PunchPriority {
+    id: number;
+    code: string;
+    description: string;
+}
+
 export interface NewPunch {
     CheckListId: number;
     CategoryId: number;
     Description: string;
-    TypeId: number;
+    TypeId?: number;
     RaisedByOrganizationId: number;
     ClearingByOrganizationId: number;
+    SortingId?: number;
+    PriorityId?: number;
+    ActionByPerson?: number | null;
+    DueDate?: string;
+    Estimate?: number;
     TemporaryFileIds: string[];
 }
 
