@@ -97,9 +97,6 @@ const PersonsSearch = ({
                 <div>
                     <p>
                         <i>
-                            {
-                                // TODO: change error message
-                            }
                             An error occurred, please refresh this page and try
                             again.
                         </i>

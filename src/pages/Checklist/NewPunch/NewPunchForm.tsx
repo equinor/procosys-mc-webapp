@@ -24,12 +24,10 @@ import useCommonHooks from '../../../utils/useCommonHooks';
 import { ChosenPerson, PunchFormData } from './NewPunch';
 import PersonsSearch from './PersonsSearch/PersonsSearch';
 
-// TODO: check whether I need to change this into something else
 export const NewPunchFormWrapper = styled.form`
     background-color: ${COLORS.white};
-    //margin-top: 16px; // TODO: is this the correct amount?
     padding: 0 4%;
-    margin-bottom: 66px; // TODO: change into the same as the height of the footer (+ a bit extra?)
+    margin-bottom: 66px;
     overflow: hidden;
     & ${CardWrapper}:first-of-type {
         margin-top: 16px;
@@ -230,9 +228,6 @@ const NewPunchForm = ({
                         >{`${priority.code}. ${priority.description}`}</option>
                     ))}
                 </NativeSelect>
-                {
-                    // TODO: way to open a numbers-ony keyboard when editing the estimate text field?
-                }
                 <TextField
                     type="number"
                     label="Estimate"

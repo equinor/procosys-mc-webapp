@@ -12,13 +12,11 @@ import { AsyncStatus } from '../../../contexts/McAppContext';
 import NewPunchForm from './NewPunchForm';
 import useFormFields from '../../../utils/useFormFields';
 import { NewPunch as NewPunchType } from '../../../services/apiTypes';
-import NewPunchSuccessPage from './NewPunchSuccessPage';
 import useCommonHooks from '../../../utils/useCommonHooks';
 import { PunchWrapper } from '../../Punch/ClearPunch/ClearPunch';
 import { Button, Input, Scrim } from '@equinor/eds-core-react';
 import {
     AttachmentImage,
-    AttachmentsWrapper,
     ImageModal,
     UploadImageButton,
 } from '../../../components/Attachment';
@@ -30,11 +28,16 @@ import AsyncPage from '../../../components/AsyncPage';
 import { TempAttachments } from '@equinor/procosys-webapp-components';
 import removeSubdirectories from '../../../utils/removeSubdirectories';
 import styled from 'styled-components';
+import { COLORS } from '../../../style/GlobalStyles';
 
 const AttachmentsHeader = styled.h5`
-    margin-top: 54px;
     margin-bottom: 0px;
     padding: 0px;
+`;
+
+const AttachmentsWrapper = styled.div`
+    margin: 0 -4%;
+    background-color: ${COLORS.fadedBlue};
 `;
 
 export type ChosenPerson = {
@@ -159,7 +162,6 @@ const NewPunch = (): JSX.Element => {
     }, [params.plant, params.checklistId, api]);
 
     if (submitPunchStatus === AsyncStatus.SUCCESS) {
-        // TODO: in old app: redirects to a place to edit the punch (should we do this too??)
         history.push(removeSubdirectories(url, 1));
     }
 
@@ -181,25 +183,23 @@ const NewPunch = (): JSX.Element => {
             >
                 <>
                     <AttachmentsHeader>Attachments</AttachmentsHeader>
-                    {
-                        // TODO: attachments are too far from left side. Is the outside margin(?) needed? how do I add a margin(?) to only new punch form and not its children?
-                        // TODO: attachments are too far from the attachments header
-                    }
-                    <TempAttachments
-                        setSnackbarText={setSnackbarText}
-                        setTempAttachmentIds={setTempIds}
-                        postTempAttachment={(
-                            formData: FormData,
-                            title: string
-                        ): Promise<string> =>
-                            api.postTempPunchAttachment({
-                                data: formData,
-                                plantId: params.plant,
-                                parentId: params.checklistId,
-                                title: title,
-                            })
-                        }
-                    />
+                    <AttachmentsWrapper>
+                        <TempAttachments
+                            setSnackbarText={setSnackbarText}
+                            setTempAttachmentIds={setTempIds}
+                            postTempAttachment={(
+                                formData: FormData,
+                                title: string
+                            ): Promise<string> =>
+                                api.postTempPunchAttachment({
+                                    data: formData,
+                                    plantId: params.plant,
+                                    parentId: params.checklistId,
+                                    title: title,
+                                })
+                            }
+                        />
+                    </AttachmentsWrapper>
                 </>
             </NewPunchForm>
         );

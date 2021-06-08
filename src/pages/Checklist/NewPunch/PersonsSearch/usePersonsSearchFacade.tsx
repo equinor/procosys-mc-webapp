@@ -80,7 +80,6 @@ const usePersonsSearchFacade = () => {
 
     useEffect(() => {
         if (!currentPlant) return;
-        // TODO: check whether it should start searching at length == 1 (use query.length < 1 below)
         if (query.length < 2) {
             dispatch({ type: 'FETCH_INACTIVE' });
             return;
