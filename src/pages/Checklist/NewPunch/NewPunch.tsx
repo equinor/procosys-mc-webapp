@@ -14,15 +14,6 @@ import useFormFields from '../../../utils/useFormFields';
 import { NewPunch as NewPunchType } from '../../../services/apiTypes';
 import useCommonHooks from '../../../utils/useCommonHooks';
 import { PunchWrapper } from '../../Punch/ClearPunch/ClearPunch';
-import { Button, Input, Scrim } from '@equinor/eds-core-react';
-import {
-    AttachmentImage,
-    ImageModal,
-    UploadImageButton,
-} from '../../../components/Attachment';
-import EdsIcon from '../../../components/icons/EdsIcon';
-import UploadAttachment from '../../../components/UploadAttachment';
-import EdsCard from '../../../components/EdsCard';
 import useSnackbar from '../../../utils/useSnackbar';
 import AsyncPage from '../../../components/AsyncPage';
 import { TempAttachments } from '@equinor/procosys-webapp-components';
@@ -92,8 +83,6 @@ const NewPunch = (): JSX.Element => {
     const [submitPunchStatus, setSubmitPunchStatus] = useState(
         AsyncStatus.INACTIVE
     );
-    const [checklistDetails, setChecklistDetails] =
-        useState<ChecklistDetails>();
     const { snackbar, setSnackbarText } = useSnackbar();
     const [tempIds, setTempIds] = useState<string[]>([]);
 
@@ -132,25 +121,18 @@ const NewPunch = (): JSX.Element => {
                     organizationsFromApi,
                     sortsFromApi,
                     prioritiesFromApi,
-                    checklistFromApi,
                 ] = await Promise.all([
                     api.getPunchCategories(params.plant, source.token),
                     api.getPunchTypes(params.plant, source.token),
                     api.getPunchOrganizations(params.plant, source.token),
                     api.getPunchSorts(params.plant, source.token),
                     api.getPunchPriorities(params.plant, source.token),
-                    api.getChecklist(
-                        params.plant,
-                        params.checklistId,
-                        source.token
-                    ),
                 ]);
                 setCategories(categoriesFromApi);
                 setTypes(typesFromApi);
                 setOrganizations(organizationsFromApi);
                 setSorts(sortsFromApi);
                 setPriorities(prioritiesFromApi);
-                setChecklistDetails(checklistFromApi.checkList);
                 setFetchNewPunchStatus(AsyncStatus.SUCCESS);
             } catch (error) {
                 setFetchNewPunchStatus(AsyncStatus.ERROR);

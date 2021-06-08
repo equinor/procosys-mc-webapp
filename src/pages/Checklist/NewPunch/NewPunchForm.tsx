@@ -1,12 +1,5 @@
-import {
-    Button,
-    Input,
-    Label,
-    NativeSelect,
-    Search,
-    TextField,
-} from '@equinor/eds-core-react';
-import React, { ChangeEvent, useState } from 'react';
+import { Button, NativeSelect, TextField } from '@equinor/eds-core-react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { CardWrapper } from '../../../components/EdsCard';
 import EdsIcon from '../../../components/icons/EdsIcon';
@@ -19,7 +12,6 @@ import {
     PunchType,
 } from '../../../services/apiTypes';
 import { COLORS } from '../../../style/GlobalStyles';
-import removeSubdirectories from '../../../utils/removeSubdirectories';
 import useCommonHooks from '../../../utils/useCommonHooks';
 import { ChosenPerson, PunchFormData } from './NewPunch';
 import PersonsSearch from './PersonsSearch/PersonsSearch';
@@ -90,7 +82,6 @@ const NewPunchForm = ({
     children,
 }: NewPunchFormProps): JSX.Element => {
     const [showPersonsSearch, setShowPersonsSearch] = useState(false);
-    const { url, history } = useCommonHooks();
 
     const handlePersonChosen = (id: number, name: string): void => {
         setChosenPerson({ id, name });
