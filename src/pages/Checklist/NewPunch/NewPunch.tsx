@@ -169,12 +169,11 @@ const NewPunch = (): JSX.Element => {
                                 formData: FormData,
                                 title: string
                             ): Promise<string> =>
-                                api.postTempPunchAttachment({
-                                    data: formData,
-                                    plantId: params.plant,
-                                    parentId: params.checklistId,
-                                    title: title,
-                                })
+                                api.postTempPunchAttachment(
+                                    params.plant,
+                                    formData,
+                                    title
+                                )
                             }
                         />
                     </AttachmentsWrapper>
