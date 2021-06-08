@@ -24,7 +24,7 @@ export const McPackageStatusIcon = ({
         <>
             <img
                 src={determineImage(status)}
-                alt={'Comm package status indicator, left side'}
+                alt={'MC package status indicator, left side'}
             />
         </>
     );

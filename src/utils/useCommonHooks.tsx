@@ -5,7 +5,7 @@ import McAppContext from '../contexts/McAppContext';
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const useCommonHooks = () => {
-    const { api, auth } = useContext(McAppContext);
+    const { api, auth, procosysApiSettings } = useContext(McAppContext);
     const params = useParams<McParams>();
     const history = useHistory();
     const { url, path } = useRouteMatch();
@@ -16,6 +16,7 @@ const useCommonHooks = () => {
         history,
         url,
         path,
+        procosysApiSettings,
     };
 };
 

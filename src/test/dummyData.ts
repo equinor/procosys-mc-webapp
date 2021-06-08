@@ -106,7 +106,7 @@ export const testMcPkgSearch: SearchResults = {
 export const testScope: ChecklistPreview[] = [
     {
         id: 1,
-        tagNo: 'Test tag number',
+        tagNo: 'Test tag number scope',
         tagDescription: 'Test tag description',
         responsibleCode: 'Respcode',
         status: CompletionStatus.OK,
@@ -141,10 +141,17 @@ export const testPunchList: PunchPreview[] = [
 ];
 
 export const dummyChecklistResponse = {
+    LoopTags: [
+        {
+            TagId: 12,
+            TagNo: 'dummmy-checklist-loop-tag-no',
+        },
+    ],
     CheckList: {
         Id: 321421,
-        TagNo: 'dummy-tag-no',
+        TagNo: 'dummy-checklist-tag-no',
         TagDescription: 'dummy-tag-description',
+        McPkgNo: 'dummy-checklist-mcPkgNo',
         ResponsibleCode: 'dummy-responsible-code',
         ResponsibleDescription: 'dummy-responsible-description',
         Status: 'OS',
@@ -156,12 +163,17 @@ export const dummyChecklistResponse = {
         SignedByFirstName: null,
         SignedByLastName: null,
         SignedAt: null,
+        VerifiedByUser: null,
+        VerifiedFirstName: null,
+        VerifiedLastName: null,
+        VerifiedAt: null,
         UpdatedAt: '2021-02-05T09:05:09Z',
         UpdatedByUser: 'dummy-updated-user',
         UpdatedByFirstName: 'dummy-update-first-name',
         UpdatedByLastName: 'dummy-updated-last-name',
         IsRestrictedForUser: false,
         HasElectronicForm: true,
+        AttachmentCount: 0,
     },
     CheckItems: [
         {
@@ -202,6 +214,14 @@ export const dummyChecklistResponse = {
             MetaTable: null,
             IsOk: false,
             IsNotApplicable: false,
+        },
+    ],
+    CustomCheckItems: [
+        {
+            Id: 14,
+            ItemNo: 'custom-check-item-no',
+            Text: 'custom-check-item-text',
+            IsOk: true,
         },
     ],
 };
@@ -261,7 +281,7 @@ export const dummyPunchListResponse = [
         rejected: false,
         verified: false,
         statusControlledBySwcr: true,
-        attachmentCount: 2,
+        attachmentCount: 0,
     },
 ];
 
@@ -376,4 +396,33 @@ export const dummyPunchCategories = [
 export const dummyPunchTypes = [
     { Id: 1, ParentId: null, Code: '1', Description: 'dummy-type-1' },
     { Id: 2, ParentId: null, Code: '2', Description: 'dummy-type-2' },
+];
+
+export const dummyPunchSorts = [
+    { Id: 1, ParentId: null, Code: '1', Description: 'dummy-sort-1' },
+    { Id: 2, ParentId: null, Code: '2', Description: 'dummy-sort-2' },
+];
+
+export const dummyPunchPriorities = [
+    { Id: 1, Code: '1', Description: 'dummy-priority-1' },
+    { Id: 2, Code: '2', Description: 'dummy-priority-2' },
+];
+
+export const dummyPersonsSearch = [
+    {
+        Id: 1,
+        AzureOid: 'az-oid-1',
+        Username: 'dummy-username-1',
+        FirstName: 'dummy-firstname-1',
+        LastName: 'dummy-lastname-1',
+        email: 'dummy-email-1',
+    },
+    {
+        Id: 1,
+        AzureOid: 'az-oid-2',
+        Username: 'dummy-username-2',
+        FirstName: 'dummy-firstname-2',
+        LastName: 'dummy-lastname-2',
+        email: 'dummy-email-2',
+    },
 ];

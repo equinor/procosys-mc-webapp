@@ -53,7 +53,7 @@ const SearchResults = ({
                         return (
                             <McDetails
                                 key={searchResult.id}
-                                searchResult={searchResult}
+                                mcPkgDetails={searchResult}
                             />
                         );
                     }

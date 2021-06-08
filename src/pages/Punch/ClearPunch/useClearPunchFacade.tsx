@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import Axios from 'axios';
 import { AsyncStatus } from '../../../contexts/McAppContext';
 import {
     PunchCategory,
@@ -155,6 +156,7 @@ const useClearPunchFacade = () => {
     };
 
     useEffect(() => {
+        const source = Axios.CancelToken.source();
         (async (): Promise<void> => {
             try {
                 const [
@@ -163,9 +165,9 @@ const useClearPunchFacade = () => {
                     organizationsFromApi,
                     punchItemFromApi,
                 ] = await Promise.all([
-                    api.getPunchCategories(params.plant),
-                    api.getPunchTypes(params.plant),
-                    api.getPunchOrganizations(params.plant),
+                    api.getPunchCategories(params.plant, source.token),
+                    api.getPunchTypes(params.plant, source.token),
+                    api.getPunchOrganizations(params.plant, source.token),
                     api.getPunchItem(params.plant, params.punchItemId),
                 ]);
                 setCategories(categoriesFromApi);
@@ -177,6 +179,9 @@ const useClearPunchFacade = () => {
                 setFetchPunchItemStatus(AsyncStatus.ERROR);
             }
         })();
+        return (): void => {
+            source.cancel();
+        };
     }, [params.plant, api, params.punchItemId]);
 
     return {

@@ -91,6 +91,7 @@ export interface ChecklistDetails {
     id: number;
     tagNo: string;
     tagDescription: string;
+    mcPkgNo: string;
     responsibleCode: string;
     responsibleDescription: string;
     status: CompletionStatus;
@@ -102,12 +103,17 @@ export interface ChecklistDetails {
     signedByFirstName: string;
     signedByLastName: string;
     signedAt: Date;
+    verifiedByUser: string;
+    verifiedByFirstName: string;
+    verifiedByLastName: string;
+    verifiedAt: Date;
     updatedAt: Date;
     updatedByUser: string;
     updatedByFirstName: string;
     updatedByLastName: string;
     isRestrictedForUser: boolean;
     hasElectronicForm: boolean;
+    attachmentCount: number;
 }
 
 export interface ColumnLabel {
@@ -147,9 +153,23 @@ export interface CheckItem {
     isNotApplicable: boolean;
 }
 
+export interface LoopTag {
+    tagId: number;
+    tagNo: string;
+}
+
+export interface CustomCheckItem {
+    id: number;
+    itemNo: string;
+    text: string;
+    isOk: boolean;
+}
+
 export interface ChecklistResponse {
+    loopTags: LoopTag[];
     checkList: ChecklistDetails;
     checkItems: CheckItem[];
+    customCheckItems: CustomCheckItem[];
 }
 
 export interface PunchCategory {
@@ -172,13 +192,31 @@ export interface PunchOrganization {
     description: string;
 }
 
+export interface PunchSort {
+    id: number;
+    parentId: number;
+    code: string;
+    description: string;
+}
+
+export interface PunchPriority {
+    id: number;
+    code: string;
+    description: string;
+}
+
 export interface NewPunch {
     CheckListId: number;
     CategoryId: number;
     Description: string;
-    TypeId: number;
+    TypeId?: number;
     RaisedByOrganizationId: number;
     ClearingByOrganizationId: number;
+    SortingId?: number;
+    PriorityId?: number;
+    ActionByPerson?: number | null;
+    DueDate?: string;
+    Estimate?: number;
     TemporaryFileIds: string[];
 }
 
@@ -239,4 +277,58 @@ export interface Attachment {
     thumbnailAsBase64: string;
     hasFile: boolean;
     fileName: string;
+}
+
+export interface TagDetails {
+    id: number;
+    tagNo: string;
+    description: string;
+    registerCode: string;
+    registerDescription: string;
+    statusCode: string;
+    statusDescription: string;
+    tagFunctionCode: string;
+    tagFunctionDescription: string;
+    commPkgNo: string;
+    mcPkgNo: string;
+    purchaseOrderNo: string;
+    callOffNo: string;
+    purchaseOrderTitle: string;
+    projectDescription: string;
+    sequence: string;
+    mountedOnTagNo: string;
+    remark: string;
+    systemCode: string;
+    systemDescription: string;
+    disciplineCode: string;
+    disciplineDescription: string;
+    areaCode: string;
+    areaDescription: string;
+    engineeringCodeCode: string;
+    engineeringCodeDescription: string;
+    contractorCode: string;
+    contractorDescription: string;
+    hasPreservation: boolean;
+    preservationMigrated: boolean;
+}
+
+export interface AdditionalTagField {
+    id: number;
+    label: string;
+    value: string;
+    type: string;
+    unit: string;
+}
+export interface Tag {
+    tagDetails: TagDetails;
+    additionalFields: AdditionalTagField[];
+}
+
+export interface Person {
+    id: number;
+    azureOid: string;
+    username: string;
+    firstName: string;
+    lastName: string;
+    email: string;
 }

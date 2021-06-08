@@ -131,7 +131,9 @@ const Navbar = ({
             return (
                 <Button
                     variant="ghost"
-                    onClick={(): void => history.push(`${url}/new-punch`)}
+                    onClick={(): void =>
+                        history.push(`${url}/punch-list/new-punch`)
+                    }
                 >
                     New punch
                 </Button>

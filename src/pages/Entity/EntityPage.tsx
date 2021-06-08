@@ -25,9 +25,13 @@ import { URLError } from '../../utils/matchPlantInURL';
 
 const EntityPageWrapper = styled.main``;
 
-const DetailsWrapper = styled.p`
+export const DetailsWrapper = styled.p`
     text-align: center;
     padding: 12px;
+`;
+
+const ContentWrapper = styled.div`
+    padding: 12px 4% 85px 4%;
 `;
 
 const EntityPage = (): JSX.Element => {
@@ -112,7 +116,7 @@ const EntityPage = (): JSX.Element => {
                 return (
                     <McDetails
                         key={details.id}
-                        searchResult={details}
+                        mcPkgDetails={details}
                         clickable={false}
                     />
                 );
