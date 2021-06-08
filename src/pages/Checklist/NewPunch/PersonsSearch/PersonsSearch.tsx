@@ -12,8 +12,9 @@ const PersonsSearchWrapper = styled.div`
     left: 0;
     top: 0;
     z-index: 20;
-    height: 100%;
-    width: 92%;
+    height: 100vh;
+    width: 100vw;
+    box-sizing: border-box;
     background-color: ${COLORS.white};
     padding: 16px 4%;
     overflow-y: scroll;
@@ -24,7 +25,6 @@ const PersonsSearchWrapper = styled.div`
 
 const StyledButton = styled(Button)`
     align-self: flex-end;
-    margin-bottom: 32px;
     min-height: 40px;
 `;
 
@@ -55,6 +55,16 @@ const PersonsSearch = ({
         searchbarRef.current?.focus();
     }, []);
 
+    const messageToUser = (message: string): JSX.Element => {
+        return (
+            <div>
+                <p>
+                    <i>{message}</i>
+                </p>
+            </div>
+        );
+    };
+
     const determineContentToRender = (): JSX.Element => {
         if (searchStatus === SearchStatus.LOADING) {
             return <SkeletonLoadingPage fullWidth />;
@@ -81,35 +91,14 @@ const PersonsSearch = ({
             );
         }
         if (searchStatus === SearchStatus.INACTIVE) {
-            return (
-                <div>
-                    <p>
-                        <i>
-                            Start typing in the field above to search. <br />
-                        </i>
-                    </p>
-                </div>
-            );
+            return messageToUser('Start typing in the field above to search');
         }
         if (searchStatus === SearchStatus.ERROR) {
-            return (
-                <div>
-                    <p>
-                        <i>
-                            An error occurred, please refresh this page and try
-                            again.
-                        </i>
-                    </p>
-                </div>
+            return messageToUser(
+                'An error occurred, please refresh this page and try again.'
             );
         }
-        return (
-            <div>
-                <p>
-                    <i>No persons found for this search.</i>
-                </p>
-            </div>
-        );
+        return messageToUser('No persons found for this search.');
     };
 
     return (

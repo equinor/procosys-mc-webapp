@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Axios from 'axios';
 import {
-    ChecklistDetails,
     PunchCategory,
     PunchOrganization,
     PunchPriority,
@@ -20,11 +19,6 @@ import { TempAttachments } from '@equinor/procosys-webapp-components';
 import removeSubdirectories from '../../../utils/removeSubdirectories';
 import styled from 'styled-components';
 import { COLORS } from '../../../style/GlobalStyles';
-
-const AttachmentsHeader = styled.h5`
-    margin-bottom: 0px;
-    padding: 0px;
-`;
 
 const AttachmentsWrapper = styled.div`
     margin: 0 -4%;
@@ -141,11 +135,13 @@ const NewPunch = (): JSX.Element => {
         return (): void => {
             source.cancel();
         };
-    }, [params.plant, params.checklistId, api]);
+    }, [params.plant, api]);
 
-    if (submitPunchStatus === AsyncStatus.SUCCESS) {
-        history.push(removeSubdirectories(url, 1));
-    }
+    useEffect(() => {
+        if (submitPunchStatus === AsyncStatus.SUCCESS) {
+            history.push(removeSubdirectories(url, 1));
+        }
+    }, [submitPunchStatus]);
 
     const content = (): JSX.Element => {
         return (
@@ -164,7 +160,7 @@ const NewPunch = (): JSX.Element => {
                 submitPunchStatus={submitPunchStatus}
             >
                 <>
-                    <AttachmentsHeader>Attachments</AttachmentsHeader>
+                    <h5>Attachments</h5>
                     <AttachmentsWrapper>
                         <TempAttachments
                             setSnackbarText={setSnackbarText}

@@ -1,7 +1,6 @@
 import { Button, NativeSelect, TextField } from '@equinor/eds-core-react';
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { CardWrapper } from '../../../components/EdsCard';
 import EdsIcon from '../../../components/icons/EdsIcon';
 import { AsyncStatus } from '../../../contexts/McAppContext';
 import {
@@ -12,7 +11,6 @@ import {
     PunchType,
 } from '../../../services/apiTypes';
 import { COLORS } from '../../../style/GlobalStyles';
-import useCommonHooks from '../../../utils/useCommonHooks';
 import { ChosenPerson, PunchFormData } from './NewPunch';
 import PersonsSearch from './PersonsSearch/PersonsSearch';
 
@@ -21,9 +19,6 @@ export const NewPunchFormWrapper = styled.form`
     padding: 0 4%;
     margin-bottom: 66px;
     overflow: hidden;
-    & ${CardWrapper}:first-of-type {
-        margin-top: 16px;
-    }
     & > button,
     button:disabled {
         float: right;

@@ -52,13 +52,13 @@ const fetchReducer = (state: SearchState, action: Action): SearchState => {
 const fetchHits = async (
     query: string,
     dispatch: React.Dispatch<Action>,
-    plantID: string,
+    plantId: string,
     cancelToken: CancelToken,
     api: ProcosysApiService
 ): Promise<void> => {
     dispatch({ type: 'FETCH_START' });
     try {
-        const persons = await api.getPersonsByName(plantID, query, cancelToken);
+        const persons = await api.getPersonsByName(plantId, query, cancelToken);
         dispatch({
             type: 'FETCH_SUCCESS',
             payload: { persons },

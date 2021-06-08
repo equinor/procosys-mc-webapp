@@ -55,8 +55,8 @@ const fetchReducer = (state: SearchState, action: Action): SearchState => {
 const fetchHits = async (
     query: string,
     dispatch: React.Dispatch<Action>,
-    plantID: string,
-    projectID: number,
+    plantId: string,
+    projectId: number,
     cancelToken: CancelToken,
     api: ProcosysApiService,
     searchType: SearchType
@@ -66,8 +66,8 @@ const fetchHits = async (
         if (searchType === SearchType.MC) {
             const mcPackages = await api.getSearchResults(
                 query,
-                projectID,
-                plantID,
+                projectId,
+                plantId,
                 searchType,
                 cancelToken
             );
