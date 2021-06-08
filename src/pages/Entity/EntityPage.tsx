@@ -116,7 +116,7 @@ const EntityPage = (): JSX.Element => {
                 return (
                     <McDetails
                         key={details.id}
-                        searchResult={details}
+                        mcPkgDetails={details}
                         clickable={false}
                     />
                 );

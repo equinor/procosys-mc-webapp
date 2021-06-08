@@ -68,12 +68,12 @@ const HeaderWrapper = styled.div<{ clickable: boolean }>`
 `;
 
 type McDetailsProps = {
-    searchResult: McPkgPreview;
+    mcPkgDetails: McPkgPreview;
     clickable?: boolean;
 };
 
 const McDetails = ({
-    searchResult,
+    mcPkgDetails,
     clickable = true,
 }: McDetailsProps): JSX.Element => {
     const { history, url } = useCommonHooks();
@@ -81,19 +81,19 @@ const McDetails = ({
         <McDetailsWrapper
             onClick={(): void => {
                 if (clickable) {
-                    history.push(`${url}/MC/${searchResult.id}`);
+                    history.push(`${url}/MC/${mcPkgDetails.id}`);
                 }
             }}
-            key={searchResult.mcPkgNo}
+            key={mcPkgDetails.mcPkgNo}
             clickable={clickable}
             as={clickable ? 'a' : 'article'}
         >
             <StatusImageWrapper>
-                <McPackageStatusIcon status={searchResult.status} />
+                <McPackageStatusIcon status={mcPkgDetails.status} />
                 <StatusTextWrapper>
                     <HandoverStatus
                         accepted={
-                            searchResult.commissioningHandoverStatus ==
+                            mcPkgDetails.commissioningHandoverStatus ==
                             'ACCEPTED'
                         }
                     >
@@ -101,7 +101,7 @@ const McDetails = ({
                     </HandoverStatus>
                     <HandoverStatus
                         accepted={
-                            searchResult.operationHandoverStatus == 'ACCEPTED'
+                            mcPkgDetails.operationHandoverStatus == 'ACCEPTED'
                         }
                     >
                         O
@@ -110,12 +110,12 @@ const McDetails = ({
             </StatusImageWrapper>
             <DetailsWrapper>
                 <HeaderWrapper clickable={clickable}>
-                    <h6>{searchResult.mcPkgNo}</h6>
-                    <Caption>{searchResult.commPkgNo}</Caption>
-                    <Caption>{searchResult.responsibleCode}</Caption>
+                    <h6>{mcPkgDetails.mcPkgNo}</h6>
+                    <Caption>{mcPkgDetails.commPkgNo}</Caption>
+                    <Caption>{mcPkgDetails.responsibleCode}</Caption>
                 </HeaderWrapper>
-                <Caption>{searchResult.description}</Caption>
-                <Caption>{searchResult.phaseCode}</Caption>
+                <Caption>{mcPkgDetails.description}</Caption>
+                <Caption>{mcPkgDetails.phaseCode}</Caption>
             </DetailsWrapper>
         </McDetailsWrapper>
     );
