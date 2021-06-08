@@ -1,10 +1,12 @@
 import React from 'react';
 import styled from 'styled-components';
+import { COLORS } from '../../style/GlobalStyles';
 import { NavigationFooterBase } from './NavigationFooter';
 
 const NavigationFooterShellWrapper = styled(NavigationFooterBase)`
     justify-content: center;
     align-items: center;
+    background-color: ${COLORS.white};
     height: 66px;
 `;
 
