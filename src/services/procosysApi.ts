@@ -22,7 +22,6 @@ import {
     Plant,
     Project,
     SearchResults,
-    CommPkg,
     ChecklistPreview,
     PunchPreview,
     ChecklistResponse,
