@@ -323,3 +323,12 @@ export interface Tag {
     tagDetails: TagDetails;
     additionalFields: AdditionalTagField[];
 }
+
+export interface Person {
+    id: number;
+    azureOid: string;
+    username: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+}
