@@ -19,7 +19,6 @@ import { TempAttachments } from '@equinor/procosys-webapp-components';
 import removeSubdirectories from '../../../utils/removeSubdirectories';
 import styled from 'styled-components';
 import { COLORS } from '../../../style/GlobalStyles';
-import { BottomSpacer } from '../ChecklistWrapper';
 
 const AttachmentsWrapper = styled.div`
     margin: 0 -4%;
