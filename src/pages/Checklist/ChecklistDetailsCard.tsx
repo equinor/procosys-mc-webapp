@@ -49,7 +49,7 @@ const ChecklistDetailsCard = ({
                 </StatusTextWrapper>
             </StatusImageWrapper>
             <DetailsWrapper>
-                <DetailsHeaderWrapper>
+                <DetailsHeaderWrapper clickable={false}>
                     <Caption>{details.mcPkgNo}</Caption>
                     <Caption>{details.formularType}</Caption>
                     <Caption>{details.responsibleCode}</Caption>

@@ -29,13 +29,13 @@ const Punch = ({ punch }: PunchProps): JSX.Element => {
                 </StatusTextWrapper>
             </StatusImageWrapper>
             <DetailsWrapper>
-                <DetailsHeaderWrapper>
+                <DetailsHeaderWrapper clickable>
                     <Caption>{punch.id}</Caption>
                     {
                         // TODO: add caption with callOffNo for PO punch
                     }
                 </DetailsHeaderWrapper>
-                <DetailsHeaderWrapper>
+                <DetailsHeaderWrapper clickable>
                     <Caption>{punch.tagNo}</Caption>
                     <Caption>{punch.formularType}</Caption>
                     <Caption>{punch.responsibleCode}</Caption>

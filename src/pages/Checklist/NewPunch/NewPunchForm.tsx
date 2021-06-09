@@ -1,4 +1,9 @@
-import { Button, NativeSelect, TextField } from '@equinor/eds-core-react';
+import {
+    Button,
+    Label,
+    NativeSelect,
+    TextField,
+} from '@equinor/eds-core-react';
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import EdsIcon from '../../../components/icons/EdsIcon';
@@ -16,8 +21,7 @@ import PersonsSearch from './PersonsSearch/PersonsSearch';
 
 export const NewPunchFormWrapper = styled.form`
     background-color: ${COLORS.white};
-    padding: 0 4%;
-    margin-bottom: 66px;
+    padding: 0 4% 66px 4%;
     overflow: hidden;
     & > button,
     button:disabled {
@@ -26,6 +30,23 @@ export const NewPunchFormWrapper = styled.form`
     }
     & > div {
         margin-top: 16px;
+    }
+`;
+
+const DateField = styled.div`
+    & > input {
+        box-sizing: border-box;
+        width: 100%;
+        background-color: ${COLORS.greyBackground};
+        height: 40px;
+        border: none;
+        box-shadow: inset 0 -1px 0 0 var(--eds_text__static_ic, rgba(111, 111, 111, 1)); // TODO: fix(?)
+        font-family: Equinor;
+        padding: 0 8px;
+    }
+    & > input:focus-visible {
+        outline: 2px solid ${COLORS.mossGreen};
+        box-shadow: none;
     }
 `;
 
@@ -165,13 +186,15 @@ const NewPunchForm = ({
                     onClick={(): void => setShowPersonsSearch(true)}
                     label={'Action by person'}
                 />
-                <TextField
-                    id="dueDate"
-                    type="date"
-                    role="datepicker"
-                    label="Due Date"
-                    onChange={createChangeHandler('dueDate')}
-                />
+                <DateField>
+                    <Label label="Due Date" htmlFor="dueDate2" />
+                    <input
+                        type="date"
+                        id="dueDate"
+                        role="datepicker"
+                        onChange={createChangeHandler('dueDate')}
+                    />
+                </DateField>
                 <NativeSelect
                     id="PunchTypeSelect"
                     label="Type"
@@ -220,6 +243,7 @@ const NewPunchForm = ({
                     id="estimate"
                     value={formData.estimate}
                     onChange={createChangeHandler('estimate')}
+                    disabled={submitPunchStatus === AsyncStatus.LOADING}
                 />
                 {children}
                 <Button

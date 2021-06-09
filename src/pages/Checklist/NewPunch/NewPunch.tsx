@@ -22,6 +22,7 @@ import { COLORS } from '../../../style/GlobalStyles';
 
 const AttachmentsWrapper = styled.div`
     margin: 0 -4%;
+    padding: 16px 4%;
     background-color: ${COLORS.fadedBlue};
 `;
 

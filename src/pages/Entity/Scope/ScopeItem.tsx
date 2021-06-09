@@ -35,12 +35,13 @@ export const StatusTextWrapper = styled.div`
     }
 `;
 
-export const DetailsHeaderWrapper = styled.div`
+export const DetailsHeaderWrapper = styled.div<{ clickable: boolean }>`
     display: flex;
     align-items: baseline;
     & > p:first-child {
         flex: 2;
-        color: ${COLORS.mossGreen};
+        color: ${(props): string =>
+            props.clickable ? COLORS.mossGreen : COLORS.black};
         text-align: left;
     }
     & > p {
@@ -82,7 +83,7 @@ const ScopeItem = ({ checklist }: ScopeItemProps): JSX.Element => {
                 </StatusTextWrapper>
             </StatusImageWrapper>
             <DetailsWrapper>
-                <DetailsHeaderWrapper>
+                <DetailsHeaderWrapper clickable>
                     <Caption>{checklist.tagNo}</Caption>
                     <Caption>{checklist.formularType}</Caption>
                     <Caption>{checklist.responsibleCode}</Caption>
