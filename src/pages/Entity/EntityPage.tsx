@@ -187,7 +187,7 @@ const EntityPage = (): JSX.Element => {
                 midContent={params.searchType}
             />
             {determineDetailsToRender()}
-            <div>
+            <ContentWrapper>
                 {
                     <Switch>
                         <Route exact path={`${path}`} component={Scope} />
@@ -198,7 +198,7 @@ const EntityPage = (): JSX.Element => {
                         />
                     </Switch>
                 }
-            </div>
+            </ContentWrapper>
             {determineFooterToRender()}
         </EntityPageWrapper>
     );
