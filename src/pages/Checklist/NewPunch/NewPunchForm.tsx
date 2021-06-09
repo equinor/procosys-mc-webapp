@@ -16,8 +16,7 @@ import PersonsSearch from './PersonsSearch/PersonsSearch';
 
 export const NewPunchFormWrapper = styled.form`
     background-color: ${COLORS.white};
-    padding: 0 4%;
-    margin-bottom: 66px;
+    padding: 0 4% 66px 4%;
     overflow: hidden;
     & > button,
     button:disabled {
@@ -226,6 +225,7 @@ const NewPunchForm = ({
                     id="estimate"
                     value={formData.estimate}
                     onChange={createChangeHandler('estimate')}
+                    disabled={submitPunchStatus === AsyncStatus.LOADING}
                 />
                 {children}
                 <Button

@@ -16,7 +16,7 @@ const PersonsSearchWrapper = styled.div`
     width: 100vw;
     box-sizing: border-box;
     background-color: ${COLORS.white};
-    padding: 16px 4%;
+    padding: 16px 4% 66px 4%;
     overflow-y: scroll;
     display: flex;
     flex-direction: column;
@@ -76,6 +76,7 @@ const PersonsSearch = ({
                         return (
                             <NameWrapper
                                 key={person.id}
+                                role="button"
                                 onClick={(): void =>
                                     setChosenPerson(
                                         person.id,

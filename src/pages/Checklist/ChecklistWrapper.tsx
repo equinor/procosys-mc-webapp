@@ -4,7 +4,7 @@ import useCommonHooks from '../../utils/useCommonHooks';
 import styled from 'styled-components';
 import useSnackbar from '../../utils/useSnackbar';
 
-const BottomSpacer = styled.div`
+export const BottomSpacer = styled.div`
     height: 70px;
 `;
 
