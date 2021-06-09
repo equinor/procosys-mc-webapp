@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import { Banner } from '@equinor/eds-core-react';
 import { COLORS } from '../../style/GlobalStyles';
 import EdsIcon from '../icons/EdsIcon';
-const { BannerIcon, BannerMessage, BannerActions } = Banner;
 
 interface CommError {
     title: string;
@@ -20,25 +19,25 @@ const ErrorPage = ({ title, description, actions }: CommError): JSX.Element => {
     return (
         <ErrorPageWrapper>
             <Banner>
-                <BannerIcon variant={'warning'}>
+                <Banner.Icon variant={'warning'}>
                     <EdsIcon
                         color={COLORS.danger}
                         name="error_outlined"
                         title="Error icon"
                     />
-                </BannerIcon>
-                <BannerMessage variant="h4">{title}</BannerMessage>
+                </Banner.Icon>
+                <Banner.Message variant="h4">{title}</Banner.Message>
             </Banner>
             {description && description.length > 0 && (
                 <Banner>
-                    <BannerIcon>
+                    <Banner.Icon>
                         <EdsIcon name="info_circle" title="Error icon" />
-                    </BannerIcon>
-                    <BannerMessage>{description}</BannerMessage>
+                    </Banner.Icon>
+                    <Banner.Message>{description}</Banner.Message>
                     {actions ? (
-                        <BannerActions placement={'bottom'}>
+                        <Banner.Actions placement={'bottom'}>
                             {actions.map((button) => button)}
-                        </BannerActions>
+                        </Banner.Actions>
                     ) : null}
                 </Banner>
             )}

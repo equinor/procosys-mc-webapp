@@ -220,9 +220,9 @@ describe('<ChecklistPage> New Punch', () => {
         const personSearch = screen.getByRole('searchbox');
         expect(personSearch).toBeInTheDocument();
         userEvent.type(personSearch, 'name');
-        const person = await screen.findByText(
-            `${dummyPersonsSearch[0].FirstName} ${dummyPersonsSearch[0].LastName}`
-        );
+        const person = await screen.findByRole('button', {
+            name: `${dummyPersonsSearch[0].FirstName} ${dummyPersonsSearch[0].LastName}`,
+        });
         expect(person).toBeInTheDocument();
         userEvent.click(person);
         expect(personSearch).not.toBeInTheDocument();
