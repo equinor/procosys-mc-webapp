@@ -14,6 +14,7 @@ export const COLORS = {
     darkGrey: '#757575',
     lightGrey: '#fafafa',
     black: '#000',
+    greyBackground: tokens.colors.ui.background__light.hex,
 };
 
 const GlobalStyles = createGlobalStyle`

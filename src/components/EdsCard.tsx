@@ -2,7 +2,6 @@ import React from 'react';
 import styled from 'styled-components';
 import { SHADOW } from '../style/GlobalStyles';
 import { Card } from '@equinor/eds-core-react';
-const { CardHeader, CardHeaderTitle } = Card;
 
 export const CardWrapper = styled.article`
     & h3,
@@ -27,12 +26,12 @@ const EdsCard = ({ title, icon, children }: EdsCardProps): JSX.Element => {
     return (
         <CardWrapper>
             <Card>
-                <CardHeader>
-                    <CardHeaderTitle>
+                <Card.Header>
+                    <Card.HeaderTitle>
                         <h3>{title}</h3>
-                    </CardHeaderTitle>
+                    </Card.HeaderTitle>
                     {icon ? icon : null}
-                </CardHeader>
+                </Card.Header>
                 <div>{children}</div>
             </Card>
         </CardWrapper>

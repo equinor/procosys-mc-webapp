@@ -1,4 +1,9 @@
-import { Button, NativeSelect, TextField } from '@equinor/eds-core-react';
+import {
+    Button,
+    Label,
+    NativeSelect,
+    TextField,
+} from '@equinor/eds-core-react';
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import EdsIcon from '../../../components/icons/EdsIcon';
@@ -28,9 +33,20 @@ export const NewPunchFormWrapper = styled.form`
     }
 `;
 
-const DateField = styled(TextField)`
+const DateField = styled.div`
     & > input {
-        min-height: 40px;
+        box-sizing: border-box;
+        width: 100%;
+        background-color: ${COLORS.greyBackground};
+        height: 40px;
+        border: none;
+        box-shadow: inset 0 -1px 0 0 var(--eds_text__static_ic, rgba(111, 111, 111, 1)); // TODO: fix(?)
+        font-family: Equinor;
+        padding: 0 8px;
+    }
+    & > input:focus-visible {
+        outline: 2px solid ${COLORS.mossGreen};
+        box-shadow: none;
     }
 `;
 
@@ -170,13 +186,15 @@ const NewPunchForm = ({
                     onClick={(): void => setShowPersonsSearch(true)}
                     label={'Action by person'}
                 />
-                <DateField
-                    id="dueDate"
-                    type="date"
-                    role="datepicker"
-                    label="Due Date"
-                    onChange={createChangeHandler('dueDate')}
-                />
+                <DateField>
+                    <Label label="Due date" htmlFor="dueDate2" />
+                    <input
+                        type="date"
+                        id="dueDate2"
+                        role="datePicker2"
+                        onChange={createChangeHandler('dueDate')}
+                    />
+                </DateField>
                 <NativeSelect
                     id="PunchTypeSelect"
                     label="Type"
