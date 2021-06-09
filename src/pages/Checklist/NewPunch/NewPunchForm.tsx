@@ -187,11 +187,11 @@ const NewPunchForm = ({
                     label={'Action by person'}
                 />
                 <DateField>
-                    <Label label="Due date" htmlFor="dueDate2" />
+                    <Label label="Due Date" htmlFor="dueDate2" />
                     <input
                         type="date"
-                        id="dueDate2"
-                        role="datePicker2"
+                        id="dueDate"
+                        role="datepicker"
                         onChange={createChangeHandler('dueDate')}
                     />
                 </DateField>
