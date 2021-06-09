@@ -37,6 +37,7 @@ const DateField = styled.div`
     & > input {
         box-sizing: border-box;
         width: 100%;
+        min-width: 95%;
         background-color: ${COLORS.greyBackground};
         height: 40px;
         border: none;
