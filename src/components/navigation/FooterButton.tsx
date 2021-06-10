@@ -10,6 +10,7 @@ const FooterButtonWrapper = styled.button<{ active: boolean }>`
     border: none;
     cursor: pointer;
     padding: 12px 0 10px 0;
+    margin: 0;
     background-color: ${(props): string =>
         props.active ? COLORS.fadedBlue : COLORS.white};
     position: relative;
