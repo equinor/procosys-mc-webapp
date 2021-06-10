@@ -199,7 +199,10 @@ const NewPunchForm = ({
                 <NativeSelect
                     id="PunchTypeSelect"
                     label="Type"
-                    disabled={submitPunchStatus === AsyncStatus.LOADING}
+                    disabled={
+                        submitPunchStatus === AsyncStatus.LOADING ||
+                        types.length < 1
+                    }
                     onChange={createChangeHandler('type')}
                 >
                     <option hidden disabled selected />
@@ -213,7 +216,10 @@ const NewPunchForm = ({
                 <NativeSelect
                     id="PunchSortingSelect"
                     label="Sorting"
-                    disabled={submitPunchStatus === AsyncStatus.LOADING}
+                    disabled={
+                        submitPunchStatus === AsyncStatus.LOADING ||
+                        sorts.length < 1
+                    }
                     onChange={createChangeHandler('sorting')}
                 >
                     <option hidden disabled selected />
@@ -227,7 +233,10 @@ const NewPunchForm = ({
                 <NativeSelect
                     id="PunchPrioritySelect"
                     label="Priority"
-                    disabled={submitPunchStatus === AsyncStatus.LOADING}
+                    disabled={
+                        submitPunchStatus === AsyncStatus.LOADING ||
+                        priorities.length < 1
+                    }
                     onChange={createChangeHandler('priority')}
                 >
                     <option hidden disabled selected />

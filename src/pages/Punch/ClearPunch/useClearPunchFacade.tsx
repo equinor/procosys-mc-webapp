@@ -12,6 +12,7 @@ import removeSubdirectories from '../../../utils/removeSubdirectories';
 import useCommonHooks from '../../../utils/useCommonHooks';
 import useSnackbar from '../../../utils/useSnackbar';
 
+// TODO: add new things
 export enum UpdatePunchEndpoint {
     Description = 'SetDescription',
     Category = 'SetCategory',
@@ -28,6 +29,7 @@ export enum PunchAction {
     UNVERIFY = 'Unverify',
 }
 
+// TODO: add new things
 export type UpdatePunchData =
     | { RaisedByOrganizationId: number }
     | { CategoryId: number }
@@ -43,6 +45,7 @@ const useClearPunchFacade = () => {
     const [categories, setCategories] = useState<PunchCategory[]>([]);
     const [types, setTypes] = useState<PunchType[]>([]);
     const [organizations, setOrganizations] = useState<PunchOrganization[]>([]);
+    // TODO: add new things
     const [fetchPunchItemStatus, setFetchPunchItemStatus] = useState(
         AsyncStatus.LOADING
     );
@@ -52,6 +55,7 @@ const useClearPunchFacade = () => {
     const [clearPunchStatus, setClearPunchStatus] = useState(
         AsyncStatus.INACTIVE
     );
+
     const updateDatabase = async (
         endpoint: UpdatePunchEndpoint,
         updateData: UpdatePunchData
@@ -149,14 +153,17 @@ const useClearPunchFacade = () => {
                 PunchAction.CLEAR
             );
             setClearPunchStatus(AsyncStatus.SUCCESS);
-            history.push(`${removeSubdirectories(url, 1)}/verify`);
+            history.push(`${removeSubdirectories(url, 1)}/verify`); // TODO: decide whether this is correct
         } catch (error) {
             setClearPunchStatus(AsyncStatus.ERROR);
         }
     };
 
+    // TODO: add handlers for the new inputs (except search of course)
+
     useEffect(() => {
         const source = Axios.CancelToken.source();
+        // TODO: get new info (see new puunch)
         (async (): Promise<void> => {
             try {
                 const [
