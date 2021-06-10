@@ -15,6 +15,7 @@ import {
     PunchSort,
     PunchType,
     SearchResults,
+    Tag,
 } from './apiTypes';
 
 // SEARCH
@@ -180,5 +181,14 @@ export const isChecklistResponse = (
         isChecklistDetails((data as ChecklistResponse).checkList) &&
         isArrayOfCheckItems((data as ChecklistResponse).checkItems) &&
         isArrayOfCustomCheckItems((data as ChecklistResponse).customCheckItems)
+    );
+};
+
+// Tag
+export const isTagResponse = (data: unknown): data is Tag => {
+    return (
+        (data != null &&
+            typeof (data as Tag).tag.disciplineCode === 'string') ||
+        typeof (data as Tag).tag.disciplineCode === null
     );
 };

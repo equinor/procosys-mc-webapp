@@ -15,6 +15,7 @@ import NavigationFooterShell from '../../components/navigation/NavigationFooterS
 import { DotProgress } from '@equinor/eds-core-react';
 import { DetailsWrapper } from '../Entity/EntityPage';
 import ChecklistDetailsCard from './ChecklistDetailsCard';
+import TagInfo from './TagInfo/TagInfo';
 
 const ChecklistPage = (): JSX.Element => {
     const { history, url, path, api, params } = useCommonHooks();
@@ -168,7 +169,9 @@ const ChecklistPage = (): JSX.Element => {
                 <Route
                     exact
                     path={`${path}/tag-info`}
-                    render={(): JSX.Element => <h1>tag info</h1>}
+                    render={(): JSX.Element => (
+                        <TagInfo tagId={details?.checkList.tagId} />
+                    )}
                 />
                 <Route
                     exact

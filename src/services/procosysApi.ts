@@ -17,6 +17,7 @@ import {
     isChecklistResponse,
     isCorrectPreview,
     isCorrectSearchResults,
+    isTagResponse,
 } from './apiTypeGuards';
 import {
     Plant,
@@ -35,6 +36,7 @@ import {
     PunchSort,
     PunchPriority,
     Person,
+    Tag,
 } from './apiTypes';
 
 type ProcosysApiServiceProps = {
@@ -545,7 +547,34 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
         return data;
     };
 
+    const getTag = async (
+        plantId: string,
+        tagId: number,
+        cancelToken: CancelToken
+    ): Promise<Tag> => {
+        const { data } = await axios.get(
+            `https://procosyswebapiqp.equinor.com/api/Tag?plantId=PCS$${plantId}&tagId=${tagId}${apiVersion}
+`,
+            { cancelToken }
+        );
+        try {
+            if (!isTagResponse(data)) {
+                console.error(
+                    'Expected a tag to be returned, instead got: ',
+                    data
+                );
+                throw new Error('An error occurred, please try again');
+            }
+        } catch {
+            console.error('Expected a tag to be returned, instead got: ', data);
+            throw new Error('An error occurred, please try again');
+        }
+
+        return data;
+    };
+
     return {
+        getTag,
         deleteChecklistAttachment,
         deletePunchAttachment,
         getVersion,
