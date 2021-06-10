@@ -501,6 +501,7 @@
     "@babel/helper-plugin-utils" "^7.8.0"
 
 "@babel/plugin-syntax-class-properties@^7.12.1", "@babel/plugin-syntax-class-properties@^7.12.13", "@babel/plugin-syntax-class-properties@^7.8.3", "@babel/plugin-syntax-class-static-block@^7.12.13":
+  name "@babel/plugin-syntax-class-properties"
   version "7.12.13"
   resolved "https://registry.npmjs.org/@babel/plugin-syntax-class-static-block/-/plugin-syntax-class-static-block-7.12.13.tgz"
   integrity sha512-ZmKQ0ZXR0nYpHZIIuj9zE7oIqCx2hw9TKi+lIo73NNrMPAZGHfS92/VRV0ZmPj6H2ffBgyFHXvJ5NYsNeEaP2A==
@@ -1265,21 +1266,12 @@
   resolved "https://registry.npmjs.org/@equinor/eds-icons/-/eds-icons-0.6.2.tgz"
   integrity sha512-WGYErmaOLRGLbMo5ABPCjlGMFfyKk/PfWUZRhXAvAj7boc/8XVDWUf0lTATXW4wHKWnWCkmHFghN/4OQoFh/ng==
 
-<<<<<<< HEAD
-"@equinor/eds-tokens@0.5.7":
-  version "0.5.7"
-  resolved "https://registry.npmjs.org/@equinor/eds-tokens/-/eds-tokens-0.5.7.tgz"
-  integrity sha512-l+newy3+poPJmNbvCiN1mwRxd8uuqn5j3tnzU43k/c1NxrD34Xh4SdAzHq9J7yq32R6Zxh7sKKGwqdd5035OLw==
-
-"@equinor/procosys-webapp-components@^1.4.1":
-=======
 "@equinor/eds-tokens@0.6.0":
   version "0.6.0"
   resolved "https://registry.yarnpkg.com/@equinor/eds-tokens/-/eds-tokens-0.6.0.tgz#daeac90b4cfdcad99242bb8892ad43b2db6610a8"
   integrity sha512-Er9Bn5VRlgdyYwgGtubwTb8ejJx6msB8RTbQ1lZ4dWTAjN1XvBQKTSIZMo6NwqJ5N4+5n3YmEbpeGhOetqLyWg==
 
 "@equinor/procosys-webapp-components@^1.5.1":
->>>>>>> e0fbfcc1e0ae0bcab71767bfd880017fd90532f0
   version "1.5.1"
   resolved "https://registry.yarnpkg.com/@equinor/procosys-webapp-components/-/procosys-webapp-components-1.5.1.tgz#438bbc2099c0f95c883a6ad13ef5a519f0af09aa"
   integrity sha512-oZdE3xdEcvpaviREtir/+0JmiZmOBFVHQgiPOMXw7AtktG1DbssmnzAoyVsfJwbQs6AGecxDVr7Uh6FSSOk6FQ==
