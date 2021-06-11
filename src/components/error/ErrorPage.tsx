@@ -4,7 +4,7 @@ import { Banner } from '@equinor/eds-core-react';
 import { COLORS } from '../../style/GlobalStyles';
 import EdsIcon from '../icons/EdsIcon';
 
-interface CommError {
+interface WebAppError {
     title: string;
     description?: string;
     actions?: JSX.Element[];
@@ -15,7 +15,11 @@ const ErrorPageWrapper = styled.main`
     flex-direction: column;
 `;
 
-const ErrorPage = ({ title, description, actions }: CommError): JSX.Element => {
+const ErrorPage = ({
+    title,
+    description,
+    actions,
+}: WebAppError): JSX.Element => {
     return (
         <ErrorPageWrapper>
             <Banner>

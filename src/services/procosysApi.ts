@@ -170,147 +170,6 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
         return data;
     };
 
-    const postSetOk = async (
-        plantId: string,
-        checklistId: string,
-        checkItemId: number
-    ): Promise<void> => {
-        await axios.post(
-            `CheckList/Item/SetOk?plantId=PCS$${plantId}${apiVersion}`,
-            {
-                CheckListId: checklistId,
-                CheckItemId: checkItemId,
-            }
-        );
-    };
-
-    const postSetNA = async (
-        plantId: string,
-        checklistId: string,
-        checkItemId: number
-    ): Promise<void> => {
-        await axios.post(
-            `CheckList/Item/SetNA?plantId=PCS$${plantId}${apiVersion}`,
-            {
-                CheckListId: checklistId,
-                CheckItemId: checkItemId,
-            }
-        );
-    };
-
-    const postClear = async (
-        plantId: string,
-        checklistId: string,
-        checkItemId: number
-    ): Promise<void> => {
-        await axios.post(
-            `CheckList/Item/Clear?plantId=PCS$${plantId}${apiVersion}`,
-            {
-                CheckListId: checklistId,
-                CheckItemId: checkItemId,
-            }
-        );
-    };
-
-    const putMetaTableCell = async (
-        plantId: string,
-        checkItemId: number,
-        checklistId: string,
-        columnId: number,
-        rowId: number,
-        value: string
-    ): Promise<void> => {
-        await axios.put(
-            `CheckList/Item/MetaTableCell?plantId=PCS$${plantId}${apiVersion}`,
-            {
-                CheckListId: checklistId,
-                CheckItemId: checkItemId,
-                ColumnId: columnId,
-                RowId: rowId,
-                Value: value,
-            }
-        );
-    };
-
-    const putChecklistComment = async (
-        plantId: string,
-        checklistId: string,
-        Comment: string
-    ): Promise<void> => {
-        await axios.put(
-            `CheckList/Comm/Comment?plantId=PCS$${plantId}${apiVersion}`,
-            { CheckListId: checklistId, Comment: Comment }
-        );
-    };
-
-    const postSign = async (
-        plantId: string,
-        checklistId: string
-    ): Promise<void> => {
-        await axios.post(
-            `CheckList/Comm/Sign?plantId=PCS$${plantId}${apiVersion}`,
-            checklistId,
-            { headers: { 'Content-Type': 'application/json' } }
-        );
-    };
-
-    const postUnsign = async (
-        plantId: string,
-        checklistId: string
-    ): Promise<void> => {
-        await axios.post(
-            `CheckList/Comm/Unsign?plantId=PCS$${plantId}${apiVersion}`,
-            checklistId,
-            { headers: { 'Content-Type': 'application/json' } }
-        );
-    };
-
-    const getChecklistAttachments = async (
-        plantId: string,
-        checklistId: string
-    ): Promise<Attachment[]> => {
-        const { data } = await axios.get(
-            `CheckList/Attachments?plantId=PCS$${plantId}&checkListId=${checklistId}&thumbnailSize=32${apiVersion}`
-        );
-        return data as Attachment[];
-    };
-
-    const getChecklistAttachment = async (
-        cancelToken: CancelToken,
-        plantId: string,
-        checklistId: string,
-        attachmentId: number
-    ): Promise<Blob> => {
-        const { data } = await axios.get(
-            `CheckList/Attachment?plantId=PCS$${plantId}&checkListId=${checklistId}&attachmentId=${attachmentId}${apiVersion}`,
-            {
-                cancelToken: cancelToken,
-                responseType: 'blob',
-                headers: {
-                    'Content-Disposition':
-                        'attachment; filename="filename.jpg"',
-                },
-            }
-        );
-        return data as Blob;
-    };
-
-    const deleteChecklistAttachment = async (
-        cancelToken: CancelToken,
-        plantId: string,
-        checklistId: string,
-        attachmentId: number
-    ): Promise<void> => {
-        const dto = {
-            CheckListId: parseInt(checklistId),
-            AttachmentId: attachmentId,
-        };
-        await axios.delete(
-            `CheckList/Attachment?plantId=PCS$${plantId}&api-version=4.1`,
-            { data: dto, cancelToken: cancelToken }
-        );
-    };
-
     const getChecklistPunchList = async (
         plantId: string,
         checklistId: string,
@@ -574,13 +433,10 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
 
     return {
         getTag,
-        deleteChecklistAttachment,
         deletePunchAttachment,
         getVersion,
         getPunchAttachments,
         getPunchAttachment,
-        getChecklistAttachments,
-        getChecklistAttachment,
         getPunchItem,
         getPlants,
         getProjectsForPlant,
@@ -594,17 +450,10 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
         getPunchSorts,
         getPunchPriorities,
         getScope,
-        postClear,
-        postSetOk,
-        postSetNA,
         postNewPunch,
         postPunchAction,
         postPunchAttachment,
-        postSign,
-        postUnsign,
         postTempPunchAttachment,
-        putChecklistComment,
-        putMetaTableCell,
         putUpdatePunch,
         getSearchResults,
         getItemDetails,

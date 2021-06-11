@@ -1,14 +1,14 @@
 import { render } from '@testing-library/react';
 import React from 'react';
 import { AsyncStatus } from '../../contexts/McAppContext';
-import { withCommAppContext } from '../../test/contexts';
+import { withMcAppContext } from '../../test/contexts';
 import { testPlants } from '../../test/dummyData';
 import SelectPlant from './SelectPlant';
 
 describe('<SelectPlant />', () => {
     it('Renders plant buttons successfully upon loading', () => {
         const { getByText } = render(
-            withCommAppContext({
+            withMcAppContext({
                 Component: <SelectPlant />,
                 asyncStatus: AsyncStatus.SUCCESS,
             })
@@ -17,7 +17,7 @@ describe('<SelectPlant />', () => {
     });
     it('Renders placeholder if there are no plants available', () => {
         const { getByText } = render(
-            withCommAppContext({
+            withMcAppContext({
                 Component: <SelectPlant />,
                 asyncStatus: AsyncStatus.SUCCESS,
                 plants: [],

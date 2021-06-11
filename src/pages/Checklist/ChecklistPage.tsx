@@ -15,7 +15,7 @@ import NavigationFooterShell from '../../components/navigation/NavigationFooterS
 import { DotProgress } from '@equinor/eds-core-react';
 import { DetailsWrapper } from '../Entity/EntityPage';
 import ChecklistDetailsCard from './ChecklistDetailsCard';
-import TagInfo from './TagInfo/TagInfo';
+import TagInfo from './TagInfo';
 
 const ChecklistPage = (): JSX.Element => {
     const { history, url, path, api, params } = useCommonHooks();

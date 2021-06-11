@@ -35,7 +35,7 @@ const procosysApiInstance = procosysApiService({
     apiVersion: 'dummy-version',
 });
 
-type WithCommAppContextProps = {
+type WithMcAppContextProps = {
     Component: JSX.Element;
     asyncStatus?: AsyncStatus;
     plants?: Plant[];
@@ -43,13 +43,13 @@ type WithCommAppContextProps = {
     api?: ProcosysApiService;
 };
 
-export const withCommAppContext = ({
+export const withMcAppContext = ({
     Component,
     asyncStatus = AsyncStatus.SUCCESS,
     plants = testPlants,
     auth = authInstance,
     api = procosysApiInstance,
-}: WithCommAppContextProps): JSX.Element => {
+}: WithMcAppContextProps): JSX.Element => {
     return (
         <MemoryRouter initialEntries={['/test/sub/directory']}>
             <CommAppContext.Provider
@@ -85,7 +85,7 @@ export const withPlantContext = ({
     permissions = dummyPermissions,
     Component,
 }: WithPlantContextProps): JSX.Element => {
-    return withCommAppContext({
+    return withMcAppContext({
         Component: (
             <PlantContext.Provider
                 value={{
