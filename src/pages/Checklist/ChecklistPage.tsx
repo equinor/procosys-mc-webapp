@@ -104,13 +104,13 @@ const ChecklistPage = (): JSX.Element => {
                             !history.location.pathname.includes('/tag-info')
                         }
                         goTo={(): void => history.push(`${url}`)}
-                        icon={<EdsIcon name="list" />}
+                        icon={<EdsIcon name="playlist_added" />}
                         label={'Checklist'}
                     />
                     <FooterButton
                         active={history.location.pathname.includes('/tag-info')}
                         goTo={(): void => history.push(`${url}/tag-info`)}
-                        icon={<EdsIcon name="info_circle" />}
+                        icon={<EdsIcon name="tag" />}
                         label={'Tag info'}
                     />
                     <FooterButton
@@ -118,7 +118,7 @@ const ChecklistPage = (): JSX.Element => {
                             '/punch-list'
                         )}
                         goTo={(): void => history.push(`${url}/punch-list`)}
-                        icon={<EdsIcon name="warning_filled" />}
+                        icon={<EdsIcon name="warning_outlined" />}
                         label={'Punch list'}
                         numberOfItems={punchList.length}
                     />
