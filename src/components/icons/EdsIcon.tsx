@@ -1,4 +1,6 @@
 import {
+    tag,
+    playlist_added,
     camera_add_photo,
     menu,
     stop,
@@ -44,7 +46,9 @@ import { Icon } from '@equinor/eds-core-react';
 import React from 'react';
 
 Icon.add({
+    tag,
     camera_add_photo,
+    playlist_added,
     menu,
     stop,
     tune,
