@@ -553,8 +553,7 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
         cancelToken: CancelToken
     ): Promise<Tag> => {
         const { data } = await axios.get(
-            `https://procosyswebapiqp.equinor.com/api/Tag?plantId=PCS$${plantId}&tagId=${tagId}${apiVersion}
-`,
+            `Tag?plantId=PCS$${plantId}&tagId=${tagId}${apiVersion}`,
             { cancelToken }
         );
         try {
