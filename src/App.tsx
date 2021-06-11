@@ -21,6 +21,7 @@ export type McParams = {
     punchItemId: string;
     searchType: SearchType;
     itemId: string;
+    punchId: string;
 };
 
 type AppProps = {
