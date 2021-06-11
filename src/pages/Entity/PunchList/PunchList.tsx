@@ -38,7 +38,7 @@ const PunchList = (): JSX.Element => {
         return (): void => {
             source.cancel();
         };
-    }, [params.commPkg, params.plant, api]);
+    }, [params.mcPkg, params.plant, api]);
 
     return (
         <ScopeWrapper>
