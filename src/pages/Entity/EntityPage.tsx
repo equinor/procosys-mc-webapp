@@ -156,7 +156,7 @@ const EntityPage = (): JSX.Element => {
                         goTo={(): void => history.push(`${url}/punch-list`)}
                         icon={
                             <EdsIcon
-                                name="warning_filled"
+                                name="warning_outlined"
                                 color={COLORS.mossGreen}
                             />
                         }
