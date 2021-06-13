@@ -19,7 +19,7 @@ const InfoRow = styled.div`
     }
 `;
 
-const TagInfoWrapper = styled.main`
+export const TagInfoWrapper = styled.main`
     min-height: calc(100vh - 203px);
     margin-bottom: 66px;
     box-sizing: border-box;
@@ -52,7 +52,6 @@ const TagInfo = ({ tagId }: TagInfoProps): JSX.Element => {
                 setAdditionalFields(tagResponse.additionalFields);
                 setFetchTagStatus(AsyncStatus.SUCCESS);
             } catch (error) {
-                console.log(error);
                 setFetchTagStatus(AsyncStatus.ERROR);
             }
         })();
