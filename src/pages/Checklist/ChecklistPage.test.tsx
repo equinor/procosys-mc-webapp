@@ -60,8 +60,9 @@ const expectNewPunchPage = async (): Promise<void> => {
 };
 
 const expectPunchListPage = async (): Promise<void> => {
-    // TODO: change the expect once the finished punch list page is routed to in ChecklistPage
-    expect(await screen.findByText('punch list')).toBeInTheDocument();
+    expect(
+        await screen.findByText('Test punch description')
+    ).toBeInTheDocument();
 };
 
 describe('<ChecklistPage>', () => {
@@ -96,7 +97,6 @@ describe('<ChecklistPage> in-page routing', () => {
         renderChecklistPage('tag-info');
         await expectTagInfoPage();
     });
-    it.todo('Shows the punch list if the "Punch list" button is clicked');
     it('Shows the NewPunch component if the "New punch" button is clicked', async () => {
         renderChecklistPage('punch-list');
         await expectDetails();
@@ -305,5 +305,17 @@ describe('<ChecklistPage> Tag info', () => {
         expect(screen.getByText('dummy-field-value ms')).toBeInTheDocument();
         userEvent.click(detailsPanel);
         expect(screen.getByText('dummy-field-value ms')).not.toBeVisible();
+    });
+});
+
+describe('<ChecklistPage> Punch list', () => {
+    it('Shows error message if unable to get punch preview items from API', async () => {
+        causeApiError(ENDPOINTS.getChecklistPunchList, 'get');
+        renderChecklistPage('punch-list');
+        expect(
+            await screen.findByText(
+                'Unable to get punch list. Please try again.'
+            )
+        );
     });
 });
