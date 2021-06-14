@@ -102,8 +102,4 @@ const PunchPage = (): JSX.Element => {
     );
 };
 
-// TODO: change the permissions to the correct one(s)
-export default withAccessControl(PunchPage, [
-    'MCCR/READ',
-    'PUNCHLISTITEM/READ',
-]);
+export default withAccessControl(PunchPage, ['PUNCHLISTITEM/READ']);
