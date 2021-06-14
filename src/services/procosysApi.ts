@@ -14,6 +14,7 @@ import {
     isArrayOfPunchPriority,
     isArrayOfPunchSort,
     isArrayOfPunchType,
+    isArrayOfType,
     isChecklistResponse,
     isCorrectPreview,
     isCorrectSearchResults,
@@ -44,6 +45,10 @@ type ProcosysApiServiceProps = {
     apiVersion: string;
 };
 
+const typeGuardErrorMessage = (expectedType: string): string => {
+    return `Unable to retrieve ${expectedType}. Please try again.`;
+};
+
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
     // General
@@ -54,21 +59,24 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
         const { data } = await axios.get(
             `Plants?includePlantsWithoutAccess=false${apiVersion}`
         );
-        const camelCasedResponse = data;
-        const camelCasedResponseWithSlug = camelCasedResponse.map(
-            (plant: Plant) => ({
-                ...plant,
-                slug: plant.id.substr(4),
-            })
-        );
-        return camelCasedResponseWithSlug as Plant[];
+        if (!isArrayOfType<Plant>(data, 'title')) {
+            throw new Error(typeGuardErrorMessage('plants'));
+        }
+        const plantsWithSlug = data.map((plant: Plant) => ({
+            ...plant,
+            slug: plant.id.substr(4),
+        }));
+        return plantsWithSlug;
     };
 
     const getProjectsForPlant = async (plantId: string): Promise<Project[]> => {
         const { data } = await axios.get(
             `Projects?plantId=${plantId}${apiVersion}`
         );
-        return data as Project[];
+        if (!isArrayOfType<Project>(data, 'title')) {
+            throw new Error(typeGuardErrorMessage('projects'));
+        }
+        return data;
     };
 
     const getPermissionsForPlant = async (
@@ -179,7 +187,7 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
             `CheckList/PunchList?plantId=PCS$${plantId}&checklistId=${checklistId}${apiVersion}`,
             { cancelToken }
         );
-        if (!isArrayOfPunchPreview(data)) {
+        if (!isArrayOfType<PunchPreview>(data, 'cleared')) {
             throw new Error('An error occurred, please try again.');
         }
         return data;

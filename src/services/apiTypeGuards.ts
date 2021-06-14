@@ -18,6 +18,30 @@ import {
     Tag,
 } from './apiTypes';
 
+export class TypeguardError extends Error {
+    constructor(message: string) {
+        super(message);
+        this.name = 'An error occured (Unexpected type)';
+    }
+}
+
+export const isOfType = <T>(
+    varToBeChecked: unknown,
+    propertyToCheckFor: keyof T
+): varToBeChecked is T => {
+    return (varToBeChecked as T)[propertyToCheckFor] !== undefined;
+};
+
+export const isArrayOfType = <T>(
+    dataToBeChecked: unknown,
+    propertyToCheckFor: keyof T
+): dataToBeChecked is T[] => {
+    return (
+        Array.isArray(dataToBeChecked) &&
+        dataToBeChecked.every((item) => isOfType<T>(item, propertyToCheckFor))
+    );
+};
+
 // SEARCH
 export const isCorrectPreview = (
     data: unknown,
