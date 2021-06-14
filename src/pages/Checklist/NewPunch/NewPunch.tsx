@@ -200,5 +200,4 @@ const NewPunch = (): JSX.Element => {
     );
 };
 
-// TODO: can I add the access controll thing to this component too, evev though its parent also uses access controll
 export default NewPunch;
