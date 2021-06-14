@@ -128,11 +128,12 @@ const Navbar = ({
             );
         }
         if (rightContent?.name === 'newPunch') {
+            // TODO: throw error if no rightcontent.url
             return (
                 <Button
                     variant="ghost"
                     onClick={(): void =>
-                        history.push(`${url}/punch-list/new-punch`)
+                        history.push(`${rightContent.url}/new-punch`)
                     }
                 >
                     New punch

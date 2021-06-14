@@ -258,17 +258,6 @@ const ClearPunch = (): JSX.Element => {
     // TODO: remove this & just return the content and snackbar
     return (
         <>
-            {
-                // TODO: remove
-            }
-            <Navbar
-                noBorder
-                leftContent={{
-                    name: 'back',
-                    label: 'Punch list',
-                    url: removeSubdirectories(url, 2),
-                }}
-            />
             <PunchWrapper>{content()}</PunchWrapper>
             {snackbar}
         </>
