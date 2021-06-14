@@ -27,6 +27,11 @@ const DetailsBodyWrapper = styled.div`
     & > div:not(:first-child) {
         margin-left: auto;
     }
+    & > div:first-child {
+        & > p:last-child {
+            margin-top: 4px;
+        }
+    }
     & p {
         margin: 0;
     }
@@ -57,7 +62,7 @@ const ChecklistDetailsCard = ({
                 <DetailsBodyWrapper>
                     <div>
                         <Caption>{details.tagNo}</Caption>
-                        <Caption>{details.tagDescription}</Caption>
+                        <p>{details.tagDescription}</p>
                     </div>
                     {details.attachmentCount > 0 ? (
                         <AttachmentWrapper>

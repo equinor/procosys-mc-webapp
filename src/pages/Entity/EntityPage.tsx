@@ -60,13 +60,13 @@ const EntityPage = (): JSX.Element => {
                     api.getScope(
                         params.plant,
                         params.searchType,
-                        params.itemId,
+                        params.entityId,
                         source.token
                     ),
                     api.getPunchList(
                         params.plant,
                         params.searchType,
-                        params.itemId,
+                        params.entityId,
                         source.token
                     ),
                 ]);
@@ -85,7 +85,7 @@ const EntityPage = (): JSX.Element => {
                 const detailsFromApi = await api.getItemDetails(
                     params.plant,
                     params.searchType,
-                    params.itemId,
+                    params.entityId,
                     source.token
                 );
                 setDetails(detailsFromApi);
@@ -156,7 +156,7 @@ const EntityPage = (): JSX.Element => {
                         goTo={(): void => history.push(`${url}/punch-list`)}
                         icon={
                             <EdsIcon
-                                name="warning_filled"
+                                name="warning_outlined"
                                 color={COLORS.mossGreen}
                             />
                         }

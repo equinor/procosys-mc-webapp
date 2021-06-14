@@ -102,6 +102,7 @@ const NewPunch = (): JSX.Element => {
             await api.postNewPunch(params.plant, NewPunchDTO);
             setSubmitPunchStatus(AsyncStatus.SUCCESS);
         } catch (error) {
+            setSnackbarText(error.toString());
             setSubmitPunchStatus(AsyncStatus.ERROR);
         }
     };

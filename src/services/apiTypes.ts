@@ -91,6 +91,7 @@ export interface ChecklistDetails {
     id: number;
     tagNo: string;
     tagDescription: string;
+    tagId: number;
     mcPkgNo: string;
     responsibleCode: string;
     responsibleDescription: string;
@@ -320,7 +321,7 @@ export interface AdditionalTagField {
     unit: string;
 }
 export interface Tag {
-    tagDetails: TagDetails;
+    tag: TagDetails;
     additionalFields: AdditionalTagField[];
 }
 

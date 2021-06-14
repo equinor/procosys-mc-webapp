@@ -21,17 +21,17 @@ const McRouter = (): JSX.Element => {
                 />
                 <Route
                     path={
-                        '/:plant/:project/:searchType/:itemId/checklist/:checklistId'
+                        '/:plant/:project/:searchType/:entityId/checklist/:checklistId'
                     }
                     component={ChecklistPage}
                 />
                 <Redirect
                     exact
-                    path={'/:plant/:project/:searchType/:itemId/checklist'}
-                    to={'/:plant/:project/:searchType/:itemId'}
+                    path={'/:plant/:project/:searchType/:entityId/checklist'}
+                    to={'/:plant/:project/:searchType/:entityId'}
                 />
                 <Route
-                    path={'/:plant/:project/:searchType/:itemId'}
+                    path={'/:plant/:project/:searchType/:entityId'}
                     component={EntityPage}
                 />
             </Switch>

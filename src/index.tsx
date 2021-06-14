@@ -59,12 +59,12 @@ const initialize = async () => {
         axios: baseApiInstance,
         apiVersion: procosysApiConfig.apiVersion,
     });
-    const { appInsightsInstance, appInsightsReactPlugin } =
-        initializeAppInsights(appInsightsConfig.instrumentationKey);
+    const { appInsightsReactPlugin } = initializeAppInsights(
+        appInsightsConfig.instrumentationKey
+    );
     return {
         authInstance,
         procosysApiInstance,
-        appInsightsInstance,
         appInsightsReactPlugin,
         procosysApiConfig,
     };
@@ -76,7 +76,6 @@ const initialize = async () => {
         const {
             authInstance,
             procosysApiInstance,
-            appInsightsInstance,
             appInsightsReactPlugin,
             procosysApiConfig,
         } = await initialize();
@@ -84,7 +83,6 @@ const initialize = async () => {
             <App
                 authInstance={authInstance}
                 procosysApiInstance={procosysApiInstance}
-                appInsightsInstance={appInsightsInstance}
                 appInsightsReactPlugin={appInsightsReactPlugin}
                 procosysApiSettings={procosysApiConfig}
             />

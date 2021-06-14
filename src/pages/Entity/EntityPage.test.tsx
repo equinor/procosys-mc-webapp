@@ -27,7 +27,7 @@ const renderEntityPage = (
                         }`,
                     ]}
                 >
-                    <Route path="/:plant/:project/:searchType/:itemId">
+                    <Route path="/:plant/:project/:searchType/:entityId">
                         <EntityPage />
                     </Route>
                 </MemoryRouter>
