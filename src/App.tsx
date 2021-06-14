@@ -16,17 +16,15 @@ import { ProcosysApiSettings } from './services/appConfiguration';
 export type McParams = {
     plant: string;
     project: string;
-    commPkg: string;
     checklistId: string;
     punchItemId: string;
     searchType: SearchType;
-    itemId: string;
+    entityId: string;
 };
 
 type AppProps = {
     authInstance: IAuthService;
     procosysApiInstance: ProcosysApiService;
-    appInsightsInstance: ApplicationInsights;
     appInsightsReactPlugin: ReactPlugin;
     procosysApiSettings: ProcosysApiSettings;
 };
@@ -34,13 +32,12 @@ type AppProps = {
 const App = ({
     procosysApiInstance,
     authInstance,
-    appInsightsInstance,
     procosysApiSettings,
     appInsightsReactPlugin: reactPlugin,
 }: AppProps): JSX.Element => {
     let rootDirectory = '';
-    if (window.location.pathname.substr(0, 5) === '/comm') {
-        rootDirectory = '/comm';
+    if (window.location.pathname.substr(0, 5) === '/mc') {
+        rootDirectory = '/mc';
     }
 
     return (

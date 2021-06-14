@@ -15,12 +15,14 @@ import NavigationFooterShell from '../../components/navigation/NavigationFooterS
 import { DotProgress } from '@equinor/eds-core-react';
 import { DetailsWrapper } from '../Entity/EntityPage';
 import ChecklistDetailsCard from './ChecklistDetailsCard';
+import TagInfo from './TagInfo';
+import ChecklistPunchList from './ChecklistPunchList';
 
 const ChecklistPage = (): JSX.Element => {
     const { history, url, path, api, params } = useCommonHooks();
     const [punchList, setPunchList] = useState<PunchPreview[]>();
     const [details, setDetails] = useState<ChecklistResponse>();
-    const [fetchFooterStatus, setFetchFooterStatus] = useState(
+    const [fetchPunchListStatus, setFetchPunchListStatus] = useState(
         AsyncStatus.LOADING
     );
     const [fetchDetailsStatus, setFetchDetailsStatus] = useState(
@@ -60,9 +62,13 @@ const ChecklistPage = (): JSX.Element => {
                     source.token
                 );
                 setPunchList(punchListFromApi);
-                setFetchFooterStatus(AsyncStatus.SUCCESS);
+                if (punchListFromApi.length === 0) {
+                    setFetchPunchListStatus(AsyncStatus.EMPTY_RESPONSE);
+                } else {
+                    setFetchPunchListStatus(AsyncStatus.SUCCESS);
+                }
             } catch {
-                setFetchFooterStatus(AsyncStatus.ERROR);
+                setFetchPunchListStatus(AsyncStatus.ERROR);
             }
         })();
     }, [api, params]);
@@ -90,7 +96,8 @@ const ChecklistPage = (): JSX.Element => {
 
     const determineFooterToRender = (): JSX.Element => {
         if (
-            fetchFooterStatus === AsyncStatus.SUCCESS &&
+            (fetchPunchListStatus === AsyncStatus.SUCCESS ||
+                fetchPunchListStatus === AsyncStatus.EMPTY_RESPONSE) &&
             punchList != undefined
         ) {
             return (
@@ -103,13 +110,13 @@ const ChecklistPage = (): JSX.Element => {
                             !history.location.pathname.includes('/tag-info')
                         }
                         goTo={(): void => history.push(`${url}`)}
-                        icon={<EdsIcon name="list" />}
+                        icon={<EdsIcon name="playlist_added" />}
                         label={'Checklist'}
                     />
                     <FooterButton
                         active={history.location.pathname.includes('/tag-info')}
                         goTo={(): void => history.push(`${url}/tag-info`)}
-                        icon={<EdsIcon name="info_circle" />}
+                        icon={<EdsIcon name="tag" />}
                         label={'Tag info'}
                     />
                     <FooterButton
@@ -117,14 +124,14 @@ const ChecklistPage = (): JSX.Element => {
                             '/punch-list'
                         )}
                         goTo={(): void => history.push(`${url}/punch-list`)}
-                        icon={<EdsIcon name="warning_filled" />}
+                        icon={<EdsIcon name="warning_outlined" />}
                         label={'Punch list'}
                         numberOfItems={punchList.length}
                     />
                 </NavigationFooter>
             );
         }
-        if (fetchFooterStatus === AsyncStatus.ERROR) {
+        if (fetchPunchListStatus === AsyncStatus.ERROR) {
             return (
                 <NavigationFooterShell>
                     <p>Unable to load footer. Please reload</p>
@@ -144,7 +151,7 @@ const ChecklistPage = (): JSX.Element => {
                 leftContent={{
                     name: 'back',
                     url: history.location.pathname.includes('/new-punch')
-                        ? `/${params.plant}/${params.project}/${params.searchType}/${params.itemId}/checklist/${params.checklistId}/punch-list`
+                        ? `/${params.plant}/${params.project}/${params.searchType}/${params.entityId}/checklist/${params.checklistId}/punch-list`
                         : undefined,
                 }}
                 midContent={'MCCR'}
@@ -168,12 +175,19 @@ const ChecklistPage = (): JSX.Element => {
                 <Route
                     exact
                     path={`${path}/tag-info`}
-                    render={(): JSX.Element => <h1>tag info</h1>}
+                    render={(): JSX.Element => (
+                        <TagInfo tagId={details?.checkList.tagId} />
+                    )}
                 />
                 <Route
                     exact
                     path={`${path}/punch-list`}
-                    render={(): JSX.Element => <h1>punch list</h1>}
+                    render={(): JSX.Element => (
+                        <ChecklistPunchList
+                            punchList={punchList}
+                            fetchPunchListStatus={fetchPunchListStatus}
+                        />
+                    )}
                 />
                 <Route
                     exact

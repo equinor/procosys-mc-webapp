@@ -26,7 +26,7 @@ const renderChecklistPage = (contentType?: string): void => {
                         }`,
                     ]}
                 >
-                    <Route path="/:plant/:project/:searchType/:itemId/checklist/:checklistId">
+                    <Route path="/:plant/:project/:searchType/:entityId/checklist/:checklistId">
                         <ChecklistPage />
                     </Route>
                 </MemoryRouter>
@@ -50,8 +50,7 @@ const expectFooter = async (): Promise<void> => {
 };
 
 const expectTagInfoPage = async (): Promise<void> => {
-    // TODO: change the expect once the finished tag info page is routed to in ChecklistPage
-    expect(await screen.findByText('tag info')).toBeInTheDocument();
+    expect(await screen.findByText('Main tag info')).toBeInTheDocument();
 };
 
 const expectNewPunchPage = async (): Promise<void> => {
@@ -61,8 +60,9 @@ const expectNewPunchPage = async (): Promise<void> => {
 };
 
 const expectPunchListPage = async (): Promise<void> => {
-    // TODO: change the expect once the finished punch list page is routed to in ChecklistPage
-    expect(await screen.findByText('punch list')).toBeInTheDocument();
+    expect(
+        await screen.findByText('Test punch description')
+    ).toBeInTheDocument();
 };
 
 describe('<ChecklistPage>', () => {
@@ -74,12 +74,12 @@ describe('<ChecklistPage>', () => {
     });
     it('Shows an error message in the details card if the getChecklist API call fails', async () => {
         causeApiError(ENDPOINTS.getChecklist, 'get');
-        renderChecklistPage('tag-info');
+        renderChecklistPage('punch-list/new-punch');
         expect(
             await screen.findByText('Unable to load details. Please reload')
         ).toBeInTheDocument();
         await expectFooter();
-        await expectTagInfoPage();
+        await expectNewPunchPage();
     });
     it('Shows an error message in the details card if the getChecklistPunchList API call fails', async () => {
         causeApiError(ENDPOINTS.getChecklistPunchList, 'get');
@@ -93,8 +93,10 @@ describe('<ChecklistPage>', () => {
 });
 
 describe('<ChecklistPage> in-page routing', () => {
-    it.todo('Shows the Tag info if the "Tag info" button is clicked');
-    it.todo('Shows the punch list if the "Punch list" button is clicked');
+    it('Shows the Tag info if the "Tag info" button is clicked', async () => {
+        renderChecklistPage('tag-info');
+        await expectTagInfoPage();
+    });
     it('Shows the NewPunch component if the "New punch" button is clicked', async () => {
         renderChecklistPage('punch-list');
         await expectDetails();
@@ -265,6 +267,44 @@ describe('<ChecklistPage> New Punch', () => {
             expect(
                 screen.queryByText('Action by person')
             ).not.toBeInTheDocument()
+        );
+    });
+});
+
+describe('<ChecklistPage> Tag info', () => {
+    it('Shows an error message if getTag API call fails', async () => {
+        causeApiError(ENDPOINTS.getTag, 'get');
+        renderChecklistPage('tag-info');
+        expect(
+            await screen.findByText(
+                'Unable to load tag info. Please try again.'
+            )
+        );
+    });
+    it('Shows main tag info when panel is open, and hide it when its closed', async () => {
+        renderChecklistPage('tag-info');
+        const mainInfoPanel = await screen.findByText('Main tag info');
+        expect(screen.getByText('Tag info')).toBeInTheDocument();
+        userEvent.click(mainInfoPanel);
+        expect(screen.getByText('Tag number')).not.toBeVisible();
+    });
+    it('Shows additional fields with value and unit when panel is open, and hide it when its closd', async () => {
+        renderChecklistPage('tag-info');
+        const detailsPanel = await screen.findByText('Details');
+        expect(screen.getByText('dummy-field-value ms')).toBeInTheDocument();
+        userEvent.click(detailsPanel);
+        expect(screen.getByText('dummy-field-value ms')).not.toBeVisible();
+    });
+});
+
+describe('<ChecklistPage> Punch list', () => {
+    it('Shows error message if unable to get punch preview items from API', async () => {
+        causeApiError(ENDPOINTS.getChecklistPunchList, 'get');
+        renderChecklistPage('punch-list');
+        expect(
+            await screen.findByText(
+                'Unable to get punch list. Please try again.'
+            )
         );
     });
 });

@@ -22,7 +22,7 @@ const PunchList = (): JSX.Element => {
                 const punchListFromApi = await api.getPunchList(
                     params.plant,
                     params.searchType,
-                    params.itemId,
+                    params.entityId,
                     source.token
                 );
                 setPunchList(punchListFromApi);
@@ -38,7 +38,7 @@ const PunchList = (): JSX.Element => {
         return (): void => {
             source.cancel();
         };
-    }, [params.commPkg, params.plant, api]);
+    }, [params.entityId, params.searchType, params.plant, api]);
 
     return (
         <ScopeWrapper>

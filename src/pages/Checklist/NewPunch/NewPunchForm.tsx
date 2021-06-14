@@ -120,8 +120,9 @@ const NewPunchForm = ({
                     label="Punch category *"
                     disabled={submitPunchStatus === AsyncStatus.LOADING}
                     onChange={createChangeHandler('category')}
+                    defaultValue={''}
                 >
-                    <option hidden disabled selected />
+                    <option hidden disabled value={''} />
                     {categories.map((category) => (
                         <option
                             key={category.id}
@@ -146,8 +147,9 @@ const NewPunchForm = ({
                     id="RaisedBySelect"
                     disabled={submitPunchStatus === AsyncStatus.LOADING}
                     onChange={createChangeHandler('raisedBy')}
+                    defaultValue={''}
                 >
-                    <option hidden disabled selected />
+                    <option hidden disabled value={''} />
                     {organizations.map((organization) => (
                         <option key={organization.id} value={organization.id}>
                             {organization.description}
@@ -160,8 +162,9 @@ const NewPunchForm = ({
                     label="Clearing by *"
                     disabled={submitPunchStatus === AsyncStatus.LOADING}
                     onChange={createChangeHandler('clearingBy')}
+                    defaultValue={''}
                 >
-                    <option hidden disabled selected />
+                    <option hidden disabled value={''} />
                     {organizations.map((organization) => (
                         <option key={organization.id} value={organization.id}>
                             {organization.description}
@@ -204,8 +207,9 @@ const NewPunchForm = ({
                         types.length < 1
                     }
                     onChange={createChangeHandler('type')}
+                    defaultValue={''}
                 >
-                    <option hidden disabled selected />
+                    <option hidden disabled value={''} />
                     {types.map((type) => (
                         <option
                             key={type.id}
@@ -221,8 +225,9 @@ const NewPunchForm = ({
                         sorts.length < 1
                     }
                     onChange={createChangeHandler('sorting')}
+                    defaultValue={''}
                 >
-                    <option hidden disabled selected />
+                    <option hidden disabled value={''} />
                     {sorts.map((sort) => (
                         <option
                             key={sort.id}
@@ -238,8 +243,9 @@ const NewPunchForm = ({
                         priorities.length < 1
                     }
                     onChange={createChangeHandler('priority')}
+                    defaultValue={''}
                 >
-                    <option hidden disabled selected />
+                    <option hidden disabled value={''} />
                     {priorities.map((priority) => (
                         <option
                             key={priority.id}
