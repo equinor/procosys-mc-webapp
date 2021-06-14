@@ -26,7 +26,7 @@ const renderChecklistPage = (contentType?: string): void => {
                         }`,
                     ]}
                 >
-                    <Route path="/:plant/:project/:searchType/:itemId/checklist/:checklistId">
+                    <Route path="/:plant/:project/:searchType/:entityId/checklist/:checklistId">
                         <ChecklistPage />
                     </Route>
                 </MemoryRouter>
