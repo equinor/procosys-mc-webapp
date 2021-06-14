@@ -175,7 +175,11 @@ const useClearPunchFacade = () => {
                     api.getPunchCategories(params.plant, source.token),
                     api.getPunchTypes(params.plant, source.token),
                     api.getPunchOrganizations(params.plant, source.token),
-                    api.getPunchItem(params.plant, params.punchItemId),
+                    api.getPunchItem(
+                        params.plant,
+                        params.punchItemId,
+                        source.token
+                    ),
                 ]);
                 setCategories(categoriesFromApi);
                 setTypes(typesFromApi);
