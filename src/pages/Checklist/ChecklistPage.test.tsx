@@ -141,6 +141,7 @@ const selectOption = async (
     const options = await screen.findAllByText(optionToBeSelected);
     const option = options[optionIndex];
     userEvent.selectOptions(selectField, option);
+    expect((option as HTMLOptionElement).selected).toBeTruthy();
     expect((selectField as HTMLSelectElement).value).toEqual(valueToBeSelected);
 };
 
