@@ -54,7 +54,9 @@ describe('<SideMenu/>', () => {
             withPlantContext({
                 Component: (
                     <Router>
-                        <Navbar rightContent={{ name: 'newPunch' }} />
+                        <Navbar
+                            rightContent={{ name: 'newPunch', url: 'test' }}
+                        />
                     </Router>
                 ),
             })
