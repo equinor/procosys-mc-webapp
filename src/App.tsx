@@ -16,11 +16,10 @@ import { ProcosysApiSettings } from './services/appConfiguration';
 export type McParams = {
     plant: string;
     project: string;
-    mcPkg: string;
     checklistId: string;
     punchItemId: string;
     searchType: SearchType;
-    itemId: string;
+    entityId: string;
 };
 
 type AppProps = {

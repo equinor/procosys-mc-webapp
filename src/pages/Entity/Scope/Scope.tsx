@@ -28,7 +28,7 @@ const Scope = (): JSX.Element => {
                 const scopeFromApi = await api.getScope(
                     params.plant,
                     params.searchType,
-                    params.itemId,
+                    params.entityId,
                     source.token
                 );
                 const sortedScope = scopeFromApi.sort((a, b) =>
@@ -47,7 +47,7 @@ const Scope = (): JSX.Element => {
         return (): void => {
             source.cancel();
         };
-    }, [params.plant, params.searchType, params.itemId, api]);
+    }, [params.plant, params.searchType, params.entityId, api]);
 
     return (
         <ScopeWrapper>

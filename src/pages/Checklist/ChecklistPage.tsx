@@ -151,7 +151,7 @@ const ChecklistPage = (): JSX.Element => {
                 leftContent={{
                     name: 'back',
                     url: history.location.pathname.includes('/new-punch')
-                        ? `/${params.plant}/${params.project}/${params.searchType}/${params.itemId}/checklist/${params.checklistId}/punch-list`
+                        ? `/${params.plant}/${params.project}/${params.searchType}/${params.entityId}/checklist/${params.checklistId}/punch-list`
                         : undefined,
                 }}
                 midContent={'MCCR'}
