@@ -8,7 +8,6 @@ import {
     PunchItem,
 } from '../../../services/apiTypes';
 import ensure from '../../../utils/ensure';
-import removeSubdirectories from '../../../utils/removeSubdirectories';
 import useCommonHooks from '../../../utils/useCommonHooks';
 import useSnackbar from '../../../utils/useSnackbar';
 
@@ -154,13 +153,13 @@ const useClearPunchFacade = (
                 PunchAction.CLEAR
             );
             setClearPunchStatus(AsyncStatus.SUCCESS);
-            history.push(url); // TODO: decide whether this is correct
+            history.push(url);
         } catch (error) {
             setClearPunchStatus(AsyncStatus.ERROR);
         }
     };
 
-    // TODO: add handlers for the new inputs (except search of course)
+    // TODO: add handlers for the new inputs
 
     useEffect(() => {
         const source = Axios.CancelToken.source();
