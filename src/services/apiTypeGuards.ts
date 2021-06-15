@@ -107,53 +107,6 @@ export const isArrayOfPunchPreview = (
     return Array.isArray(data) && data.every(isPunchPreview);
 };
 
-// PUNCH
-const isPunchCategory = (data: unknown): data is PunchCategory => {
-    return data != null && typeof (data as PunchCategory).id === 'number';
-};
-
-export const isArrayOfPunchCategory = (
-    data: unknown
-): data is PunchCategory[] => {
-    return Array.isArray(data) && data.every(isPunchCategory);
-};
-
-const isPunchType = (data: unknown): data is PunchType => {
-    return data != null && typeof (data as PunchType).code === 'string';
-};
-
-export const isArrayOfPunchType = (data: unknown): data is PunchType[] => {
-    return Array.isArray(data) && data.every(isPunchType);
-};
-
-const isPunchOrganization = (data: unknown): data is PunchOrganization => {
-    return data != null && typeof (data as PunchOrganization).code === 'string';
-};
-
-export const isArrayOfPunchOrganization = (
-    data: unknown
-): data is PunchOrganization[] => {
-    return Array.isArray(data) && data.every(isPunchOrganization);
-};
-
-const isPunchSort = (data: unknown): data is PunchSort => {
-    return data != null && typeof (data as PunchSort).code === 'string';
-};
-
-export const isArrayOfPunchSort = (data: unknown): data is PunchSort[] => {
-    return Array.isArray(data) && data.every(isPunchSort);
-};
-
-const isPunchPriority = (data: unknown): data is PunchPriority => {
-    return data != null && typeof (data as PunchPriority).id === 'number';
-};
-
-export const isArrayOfPunchPriority = (
-    data: unknown
-): data is PunchPriority[] => {
-    return Array.isArray(data) && data.every(isPunchPriority);
-};
-
 const isPerson = (data: unknown): data is Person => {
     return data != null && typeof (data as Person).firstName === 'string';
 };

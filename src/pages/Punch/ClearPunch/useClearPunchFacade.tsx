@@ -6,6 +6,8 @@ import {
     PunchType,
     PunchOrganization,
     PunchItem,
+    PunchSort,
+    PunchPriority,
 } from '../../../services/apiTypes';
 import ensure from '../../../utils/ensure';
 import removeSubdirectories from '../../../utils/removeSubdirectories';
@@ -43,6 +45,8 @@ const useClearPunchFacade = () => {
     const [categories, setCategories] = useState<PunchCategory[]>([]);
     const [types, setTypes] = useState<PunchType[]>([]);
     const [organizations, setOrganizations] = useState<PunchOrganization[]>([]);
+    const [sorts, setSorts] = useState<PunchSort[]>([]);
+    const [priorities, setPriorities] = useState<PunchPriority[]>([]);
     const [fetchPunchItemStatus, setFetchPunchItemStatus] = useState(
         AsyncStatus.LOADING
     );
@@ -52,6 +56,7 @@ const useClearPunchFacade = () => {
     const [clearPunchStatus, setClearPunchStatus] = useState(
         AsyncStatus.INACTIVE
     );
+
     const updateDatabase = async (
         endpoint: UpdatePunchEndpoint,
         updateData: UpdatePunchData
@@ -163,16 +168,22 @@ const useClearPunchFacade = () => {
                     categoriesFromApi,
                     typesFromApi,
                     organizationsFromApi,
+                    sortsFromApi,
+                    prioritiesFromApi,
                     punchItemFromApi,
                 ] = await Promise.all([
                     api.getPunchCategories(params.plant, source.token),
                     api.getPunchTypes(params.plant, source.token),
                     api.getPunchOrganizations(params.plant, source.token),
+                    api.getPunchSorts(params.plant, source.token),
+                    api.getPunchPriorities(params.plant, source.token),
                     api.getPunchItem(params.plant, params.punchItemId),
                 ]);
                 setCategories(categoriesFromApi);
                 setTypes(typesFromApi);
                 setOrganizations(organizationsFromApi);
+                setSorts(sortsFromApi);
+                setPriorities(prioritiesFromApi);
                 setPunchItem(punchItemFromApi);
                 setFetchPunchItemStatus(AsyncStatus.SUCCESS);
             } catch (error) {
@@ -192,6 +203,8 @@ const useClearPunchFacade = () => {
         categories,
         types,
         organizations,
+        sorts,
+        priorities,
         setSnackbarText,
         snackbar,
         updateDatabase,

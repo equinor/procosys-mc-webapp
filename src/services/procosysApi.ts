@@ -8,16 +8,12 @@ import { SearchType } from '../pages/Search/Search';
 import {
     isArrayOfChecklistPreview,
     isArrayofPerson,
-    isArrayOfPunchCategory,
-    isArrayOfPunchOrganization,
     isArrayOfPunchPreview,
-    isArrayOfPunchPriority,
-    isArrayOfPunchSort,
-    isArrayOfPunchType,
     isArrayOfType,
     isChecklistResponse,
     isCorrectPreview,
     isCorrectSearchResults,
+    isOfType,
     isTagResponse,
 } from './apiTypeGuards';
 import {
@@ -223,8 +219,8 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
             `PunchListItem/Categories?plantId=PCS$${plantId}${apiVersion}`,
             { cancelToken }
         );
-        if (!isArrayOfPunchCategory(data)) {
-            throw new Error('An error occurred, please try again.');
+        if (!isArrayOfType<PunchCategory>(data, 'code')) {
+            throw new Error(typeGuardErrorMessage('punch categories'));
         }
         return data;
     };
@@ -237,8 +233,8 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
             `PunchListItem/Types?plantId=PCS$${plantId}${apiVersion}`,
             { cancelToken }
         );
-        if (!isArrayOfPunchType(data)) {
-            throw new Error('An error occurred, please try again.');
+        if (!isArrayOfType<PunchType>(data, 'code')) {
+            throw new Error(typeGuardErrorMessage('punch types'));
         }
         return data;
     };
@@ -251,8 +247,8 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
             `PunchListItem/Organizations?plantId=PCS$${plantId}${apiVersion}`,
             { cancelToken }
         );
-        if (!isArrayOfPunchOrganization(data)) {
-            throw new Error('An error occurred, please try again.');
+        if (!isArrayOfType<PunchOrganization>(data, 'code')) {
+            throw new Error(typeGuardErrorMessage('punch organizations'));
         }
         return data;
     };
@@ -265,8 +261,8 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
             `PunchListItem/Sorts?plantId=PCS$${plantId}${apiVersion}`,
             { cancelToken }
         );
-        if (!isArrayOfPunchSort(data)) {
-            throw new Error('An error occurred, please try again.');
+        if (!isArrayOfType<PunchSort>(data, 'code')) {
+            throw new Error(typeGuardErrorMessage('punch sorts'));
         }
         return data;
     };
@@ -278,8 +274,8 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
             `PunchListItem/Priorities?plantId=PCS$${plantId}${apiVersion}`,
             { cancelToken }
         );
-        if (!isArrayOfPunchPriority(data)) {
-            throw new Error('An error occurred, please try again.');
+        if (!isArrayOfType<PunchPriority>(data, 'code')) {
+            throw new Error(typeGuardErrorMessage('punch priorities'));
         }
         return data;
     };
@@ -301,7 +297,10 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
         const { data } = await axios.get(
             `PunchListItem?plantId=PCS$${plantId}&punchItemId=${punchItemId}${apiVersion}`
         );
-        return data as PunchItem;
+        if (!isOfType<PunchItem>(data, 'formularType')) {
+            throw new Error(typeGuardErrorMessage('punch item'));
+        }
+        return data;
     };
 
     const putUpdatePunch = async (
