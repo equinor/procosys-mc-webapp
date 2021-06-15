@@ -221,6 +221,7 @@ export interface NewPunch {
     TemporaryFileIds: string[];
 }
 
+// TODO: fix this interface to not include null values
 export interface PunchItem {
     id: number;
     checklistId: number;
@@ -245,11 +246,11 @@ export interface PunchItem {
     rejectedByUser?: null;
     rejectedByFirstName?: null;
     rejectedByLastName?: null;
-    dueDate?: null;
-    estimate?: null;
-    priorityId?: null;
-    priorityCode?: null;
-    priorityDescription?: null;
+    dueDate?: string;
+    estimate?: number;
+    priorityId?: number;
+    priorityCode?: string;
+    priorityDescription?: string;
     actionByPerson: number;
     actionByPersonFirstName?: null;
     actionByPersonLastName?: null;
@@ -262,7 +263,7 @@ export interface PunchItem {
     tagNo: string;
     responsibleCode: string;
     responsibleDescription: string;
-    sorting?: null;
+    sorting?: string;
     statusControlledBySwcr: boolean;
     isRestrictedForUser: boolean;
     attachmentCount: number;

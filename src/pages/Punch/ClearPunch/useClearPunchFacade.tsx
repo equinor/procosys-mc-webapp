@@ -15,11 +15,15 @@ import useCommonHooks from '../../../utils/useCommonHooks';
 import useSnackbar from '../../../utils/useSnackbar';
 
 export enum UpdatePunchEndpoint {
-    Description = 'SetDescription',
     Category = 'SetCategory',
-    Type = 'SetType',
+    Description = 'SetDescription',
     RaisedBy = 'SetRaisedBy',
     ClearingBy = 'SetClearingBy',
+    DueDate = 'setDueDate',
+    Type = 'SetType',
+    Sorting = 'SetSorting',
+    Priority = 'SetPriority',
+    Estimate = 'setEstimate',
 }
 
 export enum PunchAction {
@@ -31,12 +35,17 @@ export enum PunchAction {
 }
 
 export type UpdatePunchData =
-    | { RaisedByOrganizationId: number }
     | { CategoryId: number }
-    | { TypeId: number }
+    | { Description: string }
+    | { RaisedByOrganizationId: number }
     | { ClearingByOrganizationId: number }
-    | { Description: string };
+    | { DueDate: string }
+    | { TypeId: number }
+    | { SortingId: number }
+    | { PriorityId: number }
+    | { Estimate: number };
 
+// TOOD: figure out if the things I set in punch item is what's shown in the form, because if yes, the desctiption of things like type should also be changed!!
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const useClearPunchFacade = () => {
     const { api, params, url, history } = useCommonHooks();
@@ -94,20 +103,6 @@ const useClearPunchFacade = () => {
         });
     };
 
-    const handleTypeChange = (
-        e: React.ChangeEvent<HTMLSelectElement>
-    ): void => {
-        setPunchItem((prev) => ({
-            ...prev,
-            typeCode: ensure(
-                types.find((type) => type.id === parseInt(e.target.value))
-            ).code,
-        }));
-        updateDatabase(UpdatePunchEndpoint.Type, {
-            TypeId: parseInt(e.target.value),
-        });
-    };
-
     const handleDescriptionChange = (
         e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
     ): void =>
@@ -143,6 +138,70 @@ const useClearPunchFacade = () => {
             ClearingByOrganizationId: parseInt(e.target.value),
         });
     };
+
+    // TODO: handle action by person change ??
+
+    // TODO: remember to do the same as in description to actually update the database!
+    const handleDueDateChange = (
+        e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
+    ): void =>
+        setPunchItem((prev) => ({
+            ...prev,
+            dueDate: e.target.value,
+        }));
+
+    const handleTypeChange = (
+        e: React.ChangeEvent<HTMLSelectElement>
+    ): void => {
+        setPunchItem((prev) => ({
+            ...prev,
+            typeCode: ensure(
+                types.find((type) => type.id === parseInt(e.target.value))
+            ).code,
+        }));
+        updateDatabase(UpdatePunchEndpoint.Type, {
+            TypeId: parseInt(e.target.value),
+        });
+    };
+
+    const handleSortingChange = (
+        e: React.ChangeEvent<HTMLSelectElement>
+    ): void => {
+        setPunchItem((prev) => ({
+            ...prev,
+            sorting: ensure(
+                sorts.find((sort) => sort.id === parseInt(e.target.value))
+            ).code,
+        }));
+        updateDatabase(UpdatePunchEndpoint.Sorting, {
+            SortingId: parseInt(e.target.value),
+        });
+    };
+
+    const handlePriorityChange = (
+        e: React.ChangeEvent<HTMLSelectElement>
+    ): void => {
+        setPunchItem((prev) => ({
+            ...prev,
+            priorityCode: ensure(
+                priorities.find(
+                    (priority) => priority.id === parseInt(e.target.value)
+                )
+            ).code,
+        }));
+        updateDatabase(UpdatePunchEndpoint.Priority, {
+            PriorityId: parseInt(e.target.value),
+        });
+    };
+
+    // TODO: remember to do the same as in description to actually update the database!
+    const handleEstimateChange = (
+        e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
+    ): void =>
+        setPunchItem((prev) => ({
+            ...prev,
+            estimate: parseInt(e.target.value),
+        }));
 
     const clearPunchItem = async (e: React.FormEvent): Promise<void> => {
         e.preventDefault();
