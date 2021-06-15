@@ -32,7 +32,15 @@ const ButtonGroup = styled.div`
     }
 `;
 
-const VerifyPunch = (): JSX.Element => {
+type VerifyPunchProps = {
+    punchItem: PunchItem;
+    fetchPunchItemStatus: AsyncStatus;
+};
+
+const VerifyPunch = ({
+    punchItem,
+    fetchPunchItemStatus,
+}: VerifyPunchProps): JSX.Element => {
     return <p>Verify punch</p>;
     // const { url, history, params, api } = useCommonHooks();
     // const [fetchPunchItemStatus, setFetchPunchItemStatus] = useState(

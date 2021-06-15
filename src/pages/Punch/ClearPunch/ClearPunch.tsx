@@ -16,18 +16,28 @@ import EdsIcon from '../../../components/icons/EdsIcon';
 import { CancelToken } from 'axios';
 import ensure from '../../../utils/ensure';
 import removeSubdirectories from '../../../utils/removeSubdirectories';
+import { PunchItem } from '../../../services/apiTypes';
 
 export const PunchWrapper = styled.main``;
 
-const ClearPunch = (): JSX.Element => {
+type ClearPunchProps = {
+    punchItem: PunchItem;
+    setPunchItem: React.Dispatch<React.SetStateAction<PunchItem>>;
+    fetchPunchItemStatus: AsyncStatus;
+};
+
+const ClearPunch = ({
+    punchItem,
+    setPunchItem,
+    fetchPunchItemStatus,
+}: ClearPunchProps): JSX.Element => {
     const {
         updatePunchStatus,
-        fetchPunchItemStatus,
-        punchItem,
         clearPunchStatus,
         categories,
         types,
         organizations,
+        fetchOptionsStatus,
         snackbar,
         setSnackbarText,
         updateDatabase,
@@ -37,13 +47,17 @@ const ClearPunch = (): JSX.Element => {
         handleTypeChange,
         handleRaisedByChange,
         handleClearingByChange,
-    } = useClearPunchFacade();
+    } = useClearPunchFacade(setPunchItem);
     const { api, params, url } = useCommonHooks();
 
     let descriptionBeforeEntering = '';
 
     const content = (): JSX.Element => {
-        if (fetchPunchItemStatus === AsyncStatus.SUCCESS && punchItem) {
+        if (
+            fetchPunchItemStatus === AsyncStatus.SUCCESS &&
+            punchItem &&
+            fetchOptionsStatus === AsyncStatus.SUCCESS
+        ) {
             return (
                 <>
                     {
@@ -243,7 +257,10 @@ const ClearPunch = (): JSX.Element => {
                     </NewPunchFormWrapper>
                 </>
             );
-        } else if (fetchPunchItemStatus === AsyncStatus.ERROR) {
+        } else if (
+            fetchPunchItemStatus === AsyncStatus.ERROR ||
+            fetchOptionsStatus === AsyncStatus.ERROR
+        ) {
             return (
                 <ErrorPage
                     title="Unable to load punch item."

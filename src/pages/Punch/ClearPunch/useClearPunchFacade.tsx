@@ -38,16 +38,17 @@ export type UpdatePunchData =
     | { Description: string };
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-const useClearPunchFacade = () => {
+const useClearPunchFacade = (
+    setPunchItem: React.Dispatch<React.SetStateAction<PunchItem>>
+) => {
     const { api, params, url, history } = useCommonHooks();
     const { snackbar, setSnackbarText } = useSnackbar();
-    const [punchItem, setPunchItem] = useState<PunchItem>({} as PunchItem);
     const [categories, setCategories] = useState<PunchCategory[]>([]);
     const [types, setTypes] = useState<PunchType[]>([]);
     const [organizations, setOrganizations] = useState<PunchOrganization[]>([]);
     // TODO: add new things
-    const [fetchPunchItemStatus, setFetchPunchItemStatus] = useState(
-        AsyncStatus.LOADING
+    const [fetchOptionsStatus, setFetchOptionsStatus] = useState(
+        AsyncStatus.INACTIVE
     );
     const [updatePunchStatus, setUpdatePunchStatus] = useState(
         AsyncStatus.INACTIVE
@@ -153,7 +154,7 @@ const useClearPunchFacade = () => {
                 PunchAction.CLEAR
             );
             setClearPunchStatus(AsyncStatus.SUCCESS);
-            history.push(`${removeSubdirectories(url, 1)}/verify`); // TODO: decide whether this is correct
+            history.push(url); // TODO: decide whether this is correct
         } catch (error) {
             setClearPunchStatus(AsyncStatus.ERROR);
         }
@@ -185,9 +186,9 @@ const useClearPunchFacade = () => {
                 setTypes(typesFromApi);
                 setOrganizations(organizationsFromApi);
                 setPunchItem(punchItemFromApi);
-                setFetchPunchItemStatus(AsyncStatus.SUCCESS);
+                setFetchOptionsStatus(AsyncStatus.SUCCESS);
             } catch (error) {
-                setFetchPunchItemStatus(AsyncStatus.ERROR);
+                setFetchOptionsStatus(AsyncStatus.ERROR);
             }
         })();
         return (): void => {
@@ -197,12 +198,11 @@ const useClearPunchFacade = () => {
 
     return {
         updatePunchStatus,
-        fetchPunchItemStatus,
-        punchItem,
         clearPunchStatus,
         categories,
         types,
         organizations,
+        fetchOptionsStatus,
         setSnackbarText,
         snackbar,
         updateDatabase,

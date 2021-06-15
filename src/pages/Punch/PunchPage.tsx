@@ -18,7 +18,7 @@ import ErrorPage from '../../components/error/ErrorPage';
 
 const PunchPage = (): JSX.Element => {
     const { api, params, path, history, url } = useCommonHooks();
-    const [punch, setPunch] = useState<PunchItem>();
+    const [punch, setPunch] = useState<PunchItem>({} as PunchItem);
     const [fetchPunchStatus, setFetchPunchStatus] = useState<AsyncStatus>(
         AsyncStatus.LOADING
     );
@@ -45,13 +45,16 @@ const PunchPage = (): JSX.Element => {
 
     const determineComponentToRender = (): JSX.Element => {
         if (punch != undefined) {
-            return punch.clearedAt ? <VerifyPunch /> : <ClearPunch />;
-        }
-        if (fetchPunchStatus === AsyncStatus.ERROR) {
-            return (
-                <ErrorPage
-                    title="Unable to load punch item."
-                    description="Please check your connection, reload this page or try again later."
+            return punch.clearedAt ? (
+                <VerifyPunch
+                    punchItem={punch}
+                    fetchPunchItemStatus={fetchPunchStatus}
+                />
+            ) : (
+                <ClearPunch
+                    punchItem={punch}
+                    setPunchItem={setPunch}
+                    fetchPunchItemStatus={fetchPunchStatus}
                 />
             );
         }
