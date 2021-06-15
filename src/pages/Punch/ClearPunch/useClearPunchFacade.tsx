@@ -8,10 +8,10 @@ import {
     PunchItem,
 } from '../../../services/apiTypes';
 import ensure from '../../../utils/ensure';
-import removeSubdirectories from '../../../utils/removeSubdirectories';
 import useCommonHooks from '../../../utils/useCommonHooks';
 import useSnackbar from '../../../utils/useSnackbar';
 
+// TODO: add new things
 export enum UpdatePunchEndpoint {
     Description = 'SetDescription',
     Category = 'SetCategory',
@@ -28,6 +28,7 @@ export enum PunchAction {
     UNVERIFY = 'Unverify',
 }
 
+// TODO: add new things
 export type UpdatePunchData =
     | { RaisedByOrganizationId: number }
     | { CategoryId: number }
@@ -36,15 +37,17 @@ export type UpdatePunchData =
     | { Description: string };
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-const useClearPunchFacade = () => {
+const useClearPunchFacade = (
+    setPunchItem: React.Dispatch<React.SetStateAction<PunchItem>>
+) => {
     const { api, params, url, history } = useCommonHooks();
     const { snackbar, setSnackbarText } = useSnackbar();
-    const [punchItem, setPunchItem] = useState<PunchItem>({} as PunchItem);
     const [categories, setCategories] = useState<PunchCategory[]>([]);
     const [types, setTypes] = useState<PunchType[]>([]);
     const [organizations, setOrganizations] = useState<PunchOrganization[]>([]);
-    const [fetchPunchItemStatus, setFetchPunchItemStatus] = useState(
-        AsyncStatus.LOADING
+    // TODO: add new things
+    const [fetchOptionsStatus, setFetchOptionsStatus] = useState(
+        AsyncStatus.INACTIVE
     );
     const [updatePunchStatus, setUpdatePunchStatus] = useState(
         AsyncStatus.INACTIVE
@@ -52,6 +55,7 @@ const useClearPunchFacade = () => {
     const [clearPunchStatus, setClearPunchStatus] = useState(
         AsyncStatus.INACTIVE
     );
+
     const updateDatabase = async (
         endpoint: UpdatePunchEndpoint,
         updateData: UpdatePunchData
@@ -149,14 +153,17 @@ const useClearPunchFacade = () => {
                 PunchAction.CLEAR
             );
             setClearPunchStatus(AsyncStatus.SUCCESS);
-            history.push(`${removeSubdirectories(url, 1)}/verify`);
+            history.push(url);
         } catch (error) {
             setClearPunchStatus(AsyncStatus.ERROR);
         }
     };
 
+    // TODO: add handlers for the new inputs
+
     useEffect(() => {
         const source = Axios.CancelToken.source();
+        // TODO: get new info (see new puunch)
         (async (): Promise<void> => {
             try {
                 const [
@@ -168,15 +175,19 @@ const useClearPunchFacade = () => {
                     api.getPunchCategories(params.plant, source.token),
                     api.getPunchTypes(params.plant, source.token),
                     api.getPunchOrganizations(params.plant, source.token),
-                    api.getPunchItem(params.plant, params.punchItemId),
+                    api.getPunchItem(
+                        params.plant,
+                        params.punchItemId,
+                        source.token
+                    ),
                 ]);
                 setCategories(categoriesFromApi);
                 setTypes(typesFromApi);
                 setOrganizations(organizationsFromApi);
                 setPunchItem(punchItemFromApi);
-                setFetchPunchItemStatus(AsyncStatus.SUCCESS);
+                setFetchOptionsStatus(AsyncStatus.SUCCESS);
             } catch (error) {
-                setFetchPunchItemStatus(AsyncStatus.ERROR);
+                setFetchOptionsStatus(AsyncStatus.ERROR);
             }
         })();
         return (): void => {
@@ -186,12 +197,11 @@ const useClearPunchFacade = () => {
 
     return {
         updatePunchStatus,
-        fetchPunchItemStatus,
-        punchItem,
         clearPunchStatus,
         categories,
         types,
         organizations,
+        fetchOptionsStatus,
         setSnackbarText,
         snackbar,
         updateDatabase,

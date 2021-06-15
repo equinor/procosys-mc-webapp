@@ -158,7 +158,7 @@ const ChecklistPage = (): JSX.Element => {
                 rightContent={
                     history.location.pathname.includes('/new-punch')
                         ? undefined
-                        : { name: 'newPunch' }
+                        : { name: 'newPunch', url: `${url}/punch-list` }
                 }
             />
             {determineDetailsToRender()}

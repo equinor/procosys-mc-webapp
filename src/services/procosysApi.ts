@@ -18,6 +18,7 @@ import {
     isChecklistResponse,
     isCorrectPreview,
     isCorrectSearchResults,
+    isOfType,
     isTagResponse,
 } from './apiTypeGuards';
 import {
@@ -296,12 +297,17 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
 
     const getPunchItem = async (
         plantId: string,
-        punchItemId: string
+        punchItemId: string,
+        cancelToken: CancelToken
     ): Promise<PunchItem> => {
         const { data } = await axios.get(
-            `PunchListItem?plantId=PCS$${plantId}&punchItemId=${punchItemId}${apiVersion}`
+            `PunchListItem?plantId=PCS$${plantId}&punchItemId=${punchItemId}${apiVersion}`,
+            { cancelToken }
         );
-        return data as PunchItem;
+        if (!isOfType<PunchItem>(data, 'raisedByCode')) {
+            throw new Error(typeGuardErrorMessage('punchItem'));
+        }
+        return data;
     };
 
     const putUpdatePunch = async (

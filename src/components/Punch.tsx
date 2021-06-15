@@ -12,15 +12,19 @@ import {
     StatusTextWrapper,
 } from '../pages/Entity/Scope/ScopeItem';
 import { Typography } from '@equinor/eds-core-react';
+import useCommonHooks from '../utils/useCommonHooks';
+import removeSubdirectories from '../utils/removeSubdirectories';
 
 type PunchProps = {
     punch: PunchPreview;
 };
 
 const Punch = ({ punch }: PunchProps): JSX.Element => {
-    // TODO: add link to previewButton
+    const { url } = useCommonHooks();
     return (
-        <PreviewButton to={``}>
+        <PreviewButton
+            to={`${removeSubdirectories(url, 1)}/punch-item/${punch.id}`}
+        >
             <StatusImageWrapper>
                 <CompletionStatusIcon status={punch.status} />
                 <StatusTextWrapper>
