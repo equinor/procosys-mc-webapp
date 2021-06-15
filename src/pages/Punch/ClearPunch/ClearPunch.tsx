@@ -20,250 +20,238 @@ import removeSubdirectories from '../../../utils/removeSubdirectories';
 export const PunchWrapper = styled.main``;
 
 const ClearPunch = (): JSX.Element => {
-    return <p>Clear punch</p>;
-    // const {
-    //     updatePunchStatus,
-    //     fetchPunchItemStatus,
-    //     punchItem,
-    //     clearPunchStatus,
-    //     categories,
-    //     types,
-    //     organizations,
-    //     snackbar,
-    //     setSnackbarText,
-    //     updateDatabase,
-    //     clearPunchItem,
-    //     handleCategoryChange,
-    //     handleDescriptionChange,
-    //     handleTypeChange,
-    //     handleRaisedByChange,
-    //     handleClearingByChange,
-    // } = useClearPunchFacade();
-    // const { api, params, url } = useCommonHooks();
+    const {
+        updatePunchStatus,
+        fetchPunchItemStatus,
+        punchItem,
+        clearPunchStatus,
+        categories,
+        types,
+        organizations,
+        sorts,
+        priorities,
+        snackbar,
+        setSnackbarText,
+        updateDatabase,
+        clearPunchItem,
+        handleCategoryChange,
+        handleDescriptionChange,
+        handleTypeChange,
+        handleRaisedByChange,
+        handleClearingByChange,
+    } = useClearPunchFacade();
+    const { api, params, url } = useCommonHooks();
 
-    // let descriptionBeforeEntering = '';
+    let descriptionBeforeEntering = '';
 
-    // const content = (): JSX.Element => {
-    //     if (fetchPunchItemStatus === AsyncStatus.SUCCESS && punchItem) {
-    //         return (
-    //             <>
-    //                 <PunchDetailsCard
-    //                     systemModule={punchItem.systemModule}
-    //                     tagDescription={punchItem.tagDescription}
-    //                 />
-    //                 <NewPunchFormWrapper onSubmit={clearPunchItem}>
-    //                     <NativeSelect
-    //                         required
-    //                         id="PunchCategorySelect"
-    //                         label="Punch category"
-    //                         disabled={clearPunchStatus === AsyncStatus.LOADING}
-    //                         defaultValue={
-    //                             ensure(
-    //                                 categories.find(
-    //                                     (category) =>
-    //                                         category.code === punchItem.status
-    //                                 )
-    //                             ).id
-    //                         }
-    //                         onChange={handleCategoryChange}
-    //                     >
-    //                         {categories.map((category) => (
-    //                             <option
-    //                                 key={category.id}
-    //                                 value={category.id}
-    //                             >{`${category.description}`}</option>
-    //                         ))}
-    //                     </NativeSelect>
-    //                     <NativeSelect
-    //                         required
-    //                         id="PunchTypeSelect"
-    //                         label="Type"
-    //                         disabled={clearPunchStatus === AsyncStatus.LOADING}
-    //                         defaultValue={
-    //                             ensure(
-    //                                 types.find(
-    //                                     (type) =>
-    //                                         type.code === punchItem.typeCode
-    //                                 )
-    //                             ).id
-    //                         }
-    //                         onChange={handleTypeChange}
-    //                     >
-    //                         {types.map((type) => (
-    //                             <option
-    //                                 key={type.id}
-    //                                 value={type.id}
-    //                             >{`${type.code}. ${type.description}`}</option>
-    //                         ))}
-    //                     </NativeSelect>
-    //                     <TextField
-    //                         required
-    //                         maxLength={255}
-    //                         value={punchItem.description}
-    //                         label="Description"
-    //                         multiline
-    //                         rows={5}
-    //                         id="NewPunchDescription"
-    //                         disabled={clearPunchStatus === AsyncStatus.LOADING}
-    //                         onFocus={(): string =>
-    //                             (descriptionBeforeEntering =
-    //                                 punchItem.description)
-    //                         }
-    //                         onBlur={(): void => {
-    //                             if (
-    //                                 punchItem.description !==
-    //                                 descriptionBeforeEntering
-    //                             ) {
-    //                                 updateDatabase(
-    //                                     UpdatePunchEndpoint.Description,
-    //                                     {
-    //                                         Description: punchItem.description,
-    //                                     }
-    //                                 );
-    //                             }
-    //                         }}
-    //                         onChange={handleDescriptionChange}
-    //                     />
-    //                     <NativeSelect
-    //                         required
-    //                         label="Raised by"
-    //                         id="RaisedBySelect"
-    //                         disabled={clearPunchStatus === AsyncStatus.LOADING}
-    //                         defaultValue={
-    //                             ensure(
-    //                                 organizations.find(
-    //                                     (org) =>
-    //                                         org.code === punchItem.raisedByCode
-    //                                 )
-    //                             ).id
-    //                         }
-    //                         onChange={handleRaisedByChange}
-    //                     >
-    //                         {organizations.map((organization) => (
-    //                             <option
-    //                                 key={organization.id}
-    //                                 value={organization.id}
-    //                             >
-    //                                 {organization.description}
-    //                             </option>
-    //                         ))}
-    //                     </NativeSelect>
-    //                     <NativeSelect
-    //                         required
-    //                         id="ClearingBySelect"
-    //                         label="Clearing by"
-    //                         disabled={clearPunchStatus === AsyncStatus.LOADING}
-    //                         defaultValue={
-    //                             ensure(
-    //                                 organizations.find(
-    //                                     (org) =>
-    //                                         org.code ===
-    //                                         punchItem.clearingByCode
-    //                                 )
-    //                             ).id
-    //                         }
-    //                         onChange={handleClearingByChange}
-    //                     >
-    //                         {organizations.map((organization) => (
-    //                             <option
-    //                                 key={organization.id}
-    //                                 value={organization.id}
-    //                             >
-    //                                 {organization.description}
-    //                             </option>
-    //                         ))}
-    //                     </NativeSelect>
-    //                     <AsyncCard
-    //                         errorMessage="Unable to load attachments."
-    //                         cardTitle="Attachments"
-    //                         fetchStatus={fetchAttachmentsStatus}
-    //                     >
-    //                         <AttachmentsWrapper>
-    //                             <UploadImageButton
-    //                                 onClick={(): void =>
-    //                                     setShowUploadModal(true)
-    //                                 }
-    //                             >
-    //                                 <EdsIcon name="camera_add_photo" />
-    //                             </UploadImageButton>
-    //                             {showUploadModal ? (
-    //                                 <UploadAttachment
-    //                                     setShowModal={setShowUploadModal}
-    //                                     postAttachment={api.postPunchAttachment}
-    //                                     updateAttachments={refreshAttachments}
-    //                                     parentId={params.punchItemId}
-    //                                     setSnackbarText={setSnackbarText}
-    //                                 />
-    //                             ) : null}
+    const content = (): JSX.Element => {
+        if (fetchPunchItemStatus === AsyncStatus.SUCCESS && punchItem) {
+            return (
+                <>
+                    <NewPunchFormWrapper onSubmit={clearPunchItem}>
+                        <NativeSelect
+                            required
+                            id="PunchCategorySelect"
+                            label="Punch category"
+                            disabled={clearPunchStatus === AsyncStatus.LOADING}
+                            defaultValue={
+                                ensure(
+                                    categories.find(
+                                        (category) =>
+                                            category.code === punchItem.status
+                                    )
+                                ).id
+                            }
+                            onChange={handleCategoryChange}
+                        >
+                            {categories.map((category) => (
+                                <option
+                                    key={category.id}
+                                    value={category.id}
+                                >{`${category.description}`}</option>
+                            ))}
+                        </NativeSelect>
+                        <TextField
+                            required
+                            maxLength={255}
+                            value={punchItem.description}
+                            label="Description"
+                            multiline
+                            rows={5}
+                            id="NewPunchDescription"
+                            disabled={clearPunchStatus === AsyncStatus.LOADING}
+                            onFocus={(): string =>
+                                (descriptionBeforeEntering =
+                                    punchItem.description)
+                            }
+                            onBlur={(): void => {
+                                if (
+                                    punchItem.description !==
+                                    descriptionBeforeEntering
+                                ) {
+                                    updateDatabase(
+                                        UpdatePunchEndpoint.Description,
+                                        {
+                                            Description: punchItem.description,
+                                        }
+                                    );
+                                }
+                            }}
+                            onChange={handleDescriptionChange}
+                        />
+                        <NativeSelect
+                            required
+                            label="Raised by"
+                            id="RaisedBySelect"
+                            disabled={clearPunchStatus === AsyncStatus.LOADING}
+                            defaultValue={
+                                ensure(
+                                    organizations.find(
+                                        (org) =>
+                                            org.code === punchItem.raisedByCode
+                                    )
+                                ).id
+                            }
+                            onChange={handleRaisedByChange}
+                        >
+                            {organizations.map((organization) => (
+                                <option
+                                    key={organization.id}
+                                    value={organization.id}
+                                >
+                                    {organization.description}
+                                </option>
+                            ))}
+                        </NativeSelect>
+                        <NativeSelect
+                            required
+                            id="ClearingBySelect"
+                            label="Clearing by"
+                            disabled={clearPunchStatus === AsyncStatus.LOADING}
+                            defaultValue={
+                                ensure(
+                                    organizations.find(
+                                        (org) =>
+                                            org.code ===
+                                            punchItem.clearingByCode
+                                    )
+                                ).id
+                            }
+                            onChange={handleClearingByChange}
+                        >
+                            {organizations.map((organization) => (
+                                <option
+                                    key={organization.id}
+                                    value={organization.id}
+                                >
+                                    {organization.description}
+                                </option>
+                            ))}
+                        </NativeSelect>
+                        <h5>Optional fields</h5>
+                        {
+                            // TODO: action by person field
+                        }
+                        {
+                            // TODO: date field
+                        }
+                        <NativeSelect
+                            id="PunchTypeSelect"
+                            label="Type"
+                            disabled={
+                                clearPunchStatus === AsyncStatus.LOADING ||
+                                types.length < 1
+                            }
+                            defaultValue={
+                                types.find(
+                                    (type) => type.code === punchItem.typeCode
+                                )?.id
+                            }
+                            onChange={handleTypeChange}
+                        >
+                            {types?.map((type) => (
+                                <option
+                                    key={type.id}
+                                    value={type.id}
+                                >{`${type.code}. ${type.description}`}</option>
+                            ))}
+                        </NativeSelect>
+                        <NativeSelect
+                            id="PunchSortSelect"
+                            label="Sorting"
+                            disabled={
+                                clearPunchStatus === AsyncStatus.LOADING ||
+                                sorts.length < 1
+                            }
+                            defaultValue={
+                                sorts.find(
+                                    (sort) => sort.code === punchItem.sorting
+                                )?.id
+                            }
+                            onChange={handleTypeChange}
+                        >
+                            {sorts?.map((sort) => (
+                                <option
+                                    key={sort.id}
+                                    value={sort.id}
+                                >{`${sort.code}. ${sort.description}`}</option>
+                            ))}
+                        </NativeSelect>
+                        <NativeSelect
+                            id="PunchPrioritySelect"
+                            label="Priority"
+                            disabled={
+                                clearPunchStatus === AsyncStatus.LOADING ||
+                                priorities.length < 1
+                            }
+                            defaultValue={
+                                priorities.find(
+                                    (priority) =>
+                                        priority.code === punchItem.priorityCode
+                                )?.id
+                            }
+                            onChange={handleTypeChange}
+                        >
+                            {priorities?.map((priority) => (
+                                <option
+                                    key={priority.id}
+                                    value={priority.id}
+                                >{`${priority.code}. ${priority.description}`}</option>
+                            ))}
+                        </NativeSelect>
+                        {
+                            // TODO: estimate field
+                        }
+                        <Button
+                            type="submit"
+                            disabled={
+                                updatePunchStatus === AsyncStatus.LOADING ||
+                                clearPunchStatus === AsyncStatus.LOADING
+                            }
+                        >
+                            Clear
+                        </Button>
+                    </NewPunchFormWrapper>
+                </>
+            );
+        } else if (fetchPunchItemStatus === AsyncStatus.ERROR) {
+            return (
+                <ErrorPage
+                    title="Unable to load punch item."
+                    description="Please check your connection, reload this page or try again later."
+                />
+            );
+        } else {
+            return <SkeletonLoadingPage text="Loading punch item" />;
+        }
+    };
 
-    //                             {attachments.map((attachment) => (
-    //                                 <Attachment
-    //                                     key={attachment.id}
-    //                                     getAttachment={(
-    //                                         cancelToken: CancelToken
-    //                                     ): Promise<Blob> =>
-    //                                         api.getPunchAttachment(
-    //                                             cancelToken,
-    //                                             params.plant,
-    //                                             params.punchItemId,
-    //                                             attachment.id
-    //                                         )
-    //                                     }
-    //                                     deleteAttachment={(
-    //                                         cancelToken: CancelToken
-    //                                     ): Promise<void> =>
-    //                                         api.deletePunchAttachment(
-    //                                             cancelToken,
-    //                                             params.plant,
-    //                                             params.punchItemId,
-    //                                             attachment.id
-    //                                         )
-    //                                     }
-    //                                     setSnackbarText={setSnackbarText}
-    //                                     attachment={attachment}
-    //                                     refreshAttachments={refreshAttachments}
-    //                                 />
-    //                             ))}
-    //                         </AttachmentsWrapper>
-    //                     </AsyncCard>
-    //                     <Button
-    //                         type="submit"
-    //                         disabled={
-    //                             updatePunchStatus === AsyncStatus.LOADING ||
-    //                             clearPunchStatus === AsyncStatus.LOADING
-    //                         }
-    //                     >
-    //                         Clear
-    //                     </Button>
-    //                 </NewPunchFormWrapper>
-    //             </>
-    //         );
-    //     } else if (fetchPunchItemStatus === AsyncStatus.ERROR) {
-    //         return (
-    //             <ErrorPage
-    //                 title="Unable to load punch item."
-    //                 description="Please check your connection, reload this page or try again later."
-    //             />
-    //         );
-    //     } else {
-    //         return <SkeletonLoadingPage text="Loading punch item" />;
-    //     }
-    // };
-
-    // return (
-    //     <>
-    //         <Navbar
-    //             noBorder
-    //             leftContent={{
-    //                 name: 'back',
-    //                 label: 'Punch list',
-    //                 url: removeSubdirectories(url, 2),
-    //             }}
-    //         />
-    //         <PunchWrapper>{content()}</PunchWrapper>
-    //         {snackbar}
-    //     </>
-    // );
+    return (
+        <>
+            <PunchWrapper>{content()}</PunchWrapper>
+            {snackbar}
+        </>
+    );
 };
 
 export default ClearPunch;
