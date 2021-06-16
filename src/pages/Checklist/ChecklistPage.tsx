@@ -15,8 +15,8 @@ import NavigationFooterShell from '../../components/navigation/NavigationFooterS
 import { DotProgress } from '@equinor/eds-core-react';
 import { DetailsWrapper } from '../Entity/EntityPage';
 import TagInfo from './TagInfo';
-import ChecklistPunchList from './ChecklistPunchList';
 import { InfoItem } from '@equinor/procosys-webapp-components';
+import ChecklistPunchList from './ChecklistPunchList';
 
 const ChecklistPage = (): JSX.Element => {
     const { history, url, path, api, params } = useCommonHooks();
@@ -175,7 +175,7 @@ const ChecklistPage = (): JSX.Element => {
                 rightContent={
                     history.location.pathname.includes('/new-punch')
                         ? undefined
-                        : { name: 'newPunch' }
+                        : { name: 'newPunch', url: `${url}/punch-list` }
                 }
             />
             {determineDetailsToRender()}
