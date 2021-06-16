@@ -224,6 +224,11 @@
   resolved "https://registry.npmjs.org/@babel/helper-plugin-utils/-/helper-plugin-utils-7.13.0.tgz"
   integrity sha512-ZPafIPSwzUlAoWT8DKs1W2VyF2gOWthGd5NGFMsBcMMol+ZhK+EQY/e6V96poa6PA/Bh+C9plWN0hXO1uB8AfQ==
 
+"@babel/helper-plugin-utils@^7.14.5":
+  version "7.14.5"
+  resolved "https://registry.npmjs.org/@babel/helper-plugin-utils/-/helper-plugin-utils-7.14.5.tgz"
+  integrity sha512-/37qQCE3K0vvZKwoK4XU/irIJQdIfCJuhU5eKnNxpFDsOkgFaUAwbv+RYw6eYgsC0E4hS7r5KqGULUogqui0fQ==
+
 "@babel/helper-remap-async-to-generator@^7.13.0":
   version "7.13.0"
   resolved "https://registry.npmjs.org/@babel/helper-remap-async-to-generator/-/helper-remap-async-to-generator-7.13.0.tgz"
@@ -500,13 +505,19 @@
   dependencies:
     "@babel/helper-plugin-utils" "^7.8.0"
 
-"@babel/plugin-syntax-class-properties@^7.12.1", "@babel/plugin-syntax-class-properties@^7.12.13", "@babel/plugin-syntax-class-properties@^7.8.3", "@babel/plugin-syntax-class-static-block@^7.12.13":
-  name "@babel/plugin-syntax-class-properties"
+"@babel/plugin-syntax-class-properties@^7.12.1", "@babel/plugin-syntax-class-properties@^7.12.13", "@babel/plugin-syntax-class-properties@^7.8.3":
   version "7.12.13"
   resolved "https://registry.npmjs.org/@babel/plugin-syntax-class-static-block/-/plugin-syntax-class-static-block-7.12.13.tgz"
   integrity sha512-ZmKQ0ZXR0nYpHZIIuj9zE7oIqCx2hw9TKi+lIo73NNrMPAZGHfS92/VRV0ZmPj6H2ffBgyFHXvJ5NYsNeEaP2A==
   dependencies:
     "@babel/helper-plugin-utils" "^7.12.13"
+
+"@babel/plugin-syntax-class-static-block@^7.12.13":
+  version "7.14.5"
+  resolved "https://registry.npmjs.org/@babel/plugin-syntax-class-static-block/-/plugin-syntax-class-static-block-7.14.5.tgz"
+  integrity sha512-b+YyPmr6ldyNnM6sqYeMWE+bgJcJpO6yS4QD7ymxgH34GBPNDM/THBh8iunyvKIZztiwLH4CJZ0RxTk9emgpjw==
+  dependencies:
+    "@babel/helper-plugin-utils" "^7.14.5"
 
 "@babel/plugin-syntax-decorators@^7.12.1":
   version "7.12.13"
@@ -1251,7 +1262,7 @@
 
 "@equinor/eds-core-react@^0.12.1":
   version "0.12.1"
-  resolved "https://registry.yarnpkg.com/@equinor/eds-core-react/-/eds-core-react-0.12.1.tgz#c95c589ee42aea4ba75c6c54bc13598fd9ace585"
+  resolved "https://registry.npmjs.org/@equinor/eds-core-react/-/eds-core-react-0.12.1.tgz"
   integrity sha512-DRb+DskLzLYprP+n0M7jx1uCyghMXs5xHIOH5y1M5+jCO78T0H4BQuMlRXyzMpJZ2/LkrKFy9RNTeqIkeWT/Og==
   dependencies:
     "@equinor/eds-icons" "0.6.2"
@@ -1268,13 +1279,13 @@
 
 "@equinor/eds-tokens@0.6.0":
   version "0.6.0"
-  resolved "https://registry.yarnpkg.com/@equinor/eds-tokens/-/eds-tokens-0.6.0.tgz#daeac90b4cfdcad99242bb8892ad43b2db6610a8"
+  resolved "https://registry.npmjs.org/@equinor/eds-tokens/-/eds-tokens-0.6.0.tgz"
   integrity sha512-Er9Bn5VRlgdyYwgGtubwTb8ejJx6msB8RTbQ1lZ4dWTAjN1XvBQKTSIZMo6NwqJ5N4+5n3YmEbpeGhOetqLyWg==
 
-"@equinor/procosys-webapp-components@^1.5.1":
-  version "1.5.1"
-  resolved "https://registry.yarnpkg.com/@equinor/procosys-webapp-components/-/procosys-webapp-components-1.5.1.tgz#438bbc2099c0f95c883a6ad13ef5a519f0af09aa"
-  integrity sha512-oZdE3xdEcvpaviREtir/+0JmiZmOBFVHQgiPOMXw7AtktG1DbssmnzAoyVsfJwbQs6AGecxDVr7Uh6FSSOk6FQ==
+"@equinor/procosys-webapp-components@^1.6.4":
+  version "1.6.4"
+  resolved "https://registry.yarnpkg.com/@equinor/procosys-webapp-components/-/procosys-webapp-components-1.6.4.tgz#a6a0879ac6ac0c946b195e9f03f4e22148156f30"
+  integrity sha512-Wtb41dB652NXiNlHTaBn7R98+sYZjXpldSgQhiPBe1YWZEaUvliMRhRn0MI+gPxHjnxAHoeeuIqPGNtbBxQDxg==
 
 "@eslint/eslintrc@^0.4.1":
   version "0.4.1"
