@@ -5,10 +5,11 @@ import { PunchPreview } from '../../../services/apiTypes';
 import useCommonHooks from '../../../utils/useCommonHooks';
 import AsyncPage from '../../../components/AsyncPage';
 import Axios from 'axios';
-import Punch from '../../../components/Punch';
+import removeSubdirectories from '../../../utils/removeSubdirectories';
+import { InfoItem } from '@equinor/procosys-webapp-components';
 
 const PunchList = (): JSX.Element => {
-    const { api, params } = useCommonHooks();
+    const { api, params, history, url } = useCommonHooks();
     const [punchList, setPunchList] = useState<PunchPreview[]>();
     const [fetchPunchListStatus, setFetchPunchListStatus] = useState(
         AsyncStatus.LOADING
@@ -51,7 +52,27 @@ const PunchList = (): JSX.Element => {
             >
                 <>
                     {punchList?.map((punch) => (
-                        <Punch key={punch.id} punch={punch} />
+                        <InfoItem
+                            key={punch.id}
+                            status={punch.status}
+                            statusLetters={[
+                                punch.cleared ? 'C' : null,
+                                punch.verified ? 'V' : null,
+                            ]}
+                            attachments={punch.attachmentCount}
+                            headerText={punch.id.toString()}
+                            description={punch.description}
+                            chips={[punch.formularType, punch.responsibleCode]}
+                            tag={punch.tagNo}
+                            onClick={(): void =>
+                                history.push(
+                                    `${removeSubdirectories(
+                                        url,
+                                        1
+                                    )}/punch-item/${punch.id}`
+                                )
+                            }
+                        />
                     ))}
                 </>
             </AsyncPage>

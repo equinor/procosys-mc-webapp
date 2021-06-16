@@ -14,9 +14,9 @@ import { ChecklistResponse, PunchPreview } from '../../services/apiTypes';
 import NavigationFooterShell from '../../components/navigation/NavigationFooterShell';
 import { DotProgress } from '@equinor/eds-core-react';
 import { DetailsWrapper } from '../Entity/EntityPage';
-import ChecklistDetailsCard from './ChecklistDetailsCard';
 import TagInfo from './TagInfo';
 import ChecklistPunchList from './ChecklistPunchList';
+import { InfoItem } from '@equinor/procosys-webapp-components';
 
 const ChecklistPage = (): JSX.Element => {
     const { history, url, path, api, params } = useCommonHooks();
@@ -78,7 +78,24 @@ const ChecklistPage = (): JSX.Element => {
             fetchDetailsStatus === AsyncStatus.SUCCESS &&
             details != undefined
         ) {
-            return <ChecklistDetailsCard details={details.checkList} />;
+            return (
+                <InfoItem
+                    isDetailsCard
+                    isScope
+                    status={details.checkList.status}
+                    statusLetters={[
+                        details.checkList.signedByUser ? 'S' : null,
+                        details.checkList.signedByUser ? 'V' : null,
+                    ]}
+                    headerText={details.checkList.tagNo}
+                    description={details.checkList.tagDescription}
+                    chips={[
+                        details.checkList.mcPkgNo,
+                        details.checkList.formularType,
+                    ]}
+                    attachments={details.checkList.attachmentCount}
+                />
+            );
         }
         if (fetchDetailsStatus === AsyncStatus.ERROR) {
             return (
