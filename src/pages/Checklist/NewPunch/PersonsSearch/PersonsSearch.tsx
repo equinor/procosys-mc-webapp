@@ -38,7 +38,7 @@ const Header = styled.h4`
 `;
 
 type PersonsSearchProps = {
-    setChosenPerson: (id: number, name: string) => void;
+    setChosenPerson: (id: number, firstName: string, lastName: string) => void;
     setShowPersonSearch: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
@@ -80,7 +80,8 @@ const PersonsSearch = ({
                                 onClick={(): void =>
                                     setChosenPerson(
                                         person.id,
-                                        `${person.firstName} ${person.lastName}`
+                                        person.firstName,
+                                        person.lastName
                                     )
                                 }
                             >

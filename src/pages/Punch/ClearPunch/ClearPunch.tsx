@@ -4,7 +4,7 @@ import {
     NativeSelect,
     TextField,
 } from '@equinor/eds-core-react';
-import React from 'react';
+import React, { useState } from 'react';
 import ErrorPage from '../../../components/error/ErrorPage';
 import SkeletonLoadingPage from '../../../components/loading/SkeletonLoader';
 import Navbar from '../../../components/navigation/Navbar';
@@ -25,6 +25,8 @@ import { CancelToken } from 'axios';
 import ensure from '../../../utils/ensure';
 import removeSubdirectories from '../../../utils/removeSubdirectories';
 import { PunchItem } from '../../../services/apiTypes';
+import PersonsSearch from '../../Checklist/NewPunch/PersonsSearch/PersonsSearch';
+import { COLORS } from '../../../style/GlobalStyles';
 
 export const PunchWrapper = styled.main``;
 
@@ -57,10 +59,13 @@ const ClearPunch = ({
         handleTypeChange,
         handleRaisedByChange,
         handleClearingByChange,
+        handleActionByPersonChange,
         handleDueDateChange,
         handleSortingChange,
         handlePriorityChange,
         handleEstimateChange,
+        showPersonsSearch,
+        setShowPersonsSearch,
     } = useClearPunchFacade(setPunchItem);
     const { api, params, url } = useCommonHooks();
 
@@ -75,6 +80,12 @@ const ClearPunch = ({
         ) {
             return (
                 <>
+                    {showPersonsSearch ? (
+                        <PersonsSearch
+                            setChosenPerson={handleActionByPersonChange}
+                            setShowPersonSearch={setShowPersonsSearch}
+                        />
+                    ) : null}
                     <NewPunchFormWrapper onSubmit={clearPunchItem}>
                         <NativeSelect
                             required
@@ -176,14 +187,40 @@ const ClearPunch = ({
                             ))}
                         </NativeSelect>
                         <h5>Optional fields</h5>
-                        {
-                            // TODO: action by person field
-                        }
+                        <TextField
+                            id="actionByPerson"
+                            defaultValue={
+                                punchItem.actionByPerson
+                                    ? `${punchItem.actionByPersonFirstName} ${punchItem.actionByPersonLastName}`
+                                    : undefined
+                            }
+                            readOnly
+                            inputIcon={
+                                punchItem.actionByPerson ? (
+                                    <div
+                                        onClick={(): void =>
+                                            handleActionByPersonChange(
+                                                null,
+                                                '',
+                                                ''
+                                            )
+                                        }
+                                    >
+                                        <EdsIcon
+                                            name={'close'}
+                                            color={COLORS.black}
+                                        />
+                                    </div>
+                                ) : null
+                            }
+                            onClick={(): void => setShowPersonsSearch(true)}
+                            label={'Action by person'}
+                        />
                         <DateField>
                             <Label label="Due Date" htmlFor="dueDate2" />
                             <input
                                 type="date"
-                                id="dueDate"
+                                id="DueDatePicker"
                                 role="datepicker"
                                 value={punchItem.dueDate?.split('T')[0]}
                                 onChange={handleDueDateChange}

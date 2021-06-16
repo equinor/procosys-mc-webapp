@@ -13,12 +13,12 @@ import ensure from '../../../utils/ensure';
 import useCommonHooks from '../../../utils/useCommonHooks';
 import useSnackbar from '../../../utils/useSnackbar';
 
-// TODO: add new things
 export enum UpdatePunchEndpoint {
     Category = 'SetCategory',
     Description = 'SetDescription',
     RaisedBy = 'SetRaisedBy',
     ClearingBy = 'SetClearingBy',
+    ActionByPerson = 'SetActionByPerson',
     DueDate = 'setDueDate',
     Type = 'SetType',
     Sorting = 'SetSorting',
@@ -34,19 +34,18 @@ export enum PunchAction {
     UNVERIFY = 'Unverify',
 }
 
-// TODO: add new things
 export type UpdatePunchData =
     | { CategoryId: number }
     | { Description: string }
     | { RaisedByOrganizationId: number }
     | { ClearingByOrganizationId: number }
+    | { PersonId: number | null }
     | { DueDate: string | undefined }
     | { TypeId: number }
     | { SortingId: number }
     | { PriorityId: number }
     | { Estimate: number | undefined };
 
-// TOOD: figure out if the things I set in punch item is what's shown in the form, because if yes, the desctiption of things like type should also be changed!!
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const useClearPunchFacade = (
     setPunchItem: React.Dispatch<React.SetStateAction<PunchItem>>
@@ -58,6 +57,7 @@ const useClearPunchFacade = (
     const [organizations, setOrganizations] = useState<PunchOrganization[]>([]);
     const [sorts, setSorts] = useState<PunchSort[]>([]);
     const [priorities, setPriorities] = useState<PunchPriority[]>([]);
+    const [showPersonsSearch, setShowPersonsSearch] = useState(false);
     const [fetchOptionsStatus, setFetchOptionsStatus] = useState(
         AsyncStatus.INACTIVE
     );
@@ -141,7 +141,22 @@ const useClearPunchFacade = (
         });
     };
 
-    // TODO: handle action by person change ??
+    const handleActionByPersonChange = (
+        id: number | null,
+        firstName: string,
+        lastName: string
+    ): void => {
+        setPunchItem((prev) => ({
+            ...prev,
+            actionByPerson: id,
+            actionByPersonFirstName: firstName,
+            actionByPersonLastName: lastName,
+        }));
+        updateDatabase(UpdatePunchEndpoint.ActionByPerson, {
+            PersonId: id,
+        });
+        setShowPersonsSearch(false);
+    };
 
     const handleDueDateChange = (
         e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
@@ -270,10 +285,13 @@ const useClearPunchFacade = (
         handleRaisedByChange,
         handleClearingByChange,
         handleDescriptionChange,
+        handleActionByPersonChange,
         handleDueDateChange,
         handleSortingChange,
         handlePriorityChange,
         handleEstimateChange,
+        showPersonsSearch,
+        setShowPersonsSearch,
     };
 };
 

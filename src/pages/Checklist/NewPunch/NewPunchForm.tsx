@@ -100,8 +100,12 @@ const NewPunchForm = ({
 }: NewPunchFormProps): JSX.Element => {
     const [showPersonsSearch, setShowPersonsSearch] = useState(false);
 
-    const handlePersonChosen = (id: number, name: string): void => {
-        setChosenPerson({ id, name });
+    const handlePersonChosen = (
+        id: number,
+        firstName: string,
+        lastName: string
+    ): void => {
+        setChosenPerson({ id, name: `${firstName} ${lastName}` });
         setShowPersonsSearch(false);
     };
 

@@ -251,9 +251,9 @@ export interface PunchItem {
     priorityId?: number;
     priorityCode?: string;
     priorityDescription?: string;
-    actionByPerson: number;
-    actionByPersonFirstName?: null;
-    actionByPersonLastName?: null;
+    actionByPerson: number | null;
+    actionByPersonFirstName?: string;
+    actionByPersonLastName?: string;
     materialRequired: boolean;
     materialEta?: null;
     materialNo?: null;
