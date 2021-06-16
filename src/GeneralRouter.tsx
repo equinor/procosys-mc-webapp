@@ -6,6 +6,7 @@ import Search from './pages/Search/Search';
 import SelectPlant from './pages/SelectPlant/SelectPlant';
 import EntityPage from './pages/Entity/EntityPage';
 import ChecklistPage from './pages/Checklist/ChecklistPage';
+import PunchPage from './pages/Punch/PunchPage';
 
 const McRouter = (): JSX.Element => {
     return (
@@ -18,6 +19,18 @@ const McRouter = (): JSX.Element => {
                     exact
                     path={'/:plant/:project/:searchType'}
                     to={'/:plant/:project'}
+                />
+                <Route
+                    path={
+                        '/:plant/:project/:searchType/:entityId/punch-item/:punchItemId'
+                    }
+                    component={PunchPage}
+                />
+                <Route
+                    path={
+                        '/:plant/:project/:searchType/:entityId/checklist/:checklistId/punch-item/:punchItemId'
+                    }
+                    component={PunchPage}
                 />
                 <Route
                     path={

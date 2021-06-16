@@ -16,20 +16,30 @@ import EdsIcon from '../../../components/icons/EdsIcon';
 import { CancelToken } from 'axios';
 import ensure from '../../../utils/ensure';
 import removeSubdirectories from '../../../utils/removeSubdirectories';
+import { PunchItem } from '../../../services/apiTypes';
 
 export const PunchWrapper = styled.main``;
 
-const ClearPunch = (): JSX.Element => {
+type ClearPunchProps = {
+    punchItem: PunchItem;
+    setPunchItem: React.Dispatch<React.SetStateAction<PunchItem>>;
+    fetchPunchItemStatus: AsyncStatus;
+};
+
+const ClearPunch = ({
+    punchItem,
+    setPunchItem,
+    fetchPunchItemStatus,
+}: ClearPunchProps): JSX.Element => {
     const {
         updatePunchStatus,
-        fetchPunchItemStatus,
-        punchItem,
         clearPunchStatus,
         categories,
         types,
         organizations,
         sorts,
         priorities,
+        fetchOptionsStatus,
         snackbar,
         setSnackbarText,
         updateDatabase,
@@ -39,7 +49,7 @@ const ClearPunch = (): JSX.Element => {
         handleTypeChange,
         handleRaisedByChange,
         handleClearingByChange,
-    } = useClearPunchFacade();
+    } = useClearPunchFacade(setPunchItem);
     const { api, params, url } = useCommonHooks();
 
     let descriptionBeforeEntering = '';
@@ -254,4 +264,5 @@ const ClearPunch = (): JSX.Element => {
     );
 };
 
+// TODO: check whether clear punch has wildly different permissions than verify osv. if yes: add permissions here, if no: just add them to the existing ones in punch page
 export default ClearPunch;

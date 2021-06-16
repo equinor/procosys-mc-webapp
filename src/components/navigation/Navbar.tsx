@@ -128,16 +128,18 @@ const Navbar = ({
             );
         }
         if (rightContent?.name === 'newPunch') {
-            return (
-                <Button
-                    variant="ghost"
-                    onClick={(): void =>
-                        history.push(`${url}/punch-list/new-punch`)
-                    }
-                >
-                    New punch
-                </Button>
-            );
+            if (rightContent.url) {
+                return (
+                    <Button
+                        variant="ghost"
+                        onClick={(): void =>
+                            history.push(`${rightContent.url}/new-punch`)
+                        }
+                    >
+                        New punch
+                    </Button>
+                );
+            }
         }
         return <></>;
     };

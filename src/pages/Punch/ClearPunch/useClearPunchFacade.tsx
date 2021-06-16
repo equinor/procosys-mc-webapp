@@ -10,10 +10,10 @@ import {
     PunchPriority,
 } from '../../../services/apiTypes';
 import ensure from '../../../utils/ensure';
-import removeSubdirectories from '../../../utils/removeSubdirectories';
 import useCommonHooks from '../../../utils/useCommonHooks';
 import useSnackbar from '../../../utils/useSnackbar';
 
+// TODO: add new things
 export enum UpdatePunchEndpoint {
     Category = 'SetCategory',
     Description = 'SetDescription',
@@ -34,6 +34,7 @@ export enum PunchAction {
     UNVERIFY = 'Unverify',
 }
 
+// TODO: add new things
 export type UpdatePunchData =
     | { CategoryId: number }
     | { Description: string }
@@ -47,17 +48,19 @@ export type UpdatePunchData =
 
 // TOOD: figure out if the things I set in punch item is what's shown in the form, because if yes, the desctiption of things like type should also be changed!!
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-const useClearPunchFacade = () => {
+const useClearPunchFacade = (
+    setPunchItem: React.Dispatch<React.SetStateAction<PunchItem>>
+) => {
     const { api, params, url, history } = useCommonHooks();
     const { snackbar, setSnackbarText } = useSnackbar();
-    const [punchItem, setPunchItem] = useState<PunchItem>({} as PunchItem);
     const [categories, setCategories] = useState<PunchCategory[]>([]);
     const [types, setTypes] = useState<PunchType[]>([]);
     const [organizations, setOrganizations] = useState<PunchOrganization[]>([]);
     const [sorts, setSorts] = useState<PunchSort[]>([]);
     const [priorities, setPriorities] = useState<PunchPriority[]>([]);
-    const [fetchPunchItemStatus, setFetchPunchItemStatus] = useState(
-        AsyncStatus.LOADING
+    // TODO: add new things
+    const [fetchOptionsStatus, setFetchOptionsStatus] = useState(
+        AsyncStatus.INACTIVE
     );
     const [updatePunchStatus, setUpdatePunchStatus] = useState(
         AsyncStatus.INACTIVE
@@ -213,14 +216,17 @@ const useClearPunchFacade = () => {
                 PunchAction.CLEAR
             );
             setClearPunchStatus(AsyncStatus.SUCCESS);
-            history.push(`${removeSubdirectories(url, 1)}/verify`);
+            history.push(url);
         } catch (error) {
             setClearPunchStatus(AsyncStatus.ERROR);
         }
     };
 
+    // TODO: add handlers for the new inputs
+
     useEffect(() => {
         const source = Axios.CancelToken.source();
+        // TODO: get new info (see new puunch)
         (async (): Promise<void> => {
             try {
                 const [
@@ -229,24 +235,21 @@ const useClearPunchFacade = () => {
                     organizationsFromApi,
                     sortsFromApi,
                     prioritiesFromApi,
-                    punchItemFromApi,
                 ] = await Promise.all([
                     api.getPunchCategories(params.plant, source.token),
                     api.getPunchTypes(params.plant, source.token),
                     api.getPunchOrganizations(params.plant, source.token),
                     api.getPunchSorts(params.plant, source.token),
                     api.getPunchPriorities(params.plant, source.token),
-                    api.getPunchItem(params.plant, params.punchItemId),
                 ]);
                 setCategories(categoriesFromApi);
                 setTypes(typesFromApi);
                 setOrganizations(organizationsFromApi);
                 setSorts(sortsFromApi);
                 setPriorities(prioritiesFromApi);
-                setPunchItem(punchItemFromApi);
-                setFetchPunchItemStatus(AsyncStatus.SUCCESS);
+                setFetchOptionsStatus(AsyncStatus.SUCCESS);
             } catch (error) {
-                setFetchPunchItemStatus(AsyncStatus.ERROR);
+                setFetchOptionsStatus(AsyncStatus.ERROR);
             }
         })();
         return (): void => {
@@ -256,14 +259,13 @@ const useClearPunchFacade = () => {
 
     return {
         updatePunchStatus,
-        fetchPunchItemStatus,
-        punchItem,
         clearPunchStatus,
         categories,
         types,
         organizations,
         sorts,
         priorities,
+        fetchOptionsStatus,
         setSnackbarText,
         snackbar,
         updateDatabase,

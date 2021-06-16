@@ -130,7 +130,6 @@ describe('<ChecklistPage> in-page routing', () => {
 const selectOption = async (
     selectFieldName: string,
     optionToBeSelected: string,
-    optionToNotBeSelected: string,
     valueToBeSelected: string,
     optionIndex = 0
 ): Promise<void> => {
@@ -139,13 +138,10 @@ const selectOption = async (
     });
     expect(selectField).toBeInTheDocument();
     // Options in select fields are always visible, since both 'Raised by' and 'Clearing by' uses same options this has to be done:
-    const firstOptions = await screen.findAllByText(optionToBeSelected);
-    const secondOptions = await screen.findAllByText(optionToNotBeSelected);
-    const firstOption = firstOptions[optionIndex];
-    const secondOption = secondOptions[optionIndex];
-    userEvent.selectOptions(selectField, firstOption);
-    expect((firstOption as HTMLOptionElement).selected).toBeTruthy();
-    expect((secondOption as HTMLOptionElement).selected).toBeFalsy();
+    const options = await screen.findAllByText(optionToBeSelected);
+    const option = options[optionIndex];
+    userEvent.selectOptions(selectField, option);
+    expect((option as HTMLOptionElement).selected).toBeTruthy();
     expect((selectField as HTMLSelectElement).value).toEqual(valueToBeSelected);
 };
 
@@ -189,7 +185,6 @@ describe('<ChecklistPage> New Punch', () => {
         await selectOption(
             'Punch category *',
             dummyPunchCategories[0].Description,
-            dummyPunchCategories[1].Description,
             dummyPunchPriorities[0].Id.toString()
         );
         // adding description
@@ -203,13 +198,11 @@ describe('<ChecklistPage> New Punch', () => {
         await selectOption(
             'Raised by *',
             dummyPunchOrganizations[0].Description,
-            dummyPunchOrganizations[1].Description,
             dummyPunchOrganizations[0].Id.toString()
         );
         await selectOption(
             'Clearing by *',
             dummyPunchOrganizations[0].Description,
-            dummyPunchOrganizations[1].Description,
             dummyPunchOrganizations[0].Id.toString(),
             1
         );
@@ -244,19 +237,16 @@ describe('<ChecklistPage> New Punch', () => {
         await selectOption(
             'Type',
             `${dummyPunchTypes[0].Code}. ${dummyPunchTypes[0].Description}`,
-            `${dummyPunchTypes[1].Code}. ${dummyPunchTypes[1].Description}`,
             dummyPunchTypes[0].Id.toString()
         );
         await selectOption(
             'Sorting',
             `${dummyPunchSorts[0].Code}. ${dummyPunchSorts[0].Description}`,
-            `${dummyPunchSorts[1].Code}. ${dummyPunchSorts[1].Description}`,
             dummyPunchSorts[0].Id.toString()
         );
         await selectOption(
             'Priority',
             `${dummyPunchPriorities[0].Code}. ${dummyPunchPriorities[0].Description}`,
-            `${dummyPunchPriorities[1].Code}. ${dummyPunchPriorities[1].Description}`,
             dummyPunchPriorities[0].Id.toString()
         );
         // adding an estimate
