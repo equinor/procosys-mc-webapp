@@ -207,12 +207,3 @@ export const isChecklistResponse = (
         isArrayOfCustomCheckItems((data as ChecklistResponse).customCheckItems)
     );
 };
-
-// Tag
-export const isTagResponse = (data: unknown): data is Tag => {
-    return (
-        (data != null &&
-            typeof (data as Tag).tag.disciplineCode === 'string') ||
-        typeof (data as Tag).tag.disciplineCode === null
-    );
-};
