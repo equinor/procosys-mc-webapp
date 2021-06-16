@@ -19,7 +19,6 @@ import {
     isCorrectPreview,
     isCorrectSearchResults,
     isOfType,
-    isTagResponse,
 } from './apiTypeGuards';
 import {
     Plant,
@@ -429,19 +428,9 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
             `Tag?plantId=PCS$${plantId}&tagId=${tagId}${apiVersion}`,
             { cancelToken }
         );
-        try {
-            if (!isTagResponse(data)) {
-                console.error(
-                    'Expected a tag to be returned, instead got: ',
-                    data
-                );
-                throw new Error('An error occurred, please try again');
-            }
-        } catch {
-            console.error('Expected a tag to be returned, instead got: ', data);
-            throw new Error('An error occurred, please try again');
+        if (!isOfType<Tag>(data, 'tag')) {
+            throw Error(typeGuardErrorMessage('tag'));
         }
-
         return data;
     };
 
