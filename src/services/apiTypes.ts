@@ -246,8 +246,8 @@ export interface PunchItem {
     rejectedByUser?: null;
     rejectedByFirstName?: null;
     rejectedByLastName?: null;
-    dueDate?: string;
-    estimate?: number;
+    dueDate?: string | undefined;
+    estimate?: number | undefined;
     priorityId?: number;
     priorityCode?: string;
     priorityDescription?: string;

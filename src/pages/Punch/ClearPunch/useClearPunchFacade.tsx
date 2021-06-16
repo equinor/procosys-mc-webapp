@@ -40,11 +40,11 @@ export type UpdatePunchData =
     | { Description: string }
     | { RaisedByOrganizationId: number }
     | { ClearingByOrganizationId: number }
-    | { DueDate: string }
+    | { DueDate: string | undefined }
     | { TypeId: number }
     | { SortingId: number }
     | { PriorityId: number }
-    | { Estimate: number };
+    | { Estimate: number | undefined };
 
 // TOOD: figure out if the things I set in punch item is what's shown in the form, because if yes, the desctiption of things like type should also be changed!!
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
@@ -58,7 +58,6 @@ const useClearPunchFacade = (
     const [organizations, setOrganizations] = useState<PunchOrganization[]>([]);
     const [sorts, setSorts] = useState<PunchSort[]>([]);
     const [priorities, setPriorities] = useState<PunchPriority[]>([]);
-    // TODO: add new things
     const [fetchOptionsStatus, setFetchOptionsStatus] = useState(
         AsyncStatus.INACTIVE
     );
@@ -137,14 +136,13 @@ const useClearPunchFacade = (
                 organizations.find((org) => org.id === parseInt(e.target.value))
             ).code,
         }));
-        updateDatabase(UpdatePunchEndpoint.RaisedBy, {
+        updateDatabase(UpdatePunchEndpoint.ClearingBy, {
             ClearingByOrganizationId: parseInt(e.target.value),
         });
     };
 
     // TODO: handle action by person change ??
 
-    // TODO: remember to do the same as in description to actually update the database!
     const handleDueDateChange = (
         e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
     ): void =>
@@ -222,11 +220,8 @@ const useClearPunchFacade = (
         }
     };
 
-    // TODO: add handlers for the new inputs
-
     useEffect(() => {
         const source = Axios.CancelToken.source();
-        // TODO: get new info (see new puunch)
         (async (): Promise<void> => {
             try {
                 const [
@@ -275,6 +270,10 @@ const useClearPunchFacade = (
         handleRaisedByChange,
         handleClearingByChange,
         handleDescriptionChange,
+        handleDueDateChange,
+        handleSortingChange,
+        handlePriorityChange,
+        handleEstimateChange,
     };
 };
 

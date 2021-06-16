@@ -33,7 +33,7 @@ export const NewPunchFormWrapper = styled.form`
     }
 `;
 
-const DateField = styled.div`
+export const DateField = styled.div`
     & > input {
         box-sizing: border-box;
         width: 100%;

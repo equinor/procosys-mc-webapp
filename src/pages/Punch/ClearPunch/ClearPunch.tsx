@@ -1,11 +1,19 @@
-import { Button, NativeSelect, TextField } from '@equinor/eds-core-react';
+import {
+    Button,
+    Label,
+    NativeSelect,
+    TextField,
+} from '@equinor/eds-core-react';
 import React from 'react';
 import ErrorPage from '../../../components/error/ErrorPage';
 import SkeletonLoadingPage from '../../../components/loading/SkeletonLoader';
 import Navbar from '../../../components/navigation/Navbar';
 import { AsyncStatus } from '../../../contexts/McAppContext';
 import PunchDetailsCard from './PunchDetailsCard';
-import { NewPunchFormWrapper } from '../../Checklist/NewPunch/NewPunchForm';
+import {
+    DateField,
+    NewPunchFormWrapper,
+} from '../../Checklist/NewPunch/NewPunchForm';
 import useClearPunchFacade, {
     UpdatePunchEndpoint,
 } from './useClearPunchFacade';
@@ -49,13 +57,22 @@ const ClearPunch = ({
         handleTypeChange,
         handleRaisedByChange,
         handleClearingByChange,
+        handleDueDateChange,
+        handleSortingChange,
+        handlePriorityChange,
+        handleEstimateChange,
     } = useClearPunchFacade(setPunchItem);
     const { api, params, url } = useCommonHooks();
 
     let descriptionBeforeEntering = '';
+    let estimateBeforeEntering: number | undefined = 0;
 
     const content = (): JSX.Element => {
-        if (fetchPunchItemStatus === AsyncStatus.SUCCESS && punchItem) {
+        if (
+            fetchPunchItemStatus === AsyncStatus.SUCCESS &&
+            punchItem &&
+            fetchOptionsStatus === AsyncStatus.SUCCESS
+        ) {
             return (
                 <>
                     <NewPunchFormWrapper onSubmit={clearPunchItem}>
@@ -162,9 +179,24 @@ const ClearPunch = ({
                         {
                             // TODO: action by person field
                         }
-                        {
-                            // TODO: date field
-                        }
+                        <DateField>
+                            <Label label="Due Date" htmlFor="dueDate2" />
+                            <input
+                                type="date"
+                                id="dueDate"
+                                role="datepicker"
+                                value={punchItem.dueDate?.split('T')[0]}
+                                onChange={handleDueDateChange}
+                                onBlur={(): void => {
+                                    updateDatabase(
+                                        UpdatePunchEndpoint.DueDate,
+                                        {
+                                            DueDate: punchItem.dueDate,
+                                        }
+                                    );
+                                }}
+                            />
+                        </DateField>
                         <NativeSelect
                             id="PunchTypeSelect"
                             label="Type"
@@ -198,7 +230,7 @@ const ClearPunch = ({
                                     (sort) => sort.code === punchItem.sorting
                                 )?.id
                             }
-                            onChange={handleTypeChange}
+                            onChange={handleSortingChange}
                         >
                             {sorts?.map((sort) => (
                                 <option
@@ -220,7 +252,7 @@ const ClearPunch = ({
                                         priority.code === punchItem.priorityCode
                                 )?.id
                             }
-                            onChange={handleTypeChange}
+                            onChange={handlePriorityChange}
                         >
                             {priorities?.map((priority) => (
                                 <option
@@ -229,8 +261,32 @@ const ClearPunch = ({
                                 >{`${priority.code}. ${priority.description}`}</option>
                             ))}
                         </NativeSelect>
+                        <TextField
+                            type="number"
+                            defaultValue={punchItem.estimate}
+                            label="Estimate"
+                            id="Estimate"
+                            disabled={clearPunchStatus === AsyncStatus.LOADING}
+                            onFocus={(): number | undefined =>
+                                (estimateBeforeEntering = punchItem.estimate)
+                            }
+                            onBlur={(): void => {
+                                if (
+                                    punchItem.estimate !==
+                                    estimateBeforeEntering
+                                ) {
+                                    updateDatabase(
+                                        UpdatePunchEndpoint.Estimate,
+                                        {
+                                            Estimate: punchItem.estimate,
+                                        }
+                                    );
+                                }
+                            }}
+                            onChange={handleEstimateChange}
+                        />
                         {
-                            // TODO: estimate field
+                            // TODO: add attachments
                         }
                         <Button
                             type="submit"
@@ -244,7 +300,10 @@ const ClearPunch = ({
                     </NewPunchFormWrapper>
                 </>
             );
-        } else if (fetchPunchItemStatus === AsyncStatus.ERROR) {
+        } else if (
+            fetchPunchItemStatus === AsyncStatus.ERROR ||
+            fetchOptionsStatus === AsyncStatus.ERROR
+        ) {
             return (
                 <ErrorPage
                     title="Unable to load punch item."
