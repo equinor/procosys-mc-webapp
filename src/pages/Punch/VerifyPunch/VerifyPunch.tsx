@@ -9,7 +9,6 @@ import { PunchAction } from '../ClearPunch/useClearPunchFacade';
 import useSnackbar from '../../../utils/useSnackbar';
 import removeSubdirectories from '../../../utils/removeSubdirectories';
 import { Attachments } from '@equinor/procosys-webapp-components';
-import AsyncPage from '../../../components/AsyncPage';
 
 const VerifyPunchWrapper = styled.main`
     padding: 16px 4% 78px 4%;
@@ -115,107 +114,91 @@ const VerifyPunch = ({ punchItem }: VerifyPunchProps): JSX.Element => {
     };
 
     return (
-        <>
-            {punchItem ? (
-                <VerifyPunchWrapper>
-                    <label>Category:</label>
-                    <p>{punchItem.status}</p>
-                    <label>Type:</label>
-                    <p>
-                        {punchItem.typeCode}. {punchItem.typeDescription}
-                    </p>
-                    <label>Description:</label>
-                    <p>{punchItem.description}</p>
-                    <label>Raised By:</label>
-                    <p>
-                        {punchItem.raisedByCode}.{' '}
-                        {punchItem.raisedByDescription}
-                    </p>
-                    <label>Clearing by:</label>
-                    <p>
-                        {punchItem.clearingByCode}.{' '}
-                        {punchItem.clearingByDescription}
-                    </p>
-                    <label>Priority:</label>
-                    <p>
-                        {punchItem.priorityCode
-                            ? `${punchItem.priorityCode} . ${punchItem.priorityDescription}`
-                            : '--'}
-                    </p>
-                    <label>Estimate:</label>
-                    <p>{punchItem.estimate ?? '--'}</p>
-                    <label>Due date:</label>
-                    <p>{punchItem.dueDate ?? '--'}</p>
-                    <label>Action by person:</label>
-                    <p>
-                        {punchItem.actionByPerson
-                            ? `${punchItem.actionByPersonFirstName} ${punchItem.actionByPersonLastName}`
-                            : '--'}
-                    </p>
-                    <label>Signatures:</label>
-                    {punchItem.clearedAt ? (
-                        <p>
-                            Cleared at{' '}
-                            {new Date(punchItem.clearedAt).toLocaleDateString(
-                                'en-GB'
-                            )}{' '}
-                            by {punchItem.clearedByFirstName}{' '}
-                            {punchItem.clearedByLastName} (
-                            {punchItem.clearedByUser})
-                        </p>
-                    ) : null}
-                    {punchItem.verifiedAt ? (
-                        <p>
-                            Verified at{' '}
-                            {new Date(
-                                punchItem.verifiedAt
-                            ).toLocaleDateString()}{' '}
-                            by {punchItem.verifiedByFirstName}{' '}
-                            {punchItem.verifiedByLastName} (
-                            {punchItem.verifiedByUser})
-                        </p>
-                    ) : null}
-                    {punchItem.rejectedAt ? (
-                        <p>
-                            Rejected at{' '}
-                            {new Date(punchItem.rejectedAt).toLocaleDateString(
-                                'en-GB'
-                            )}{' '}
-                            by {punchItem.rejectedByFirstName}{' '}
-                            {punchItem.rejectedByLastName} (
-                            {punchItem.rejectedByUser})
-                        </p>
-                    ) : null}
-
-                    <Attachments
-                        readOnly
-                        getAttachments={(
-                            cancelToken: CancelToken
-                        ): Promise<Attachment[]> =>
-                            api.getPunchAttachments(
-                                params.plant,
-                                punchItem.id.toString(),
-                                cancelToken
-                            )
-                        }
-                        getAttachment={(
-                            cancelToken: CancelToken,
-                            attachmentId: number
-                        ): Promise<Blob> =>
-                            api.getPunchAttachment(
-                                cancelToken,
-                                params.plant,
-                                params.punchItemId,
-                                attachmentId
-                            )
-                        }
-                        setSnackbarText={setSnackbarText}
-                    />
-                    <ButtonGroup>{determineButtonsToRender()}</ButtonGroup>
-                </VerifyPunchWrapper>
+        <VerifyPunchWrapper>
+            <label>Category:</label>
+            <p>{punchItem.status}</p>
+            <label>Type:</label>
+            <p>
+                {punchItem.typeCode}. {punchItem.typeDescription}
+            </p>
+            <label>Description:</label>
+            <p>{punchItem.description}</p>
+            <label>Raised By:</label>
+            <p>
+                {punchItem.raisedByCode}. {punchItem.raisedByDescription}
+            </p>
+            <label>Clearing by:</label>
+            <p>
+                {punchItem.clearingByCode}. {punchItem.clearingByDescription}
+            </p>
+            <label>Priority:</label>
+            <p>
+                {punchItem.priorityCode
+                    ? `${punchItem.priorityCode} . ${punchItem.priorityDescription}`
+                    : '--'}
+            </p>
+            <label>Estimate:</label>
+            <p>{punchItem.estimate ?? '--'}</p>
+            <label>Due date:</label>
+            <p>{punchItem.dueDate ?? '--'}</p>
+            <label>Action by person:</label>
+            <p>
+                {punchItem.actionByPerson
+                    ? `${punchItem.actionByPersonFirstName} ${punchItem.actionByPersonLastName}`
+                    : '--'}
+            </p>
+            <label>Signatures:</label>
+            {punchItem.clearedAt ? (
+                <p>
+                    Cleared at{' '}
+                    {new Date(punchItem.clearedAt).toLocaleDateString('en-GB')}{' '}
+                    by {punchItem.clearedByFirstName}{' '}
+                    {punchItem.clearedByLastName} ({punchItem.clearedByUser})
+                </p>
             ) : null}
-            {snackbar}
-        </>
+            {punchItem.verifiedAt ? (
+                <p>
+                    Verified at{' '}
+                    {new Date(punchItem.verifiedAt).toLocaleDateString()} by{' '}
+                    {punchItem.verifiedByFirstName}{' '}
+                    {punchItem.verifiedByLastName} ({punchItem.verifiedByUser})
+                </p>
+            ) : null}
+            {punchItem.rejectedAt ? (
+                <p>
+                    Rejected at{' '}
+                    {new Date(punchItem.rejectedAt).toLocaleDateString('en-GB')}{' '}
+                    by {punchItem.rejectedByFirstName}{' '}
+                    {punchItem.rejectedByLastName} ({punchItem.rejectedByUser})
+                </p>
+            ) : null}
+
+            <Attachments
+                readOnly
+                getAttachments={(
+                    cancelToken: CancelToken
+                ): Promise<Attachment[]> =>
+                    api.getPunchAttachments(
+                        params.plant,
+                        punchItem.id.toString(),
+                        cancelToken
+                    )
+                }
+                getAttachment={(
+                    cancelToken: CancelToken,
+                    attachmentId: number
+                ): Promise<Blob> =>
+                    api.getPunchAttachment(
+                        cancelToken,
+                        params.plant,
+                        params.punchItemId,
+                        attachmentId
+                    )
+                }
+                setSnackbarText={setSnackbarText}
+            />
+            <ButtonGroup>{determineButtonsToRender()}</ButtonGroup>
+        </VerifyPunchWrapper>
     );
 };
 
