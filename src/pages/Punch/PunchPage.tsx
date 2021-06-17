@@ -58,7 +58,6 @@ const PunchPage = (): JSX.Element => {
                             React.SetStateAction<PunchItem>
                         >
                     }
-                    fetchPunchItemStatus={fetchPunchStatus}
                 />
             );
         }

@@ -35,13 +35,11 @@ export const PunchWrapper = styled.main``;
 type ClearPunchProps = {
     punchItem: PunchItem;
     setPunchItem: React.Dispatch<React.SetStateAction<PunchItem>>;
-    fetchPunchItemStatus: AsyncStatus;
 };
 
 const ClearPunch = ({
     punchItem,
     setPunchItem,
-    fetchPunchItemStatus,
 }: ClearPunchProps): JSX.Element => {
     const {
         updatePunchStatus,
@@ -75,11 +73,7 @@ const ClearPunch = ({
     let estimateBeforeEntering: number | undefined = 0;
 
     const content = (): JSX.Element => {
-        if (
-            fetchPunchItemStatus === AsyncStatus.SUCCESS &&
-            punchItem &&
-            fetchOptionsStatus === AsyncStatus.SUCCESS
-        ) {
+        if (fetchOptionsStatus === AsyncStatus.SUCCESS) {
             return (
                 <>
                     {showPersonsSearch ? (
@@ -393,10 +387,7 @@ const ClearPunch = ({
                     </NewPunchFormWrapper>
                 </>
             );
-        } else if (
-            fetchPunchItemStatus === AsyncStatus.ERROR ||
-            fetchOptionsStatus === AsyncStatus.ERROR
-        ) {
+        } else if (fetchOptionsStatus === AsyncStatus.ERROR) {
             return (
                 <ErrorPage
                     title="Unable to load punch item."
