@@ -139,6 +139,8 @@ const VerifyPunch = ({ punchItem }: VerifyPunchProps): JSX.Element => {
             <p>
                 {punchItem.typeCode}. {punchItem.typeDescription}
             </p>
+            <label>Sorting:</label>
+            <p>{punchItem.sorting ?? '--'}</p>
             <label>Priority:</label>
             <p>
                 {punchItem.priorityCode
