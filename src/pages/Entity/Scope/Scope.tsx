@@ -4,8 +4,8 @@ import { AsyncStatus } from '../../../contexts/McAppContext';
 import { ChecklistPreview } from '../../../services/apiTypes';
 import useCommonHooks from '../../../utils/useCommonHooks';
 import AsyncPage from '../../../components/AsyncPage';
-import ScopeItem from './ScopeItem';
 import Axios from 'axios';
+import { InfoItem } from '@equinor/procosys-webapp-components';
 
 export const ScopeWrapper = styled.div`
     & h3 {
@@ -15,7 +15,7 @@ export const ScopeWrapper = styled.div`
 `;
 
 const Scope = (): JSX.Element => {
-    const { params, api } = useCommonHooks();
+    const { params, api, url, history } = useCommonHooks();
     const [scope, setScope] = useState<ChecklistPreview[]>();
     const [fetchScopeStatus, setFetchScopeStatus] = useState(
         AsyncStatus.LOADING
@@ -58,7 +58,25 @@ const Scope = (): JSX.Element => {
             >
                 <div>
                     {scope?.map((checklist) => (
-                        <ScopeItem checklist={checklist} key={checklist.id} />
+                        <InfoItem
+                            isScope
+                            key={checklist.id}
+                            attachments={checklist.attachmentCount}
+                            status={checklist.status}
+                            statusLetters={[
+                                checklist.isSigned ? 'S' : null,
+                                checklist.isVerified ? 'V' : null,
+                            ]}
+                            headerText={checklist.tagNo.toString()}
+                            description={checklist.tagDescription}
+                            chips={[
+                                checklist.formularType,
+                                checklist.responsibleCode,
+                            ]}
+                            onClick={(): void =>
+                                history.push(`${url}/checklist/${checklist.id}`)
+                            }
+                        />
                     ))}
                 </div>
             </AsyncPage>
