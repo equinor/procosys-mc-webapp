@@ -163,6 +163,18 @@ export const server = setupServer(
 
     rest.get(ENDPOINTS.getPersons, (_, response, context) => {
         return response(context.json(dummyPersonsSearch), context.status(200));
+    }),
+    rest.post(ENDPOINTS.postPunchReject, (_, response, context) => {
+        return response(context.status(200));
+    }),
+    rest.post(ENDPOINTS.postPunchUnclear, (_, response, context) => {
+        return response(context.status(200));
+    }),
+    rest.post(ENDPOINTS.postPunchReject, (_, response, context) => {
+        return response(context.status(200));
+    }),
+    rest.post(ENDPOINTS.postPunchReject, (_, response, context) => {
+        return response(context.status(200));
     })
 );
 

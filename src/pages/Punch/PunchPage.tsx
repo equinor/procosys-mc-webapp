@@ -14,11 +14,14 @@ import { PunchItem } from '../../services/apiTypes';
 import { AsyncStatus } from '../../contexts/McAppContext';
 import VerifyPunch from './VerifyPunch/VerifyPunch';
 import SkeletonLoadingPage from '../../components/loading/SkeletonLoader';
-import ErrorPage from '../../components/error/ErrorPage';
+import { InfoItem } from '@equinor/procosys-webapp-components';
+import { DetailsWrapper } from '../Entity/EntityPage';
+import { DotProgress } from '@equinor/eds-core-react';
+import AsyncPage from '../../components/AsyncPage';
 
 const PunchPage = (): JSX.Element => {
     const { api, params, path, history, url } = useCommonHooks();
-    const [punch, setPunch] = useState<PunchItem>({} as PunchItem);
+    const [punch, setPunch] = useState<PunchItem>();
     const [fetchPunchStatus, setFetchPunchStatus] = useState<AsyncStatus>(
         AsyncStatus.LOADING
     );
@@ -46,19 +49,51 @@ const PunchPage = (): JSX.Element => {
     const determineComponentToRender = (): JSX.Element => {
         if (punch != undefined) {
             return punch.clearedAt ? (
-                <VerifyPunch
-                    punchItem={punch}
-                    fetchPunchItemStatus={fetchPunchStatus}
-                />
+                <VerifyPunch punchItem={punch} />
             ) : (
                 <ClearPunch
                     punchItem={punch}
-                    setPunchItem={setPunch}
+                    setPunchItem={
+                        setPunch as React.Dispatch<
+                            React.SetStateAction<PunchItem>
+                        >
+                    }
                     fetchPunchItemStatus={fetchPunchStatus}
                 />
             );
         }
         return <SkeletonLoadingPage />;
+    };
+
+    const determineDetailsCard = (): JSX.Element => {
+        if (punch && fetchPunchStatus === AsyncStatus.SUCCESS) {
+            return (
+                <InfoItem
+                    isDetailsCard
+                    status={punch.status}
+                    statusLetters={[
+                        punch.clearedByFirstName ? 'C' : null,
+                        punch.verifiedByFirstName ? 'V' : null,
+                    ]}
+                    headerText={punch.tagNo}
+                    description={punch.tagDescription}
+                    attachments={punch.attachmentCount}
+                    chips={[punch.id.toString(), punch.formularType]}
+                />
+            );
+        } else if (fetchPunchStatus === AsyncStatus.LOADING) {
+            return (
+                <DetailsWrapper>
+                    <DotProgress color="primary" />
+                </DetailsWrapper>
+            );
+        } else {
+            return (
+                <DetailsWrapper>
+                    Unable to load details. Please reload
+                </DetailsWrapper>
+            );
+        }
     };
 
     return (
@@ -70,18 +105,24 @@ const PunchPage = (): JSX.Element => {
                     url: `${removeSubdirectories(url, 2)}/punch-list`,
                 }}
             />
-            <Switch>
-                <Route
-                    exact
-                    path={`${path}/tag-info`}
-                    render={(): JSX.Element => <h1>tag info</h1>}
-                />
-                <Route
-                    exact
-                    path={`${path}`}
-                    render={determineComponentToRender}
-                />
-            </Switch>
+            {determineDetailsCard()}
+            <AsyncPage
+                fetchStatus={fetchPunchStatus}
+                errorMessage={'Unable to load punch item.'}
+            >
+                <Switch>
+                    <Route
+                        exact
+                        path={`${path}/tag-info`}
+                        render={(): JSX.Element => <h1>tag info</h1>}
+                    />
+                    <Route
+                        exact
+                        path={`${path}`}
+                        render={determineComponentToRender}
+                    />
+                </Switch>
+            </AsyncPage>
             <NavigationFooter>
                 <FooterButton
                     active={!history.location.pathname.includes('/tag-info')}
