@@ -26,7 +26,7 @@ import { CancelToken } from 'axios';
 import ensure from '../../../utils/ensure';
 import removeSubdirectories from '../../../utils/removeSubdirectories';
 import { Attachment, PunchItem } from '../../../services/apiTypes';
-import PersonsSearch from '../../Checklist/NewPunch/PersonsSearch/PersonsSearch';
+import PersonsSearch from '../../../components/PersonsSearch/PersonsSearch';
 import { COLORS } from '../../../style/GlobalStyles';
 import { Attachments } from '@equinor/procosys-webapp-components';
 

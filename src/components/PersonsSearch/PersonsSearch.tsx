@@ -1,10 +1,10 @@
 import { Button } from '@equinor/eds-core-react';
 import React, { ChangeEvent, useEffect, useRef } from 'react';
 import styled from 'styled-components';
-import SkeletonLoadingPage from '../../../../components/loading/SkeletonLoader';
-import { COLORS } from '../../../../style/GlobalStyles';
-import { TallSearchField } from '../../../Search/SearchArea/SearchArea';
-import { SearchStatus } from '../../../Search/useSearchPageFacade';
+import SkeletonLoadingPage from '../loading/SkeletonLoader';
+import { COLORS } from '../../style/GlobalStyles';
+import { TallSearchField } from '../../pages/Search/SearchArea/SearchArea';
+import { SearchStatus } from '../../pages/Search/useSearchPageFacade';
 import usePersonsSearchFacade from './usePersonsSearchFacade';
 
 const PersonsSearchWrapper = styled.div`

@@ -17,7 +17,7 @@ import {
 } from '../../../services/apiTypes';
 import { COLORS } from '../../../style/GlobalStyles';
 import { ChosenPerson, PunchFormData } from './NewPunch';
-import PersonsSearch from './PersonsSearch/PersonsSearch';
+import PersonsSearch from '../../../components/PersonsSearch/PersonsSearch';
 
 export const NewPunchFormWrapper = styled.form`
     background-color: ${COLORS.white};
