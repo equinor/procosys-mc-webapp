@@ -4,6 +4,8 @@ import styled from 'styled-components';
 import AsyncPage from '../../components/AsyncPage';
 import { AsyncStatus } from '../../contexts/McAppContext';
 import { PunchPreview } from '../../services/apiTypes';
+import removeSubdirectories from '../../utils/removeSubdirectories';
+import useCommonHooks from '../../utils/useCommonHooks';
 
 const FillHeightWrapper = styled.div`
     min-height: calc(100vh - 203px);
@@ -20,6 +22,7 @@ const ChecklistPunchList = ({
     punchList,
     fetchPunchListStatus,
 }: ChecklistPunchListProps): JSX.Element => {
+    const { history, url } = useCommonHooks();
     return (
         <AsyncPage
             fetchStatus={fetchPunchListStatus}
@@ -38,6 +41,13 @@ const ChecklistPunchList = ({
                         attachments={punch.attachmentCount}
                         headerText={punch.id.toString()}
                         description={punch.description}
+                        onClick={(): void =>
+                            history.push(
+                                `${removeSubdirectories(url, 1)}/punch-item/${
+                                    punch.id
+                                }`
+                            )
+                        }
                     />
                 ))}
             </FillHeightWrapper>
