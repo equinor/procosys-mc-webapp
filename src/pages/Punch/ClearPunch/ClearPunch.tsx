@@ -244,12 +244,16 @@ const ClearPunch = ({
                                 types.length < 1
                             }
                             defaultValue={
-                                types.find(
-                                    (type) => type.code === punchItem.typeCode
-                                )?.id
+                                punchItem.typeCode
+                                    ? types.find(
+                                          (type) =>
+                                              type.code === punchItem.typeCode
+                                      )?.id
+                                    : ''
                             }
                             onChange={handleTypeChange}
                         >
+                            <option hidden disabled value={''} />
                             {types?.map((type) => (
                                 <option
                                     key={type.id}
@@ -265,12 +269,16 @@ const ClearPunch = ({
                                 sorts.length < 1
                             }
                             defaultValue={
-                                sorts.find(
-                                    (sort) => sort.code === punchItem.sorting
-                                )?.id
+                                punchItem.sorting
+                                    ? sorts.find(
+                                          (sort) =>
+                                              sort.code === punchItem.sorting
+                                      )?.id
+                                    : ''
                             }
                             onChange={handleSortingChange}
                         >
+                            <option hidden disabled value={''} />
                             {sorts?.map((sort) => (
                                 <option
                                     key={sort.id}
@@ -286,13 +294,17 @@ const ClearPunch = ({
                                 priorities.length < 1
                             }
                             defaultValue={
-                                priorities.find(
-                                    (priority) =>
-                                        priority.code === punchItem.priorityCode
-                                )?.id
+                                punchItem.priorityCode
+                                    ? priorities.find(
+                                          (priority) =>
+                                              priority.code ===
+                                              punchItem.priorityCode
+                                      )?.id
+                                    : ''
                             }
                             onChange={handlePriorityChange}
                         >
+                            <option hidden disabled value={''} />
                             {priorities?.map((priority) => (
                                 <option
                                     key={priority.id}
