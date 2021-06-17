@@ -108,7 +108,7 @@ const PunchPage = (): JSX.Element => {
             {determineDetailsCard()}
             <AsyncPage
                 fetchStatus={fetchPunchStatus}
-                errorMessage={'Unable to load punch'}
+                errorMessage={'Unable to load punch item.'}
             >
                 <Switch>
                     <Route
