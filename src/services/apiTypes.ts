@@ -175,7 +175,7 @@ export interface ChecklistResponse {
 
 export interface PunchCategory {
     id: number;
-    code: string;
+    code: CompletionStatus;
     description: string;
 }
 
@@ -225,7 +225,7 @@ export interface PunchItem {
     id: number;
     checklistId: number;
     formularType: string;
-    status: string;
+    status: CompletionStatus;
     description: string;
     typeCode: string;
     typeDescription: string;
