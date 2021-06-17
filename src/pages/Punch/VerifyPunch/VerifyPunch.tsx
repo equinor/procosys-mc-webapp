@@ -117,10 +117,6 @@ const VerifyPunch = ({ punchItem }: VerifyPunchProps): JSX.Element => {
         <VerifyPunchWrapper>
             <label>Category:</label>
             <p>{punchItem.status}</p>
-            <label>Type:</label>
-            <p>
-                {punchItem.typeCode}. {punchItem.typeDescription}
-            </p>
             <label>Description:</label>
             <p>{punchItem.description}</p>
             <label>Raised By:</label>
@@ -131,6 +127,18 @@ const VerifyPunch = ({ punchItem }: VerifyPunchProps): JSX.Element => {
             <p>
                 {punchItem.clearingByCode}. {punchItem.clearingByDescription}
             </p>
+            <label>Action by person:</label>
+            <p>
+                {punchItem.actionByPerson
+                    ? `${punchItem.actionByPersonFirstName} ${punchItem.actionByPersonLastName}`
+                    : '--'}
+            </p>
+            <label>Due date:</label>
+            <p>{punchItem.dueDate ?? '--'}</p>
+            <label>Type:</label>
+            <p>
+                {punchItem.typeCode}. {punchItem.typeDescription}
+            </p>
             <label>Priority:</label>
             <p>
                 {punchItem.priorityCode
@@ -139,14 +147,6 @@ const VerifyPunch = ({ punchItem }: VerifyPunchProps): JSX.Element => {
             </p>
             <label>Estimate:</label>
             <p>{punchItem.estimate ?? '--'}</p>
-            <label>Due date:</label>
-            <p>{punchItem.dueDate ?? '--'}</p>
-            <label>Action by person:</label>
-            <p>
-                {punchItem.actionByPerson
-                    ? `${punchItem.actionByPersonFirstName} ${punchItem.actionByPersonLastName}`
-                    : '--'}
-            </p>
             <label>Signatures:</label>
             {punchItem.clearedAt ? (
                 <p>
