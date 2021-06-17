@@ -142,10 +142,16 @@ const VerifyPunch = ({ punchItem }: VerifyPunchProps): JSX.Element => {
                             ? `${punchItem.priorityCode} . ${punchItem.priorityDescription}`
                             : '--'}
                     </p>
-                    <label>Due date:</label>
-                    <p>{punchItem.dueDate ?? '--'}</p>
                     <label>Estimate:</label>
                     <p>{punchItem.estimate ?? '--'}</p>
+                    <label>Due date:</label>
+                    <p>{punchItem.dueDate ?? '--'}</p>
+                    <label>Action by person:</label>
+                    <p>
+                        {punchItem.actionByPerson
+                            ? `${punchItem.actionByPersonFirstName} ${punchItem.actionByPersonLastName}`
+                            : '--'}
+                    </p>
                     <label>Signatures:</label>
                     {punchItem.clearedAt ? (
                         <p>
