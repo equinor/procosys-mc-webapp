@@ -69,6 +69,7 @@ const PunchPage = (): JSX.Element => {
                     name: 'back',
                     url: `${removeSubdirectories(url, 2)}/punch-list`,
                 }}
+                midContent="Punch Item"
             />
             <Switch>
                 <Route

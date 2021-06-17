@@ -385,7 +385,7 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
 
     const postPunchAttachment = async (
         plantId: string,
-        punchId: string,
+        punchId: number,
         file: FormData,
         title: string
     ): Promise<void> => {

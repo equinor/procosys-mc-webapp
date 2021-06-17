@@ -12,6 +12,7 @@ import { AsyncStatus } from '../../../contexts/McAppContext';
 import PunchDetailsCard from './PunchDetailsCard';
 import {
     DateField,
+    FormButton,
     NewPunchFormWrapper,
 } from '../../Checklist/NewPunch/NewPunchForm';
 import useClearPunchFacade, {
@@ -24,9 +25,10 @@ import EdsIcon from '../../../components/icons/EdsIcon';
 import { CancelToken } from 'axios';
 import ensure from '../../../utils/ensure';
 import removeSubdirectories from '../../../utils/removeSubdirectories';
-import { PunchItem } from '../../../services/apiTypes';
+import { Attachment, PunchItem } from '../../../services/apiTypes';
 import PersonsSearch from '../../Checklist/NewPunch/PersonsSearch/PersonsSearch';
 import { COLORS } from '../../../style/GlobalStyles';
+import { Attachments } from '@equinor/procosys-webapp-components';
 
 export const PunchWrapper = styled.main``;
 
@@ -322,10 +324,52 @@ const ClearPunch = ({
                             }}
                             onChange={handleEstimateChange}
                         />
-                        {
-                            // TODO: add attachments
-                        }
-                        <Button
+                        <h5>Attachments</h5>
+                        <Attachments
+                            getAttachments={(
+                                cancelToken: CancelToken
+                            ): Promise<Attachment[]> =>
+                                api.getPunchAttachments(
+                                    params.plant,
+                                    params.punchItemId,
+                                    cancelToken
+                                )
+                            }
+                            getAttachment={(
+                                cancelToken: CancelToken,
+                                attachmentId: number
+                            ): Promise<Blob> =>
+                                api.getPunchAttachment(
+                                    cancelToken,
+                                    params.plant,
+                                    params.punchItemId,
+                                    attachmentId
+                                )
+                            }
+                            postAttachment={(
+                                file: FormData,
+                                title: string
+                            ): Promise<void> =>
+                                api.postPunchAttachment(
+                                    params.plant,
+                                    punchItem.id,
+                                    file,
+                                    title
+                                )
+                            }
+                            deleteAttachment={(
+                                attachmentId: number
+                            ): Promise<void> =>
+                                api.deletePunchAttachment(
+                                    params.plant,
+                                    params.punchItemId,
+                                    attachmentId
+                                )
+                            }
+                            setSnackbarText={setSnackbarText}
+                            readOnly={false}
+                        />
+                        <FormButton
                             type="submit"
                             disabled={
                                 updatePunchStatus === AsyncStatus.LOADING ||
@@ -333,7 +377,7 @@ const ClearPunch = ({
                             }
                         >
                             Clear
-                        </Button>
+                        </FormButton>
                     </NewPunchFormWrapper>
                 </>
             );

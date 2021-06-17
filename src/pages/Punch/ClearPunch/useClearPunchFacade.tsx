@@ -67,6 +67,7 @@ const useClearPunchFacade = (
     const [clearPunchStatus, setClearPunchStatus] = useState(
         AsyncStatus.INACTIVE
     );
+    const source = Axios.CancelToken.source();
 
     const updateDatabase = async (
         endpoint: UpdatePunchEndpoint,
@@ -236,7 +237,6 @@ const useClearPunchFacade = (
     };
 
     useEffect(() => {
-        const source = Axios.CancelToken.source();
         (async (): Promise<void> => {
             try {
                 const [
@@ -292,6 +292,7 @@ const useClearPunchFacade = (
         handleEstimateChange,
         showPersonsSearch,
         setShowPersonsSearch,
+        cancelToken: source.cancel,
     };
 };
 

@@ -23,13 +23,17 @@ export const NewPunchFormWrapper = styled.form`
     background-color: ${COLORS.white};
     padding: 0 4% 66px 4%;
     overflow: hidden;
-    & > button,
-    button:disabled {
-        float: right;
-        margin: 16px 0;
-    }
     & > div {
         margin-top: 16px;
+    }
+`;
+
+export const FormButton = styled(Button)`
+    float: right;
+    margin: 16px 0;
+    & :disabled {
+        float: right;
+        margin: 16px 0;
     }
 `;
 
@@ -266,12 +270,12 @@ const NewPunchForm = ({
                     disabled={submitPunchStatus === AsyncStatus.LOADING}
                 />
                 {children}
-                <Button
+                <FormButton
                     type="submit"
                     disabled={submitPunchStatus === AsyncStatus.LOADING}
                 >
                     {buttonText}
-                </Button>
+                </FormButton>
             </NewPunchFormWrapper>
         </>
     );
