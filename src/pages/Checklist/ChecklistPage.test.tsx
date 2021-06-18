@@ -26,7 +26,7 @@ const renderChecklistPage = (contentType?: string): void => {
                         }`,
                     ]}
                 >
-                    <Route path="/:plant/:project/:searchType/:itemId/checklist/:checklistId">
+                    <Route path="/:plant/:project/:searchType/:entityId/checklist/:checklistId">
                         <ChecklistPage />
                     </Route>
                 </MemoryRouter>
@@ -50,8 +50,7 @@ const expectFooter = async (): Promise<void> => {
 };
 
 const expectTagInfoPage = async (): Promise<void> => {
-    // TODO: change the expect once the finished tag info page is routed to in ChecklistPage
-    expect(await screen.findByText('tag info')).toBeInTheDocument();
+    expect(await screen.findByText('Main tag info')).toBeInTheDocument();
 };
 
 const expectNewPunchPage = async (): Promise<void> => {
@@ -61,8 +60,9 @@ const expectNewPunchPage = async (): Promise<void> => {
 };
 
 const expectPunchListPage = async (): Promise<void> => {
-    // TODO: change the expect once the finished punch list page is routed to in ChecklistPage
-    expect(await screen.findByText('punch list')).toBeInTheDocument();
+    expect(
+        await screen.findByText('Test punch description')
+    ).toBeInTheDocument();
 };
 
 describe('<ChecklistPage>', () => {
@@ -74,12 +74,12 @@ describe('<ChecklistPage>', () => {
     });
     it('Shows an error message in the details card if the getChecklist API call fails', async () => {
         causeApiError(ENDPOINTS.getChecklist, 'get');
-        renderChecklistPage('tag-info');
+        renderChecklistPage('punch-list/new-punch');
         expect(
             await screen.findByText('Unable to load details. Please reload')
         ).toBeInTheDocument();
         await expectFooter();
-        await expectTagInfoPage();
+        await expectNewPunchPage();
     });
     it('Shows an error message in the details card if the getChecklistPunchList API call fails', async () => {
         causeApiError(ENDPOINTS.getChecklistPunchList, 'get');
@@ -93,8 +93,10 @@ describe('<ChecklistPage>', () => {
 });
 
 describe('<ChecklistPage> in-page routing', () => {
-    it.todo('Shows the Tag info if the "Tag info" button is clicked');
-    it.todo('Shows the punch list if the "Punch list" button is clicked');
+    it('Shows the Tag info if the "Tag info" button is clicked', async () => {
+        renderChecklistPage('tag-info');
+        await expectTagInfoPage();
+    });
     it('Shows the NewPunch component if the "New punch" button is clicked', async () => {
         renderChecklistPage('punch-list');
         await expectDetails();
@@ -114,7 +116,7 @@ describe('<ChecklistPage> in-page routing', () => {
         await expectDetails();
         await expectNewPunchPage();
         await expectFooter();
-        const backButton = await screen.findByRole('button', {
+        const backButton = await screen.findByRole('img', {
             name: 'Back',
         });
         expect(backButton).toBeInTheDocument();
@@ -128,7 +130,6 @@ describe('<ChecklistPage> in-page routing', () => {
 const selectOption = async (
     selectFieldName: string,
     optionToBeSelected: string,
-    optionToNotBeSelected: string,
     valueToBeSelected: string,
     optionIndex = 0
 ): Promise<void> => {
@@ -137,13 +138,10 @@ const selectOption = async (
     });
     expect(selectField).toBeInTheDocument();
     // Options in select fields are always visible, since both 'Raised by' and 'Clearing by' uses same options this has to be done:
-    const firstOptions = await screen.findAllByText(optionToBeSelected);
-    const secondOptions = await screen.findAllByText(optionToNotBeSelected);
-    const firstOption = firstOptions[optionIndex];
-    const secondOption = secondOptions[optionIndex];
-    userEvent.selectOptions(selectField, firstOption);
-    expect((firstOption as HTMLOptionElement).selected).toBeTruthy();
-    expect((secondOption as HTMLOptionElement).selected).toBeFalsy();
+    const options = await screen.findAllByText(optionToBeSelected);
+    const option = options[optionIndex];
+    userEvent.selectOptions(selectField, option);
+    expect((option as HTMLOptionElement).selected).toBeTruthy();
     expect((selectField as HTMLSelectElement).value).toEqual(valueToBeSelected);
 };
 
@@ -187,7 +185,6 @@ describe('<ChecklistPage> New Punch', () => {
         await selectOption(
             'Punch category *',
             dummyPunchCategories[0].Description,
-            dummyPunchCategories[1].Description,
             dummyPunchPriorities[0].Id.toString()
         );
         // adding description
@@ -201,13 +198,11 @@ describe('<ChecklistPage> New Punch', () => {
         await selectOption(
             'Raised by *',
             dummyPunchOrganizations[0].Description,
-            dummyPunchOrganizations[1].Description,
             dummyPunchOrganizations[0].Id.toString()
         );
         await selectOption(
             'Clearing by *',
             dummyPunchOrganizations[0].Description,
-            dummyPunchOrganizations[1].Description,
             dummyPunchOrganizations[0].Id.toString(),
             1
         );
@@ -242,19 +237,16 @@ describe('<ChecklistPage> New Punch', () => {
         await selectOption(
             'Type',
             `${dummyPunchTypes[0].Code}. ${dummyPunchTypes[0].Description}`,
-            `${dummyPunchTypes[1].Code}. ${dummyPunchTypes[1].Description}`,
             dummyPunchTypes[0].Id.toString()
         );
         await selectOption(
             'Sorting',
             `${dummyPunchSorts[0].Code}. ${dummyPunchSorts[0].Description}`,
-            `${dummyPunchSorts[1].Code}. ${dummyPunchSorts[1].Description}`,
             dummyPunchSorts[0].Id.toString()
         );
         await selectOption(
             'Priority',
             `${dummyPunchPriorities[0].Code}. ${dummyPunchPriorities[0].Description}`,
-            `${dummyPunchPriorities[1].Code}. ${dummyPunchPriorities[1].Description}`,
             dummyPunchPriorities[0].Id.toString()
         );
         // adding an estimate
@@ -276,6 +268,44 @@ describe('<ChecklistPage> New Punch', () => {
             expect(
                 screen.queryByText('Action by person')
             ).not.toBeInTheDocument()
+        );
+    });
+});
+
+describe('<ChecklistPage> Tag info', () => {
+    it('Shows an error message if getTag API call fails', async () => {
+        causeApiError(ENDPOINTS.getTag, 'get');
+        renderChecklistPage('tag-info');
+        expect(
+            await screen.findByText(
+                'Unable to load tag info. Please try again.'
+            )
+        );
+    });
+    it('Shows main tag info when panel is open, and hide it when its closed', async () => {
+        renderChecklistPage('tag-info');
+        const mainInfoPanel = await screen.findByText('Main tag info');
+        expect(screen.getByText('Tag info')).toBeInTheDocument();
+        userEvent.click(mainInfoPanel);
+        expect(screen.getByText('Tag number')).not.toBeVisible();
+    });
+    it('Shows additional fields with value and unit when panel is open, and hide it when its closd', async () => {
+        renderChecklistPage('tag-info');
+        const detailsPanel = await screen.findByText('Details');
+        expect(screen.getByText('dummy-field-value ms')).toBeInTheDocument();
+        userEvent.click(detailsPanel);
+        expect(screen.getByText('dummy-field-value ms')).not.toBeVisible();
+    });
+});
+
+describe('<ChecklistPage> Punch list', () => {
+    it('Shows error message if unable to get punch preview items from API', async () => {
+        causeApiError(ENDPOINTS.getChecklistPunchList, 'get');
+        renderChecklistPage('punch-list');
+        expect(
+            await screen.findByText(
+                'Unable to get punch list. Please try again.'
+            )
         );
     });
 });

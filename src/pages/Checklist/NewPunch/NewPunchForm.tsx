@@ -17,23 +17,27 @@ import {
 } from '../../../services/apiTypes';
 import { COLORS } from '../../../style/GlobalStyles';
 import { ChosenPerson, PunchFormData } from './NewPunch';
-import PersonsSearch from './PersonsSearch/PersonsSearch';
+import PersonsSearch from '../../../components/PersonsSearch/PersonsSearch';
 
 export const NewPunchFormWrapper = styled.form`
     background-color: ${COLORS.white};
     padding: 0 4% 66px 4%;
     overflow: hidden;
-    & > button,
-    button:disabled {
-        float: right;
-        margin: 16px 0;
-    }
     & > div {
         margin-top: 16px;
     }
 `;
 
-const DateField = styled.div`
+export const FormButton = styled(Button)`
+    float: right;
+    margin: 16px 0;
+    & :disabled {
+        float: right;
+        margin: 16px 0;
+    }
+`;
+
+export const DateField = styled.div`
     & > input {
         box-sizing: border-box;
         width: 100%;
@@ -55,7 +59,7 @@ type NewPunchFormProps = {
     categories: PunchCategory[];
     organizations: PunchOrganization[];
     types: PunchType[];
-    sorts: PunchSort[];
+    sortings: PunchSort[];
     priorities: PunchPriority[];
     chosenPerson: ChosenPerson;
     setChosenPerson: React.Dispatch<React.SetStateAction<ChosenPerson>>;
@@ -87,7 +91,7 @@ const NewPunchForm = ({
     categories,
     organizations,
     types,
-    sorts,
+    sortings,
     priorities,
     chosenPerson,
     setChosenPerson,
@@ -100,8 +104,12 @@ const NewPunchForm = ({
 }: NewPunchFormProps): JSX.Element => {
     const [showPersonsSearch, setShowPersonsSearch] = useState(false);
 
-    const handlePersonChosen = (id: number, name: string): void => {
-        setChosenPerson({ id, name });
+    const handlePersonChosen = (
+        id: number,
+        firstName: string,
+        lastName: string
+    ): void => {
+        setChosenPerson({ id, name: `${firstName} ${lastName}` });
         setShowPersonsSearch(false);
     };
 
@@ -120,8 +128,9 @@ const NewPunchForm = ({
                     label="Punch category *"
                     disabled={submitPunchStatus === AsyncStatus.LOADING}
                     onChange={createChangeHandler('category')}
+                    defaultValue={''}
                 >
-                    <option hidden disabled selected />
+                    <option hidden disabled value={''} />
                     {categories.map((category) => (
                         <option
                             key={category.id}
@@ -146,8 +155,9 @@ const NewPunchForm = ({
                     id="RaisedBySelect"
                     disabled={submitPunchStatus === AsyncStatus.LOADING}
                     onChange={createChangeHandler('raisedBy')}
+                    defaultValue={''}
                 >
-                    <option hidden disabled selected />
+                    <option hidden disabled value={''} />
                     {organizations.map((organization) => (
                         <option key={organization.id} value={organization.id}>
                             {organization.description}
@@ -160,8 +170,9 @@ const NewPunchForm = ({
                     label="Clearing by *"
                     disabled={submitPunchStatus === AsyncStatus.LOADING}
                     onChange={createChangeHandler('clearingBy')}
+                    defaultValue={''}
                 >
-                    <option hidden disabled selected />
+                    <option hidden disabled value={''} />
                     {organizations.map((organization) => (
                         <option key={organization.id} value={organization.id}>
                             {organization.description}
@@ -199,10 +210,14 @@ const NewPunchForm = ({
                 <NativeSelect
                     id="PunchTypeSelect"
                     label="Type"
-                    disabled={submitPunchStatus === AsyncStatus.LOADING}
+                    disabled={
+                        submitPunchStatus === AsyncStatus.LOADING ||
+                        types.length < 1
+                    }
                     onChange={createChangeHandler('type')}
+                    defaultValue={''}
                 >
-                    <option hidden disabled selected />
+                    <option hidden disabled value={''} />
                     {types.map((type) => (
                         <option
                             key={type.id}
@@ -213,11 +228,15 @@ const NewPunchForm = ({
                 <NativeSelect
                     id="PunchSortingSelect"
                     label="Sorting"
-                    disabled={submitPunchStatus === AsyncStatus.LOADING}
+                    disabled={
+                        submitPunchStatus === AsyncStatus.LOADING ||
+                        sortings.length < 1
+                    }
                     onChange={createChangeHandler('sorting')}
+                    defaultValue={''}
                 >
-                    <option hidden disabled selected />
-                    {sorts.map((sort) => (
+                    <option hidden disabled value={''} />
+                    {sortings.map((sort) => (
                         <option
                             key={sort.id}
                             value={sort.id}
@@ -227,10 +246,14 @@ const NewPunchForm = ({
                 <NativeSelect
                     id="PunchPrioritySelect"
                     label="Priority"
-                    disabled={submitPunchStatus === AsyncStatus.LOADING}
+                    disabled={
+                        submitPunchStatus === AsyncStatus.LOADING ||
+                        priorities.length < 1
+                    }
                     onChange={createChangeHandler('priority')}
+                    defaultValue={''}
                 >
-                    <option hidden disabled selected />
+                    <option hidden disabled value={''} />
                     {priorities.map((priority) => (
                         <option
                             key={priority.id}
@@ -247,12 +270,12 @@ const NewPunchForm = ({
                     disabled={submitPunchStatus === AsyncStatus.LOADING}
                 />
                 {children}
-                <Button
+                <FormButton
                     type="submit"
                     disabled={submitPunchStatus === AsyncStatus.LOADING}
                 >
                     {buttonText}
-                </Button>
+                </FormButton>
             </NewPunchFormWrapper>
         </>
     );

@@ -1,23 +1,18 @@
 import { Button } from '@equinor/eds-core-react';
-import axios, { CancelToken } from 'axios';
-import React, { useEffect, useState } from 'react';
+import { CancelToken } from 'axios';
+import React, { useState } from 'react';
 import styled from 'styled-components';
-import ErrorPage from '../../../components/error/ErrorPage';
-import SkeletonLoadingPage from '../../../components/loading/SkeletonLoader';
-import Navbar from '../../../components/navigation/Navbar';
-import AsyncCard from '../../../components/AsyncCard';
 import { AsyncStatus } from '../../../contexts/McAppContext';
-import { PunchItem } from '../../../services/apiTypes';
+import { Attachment, PunchItem } from '../../../services/apiTypes';
 import useCommonHooks from '../../../utils/useCommonHooks';
-import { PunchWrapper } from '../ClearPunch/ClearPunch';
-import PunchDetailsCard from '../ClearPunch/PunchDetailsCard';
 import { PunchAction } from '../ClearPunch/useClearPunchFacade';
 import useSnackbar from '../../../utils/useSnackbar';
 import removeSubdirectories from '../../../utils/removeSubdirectories';
+import { Attachments } from '@equinor/procosys-webapp-components';
 
 const VerifyPunchWrapper = styled.main`
-    padding: 16px 4%;
-    & p {
+    padding: 16px 4% 78px 4%;
+    & > p {
         margin-top: 0;
     }
 `;
@@ -32,198 +27,181 @@ const ButtonGroup = styled.div`
     }
 `;
 
-const VerifyPunch = (): JSX.Element => {
-    return <p>Verify punch</p>;
-    // const { url, history, params, api } = useCommonHooks();
-    // const [fetchPunchItemStatus, setFetchPunchItemStatus] = useState(
-    //     AsyncStatus.LOADING
-    // );
-    // const [punchActionStatus, setPunchActionStatus] = useState(
-    //     AsyncStatus.INACTIVE
-    // );
-    // const [punchItem, setPunchItem] = useState<PunchItem>();
-    // const { snackbar, setSnackbarText } = useSnackbar();
+type VerifyPunchProps = {
+    punchItem: PunchItem;
+};
 
-    // useEffect(() => {
-    //     const source = axios.CancelToken.source();
-    //     (async (): Promise<void> => {
-    //         try {
-    //             const punchItemFromApi = await api.getPunchItem(
-    //                 params.plant,
-    //                 params.punchItemId
-    //             );
-    //             setPunchItem(punchItemFromApi);
-    //             setFetchPunchItemStatus(AsyncStatus.SUCCESS);
-    //         } catch (error) {
-    //             setFetchPunchItemStatus(AsyncStatus.ERROR);
-    //         }
-    //     })();
-    //     return (): void => {
-    //         source.cancel('Verify Punch component unmounted');
-    //     };
-    // }, [params.plant, params.punchItemId, api]);
+const VerifyPunch = ({ punchItem }: VerifyPunchProps): JSX.Element => {
+    const { url, history, params, api } = useCommonHooks();
+    const [punchActionStatus, setPunchActionStatus] = useState(
+        AsyncStatus.INACTIVE
+    );
+    const { snackbar, setSnackbarText } = useSnackbar();
 
-    // const handlePunchAction = async (
-    //     punchAction: PunchAction,
-    //     nextStep: () => void
-    // ): Promise<void> => {
-    //     setPunchActionStatus(AsyncStatus.LOADING);
-    //     try {
-    //         await api.postPunchAction(
-    //             params.plant,
-    //             params.punchItemId,
-    //             punchAction
-    //         );
-    //         setPunchActionStatus(AsyncStatus.SUCCESS);
-    //         nextStep();
-    //     } catch (error) {
-    //         setPunchActionStatus(AsyncStatus.ERROR);
-    //     }
-    // };
+    const handlePunchAction = async (
+        punchAction: PunchAction,
+        nextStep: () => void
+    ): Promise<void> => {
+        setPunchActionStatus(AsyncStatus.LOADING);
+        try {
+            await api.postPunchAction(
+                params.plant,
+                params.punchItemId,
+                punchAction
+            );
+            setPunchActionStatus(AsyncStatus.SUCCESS);
+            nextStep();
+        } catch (error) {
+            setPunchActionStatus(AsyncStatus.ERROR);
+        }
+    };
 
-    // const content = (): JSX.Element => {
-    //     if (
-    //         fetchPunchItemStatus === AsyncStatus.SUCCESS &&
-    //         punchItem &&
-    //         punchItem.clearedAt
-    //     ) {
-    //         return (
-    //             <>
-    //                 <PunchDetailsCard
-    //                     systemModule={punchItem.systemModule}
-    //                     tagDescription={punchItem.tagDescription}
-    //                 ></PunchDetailsCard>
-    //                 <VerifyPunchWrapper>
-    //                     <label>Category:</label>
-    //                     <p>{punchItem.status}</p>
-    //                     <label>Type:</label>
-    //                     <p>
-    //                         {punchItem.typeCode}. {punchItem.typeDescription}
-    //                     </p>
-    //                     <label>Description:</label>
-    //                     <p>{punchItem.description}</p>
-    //                     <label>Raised By:</label>
-    //                     <p>
-    //                         {punchItem.raisedByCode}.{' '}
-    //                         {punchItem.raisedByDescription}
-    //                     </p>
-    //                     <label>Clearing by:</label>
-    //                     <p>
-    //                         {punchItem.clearingByCode}.{' '}
-    //                         {punchItem.clearingByDescription}
-    //                     </p>
-    //                     <label>Signatures:</label>
-    //                     <p>
-    //                         Cleared at{' '}
-    //                         {new Date(punchItem.clearedAt).toLocaleDateString(
-    //                             'en-GB'
-    //                         )}{' '}
-    //                         by {punchItem.clearedByFirstName}{' '}
-    //                         {punchItem.clearedByLastName} (
-    //                         {punchItem.clearedByUser})
-    //                     </p>
-    //                     <AsyncCard
-    //                         fetchStatus={fetchAttachmentsStatus}
-    //                         cardTitle={'Attachments'}
-    //                         errorMessage={
-    //                             'Unable to load attachments for this punch'
-    //                         }
-    //                     >
-    //                         <AttachmentsWrapper>
-    //                             {attachments.map((attachment) => (
-    //                                 <Attachment
-    //                                     setSnackbarText={setSnackbarText}
-    //                                     attachment={attachment}
-    //                                     key={attachment.id}
-    //                                     refreshAttachments={refreshAttachments}
-    //                                     getAttachment={(
-    //                                         cancelToken: CancelToken
-    //                                     ): Promise<Blob> =>
-    //                                         api.getPunchAttachment(
-    //                                             cancelToken,
-    //                                             params.plant,
-    //                                             params.punchItemId,
-    //                                             attachment.id
-    //                                         )
-    //                                     }
-    //                                 />
-    //                             ))}
-    //                         </AttachmentsWrapper>
-    //                     </AsyncCard>
-    //                     <ButtonGroup>
-    //                         <Button
-    //                             disabled={
-    //                                 punchActionStatus === AsyncStatus.LOADING
-    //                             }
-    //                             onClick={(): Promise<void> =>
-    //                                 handlePunchAction(PunchAction.UNCLEAR, () =>
-    //                                     history.push(
-    //                                         removeSubdirectories(url, 1) +
-    //                                             '/clear'
-    //                                     )
-    //                                 )
-    //                             }
-    //                         >
-    //                             Unclear
-    //                         </Button>
-    //                         <Button
-    //                             disabled={
-    //                                 punchActionStatus === AsyncStatus.LOADING
-    //                             }
-    //                             onClick={(): Promise<void> =>
-    //                                 handlePunchAction(PunchAction.REJECT, () =>
-    //                                     history.push(
-    //                                         removeSubdirectories(url, 1) +
-    //                                             '/clear'
-    //                                     )
-    //                                 )
-    //                             }
-    //                         >
-    //                             Reject
-    //                         </Button>
+    const determineButtonsToRender = (): JSX.Element => {
+        if (punchItem.verifiedByFirstName) {
+            return (
+                <Button
+                    disabled={punchActionStatus === AsyncStatus.LOADING}
+                    onClick={(): Promise<void> =>
+                        handlePunchAction(PunchAction.UNVERIFY, () => {
+                            history.push(url);
+                        })
+                    }
+                >
+                    Unverify
+                </Button>
+            );
+        } else {
+            return (
+                <>
+                    <Button
+                        disabled={punchActionStatus === AsyncStatus.LOADING}
+                        onClick={(): Promise<void> =>
+                            handlePunchAction(PunchAction.UNCLEAR, () =>
+                                history.push(url)
+                            )
+                        }
+                    >
+                        Unclear
+                    </Button>
+                    <Button
+                        disabled={punchActionStatus === AsyncStatus.LOADING}
+                        onClick={(): Promise<void> =>
+                            handlePunchAction(PunchAction.REJECT, () =>
+                                history.push(
+                                    removeSubdirectories(url, 2) + '/punch-list'
+                                )
+                            )
+                        }
+                    >
+                        Reject
+                    </Button>
 
-    //                         <Button
-    //                             disabled={
-    //                                 punchActionStatus === AsyncStatus.LOADING
-    //                             }
-    //                             onClick={(): Promise<void> =>
-    //                                 handlePunchAction(
-    //                                     PunchAction.VERIFY,
-    //                                     () => {
-    //                                         history.push(
-    //                                             removeSubdirectories(url, 2)
-    //                                         );
-    //                                     }
-    //                                 )
-    //                             }
-    //                         >
-    //                             Verify
-    //                         </Button>
-    //                     </ButtonGroup>
-    //                 </VerifyPunchWrapper>
-    //             </>
-    //         );
-    //     } else if (fetchPunchItemStatus === AsyncStatus.ERROR) {
-    //         return <ErrorPage title="Unable to load punch item." />;
-    //     } else {
-    //         return <SkeletonLoadingPage text="Loading punch item" />;
-    //     }
-    // };
+                    <Button
+                        disabled={punchActionStatus === AsyncStatus.LOADING}
+                        onClick={(): Promise<void> =>
+                            handlePunchAction(PunchAction.VERIFY, () => {
+                                history.push(
+                                    removeSubdirectories(url, 2) + '/punch-list'
+                                );
+                            })
+                        }
+                    >
+                        Verify
+                    </Button>
+                </>
+            );
+        }
+    };
 
-    // return (
-    //     <>
-    //         <Navbar
-    //             noBorder
-    //             leftContent={{
-    //                 name: 'back',
-    //                 label: 'Punch list',
-    //                 url: removeSubdirectories(url, 2),
-    //             }}
-    //         />
-    //         <PunchWrapper>{content()}</PunchWrapper>
-    //         {snackbar}
-    //     </>
-    // );
+    return (
+        <VerifyPunchWrapper>
+            <label>Category:</label>
+            <p>{punchItem.status}</p>
+            <label>Description:</label>
+            <p>{punchItem.description}</p>
+            <label>Raised By:</label>
+            <p>
+                {punchItem.raisedByCode}. {punchItem.raisedByDescription}
+            </p>
+            <label>Clearing by:</label>
+            <p>
+                {punchItem.clearingByCode}. {punchItem.clearingByDescription}
+            </p>
+            <label>Action by person:</label>
+            <p>
+                {punchItem.actionByPerson
+                    ? `${punchItem.actionByPersonFirstName} ${punchItem.actionByPersonLastName}`
+                    : '--'}
+            </p>
+            <label>Due date:</label>
+            <p>{punchItem.dueDate ?? '--'}</p>
+            <label>Type:</label>
+            <p>
+                {punchItem.typeCode}. {punchItem.typeDescription}
+            </p>
+            <label>Sorting:</label>
+            <p>{punchItem.sorting ?? '--'}</p>
+            <label>Priority:</label>
+            <p>
+                {punchItem.priorityCode
+                    ? `${punchItem.priorityCode} . ${punchItem.priorityDescription}`
+                    : '--'}
+            </p>
+            <label>Estimate:</label>
+            <p>{punchItem.estimate ?? '--'}</p>
+            <label>Signatures:</label>
+            {punchItem.clearedAt ? (
+                <p>
+                    Cleared at{' '}
+                    {new Date(punchItem.clearedAt).toLocaleDateString('en-GB')}{' '}
+                    by {punchItem.clearedByFirstName}{' '}
+                    {punchItem.clearedByLastName} ({punchItem.clearedByUser})
+                </p>
+            ) : null}
+            {punchItem.verifiedAt ? (
+                <p>
+                    Verified at{' '}
+                    {new Date(punchItem.verifiedAt).toLocaleDateString()} by{' '}
+                    {punchItem.verifiedByFirstName}{' '}
+                    {punchItem.verifiedByLastName} ({punchItem.verifiedByUser})
+                </p>
+            ) : null}
+            {punchItem.rejectedAt ? (
+                <p>
+                    Rejected at{' '}
+                    {new Date(punchItem.rejectedAt).toLocaleDateString('en-GB')}{' '}
+                    by {punchItem.rejectedByFirstName}{' '}
+                    {punchItem.rejectedByLastName} ({punchItem.rejectedByUser})
+                </p>
+            ) : null}
+
+            <Attachments
+                readOnly
+                getAttachments={(
+                    cancelToken: CancelToken
+                ): Promise<Attachment[]> =>
+                    api.getPunchAttachments(
+                        params.plant,
+                        punchItem.id.toString(),
+                        cancelToken
+                    )
+                }
+                getAttachment={(
+                    cancelToken: CancelToken,
+                    attachmentId: number
+                ): Promise<Blob> =>
+                    api.getPunchAttachment(
+                        cancelToken,
+                        params.plant,
+                        params.punchItemId,
+                        attachmentId
+                    )
+                }
+                setSnackbarText={setSnackbarText}
+            />
+            <ButtonGroup>{determineButtonsToRender()}</ButtonGroup>
+        </VerifyPunchWrapper>
+    );
 };
 
 export default VerifyPunch;

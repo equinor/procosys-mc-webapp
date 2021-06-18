@@ -3,7 +3,6 @@ import { rest } from 'msw';
 import {
     dummyChecklistResponse,
     dummyPunchListResponse,
-    dummyScopeResponse,
     dummyAttachmentsResponse,
     testProjects,
     dummyPunchCategories,
@@ -12,11 +11,11 @@ import {
     dummyPunchItemUncleared,
     testMcPkgSearch,
     testMcPkgPreview,
-    dummyCommPkgDetailsResponse,
     testScope,
     dummyPunchSorts,
     dummyPunchPriorities,
     dummyPersonsSearch,
+    dummyTagResponse,
 } from './dummyData';
 import objectToCamelCase from '../utils/objectToCamelCase';
 
@@ -24,7 +23,6 @@ export const baseURL = 'https://test-url.com';
 export const ENDPOINTS = {
     //General
     getMcPkgDetails: `${baseURL}/McPkg`,
-    getCommPkgDetails: `${baseURL}/CommPkg`, // TODO: remove
     getPermissions: `${baseURL}/Permissions`,
     getProjects: `${baseURL}/Projects`,
 
@@ -32,23 +30,15 @@ export const ENDPOINTS = {
     searchForMcPackage: `${baseURL}/McPkg/Search`,
 
     // Checklist
-    putMetaTableCell: `${baseURL}/CheckList/Item/MetaTableCell`,
-    getChecklistAttachments: `${baseURL}/CheckList/Attachments`,
-    postSetNA: `${baseURL}/CheckList/Item/SetNA`,
-    postSetOk: `${baseURL}/CheckList/Item/SetOk`,
-    postClear: `${baseURL}/CheckList/Item/Clear`,
     getMcScope: `${baseURL}/McPkg/CheckLists`,
     getChecklist: `${baseURL}/CheckList/MC`,
     getChecklistPunchList: `${baseURL}/CheckList/PunchList`,
-    // TODO: remove the endpoints below (?)
-    putChecklistComment: `${baseURL}/CheckList/Comm/Comment`,
-    postSign: `${baseURL}/CheckList/Comm/Sign`,
-    postUnsign: `${baseURL}/CheckList/Comm/Unsign`,
-    getScope: `${baseURL}/CommPkg/CheckLists`,
+
+    // Tag
+    getTag: `${baseURL}/Tag`,
 
     //PUNCH
     getMcPunchList: `${baseURL}/McPkg/PunchList`,
-    getPunchList: `${baseURL}/CommPkg/PunchList`, // TODO: remove
     getPunchAttachment: `${baseURL}/PunchListItem/Attachment`,
     deletePunchAttachment: `${baseURL}/PunchListItem/Attachment`,
     postTempPunchAttachment: `${baseURL}/PunchListItem/TempAttachment`,
@@ -66,6 +56,11 @@ export const ENDPOINTS = {
     putPunchDescription: `${baseURL}/PunchListItem/SetDescription`,
     putPunchType: `${baseURL}/PunchListItem/SetType`,
     putPunchCategory: `${baseURL}/PunchListItem/SetCategory`,
+    putPunchActionByPerson: `${baseURL}/PunchListItem/SetActionByPerson`,
+    putPunchDueDate: `${baseURL}/PunchListItem/SetDueDate`,
+    putPunchSorting: `${baseURL}/PunchListItem/SetSorting`,
+    putPunchPriority: `${baseURL}/PunchListItem/SetPriority`,
+    putPunchEstimate: `${baseURL}/PunchListItem/SetEstimate`,
     postPunchClear: `${baseURL}/PunchListItem/Clear`,
     postPunchUnclear: `${baseURL}/PunchListItem/Unclear`,
     postPunchVerify: `${baseURL}/PunchListItem/Verify`,
@@ -76,18 +71,11 @@ export const ENDPOINTS = {
     getPersons: `${baseURL}/Person/PersonSearch`,
 };
 
-// TODO: remove all that use aen endpoint that needs removal
 export const server = setupServer(
     //General
     rest.get(ENDPOINTS.getMcPkgDetails, (_, response, context) => {
         return response(
             context.json(objectToCamelCase(testMcPkgPreview[0])),
-            context.status(200)
-        );
-    }),
-    rest.get(ENDPOINTS.getCommPkgDetails, (_, response, context) => {
-        return response(
-            context.json(objectToCamelCase(dummyCommPkgDetailsResponse)),
             context.status(200)
         );
     }),
@@ -104,9 +92,6 @@ export const server = setupServer(
     }),
 
     //Checklist
-    rest.put(ENDPOINTS.putMetaTableCell, (_, response, context) => {
-        return response(context.status(200));
-    }),
     rest.get(ENDPOINTS.getChecklist, (_, response, context) => {
         return response(
             context.json(objectToCamelCase(dummyChecklistResponse)),
@@ -119,52 +104,20 @@ export const server = setupServer(
             context.status(200)
         );
     }),
-    rest.get(ENDPOINTS.getChecklistAttachments, (_, response, context) => {
-        return response(
-            context.delay(10),
-            context.json(objectToCamelCase(dummyAttachmentsResponse)),
-            context.status(200)
-        );
-    }),
-    rest.post(ENDPOINTS.postSetNA, (_, response, context) => {
-        return response(context.status(200));
-    }),
-    rest.post(ENDPOINTS.postSetOk, (_, response, context) => {
-        return response(context.status(200));
-    }),
-    rest.post(ENDPOINTS.postClear, (_, response, context) => {
-        return response(context.status(200));
-    }),
     rest.get(ENDPOINTS.getMcScope, (_, response, context) => {
         return response(
             context.json(objectToCamelCase(testScope)),
             context.status(200)
         );
     }),
-    rest.put(ENDPOINTS.putChecklistComment, (_, response, context) => {
-        return response(context.status(200));
-    }),
-    rest.post(ENDPOINTS.postSign, (_, response, context) => {
-        return response(context.status(200));
-    }),
-    rest.post(ENDPOINTS.postUnsign, (_, response, context) => {
-        return response(context.status(200));
-    }),
-    rest.get(ENDPOINTS.getScope, (_, response, context) => {
-        return response(
-            context.json(objectToCamelCase(dummyScopeResponse)),
-            context.status(200)
-        );
+
+    // TAG
+    rest.get(ENDPOINTS.getTag, (_, response, context) => {
+        return response(context.json(dummyTagResponse), context.status(200));
     }),
 
     // PUNCH
     rest.get(ENDPOINTS.getMcPunchList, (_, response, context) => {
-        return response(
-            context.json(objectToCamelCase(dummyPunchListResponse)),
-            context.status(200)
-        );
-    }),
-    rest.get(ENDPOINTS.getPunchList, (_, response, context) => {
         return response(
             context.json(objectToCamelCase(dummyPunchListResponse)),
             context.status(200)
@@ -215,6 +168,45 @@ export const server = setupServer(
 
     rest.get(ENDPOINTS.getPersons, (_, response, context) => {
         return response(context.json(dummyPersonsSearch), context.status(200));
+    }),
+    rest.post(ENDPOINTS.postPunchClear, (_, response, context) => {
+        return response(context.status(200));
+    }),
+    rest.post(ENDPOINTS.postPunchUnclear, (_, response, context) => {
+        return response(context.status(200));
+    }),
+    rest.post(ENDPOINTS.postPunchReject, (_, response, context) => {
+        return response(context.status(200));
+    }),
+    rest.put(ENDPOINTS.putPunchCategory, (_, response, context) => {
+        return response(context.status(200));
+    }),
+    rest.put(ENDPOINTS.putPunchDescription, (_, response, context) => {
+        return response(context.status(200));
+    }),
+    rest.put(ENDPOINTS.putPunchRaisedBy, (_, response, context) => {
+        return response(context.status(200));
+    }),
+    rest.put(ENDPOINTS.putPunchClearingBy, (_, response, context) => {
+        return response(context.status(200));
+    }),
+    rest.put(ENDPOINTS.putPunchActionByPerson, (_, response, context) => {
+        return response(context.status(200));
+    }),
+    rest.put(ENDPOINTS.putPunchDueDate, (_, response, context) => {
+        return response(context.status(200));
+    }),
+    rest.put(ENDPOINTS.putPunchType, (_, response, context) => {
+        return response(context.status(200));
+    }),
+    rest.put(ENDPOINTS.putPunchSorting, (_, response, context) => {
+        return response(context.status(200));
+    }),
+    rest.put(ENDPOINTS.putPunchPriority, (_, response, context) => {
+        return response(context.status(200));
+    }),
+    rest.put(ENDPOINTS.putPunchEstimate, (_, response, context) => {
+        return response(context.status(200));
     })
 );
 

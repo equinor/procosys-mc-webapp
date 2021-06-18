@@ -9,6 +9,7 @@ import {
     PunchPreview,
     McPkgPreview,
     SearchResults,
+    PunchItem,
 } from '../services/apiTypes';
 
 type DummyMetatableData = {
@@ -63,6 +64,9 @@ export const dummyPermissions: string[] = [
     'MCPKG/READ',
     'MCCR/READ',
     'PUNCHLISTITEM/READ',
+    'PUNCHLISTITEM/WRITE',
+    'PUNCHLISTITEM/CLEAR',
+    'PUNCHLISTITEM/VERIFY',
 ];
 
 export const testProjects: Project[] = [
@@ -151,6 +155,7 @@ export const dummyChecklistResponse = {
         Id: 321421,
         TagNo: 'dummy-checklist-tag-no',
         TagDescription: 'dummy-tag-description',
+        TagId: 123123123,
         McPkgNo: 'dummy-checklist-mcPkgNo',
         ResponsibleCode: 'dummy-responsible-code',
         ResponsibleDescription: 'dummy-responsible-description',
@@ -285,8 +290,55 @@ export const dummyPunchListResponse = [
     },
 ];
 
+export const testPunchItemUncleared: PunchItem = {
+    id: 131231234,
+    checklistId: 2,
+    formularType: 'E-65',
+    status: CompletionStatus.PB,
+    description: 'dummy-punch-description',
+    typeCode: '1',
+    typeDescription: 'dummy-type-1',
+    raisedByCode: 'ENG',
+    raisedByDescription: 'ENGINEERING',
+    clearingByCode: 'CON',
+    clearingByDescription: 'CONTRACTOR',
+    clearedAt: null,
+    clearedByUser: null,
+    clearedByFirstName: null,
+    clearedByLastName: null,
+    verifiedAt: null,
+    verifiedByUser: null,
+    verifiedByFirstName: null,
+    verifiedByLastName: null,
+    rejectedAt: null,
+    rejectedByUser: null,
+    rejectedByFirstName: null,
+    rejectedByLastName: null,
+    dueDate: null,
+    estimate: 5,
+    priorityId: null,
+    priorityCode: null,
+    priorityDescription: null,
+    actionByPerson: 0,
+    actionByPersonFirstName: null,
+    actionByPersonLastName: null,
+    materialRequired: false,
+    materialEta: null,
+    materialNo: null,
+    systemModule: 'COMM',
+    tagDescription: 'For testing purposes (test 37221)',
+    tagId: 2,
+    tagNo: 'dummy-tag-no',
+    responsibleCode: 'dummy-res-code',
+    responsibleDescription: 'dummy-res-description',
+    sorting: null,
+    statusControlledBySwcr: false,
+    isRestrictedForUser: false,
+    attachmentCount: 1,
+};
+
 export const dummyPunchItemUncleared = {
-    Id: 1,
+    Id: 131231234,
     ChecklistId: 2,
     FormularType: 'E-65',
     Status: 'PB',
@@ -337,24 +389,6 @@ export const dummyPunchItemCleared = {
     ClearedByUser: 'dummy-user',
     ClearedByFirstName: 'dummy-first-name',
     ClearedByLastName: 'dummy-last-name',
-};
-
-export const dummyCommPkgDetailsResponse = {
-    Id: 42323,
-    CommPkgNo: 'dummy-commPkg-no',
-    Description: 'dummy-commPkg-description',
-    CommStatus: 'PB',
-    McStatus: 'PB',
-    BluelineStatus: null,
-    YellowlineStatus: null,
-    McPkgCount: 15,
-    McPkgsAcceptedByCommissioning: 15,
-    McPkgsAcceptedByOperation: 15,
-    CommissioningHandoverStatus: 'ACCEPTED',
-    OperationHandoverStatus: 'ACCEPTED',
-    SystemId: 9780741,
-    System: '10|04',
-    IsVoided: false,
 };
 
 export const dummyAttachmentsResponse = [
@@ -418,7 +452,7 @@ export const dummyPersonsSearch = [
         email: 'dummy-email-1',
     },
     {
-        Id: 1,
+        Id: 2,
         AzureOid: 'az-oid-2',
         Username: 'dummy-username-2',
         FirstName: 'dummy-firstname-2',
@@ -426,3 +460,54 @@ export const dummyPersonsSearch = [
         email: 'dummy-email-2',
     },
 ];
+
+export const dummyTagResponse = {
+    Tag: {
+        AreaCode: 'U0',
+        AreaDescription: 'dummy, test',
+        CallOffNo: null,
+        CommPkgNo: '0000-0000',
+        ContractorCode: null,
+        ContractorDescription: null,
+        Description: 'Downhole',
+        DisciplineCode: 'J',
+        DisciplineDescription: 'Operation',
+        EngineeringCodeCode: null,
+        EngineeringCodeDescription: null,
+        HasPreservation: false,
+        Id: 1111111,
+        McPkgNo: '0000-0000',
+        MountedOnTagNo: null,
+        PreservationMigrated: null,
+        ProjectDescription: 'Nye pumper - TEST PROJECT',
+        PurchaseOrderNo: null,
+        PurchaseOrderTitle: null,
+        RegisterCode: 'INSTRUMENT',
+        RegisterDescription: 'Instrument field equipment',
+        Remark: null,
+        Sequence: '1001',
+        StatusCode: 'RESERVED',
+        StatusDescription: 'Reserved by a project for a purpose',
+        SystemCode: '18',
+        SystemDescription: 'SUBSEA',
+        TagFunctionCode: 'CH',
+        TagFunctionDescription: 'CH',
+        TagNo: '3CPO',
+    },
+    additionalFields: [
+        {
+            Id: 111111,
+            Label: 'dummy-field-label',
+            Type: 'LIBRARY',
+            Unit: 'ms',
+            Value: 'dummy-field-value',
+        },
+        {
+            Id: 222222,
+            Label: 'Contractor installation',
+            Type: 'LIBRARY',
+            Unit: null,
+            Value: 'dummy-field-2',
+        },
+    ],
+};

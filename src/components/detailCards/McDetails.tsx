@@ -2,8 +2,9 @@ import React from 'react';
 import styled from 'styled-components';
 import { Caption, COLORS } from '../../style/GlobalStyles';
 import { McPkgPreview } from '../../services/apiTypes';
-import { McPackageStatusIcon } from '../icons/McPackageStatusIcon';
 import useCommonHooks from '../../utils/useCommonHooks';
+import { StatusColumn } from '@equinor/procosys-webapp-components';
+import { McPackageStatusIcon } from '../icons/McPackageStatusIcon';
 
 const McDetailsWrapper = styled.article<{ clickable: boolean }>`
     cursor: pointer;
@@ -24,23 +25,7 @@ export const StatusImageWrapper = styled.div`
     flex-direction: column;
     padding-right: 12px;
     align-self: center;
-    & > img {
-        height: 20px;
-    }
-`;
-
-const StatusTextWrapper = styled.div`
-    display: flex;
-    & > p {
-        margin: 0;
-    }
-`;
-
-const HandoverStatus = styled.p<{ accepted: boolean }>`
-    font-weight: bolder;
-    font-size: 0.75rem;
-    color: ${(props): string =>
-        props.accepted ? COLORS.black : COLORS.darkGrey};
+    width: 24px;
 `;
 
 export const DetailsWrapper = styled.div`
@@ -89,24 +74,19 @@ const McDetails = ({
             as={clickable ? 'a' : 'article'}
         >
             <StatusImageWrapper>
-                <McPackageStatusIcon status={mcPkgDetails.status} />
-                <StatusTextWrapper>
-                    <HandoverStatus
-                        accepted={
-                            mcPkgDetails.commissioningHandoverStatus ==
-                            'ACCEPTED'
-                        }
-                    >
-                        C
-                    </HandoverStatus>
-                    <HandoverStatus
-                        accepted={
-                            mcPkgDetails.operationHandoverStatus == 'ACCEPTED'
-                        }
-                    >
-                        O
-                    </HandoverStatus>
-                </StatusTextWrapper>
+                <StatusColumn
+                    statusIcon={
+                        <McPackageStatusIcon status={mcPkgDetails.status} />
+                    }
+                    statusLetters={[
+                        mcPkgDetails.commissioningHandoverStatus == 'ACCEPTED'
+                            ? 'C'
+                            : null,
+                        mcPkgDetails.operationHandoverStatus == 'ACCEPTED'
+                            ? 'O'
+                            : null,
+                    ]}
+                />
             </StatusImageWrapper>
             <DetailsWrapper>
                 <HeaderWrapper clickable={clickable}>

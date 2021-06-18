@@ -66,7 +66,7 @@ const NewPunch = (): JSX.Element => {
     const [categories, setCategories] = useState<PunchCategory[]>([]);
     const [types, setTypes] = useState<PunchType[]>([]);
     const [organizations, setOrganizations] = useState<PunchOrganization[]>([]);
-    const [sorts, setSorts] = useState<PunchSort[]>([]);
+    const [sortings, setSortings] = useState<PunchSort[]>([]);
     const [priorities, setPriorities] = useState<PunchPriority[]>([]);
     const [chosenPerson, setChosenPerson] = useState<ChosenPerson>({
         id: null,
@@ -102,6 +102,7 @@ const NewPunch = (): JSX.Element => {
             await api.postNewPunch(params.plant, NewPunchDTO);
             setSubmitPunchStatus(AsyncStatus.SUCCESS);
         } catch (error) {
+            setSnackbarText(error.toString());
             setSubmitPunchStatus(AsyncStatus.ERROR);
         }
     };
@@ -126,7 +127,7 @@ const NewPunch = (): JSX.Element => {
                 setCategories(categoriesFromApi);
                 setTypes(typesFromApi);
                 setOrganizations(organizationsFromApi);
-                setSorts(sortsFromApi);
+                setSortings(sortsFromApi);
                 setPriorities(prioritiesFromApi);
                 setFetchNewPunchStatus(AsyncStatus.SUCCESS);
             } catch (error) {
@@ -150,7 +151,7 @@ const NewPunch = (): JSX.Element => {
                 categories={categories}
                 organizations={organizations}
                 types={types}
-                sorts={sorts}
+                sortings={sortings}
                 priorities={priorities}
                 chosenPerson={chosenPerson}
                 setChosenPerson={setChosenPerson}

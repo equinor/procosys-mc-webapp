@@ -31,7 +31,7 @@ export const DetailsWrapper = styled.p`
 `;
 
 const ContentWrapper = styled.div`
-    padding: 12px 4% 85px 4%;
+    padding-bottom: 85px;
 `;
 
 const EntityPage = (): JSX.Element => {
@@ -60,13 +60,13 @@ const EntityPage = (): JSX.Element => {
                     api.getScope(
                         params.plant,
                         params.searchType,
-                        params.itemId,
+                        params.entityId,
                         source.token
                     ),
                     api.getPunchList(
                         params.plant,
                         params.searchType,
-                        params.itemId,
+                        params.entityId,
                         source.token
                     ),
                 ]);
@@ -85,7 +85,7 @@ const EntityPage = (): JSX.Element => {
                 const detailsFromApi = await api.getItemDetails(
                     params.plant,
                     params.searchType,
-                    params.itemId,
+                    params.entityId,
                     source.token
                 );
                 setDetails(detailsFromApi);
@@ -156,7 +156,7 @@ const EntityPage = (): JSX.Element => {
                         goTo={(): void => history.push(`${url}/punch-list`)}
                         icon={
                             <EdsIcon
-                                name="warning_filled"
+                                name="warning_outlined"
                                 color={COLORS.mossGreen}
                             />
                         }
@@ -183,8 +183,12 @@ const EntityPage = (): JSX.Element => {
         <EntityPageWrapper>
             <Navbar
                 noBorder
-                leftContent={{ name: 'back', label: 'Search' }}
-                midContent={params.searchType}
+                leftContent={{ name: 'back', label: 'Back' }}
+                midContent={
+                    params.searchType === SearchType.MC
+                        ? 'MC Package'
+                        : params.searchType
+                }
             />
             {determineDetailsToRender()}
             <ContentWrapper>

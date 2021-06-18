@@ -15,7 +15,32 @@ import {
     PunchSort,
     PunchType,
     SearchResults,
+    Tag,
 } from './apiTypes';
+
+export class TypeguardError extends Error {
+    constructor(message: string) {
+        super(message);
+        this.name = 'An error occured (Unexpected type)';
+    }
+}
+
+export const isOfType = <T>(
+    varToBeChecked: unknown,
+    propertyToCheckFor: keyof T
+): varToBeChecked is T => {
+    return (varToBeChecked as T)[propertyToCheckFor] !== undefined;
+};
+
+export const isArrayOfType = <T>(
+    dataToBeChecked: unknown,
+    propertyToCheckFor: keyof T
+): dataToBeChecked is T[] => {
+    return (
+        Array.isArray(dataToBeChecked) &&
+        dataToBeChecked.every((item) => isOfType<T>(item, propertyToCheckFor))
+    );
+};
 
 // SEARCH
 export const isCorrectPreview = (
@@ -82,53 +107,6 @@ export const isArrayOfPunchPreview = (
     return Array.isArray(data) && data.every(isPunchPreview);
 };
 
-// PUNCH
-const isPunchCategory = (data: unknown): data is PunchCategory => {
-    return data != null && typeof (data as PunchCategory).id === 'number';
-};
-
-export const isArrayOfPunchCategory = (
-    data: unknown
-): data is PunchCategory[] => {
-    return Array.isArray(data) && data.every(isPunchCategory);
-};
-
-const isPunchType = (data: unknown): data is PunchType => {
-    return data != null && typeof (data as PunchType).code === 'string';
-};
-
-export const isArrayOfPunchType = (data: unknown): data is PunchType[] => {
-    return Array.isArray(data) && data.every(isPunchType);
-};
-
-const isPunchOrganization = (data: unknown): data is PunchOrganization => {
-    return data != null && typeof (data as PunchOrganization).code === 'string';
-};
-
-export const isArrayOfPunchOrganization = (
-    data: unknown
-): data is PunchOrganization[] => {
-    return Array.isArray(data) && data.every(isPunchOrganization);
-};
-
-const isPunchSort = (data: unknown): data is PunchSort => {
-    return data != null && typeof (data as PunchSort).code === 'string';
-};
-
-export const isArrayOfPunchSort = (data: unknown): data is PunchSort[] => {
-    return Array.isArray(data) && data.every(isPunchSort);
-};
-
-const isPunchPriority = (data: unknown): data is PunchPriority => {
-    return data != null && typeof (data as PunchPriority).id === 'number';
-};
-
-export const isArrayOfPunchPriority = (
-    data: unknown
-): data is PunchPriority[] => {
-    return Array.isArray(data) && data.every(isPunchPriority);
-};
-
 const isPerson = (data: unknown): data is Person => {
     return data != null && typeof (data as Person).firstName === 'string';
 };
@@ -180,5 +158,14 @@ export const isChecklistResponse = (
         isChecklistDetails((data as ChecklistResponse).checkList) &&
         isArrayOfCheckItems((data as ChecklistResponse).checkItems) &&
         isArrayOfCustomCheckItems((data as ChecklistResponse).customCheckItems)
+    );
+};
+
+// Tag
+export const isTagResponse = (data: unknown): data is Tag => {
+    return (
+        (data != null &&
+            typeof (data as Tag).tag.disciplineCode === 'string') ||
+        typeof (data as Tag).tag.disciplineCode === null
     );
 };

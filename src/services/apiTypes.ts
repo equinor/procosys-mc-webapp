@@ -91,6 +91,7 @@ export interface ChecklistDetails {
     id: number;
     tagNo: string;
     tagDescription: string;
+    tagId: number;
     mcPkgNo: string;
     responsibleCode: string;
     responsibleDescription: string;
@@ -174,7 +175,7 @@ export interface ChecklistResponse {
 
 export interface PunchCategory {
     id: number;
-    code: string;
+    code: CompletionStatus;
     description: string;
 }
 
@@ -224,7 +225,7 @@ export interface PunchItem {
     id: number;
     checklistId: number;
     formularType: string;
-    status: string;
+    status: CompletionStatus;
     description: string;
     typeCode: string;
     typeDescription: string;
@@ -232,36 +233,36 @@ export interface PunchItem {
     raisedByDescription: string;
     clearingByCode: string;
     clearingByDescription: string;
-    clearedAt?: null;
-    clearedByUser?: null;
-    clearedByFirstName?: null;
-    clearedByLastName?: null;
-    verifiedAt?: null;
-    verifiedByUser?: null;
-    verifiedByFirstName?: null;
-    verifiedByLastName?: null;
-    rejectedAt?: null;
-    rejectedByUser?: null;
-    rejectedByFirstName?: null;
-    rejectedByLastName?: null;
-    dueDate?: null;
-    estimate?: null;
-    priorityId?: null;
-    priorityCode?: null;
-    priorityDescription?: null;
-    actionByPerson: number;
-    actionByPersonFirstName?: null;
-    actionByPersonLastName?: null;
+    clearedAt: string | null;
+    clearedByUser: string | null;
+    clearedByFirstName: string | null;
+    clearedByLastName: string | null;
+    verifiedAt: string | null;
+    verifiedByUser: string | null;
+    verifiedByFirstName: string | null;
+    verifiedByLastName: string | null;
+    rejectedAt: string | null;
+    rejectedByUser: string | null;
+    rejectedByFirstName: string | null;
+    rejectedByLastName: string | null;
+    dueDate: string | null;
+    estimate: number | null;
+    priorityId: number | null;
+    priorityCode: string | null;
+    priorityDescription: string | null;
+    actionByPerson: number | null;
+    actionByPersonFirstName: string | null;
+    actionByPersonLastName: string | null;
     materialRequired: boolean;
-    materialEta?: null;
-    materialNo?: null;
+    materialEta: string | null;
+    materialNo: string | null;
     systemModule: string;
     tagDescription: string;
     tagId: number;
     tagNo: string;
     responsibleCode: string;
     responsibleDescription: string;
-    sorting?: null;
+    sorting: string | null;
     statusControlledBySwcr: boolean;
     isRestrictedForUser: boolean;
     attachmentCount: number;
@@ -320,7 +321,7 @@ export interface AdditionalTagField {
     unit: string;
 }
 export interface Tag {
-    tagDetails: TagDetails;
+    tag: TagDetails;
     additionalFields: AdditionalTagField[];
 }
 
