@@ -183,8 +183,12 @@ const EntityPage = (): JSX.Element => {
         <EntityPageWrapper>
             <Navbar
                 noBorder
-                leftContent={{ name: 'back', label: 'Search' }}
-                midContent={params.searchType}
+                leftContent={{ name: 'back', label: 'Back' }}
+                midContent={
+                    params.searchType === SearchType.MC
+                        ? 'MC Package'
+                        : params.searchType
+                }
             />
             {determineDetailsToRender()}
             <ContentWrapper>

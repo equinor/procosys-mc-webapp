@@ -101,6 +101,7 @@ const PunchPage = (): JSX.Element => {
                 noBorder
                 leftContent={{
                     name: 'back',
+                    label: 'Back',
                     url: `${removeSubdirectories(url, 2)}/punch-list`,
                 }}
                 midContent="Punch Item"
