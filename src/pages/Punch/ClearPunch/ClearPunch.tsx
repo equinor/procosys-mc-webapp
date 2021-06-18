@@ -407,5 +407,4 @@ const ClearPunch = ({
     );
 };
 
-// TODO: check whether clear punch has wildly different permissions than verify osv. if yes: add permissions here, if no: just add them to the existing ones in punch page
 export default ClearPunch;

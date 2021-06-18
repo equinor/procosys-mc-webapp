@@ -146,4 +146,9 @@ const PunchPage = (): JSX.Element => {
     );
 };
 
-export default withAccessControl(PunchPage, ['PUNCHLISTITEM/READ']);
+export default withAccessControl(PunchPage, [
+    'PUNCHLISTITEM/READ',
+    'PUNCHLISTITEM/WRITE',
+    'PUNCHLISTITEM/CLEAR',
+    'PUNCHLISTITEM/VERIFY',
+]);

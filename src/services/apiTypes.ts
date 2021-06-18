@@ -221,7 +221,6 @@ export interface NewPunch {
     TemporaryFileIds: string[];
 }
 
-// TODO: fix this interface to not include null values
 export interface PunchItem {
     id: number;
     checklistId: number;

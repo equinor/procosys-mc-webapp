@@ -64,6 +64,9 @@ export const dummyPermissions: string[] = [
     'MCPKG/READ',
     'MCCR/READ',
     'PUNCHLISTITEM/READ',
+    'PUNCHLISTITEM/WRITE',
+    'PUNCHLISTITEM/CLEAR',
+    'PUNCHLISTITEM/VERIFY',
 ];
 
 export const testProjects: Project[] = [
