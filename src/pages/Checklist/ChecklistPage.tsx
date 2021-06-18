@@ -167,6 +167,7 @@ const ChecklistPage = (): JSX.Element => {
             <Navbar
                 leftContent={{
                     name: 'back',
+                    label: 'Back',
                     url: history.location.pathname.includes('/new-punch')
                         ? `/${params.plant}/${params.project}/${params.searchType}/${params.entityId}/checklist/${params.checklistId}/punch-list`
                         : undefined,

@@ -116,7 +116,7 @@ describe('<ChecklistPage> in-page routing', () => {
         await expectDetails();
         await expectNewPunchPage();
         await expectFooter();
-        const backButton = await screen.findByRole('button', {
+        const backButton = await screen.findByRole('img', {
             name: 'Back',
         });
         expect(backButton).toBeInTheDocument();

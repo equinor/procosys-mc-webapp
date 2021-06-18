@@ -9,6 +9,7 @@ import {
     PunchPreview,
     McPkgPreview,
     SearchResults,
+    PunchItem,
 } from '../services/apiTypes';
 
 type DummyMetatableData = {
@@ -63,6 +64,9 @@ export const dummyPermissions: string[] = [
     'MCPKG/READ',
     'MCCR/READ',
     'PUNCHLISTITEM/READ',
+    'PUNCHLISTITEM/WRITE',
+    'PUNCHLISTITEM/CLEAR',
+    'PUNCHLISTITEM/VERIFY',
 ];
 
 export const testProjects: Project[] = [
@@ -285,6 +289,53 @@ export const dummyPunchListResponse = [
         attachmentCount: 0,
     },
 ];
+
+export const testPunchItemUncleared: PunchItem = {
+    id: 131231234,
+    checklistId: 2,
+    formularType: 'E-65',
+    status: CompletionStatus.PB,
+    description: 'dummy-punch-description',
+    typeCode: '1',
+    typeDescription: 'dummy-type-1',
+    raisedByCode: 'ENG',
+    raisedByDescription: 'ENGINEERING',
+    clearingByCode: 'CON',
+    clearingByDescription: 'CONTRACTOR',
+    clearedAt: null,
+    clearedByUser: null,
+    clearedByFirstName: null,
+    clearedByLastName: null,
+    verifiedAt: null,
+    verifiedByUser: null,
+    verifiedByFirstName: null,
+    verifiedByLastName: null,
+    rejectedAt: null,
+    rejectedByUser: null,
+    rejectedByFirstName: null,
+    rejectedByLastName: null,
+    dueDate: null,
+    estimate: 5,
+    priorityId: null,
+    priorityCode: null,
+    priorityDescription: null,
+    actionByPerson: 0,
+    actionByPersonFirstName: null,
+    actionByPersonLastName: null,
+    materialRequired: false,
+    materialEta: null,
+    materialNo: null,
+    systemModule: 'COMM',
+    tagDescription: 'For testing purposes (test 37221)',
+    tagId: 2,
+    tagNo: 'dummy-tag-no',
+    responsibleCode: 'dummy-res-code',
+    responsibleDescription: 'dummy-res-description',
+    sorting: null,
+    statusControlledBySwcr: false,
+    isRestrictedForUser: false,
+    attachmentCount: 1,
+};
 
 export const dummyPunchItemUncleared = {
     Id: 131231234,

@@ -58,7 +58,6 @@ const PunchPage = (): JSX.Element => {
                             React.SetStateAction<PunchItem>
                         >
                     }
-                    fetchPunchItemStatus={fetchPunchStatus}
                 />
             );
         }
@@ -102,8 +101,10 @@ const PunchPage = (): JSX.Element => {
                 noBorder
                 leftContent={{
                     name: 'back',
+                    label: 'Back',
                     url: `${removeSubdirectories(url, 2)}/punch-list`,
                 }}
+                midContent="Punch Item"
             />
             {determineDetailsCard()}
             <AsyncPage
@@ -146,4 +147,9 @@ const PunchPage = (): JSX.Element => {
     );
 };
 
-export default withAccessControl(PunchPage, ['PUNCHLISTITEM/READ']);
+export default withAccessControl(PunchPage, [
+    'PUNCHLISTITEM/READ',
+    'PUNCHLISTITEM/WRITE',
+    'PUNCHLISTITEM/CLEAR',
+    'PUNCHLISTITEM/VERIFY',
+]);

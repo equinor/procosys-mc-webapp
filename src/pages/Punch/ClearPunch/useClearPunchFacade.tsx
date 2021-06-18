@@ -6,18 +6,24 @@ import {
     PunchType,
     PunchOrganization,
     PunchItem,
+    PunchSort,
+    PunchPriority,
 } from '../../../services/apiTypes';
 import ensure from '../../../utils/ensure';
 import useCommonHooks from '../../../utils/useCommonHooks';
 import useSnackbar from '../../../utils/useSnackbar';
 
-// TODO: add new things
 export enum UpdatePunchEndpoint {
-    Description = 'SetDescription',
     Category = 'SetCategory',
-    Type = 'SetType',
+    Description = 'SetDescription',
     RaisedBy = 'SetRaisedBy',
     ClearingBy = 'SetClearingBy',
+    ActionByPerson = 'SetActionByPerson',
+    DueDate = 'setDueDate',
+    Type = 'SetType',
+    Sorting = 'SetSorting',
+    Priority = 'SetPriority',
+    Estimate = 'setEstimate',
 }
 
 export enum PunchAction {
@@ -28,13 +34,17 @@ export enum PunchAction {
     UNVERIFY = 'Unverify',
 }
 
-// TODO: add new things
 export type UpdatePunchData =
-    | { RaisedByOrganizationId: number }
     | { CategoryId: number }
-    | { TypeId: number }
+    | { Description: string }
+    | { RaisedByOrganizationId: number }
     | { ClearingByOrganizationId: number }
-    | { Description: string };
+    | { PersonId: number | null }
+    | { DueDate: string | null }
+    | { TypeId: number }
+    | { SortingId: number }
+    | { PriorityId: number }
+    | { Estimate: number | null };
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const useClearPunchFacade = (
@@ -45,7 +55,9 @@ const useClearPunchFacade = (
     const [categories, setCategories] = useState<PunchCategory[]>([]);
     const [types, setTypes] = useState<PunchType[]>([]);
     const [organizations, setOrganizations] = useState<PunchOrganization[]>([]);
-    // TODO: add new things
+    const [sortings, setSortings] = useState<PunchSort[]>([]);
+    const [priorities, setPriorities] = useState<PunchPriority[]>([]);
+    const [showPersonsSearch, setShowPersonsSearch] = useState(false);
     const [fetchOptionsStatus, setFetchOptionsStatus] = useState(
         AsyncStatus.INACTIVE
     );
@@ -93,20 +105,6 @@ const useClearPunchFacade = (
         });
     };
 
-    const handleTypeChange = (
-        e: React.ChangeEvent<HTMLSelectElement>
-    ): void => {
-        setPunchItem((prev) => ({
-            ...prev,
-            typeCode: ensure(
-                types.find((type) => type.id === parseInt(e.target.value))
-            ).code,
-        }));
-        updateDatabase(UpdatePunchEndpoint.Type, {
-            TypeId: parseInt(e.target.value),
-        });
-    };
-
     const handleDescriptionChange = (
         e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
     ): void =>
@@ -138,10 +136,87 @@ const useClearPunchFacade = (
                 organizations.find((org) => org.id === parseInt(e.target.value))
             ).code,
         }));
-        updateDatabase(UpdatePunchEndpoint.RaisedBy, {
+        updateDatabase(UpdatePunchEndpoint.ClearingBy, {
             ClearingByOrganizationId: parseInt(e.target.value),
         });
     };
+
+    const handleActionByPersonChange = (
+        id: number | null,
+        firstName: string,
+        lastName: string
+    ): void => {
+        setPunchItem((prev) => ({
+            ...prev,
+            actionByPerson: id,
+            actionByPersonFirstName: firstName,
+            actionByPersonLastName: lastName,
+        }));
+        updateDatabase(UpdatePunchEndpoint.ActionByPerson, {
+            PersonId: id,
+        });
+        setShowPersonsSearch(false);
+    };
+
+    const handleDueDateChange = (
+        e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
+    ): void =>
+        setPunchItem((prev) => ({
+            ...prev,
+            dueDate: e.target.value,
+        }));
+
+    const handleTypeChange = (
+        e: React.ChangeEvent<HTMLSelectElement>
+    ): void => {
+        setPunchItem((prev) => ({
+            ...prev,
+            typeCode: ensure(
+                types.find((type) => type.id === parseInt(e.target.value))
+            ).code,
+        }));
+        updateDatabase(UpdatePunchEndpoint.Type, {
+            TypeId: parseInt(e.target.value),
+        });
+    };
+
+    const handleSortingChange = (
+        e: React.ChangeEvent<HTMLSelectElement>
+    ): void => {
+        setPunchItem((prev) => ({
+            ...prev,
+            sorting: ensure(
+                sortings.find((sort) => sort.id === parseInt(e.target.value))
+            ).code,
+        }));
+        updateDatabase(UpdatePunchEndpoint.Sorting, {
+            SortingId: parseInt(e.target.value),
+        });
+    };
+
+    const handlePriorityChange = (
+        e: React.ChangeEvent<HTMLSelectElement>
+    ): void => {
+        setPunchItem((prev) => ({
+            ...prev,
+            priorityCode: ensure(
+                priorities.find(
+                    (priority) => priority.id === parseInt(e.target.value)
+                )
+            ).code,
+        }));
+        updateDatabase(UpdatePunchEndpoint.Priority, {
+            PriorityId: parseInt(e.target.value),
+        });
+    };
+
+    const handleEstimateChange = (
+        e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
+    ): void =>
+        setPunchItem((prev) => ({
+            ...prev,
+            estimate: parseInt(e.target.value),
+        }));
 
     const clearPunchItem = async (e: React.FormEvent): Promise<void> => {
         e.preventDefault();
@@ -159,32 +234,28 @@ const useClearPunchFacade = (
         }
     };
 
-    // TODO: add handlers for the new inputs
-
     useEffect(() => {
         const source = Axios.CancelToken.source();
-        // TODO: get new info (see new puunch)
         (async (): Promise<void> => {
             try {
                 const [
                     categoriesFromApi,
                     typesFromApi,
                     organizationsFromApi,
-                    punchItemFromApi,
+                    sortsFromApi,
+                    prioritiesFromApi,
                 ] = await Promise.all([
                     api.getPunchCategories(params.plant, source.token),
                     api.getPunchTypes(params.plant, source.token),
                     api.getPunchOrganizations(params.plant, source.token),
-                    api.getPunchItem(
-                        params.plant,
-                        params.punchItemId,
-                        source.token
-                    ),
+                    api.getPunchSorts(params.plant, source.token),
+                    api.getPunchPriorities(params.plant, source.token),
                 ]);
                 setCategories(categoriesFromApi);
                 setTypes(typesFromApi);
                 setOrganizations(organizationsFromApi);
-                setPunchItem(punchItemFromApi);
+                setSortings(sortsFromApi);
+                setPriorities(prioritiesFromApi);
                 setFetchOptionsStatus(AsyncStatus.SUCCESS);
             } catch (error) {
                 setFetchOptionsStatus(AsyncStatus.ERROR);
@@ -201,6 +272,8 @@ const useClearPunchFacade = (
         categories,
         types,
         organizations,
+        sortings,
+        priorities,
         fetchOptionsStatus,
         setSnackbarText,
         snackbar,
@@ -211,6 +284,13 @@ const useClearPunchFacade = (
         handleRaisedByChange,
         handleClearingByChange,
         handleDescriptionChange,
+        handleActionByPersonChange,
+        handleDueDateChange,
+        handleSortingChange,
+        handlePriorityChange,
+        handleEstimateChange,
+        showPersonsSearch,
+        setShowPersonsSearch,
     };
 };
 

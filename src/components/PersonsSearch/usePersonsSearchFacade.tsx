@@ -1,10 +1,10 @@
 import React, { useContext, useEffect, useReducer, useState } from 'react';
 import axios, { CancelToken } from 'axios';
-import { SearchStatus } from '../../../Search/useSearchPageFacade';
-import { ProcosysApiService } from '../../../../services/procosysApi';
-import useCommonHooks from '../../../../utils/useCommonHooks';
-import PlantContext from '../../../../contexts/PlantContext';
-import { Person } from '../../../../services/apiTypes';
+import { SearchStatus } from '../../pages/Search/useSearchPageFacade';
+import { ProcosysApiService } from '../../services/procosysApi';
+import useCommonHooks from '../../utils/useCommonHooks';
+import PlantContext from '../../contexts/PlantContext';
+import { Person } from '../../services/apiTypes';
 
 type SearchResult = {
     persons: Person[];
