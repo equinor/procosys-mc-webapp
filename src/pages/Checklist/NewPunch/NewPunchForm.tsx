@@ -59,7 +59,7 @@ type NewPunchFormProps = {
     categories: PunchCategory[];
     organizations: PunchOrganization[];
     types: PunchType[];
-    sorts: PunchSort[];
+    sortings: PunchSort[];
     priorities: PunchPriority[];
     chosenPerson: ChosenPerson;
     setChosenPerson: React.Dispatch<React.SetStateAction<ChosenPerson>>;
@@ -91,7 +91,7 @@ const NewPunchForm = ({
     categories,
     organizations,
     types,
-    sorts,
+    sortings,
     priorities,
     chosenPerson,
     setChosenPerson,
@@ -230,13 +230,13 @@ const NewPunchForm = ({
                     label="Sorting"
                     disabled={
                         submitPunchStatus === AsyncStatus.LOADING ||
-                        sorts.length < 1
+                        sortings.length < 1
                     }
                     onChange={createChangeHandler('sorting')}
                     defaultValue={''}
                 >
                     <option hidden disabled value={''} />
-                    {sorts.map((sort) => (
+                    {sortings.map((sort) => (
                         <option
                             key={sort.id}
                             value={sort.id}

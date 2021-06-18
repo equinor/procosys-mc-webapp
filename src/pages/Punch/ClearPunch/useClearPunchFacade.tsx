@@ -39,12 +39,12 @@ export type UpdatePunchData =
     | { Description: string }
     | { RaisedByOrganizationId: number }
     | { ClearingByOrganizationId: number }
-    | { PersonId: number | undefined }
-    | { DueDate: string | undefined }
+    | { PersonId: number | null }
+    | { DueDate: string | null }
     | { TypeId: number }
     | { SortingId: number }
     | { PriorityId: number }
-    | { Estimate: number | undefined };
+    | { Estimate: number | null };
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const useClearPunchFacade = (
@@ -55,7 +55,7 @@ const useClearPunchFacade = (
     const [categories, setCategories] = useState<PunchCategory[]>([]);
     const [types, setTypes] = useState<PunchType[]>([]);
     const [organizations, setOrganizations] = useState<PunchOrganization[]>([]);
-    const [sorts, setSorts] = useState<PunchSort[]>([]);
+    const [sortings, setSortings] = useState<PunchSort[]>([]);
     const [priorities, setPriorities] = useState<PunchPriority[]>([]);
     const [showPersonsSearch, setShowPersonsSearch] = useState(false);
     const [fetchOptionsStatus, setFetchOptionsStatus] = useState(
@@ -142,7 +142,7 @@ const useClearPunchFacade = (
     };
 
     const handleActionByPersonChange = (
-        id: number | undefined,
+        id: number | null,
         firstName: string,
         lastName: string
     ): void => {
@@ -186,7 +186,7 @@ const useClearPunchFacade = (
         setPunchItem((prev) => ({
             ...prev,
             sorting: ensure(
-                sorts.find((sort) => sort.id === parseInt(e.target.value))
+                sortings.find((sort) => sort.id === parseInt(e.target.value))
             ).code,
         }));
         updateDatabase(UpdatePunchEndpoint.Sorting, {
@@ -254,7 +254,7 @@ const useClearPunchFacade = (
                 setCategories(categoriesFromApi);
                 setTypes(typesFromApi);
                 setOrganizations(organizationsFromApi);
-                setSorts(sortsFromApi);
+                setSortings(sortsFromApi);
                 setPriorities(prioritiesFromApi);
                 setFetchOptionsStatus(AsyncStatus.SUCCESS);
             } catch (error) {
@@ -272,7 +272,7 @@ const useClearPunchFacade = (
         categories,
         types,
         organizations,
-        sorts,
+        sortings,
         priorities,
         fetchOptionsStatus,
         setSnackbarText,

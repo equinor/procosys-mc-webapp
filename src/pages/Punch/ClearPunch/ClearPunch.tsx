@@ -38,7 +38,7 @@ const ClearPunch = ({
         categories,
         types,
         organizations,
-        sorts,
+        sortings,
         priorities,
         fetchOptionsStatus,
         snackbar,
@@ -61,7 +61,7 @@ const ClearPunch = ({
     const { api, params, url } = useCommonHooks();
 
     let descriptionBeforeEntering = '';
-    let estimateBeforeEntering: number | undefined = 0;
+    let estimateBeforeEntering: number | null = 0;
 
     const content = (): JSX.Element => {
         if (fetchOptionsStatus === AsyncStatus.SUCCESS) {
@@ -187,7 +187,7 @@ const ClearPunch = ({
                                     <div
                                         onClick={(): void =>
                                             handleActionByPersonChange(
-                                                undefined,
+                                                null,
                                                 '',
                                                 ''
                                             )
@@ -251,11 +251,11 @@ const ClearPunch = ({
                             label="Sorting"
                             disabled={
                                 clearPunchStatus === AsyncStatus.LOADING ||
-                                sorts.length < 1
+                                sortings.length < 1
                             }
                             defaultValue={
                                 punchItem.sorting
-                                    ? sorts.find(
+                                    ? sortings.find(
                                           (sort) =>
                                               sort.code === punchItem.sorting
                                       )?.id
@@ -264,7 +264,7 @@ const ClearPunch = ({
                             onChange={handleSortingChange}
                         >
                             <option hidden disabled value={''} />
-                            {sorts?.map((sort) => (
+                            {sortings?.map((sort) => (
                                 <option
                                     key={sort.id}
                                     value={sort.id}
@@ -299,11 +299,15 @@ const ClearPunch = ({
                         </NativeSelect>
                         <TextField
                             type="number"
-                            defaultValue={punchItem.estimate}
+                            defaultValue={
+                                punchItem.estimate
+                                    ? punchItem.estimate
+                                    : undefined
+                            }
                             label="Estimate"
                             id="Estimate"
                             disabled={clearPunchStatus === AsyncStatus.LOADING}
-                            onFocus={(): number | undefined =>
+                            onFocus={(): number | null =>
                                 (estimateBeforeEntering = punchItem.estimate)
                             }
                             onBlur={(): void => {
