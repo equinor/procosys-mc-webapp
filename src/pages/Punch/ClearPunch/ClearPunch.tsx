@@ -1,15 +1,8 @@
-import {
-    Button,
-    Label,
-    NativeSelect,
-    TextField,
-} from '@equinor/eds-core-react';
-import React, { useState } from 'react';
+import { Label, NativeSelect, TextField } from '@equinor/eds-core-react';
+import React from 'react';
 import ErrorPage from '../../../components/error/ErrorPage';
 import SkeletonLoadingPage from '../../../components/loading/SkeletonLoader';
-import Navbar from '../../../components/navigation/Navbar';
 import { AsyncStatus } from '../../../contexts/McAppContext';
-import PunchDetailsCard from './PunchDetailsCard';
 import {
     DateField,
     FormButton,
@@ -19,12 +12,10 @@ import useClearPunchFacade, {
     UpdatePunchEndpoint,
 } from './useClearPunchFacade';
 import styled from 'styled-components';
-import AsyncCard from '../../../components/AsyncCard';
 import useCommonHooks from '../../../utils/useCommonHooks';
 import EdsIcon from '../../../components/icons/EdsIcon';
 import { CancelToken } from 'axios';
 import ensure from '../../../utils/ensure';
-import removeSubdirectories from '../../../utils/removeSubdirectories';
 import { Attachment, PunchItem } from '../../../services/apiTypes';
 import PersonsSearch from '../../../components/PersonsSearch/PersonsSearch';
 import { COLORS } from '../../../style/GlobalStyles';

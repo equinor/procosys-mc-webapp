@@ -1,5 +1,5 @@
 import { withPlantContext } from '../../test/contexts';
-import React, { useState } from 'react';
+import React from 'react';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { ENDPOINTS, causeApiError, server, rest } from '../../test/setupServer';
 import { MemoryRouter, Route } from 'react-router-dom';
@@ -13,10 +13,8 @@ import {
     dummyPunchPriorities,
     dummyPunchSorts,
     dummyPunchTypes,
-    testPunchItemUncleared,
 } from '../../test/dummyData';
 import userEvent from '@testing-library/user-event';
-import ClearPunch from './ClearPunch/ClearPunch';
 
 const renderPunchPage = (): void => {
     render(
