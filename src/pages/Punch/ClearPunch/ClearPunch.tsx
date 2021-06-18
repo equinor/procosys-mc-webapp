@@ -196,7 +196,7 @@ const ClearPunch = ({
                                     <div
                                         onClick={(): void =>
                                             handleActionByPersonChange(
-                                                null,
+                                                undefined,
                                                 '',
                                                 ''
                                             )

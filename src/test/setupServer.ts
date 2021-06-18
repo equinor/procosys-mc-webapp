@@ -56,6 +56,11 @@ export const ENDPOINTS = {
     putPunchDescription: `${baseURL}/PunchListItem/SetDescription`,
     putPunchType: `${baseURL}/PunchListItem/SetType`,
     putPunchCategory: `${baseURL}/PunchListItem/SetCategory`,
+    putPunchActionByPerson: `${baseURL}/PunchListItem/SetActionByPerson`,
+    putPunchDueDate: `${baseURL}/PunchListItem/SetDueDate`,
+    putPunchSorting: `${baseURL}/PunchListItem/SetSorting`,
+    putPunchPriority: `${baseURL}/PunchListItem/SetPriority`,
+    putPunchEstimate: `${baseURL}/PunchListItem/SetEstimate`,
     postPunchClear: `${baseURL}/PunchListItem/Clear`,
     postPunchUnclear: `${baseURL}/PunchListItem/Unclear`,
     postPunchVerify: `${baseURL}/PunchListItem/Verify`,
@@ -164,7 +169,7 @@ export const server = setupServer(
     rest.get(ENDPOINTS.getPersons, (_, response, context) => {
         return response(context.json(dummyPersonsSearch), context.status(200));
     }),
-    rest.post(ENDPOINTS.postPunchReject, (_, response, context) => {
+    rest.post(ENDPOINTS.postPunchClear, (_, response, context) => {
         return response(context.status(200));
     }),
     rest.post(ENDPOINTS.postPunchUnclear, (_, response, context) => {
@@ -173,7 +178,34 @@ export const server = setupServer(
     rest.post(ENDPOINTS.postPunchReject, (_, response, context) => {
         return response(context.status(200));
     }),
-    rest.post(ENDPOINTS.postPunchReject, (_, response, context) => {
+    rest.put(ENDPOINTS.putPunchCategory, (_, response, context) => {
+        return response(context.status(200));
+    }),
+    rest.put(ENDPOINTS.putPunchDescription, (_, response, context) => {
+        return response(context.status(200));
+    }),
+    rest.put(ENDPOINTS.putPunchRaisedBy, (_, response, context) => {
+        return response(context.status(200));
+    }),
+    rest.put(ENDPOINTS.putPunchClearingBy, (_, response, context) => {
+        return response(context.status(200));
+    }),
+    rest.put(ENDPOINTS.putPunchActionByPerson, (_, response, context) => {
+        return response(context.status(200));
+    }),
+    rest.put(ENDPOINTS.putPunchDueDate, (_, response, context) => {
+        return response(context.status(200));
+    }),
+    rest.put(ENDPOINTS.putPunchType, (_, response, context) => {
+        return response(context.status(200));
+    }),
+    rest.put(ENDPOINTS.putPunchSorting, (_, response, context) => {
+        return response(context.status(200));
+    }),
+    rest.put(ENDPOINTS.putPunchPriority, (_, response, context) => {
+        return response(context.status(200));
+    }),
+    rest.put(ENDPOINTS.putPunchEstimate, (_, response, context) => {
         return response(context.status(200));
     })
 );

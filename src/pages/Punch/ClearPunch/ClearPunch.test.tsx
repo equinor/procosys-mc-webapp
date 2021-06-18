@@ -1,7 +1,19 @@
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import React from 'react';
+import { useState } from 'react';
 import { withPlantContext } from '../../../test/contexts';
-import { dummyPunchItemCleared } from '../../../test/dummyData';
+import {
+    dummyPersonsSearch,
+    dummyPunchCategories,
+    dummyPunchItemCleared,
+    dummyPunchItemUncleared,
+    dummyPunchOrganizations,
+    dummyPunchPriorities,
+    dummyPunchSorts,
+    dummyPunchTypes,
+    testPunchItemUncleared,
+} from '../../../test/dummyData';
 import {
     causeApiError,
     ENDPOINTS,
@@ -10,41 +22,47 @@ import {
 } from '../../../test/setupServer';
 import ClearPunch from './ClearPunch';
 
-jest.mock('../../../utils/removeSubdirectories', () => {
-    return (str: string, num: number): string => '/';
-});
-describe('<ClearPunch/> loading errors', () => {
-    //     it('Renders an error message if unable to load punch item', async () => {
-    //         render(withPlantContext({ Component: <ClearPunch /> }));
-    //         causeApiError(ENDPOINTS.getPunchItem, 'get');
-    //         const errorMessage = await screen.findByText(
-    //             'Unable to load punch item.'
-    //         );
-    //         expect(errorMessage).toBeInTheDocument();
-    //     });
-    //     it('Renders an error message if unable to load punch attachments', async () => {
-    //         render(withPlantContext({ Component: <ClearPunch /> }));
-    //         causeApiError(ENDPOINTS.getPunchAttachments, 'get');
-    //         const errorMessage = await screen.findByText(
-    //             'Unable to load attachments.'
-    //         );
-    //         expect(errorMessage).toBeInTheDocument();
-    //     });
-    // });
+const expectSnackbar = async (): Promise<void> => {
+    expect(
+        await screen.findByText('Change successfully saved.')
+    ).toBeInTheDocument();
+};
 
-    // describe('<ClearPunch/> after loading', () => {
-    //     beforeEach(async () => {
-    //         render(withPlantContext({ Component: <ClearPunch /> }));
-    //         const tagDescription = await screen.findByText(
-    //             'For testing purposes (test 37221)'
-    //         );
-    //         expect(tagDescription).toBeInTheDocument();
-    //     });
-    //     it('Renders description on punch item', async () => {
-    //         const descriptionField = screen.getByRole('textbox', {
-    //             name: 'Description',
-    //         });
-    //         expect(descriptionField.innerHTML).toEqual('dummy-punch-description');
-    //     });
-    test.todo('Test the different actions (verify, unclear, reject)');
+const selectOption = async (
+    selectFieldName: string,
+    optionToBeSelected: string,
+    valueToBeSelected: string,
+    optionIndex = 0
+): Promise<void> => {
+    const selectField = await screen.findByLabelText(selectFieldName);
+    expect(selectField).toBeInTheDocument();
+    // Options in select fields are always visible, since both 'Raised by' and 'Clearing by' uses same options this has to be done:
+    const options = await screen.findAllByText(optionToBeSelected);
+    const option = options[optionIndex];
+    userEvent.selectOptions(selectField, option);
+    expect((option as HTMLOptionElement).selected).toBeTruthy();
+    expect((selectField as HTMLSelectElement).value).toEqual(valueToBeSelected);
+    await expectSnackbar();
+};
+
+describe('<ClearPunch/>', () => {
+    it('Shows an error message if one of the options api calls fail', async () => {
+        causeApiError(ENDPOINTS.getPunchOrganizations, 'get');
+        render(
+            withPlantContext({
+                Component: (
+                    <ClearPunch
+                        punchItem={testPunchItemUncleared}
+                        // eslint-disable-next-line @typescript-eslint/no-empty-function
+                        setPunchItem={(punch): void => {}}
+                    />
+                ),
+            })
+        );
+        expect(
+            await screen.findByText(
+                'Please check your connection, reload this page or try again later.'
+            )
+        ).toBeInTheDocument();
+    });
 });

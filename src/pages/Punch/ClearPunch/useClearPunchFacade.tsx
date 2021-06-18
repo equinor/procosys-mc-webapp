@@ -39,7 +39,7 @@ export type UpdatePunchData =
     | { Description: string }
     | { RaisedByOrganizationId: number }
     | { ClearingByOrganizationId: number }
-    | { PersonId: number | null }
+    | { PersonId: number | undefined }
     | { DueDate: string | undefined }
     | { TypeId: number }
     | { SortingId: number }
@@ -142,7 +142,7 @@ const useClearPunchFacade = (
     };
 
     const handleActionByPersonChange = (
-        id: number | null,
+        id: number | undefined,
         firstName: string,
         lastName: string
     ): void => {
@@ -210,7 +210,6 @@ const useClearPunchFacade = (
         });
     };
 
-    // TODO: remember to do the same as in description to actually update the database!
     const handleEstimateChange = (
         e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
     ): void =>
