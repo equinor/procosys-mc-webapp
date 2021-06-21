@@ -1,10 +1,15 @@
 import React from 'react';
 import { SearchStatus } from '../useSearchPageFacade';
-import { SearchResults as SearchResultsType } from '../../../services/apiTypes';
+import {
+    McPkgPreview,
+    SearchResults as SearchResultsType,
+    WoPreview,
+} from '../../../services/apiTypes';
 import SkeletonLoadingPage from '../../../components/loading/SkeletonLoader';
 import { SearchType } from '../Search';
 import McDetails from '../../../components/detailCards/McDetails';
 import styled from 'styled-components';
+import { isArrayOfType, isOfType } from '../../../services/apiTypeGuards';
 
 const SearchResultAmountWrapper = styled.h6`
     margin: 10px 0px;
@@ -24,6 +29,9 @@ const SearchResults = ({
     const getPlaceholderTextType = (): string => {
         if (searchType === SearchType.MC) {
             return 'MC Package number';
+        } else if (searchType === SearchType.WO) {
+            // TODO: add whatever they search for in wo search
+            return '';
         }
         return '';
     };
@@ -31,9 +39,48 @@ const SearchResults = ({
     const getSearchResultType = (): string => {
         if (searchType === SearchType.MC) {
             return 'MC packages';
+        } else if (searchType === SearchType.WO) {
+            // TODO: is this correct?
+            return 'work orders';
         }
         return '';
     };
+
+    const determineContentToRender = (): JSX.Element => {
+        if (
+            searchType === SearchType.MC &&
+            isArrayOfType<McPkgPreview>(searchResults.items, 'mcPkgNo')
+        ) {
+            return (
+                <>
+                    {searchResults.items.map((searchResult) => {
+                        return (
+                            <McDetails
+                                key={searchResult.id}
+                                mcPkgDetails={searchResult}
+                            />
+                        );
+                    })}
+                </>
+            );
+        } else if (
+            searchType === SearchType.WO &&
+            isArrayOfType<WoPreview>(searchResults.items, 'workOrderNo')
+        ) {
+            return (
+                <>
+                    {searchResults.items.map((searchResult) => {
+                        // TODO: return something
+                        return <></>;
+                    })}
+                </>
+            );
+        }
+        // TODO: decide what to return if not correct
+        return <></>;
+    };
+
+    // TODO: reorder the ifs, like in clear punch??
 
     if (searchStatus === SearchStatus.LOADING) {
         return <SkeletonLoadingPage fullWidth />;
@@ -48,8 +95,12 @@ const SearchResults = ({
                     Displaying {searchResults.items.length} out of{' '}
                     {searchResults.maxAvailable} {getSearchResultType()}
                 </SearchResultAmountWrapper>
+                {determineContentToRender()}
                 {searchResults.items.map((searchResult) => {
-                    if (searchType === SearchType.MC) {
+                    if (
+                        searchType === SearchType.MC &&
+                        isOfType<McPkgPreview>(searchResult, 'mcPkgNo')
+                    ) {
                         return (
                             <McDetails
                                 key={searchResult.id}

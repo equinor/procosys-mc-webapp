@@ -19,7 +19,7 @@ const ButtonsWrapper = styled.div`
 `;
 
 export enum SearchType {
-    SAVED = 'SAVED',
+    SAVED = 'SAVED', // TODO: remove from enum
     PO = 'PO',
     MC = 'MC',
     WO = 'WO',

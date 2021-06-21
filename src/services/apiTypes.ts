@@ -31,9 +31,18 @@ export interface McPkgPreview {
     operationHandoverStatus: string;
 }
 
+export interface WoPreview {
+    id: number;
+    workOrderNo: string;
+    title: string;
+    description: string;
+    diciplineCode: string;
+    diciplineDescription: string;
+}
+
 export type SearchResults = {
     maxAvailable: number;
-    items: McPkgPreview[];
+    items: McPkgPreview[] | WoPreview[];
 };
 
 // COMM PKG AND LISTS
