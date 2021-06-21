@@ -10,6 +10,8 @@ import { SearchType } from '../Search';
 import McDetails from '../../../components/detailCards/McDetails';
 import styled from 'styled-components';
 import { isArrayOfType, isOfType } from '../../../services/apiTypeGuards';
+import { InfoItem } from '@equinor/procosys-webapp-components';
+import EntityDetails from '../../../components/detailCards/EntityDetails';
 
 const SearchResultAmountWrapper = styled.h6`
     margin: 10px 0px;
@@ -30,8 +32,7 @@ const SearchResults = ({
         if (searchType === SearchType.MC) {
             return 'MC Package number';
         } else if (searchType === SearchType.WO) {
-            // TODO: add whatever they search for in wo search
-            return '';
+            return 'Work Order number';
         }
         return '';
     };
@@ -40,8 +41,7 @@ const SearchResults = ({
         if (searchType === SearchType.MC) {
             return 'MC packages';
         } else if (searchType === SearchType.WO) {
-            // TODO: is this correct?
-            return 'work orders';
+            return 'Work Orders';
         }
         return '';
     };
@@ -70,8 +70,17 @@ const SearchResults = ({
             return (
                 <>
                     {searchResults.items.map((searchResult) => {
-                        // TODO: return something
-                        return <></>;
+                        // TODO: add correct icon
+                        // TODO: check whether correct info used
+                        return (
+                            <EntityDetails
+                                key={searchResult.id}
+                                icon={<></>}
+                                headerText={searchResult.workOrderNo}
+                                description={searchResult.description}
+                                details={[searchResult.diciplineCode]}
+                            />
+                        );
                     })}
                 </>
             );
@@ -80,11 +89,6 @@ const SearchResults = ({
         return <></>;
     };
 
-    // TODO: reorder the ifs, like in clear punch??
-
-    if (searchStatus === SearchStatus.LOADING) {
-        return <SkeletonLoadingPage fullWidth />;
-    }
     if (
         searchStatus === SearchStatus.SUCCESS &&
         searchResults.items.length > 0
@@ -111,8 +115,9 @@ const SearchResults = ({
                 })}
             </div>
         );
-    }
-    if (searchStatus === SearchStatus.INACTIVE) {
+    } else if (searchStatus === SearchStatus.LOADING) {
+        return <SkeletonLoadingPage fullWidth />;
+    } else if (searchStatus === SearchStatus.INACTIVE) {
         return (
             <div>
                 <p>
@@ -123,9 +128,7 @@ const SearchResults = ({
                 </p>
             </div>
         );
-    }
-
-    if (searchStatus === SearchStatus.ERROR) {
+    } else if (searchStatus === SearchStatus.ERROR) {
         return (
             <div>
                 <p>
@@ -136,15 +139,15 @@ const SearchResults = ({
                 </p>
             </div>
         );
+    } else {
+        return (
+            <div>
+                <p>
+                    <i>No {getSearchResultType()} found for this search.</i>
+                </p>
+            </div>
+        );
     }
-
-    return (
-        <div>
-            <p>
-                <i>No {getSearchResultType()} found for this search.</i>
-            </p>
-        </div>
-    );
 };
 
 export default SearchResults;
