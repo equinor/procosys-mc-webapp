@@ -112,12 +112,14 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
         cancelToken: CancelToken
     ): Promise<McPkgPreview> => {
         let url = '';
+        // TODO: add WO
         if (searchType === SearchType.MC) {
             url = `McPkg?plantId=PCS$${plantId}&mcPkgId=${itemId}${apiVersion}`;
         } else {
             throw new Error('The chosen scope type is not supported.');
         }
         const { data } = await axios.get(url, { cancelToken });
+        // TODO: switch type guard
         if (!isCorrectPreview(data, searchType)) {
             throw new Error('An error occurred, please try again.');
         }
@@ -148,12 +150,14 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
         cancelToken: CancelToken
     ): Promise<ChecklistPreview[]> => {
         let url = '';
+        // TODO: add WO
         if (searchType === SearchType.MC) {
             url = `McPkg/CheckLists?plantId=PCS$${plantId}&mcPkgId=${itemId}${apiVersion}`;
         } else {
             throw new Error('The chosen scope type is not supported.');
         }
         const { data } = await axios.get(url, { cancelToken });
+        // TODO: switch type guard
         if (!isArrayOfChecklistPreview(data)) {
             throw new Error('An error occurred, please try again.');
         }
@@ -200,12 +204,14 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
         cancelToken: CancelToken
     ): Promise<PunchPreview[]> => {
         let url = '';
+        // TODO: add WO
         if (searchType === SearchType.MC) {
             url = `McPkg/PunchList?plantId=PCS$${plantId}&mcPkgId=${itemId}${apiVersion}`;
         } else {
             throw new Error('The chosen scope type is not supported.');
         }
         const { data } = await axios.get(url, { cancelToken });
+        // TODO: switch type guard
         if (!isArrayOfPunchPreview(data)) {
             throw new Error('An error occurred, please try again.');
         }

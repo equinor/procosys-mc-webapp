@@ -36,8 +36,8 @@ const ContentWrapper = styled.div`
 
 const EntityPage = (): JSX.Element => {
     const { api, params, path, history, url } = useCommonHooks();
-    const [scope, setScope] = useState<ChecklistPreview[]>();
-    const [punchList, setPunchList] = useState<PunchPreview[]>();
+    const [scope, setScope] = useState<ChecklistPreview[]>(); // TODO: is same for WO?
+    const [punchList, setPunchList] = useState<PunchPreview[]>(); // TODO: is same for WO?
     const [details, setDetails] = useState<McPkgPreview>();
     const [fetchFooterStatus, setFetchFooterStatus] = useState(
         AsyncStatus.LOADING
@@ -72,6 +72,7 @@ const EntityPage = (): JSX.Element => {
                 ]);
                 setScope(scopeFromApi);
                 setPunchList(punchListFromApi);
+                // TODO: split into two (?)
                 setFetchFooterStatus(AsyncStatus.SUCCESS);
             } catch {
                 setFetchFooterStatus(AsyncStatus.ERROR);
@@ -96,12 +97,7 @@ const EntityPage = (): JSX.Element => {
         })();
     }, [api, params]);
 
-    if (
-        params.searchType != SearchType.MC &&
-        params.searchType != SearchType.WO &&
-        params.searchType != SearchType.PO &&
-        params.searchType != SearchType.Tag
-    ) {
+    if (Object.values(SearchType).includes(params.searchType) === false) {
         throw new URLError(
             `The "${params.searchType}" item type is not supported. Please double check your URL and make sure the type of the item you're trying to reach is either MC, PO, WO or Tag.`
         );
@@ -112,6 +108,7 @@ const EntityPage = (): JSX.Element => {
             fetchDetailsStatus === AsyncStatus.SUCCESS &&
             details != undefined
         ) {
+            // TODO: add WO
             if (params.searchType === SearchType.MC) {
                 return (
                     <McDetails
@@ -120,23 +117,24 @@ const EntityPage = (): JSX.Element => {
                         clickable={false}
                     />
                 );
-            }
-        }
-        if (fetchDetailsStatus === AsyncStatus.ERROR) {
+            } else return <></>;
+        } else if (fetchDetailsStatus === AsyncStatus.ERROR) {
             return (
                 <DetailsWrapper>
                     Unable to load details. Please reload
                 </DetailsWrapper>
             );
+        } else {
+            return (
+                <DetailsWrapper>
+                    <DotProgress color="primary" />
+                </DetailsWrapper>
+            );
         }
-        return (
-            <DetailsWrapper>
-                <DotProgress color="primary" />
-            </DetailsWrapper>
-        );
     };
 
     const determineFooterToRender = (): JSX.Element => {
+        // TOOD: make else if
         if (fetchFooterStatus === AsyncStatus.SUCCESS && scope && punchList) {
             return (
                 <NavigationFooter>
@@ -179,6 +177,7 @@ const EntityPage = (): JSX.Element => {
             </NavigationFooterShell>
         );
     };
+
     return (
         <EntityPageWrapper>
             <Navbar
@@ -193,21 +192,33 @@ const EntityPage = (): JSX.Element => {
             {determineDetailsToRender()}
             <ContentWrapper>
                 {
-                    <Switch>
-                        <Route exact path={`${path}`} component={Scope} />
-                        <Route
-                            exact
-                            path={`${path}/punch-list`}
-                            component={PunchList}
-                        />
-                    </Switch>
+                    // TODO: pass scope to Scope & remove the thing from scope component
+                    // TOOD: pass punch list to PunchList & remove the thing from PunchList component
                 }
+                <Switch>
+                    <Route
+                        exact
+                        path={`${path}`}
+                        render={(): JSX.Element => (
+                            <Scope
+                                scope={scope}
+                                fetchScopeStatus={fetchFooterStatus}
+                            />
+                        )}
+                    />
+                    <Route
+                        exact
+                        path={`${path}/punch-list`}
+                        component={PunchList}
+                    />
+                </Switch>
             </ContentWrapper>
             {determineFooterToRender()}
         </EntityPageWrapper>
     );
 };
 
+// TODO: add correct permissions
 export default withAccessControl(EntityPage, [
     'MCPKG/READ',
     'MCCR/READ',
