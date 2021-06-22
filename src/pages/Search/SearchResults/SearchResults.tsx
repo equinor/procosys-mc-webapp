@@ -12,6 +12,7 @@ import styled from 'styled-components';
 import { isArrayOfType, isOfType } from '../../../services/apiTypeGuards';
 import { InfoItem } from '@equinor/procosys-webapp-components';
 import EntityDetails from '../../../components/detailCards/EntityDetails';
+import TextIcon from '../../../components/detailCards/TextIcon';
 
 const SearchResultAmountWrapper = styled.h6`
     margin: 10px 0px;
@@ -75,10 +76,16 @@ const SearchResults = ({
                         return (
                             <EntityDetails
                                 key={searchResult.id}
-                                icon={<></>}
+                                icon={<TextIcon color="#990025" text="WO" />}
                                 headerText={searchResult.workOrderNo}
                                 description={searchResult.description}
-                                details={[searchResult.diciplineCode]}
+                                details={
+                                    searchResult.diciplineCode
+                                        ? [
+                                              `${searchResult.diciplineCode}, ${searchResult.diciplineDescription}`,
+                                          ]
+                                        : undefined
+                                }
                             />
                         );
                     })}

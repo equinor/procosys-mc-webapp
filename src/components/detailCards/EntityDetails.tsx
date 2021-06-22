@@ -17,14 +17,8 @@ const EntityDetailsWrapper = styled.article<{ isDetailsCard?: boolean }>`
 `;
 
 const IconWrapper = styled.div`
-    width: 24px;
     padding-top: 3px;
     margin-right: 16px;
-    box-sizing: border-box;
-    & > img {
-        width: 24px;
-        object-fit: contain;
-    }
 `;
 
 const ContentWrapper = styled.div`
