@@ -9,8 +9,7 @@ import SkeletonLoadingPage from '../../../components/loading/SkeletonLoader';
 import { SearchType } from '../Search';
 import McDetails from '../../../components/detailCards/McDetails';
 import styled from 'styled-components';
-import { isArrayOfType, isOfType } from '../../../services/apiTypeGuards';
-import { InfoItem } from '@equinor/procosys-webapp-components';
+import { isArrayOfType } from '../../../services/apiTypeGuards';
 import EntityDetails from '../../../components/detailCards/EntityDetails';
 import TextIcon from '../../../components/detailCards/TextIcon';
 
@@ -71,8 +70,6 @@ const SearchResults = ({
             return (
                 <>
                     {searchResults.items.map((searchResult) => {
-                        // TODO: add correct icon
-                        // TODO: check whether correct info used
                         return (
                             <EntityDetails
                                 key={searchResult.id}
@@ -92,7 +89,6 @@ const SearchResults = ({
                 </>
             );
         }
-        // TODO: decide what to return if not correct
         return <></>;
     };
 

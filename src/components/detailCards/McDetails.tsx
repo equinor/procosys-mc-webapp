@@ -1,9 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Caption, COLORS } from '../../style/GlobalStyles';
-import { McPkgPreview, WoPreview } from '../../services/apiTypes';
+import { McPkgPreview } from '../../services/apiTypes';
 import useCommonHooks from '../../utils/useCommonHooks';
-import { StatusColumn } from '@equinor/procosys-webapp-components';
 import { McPackageStatusIcon } from '../icons/McPackageStatusIcon';
 
 const McDetailsWrapper = styled.article<{ clickable: boolean }>`
