@@ -10,6 +10,7 @@ import {
     McPkgPreview,
     SearchResults,
     PunchItem,
+    WoPreview,
 } from '../services/apiTypes';
 
 type DummyMetatableData = {
@@ -67,6 +68,7 @@ export const dummyPermissions: string[] = [
     'PUNCHLISTITEM/WRITE',
     'PUNCHLISTITEM/CLEAR',
     'PUNCHLISTITEM/VERIFY',
+    'WO/READ',
 ];
 
 export const testProjects: Project[] = [
@@ -88,11 +90,22 @@ export const testDetails: CommPkg = {
     systemId: 1,
 };
 
+export const testWoPreview: WoPreview[] = [
+    {
+        id: 1,
+        workOrderNo: 'test-wo-no',
+        title: 'test wo title',
+        description: 'test wo description',
+        diciplineCode: 'test-wo-dic-code',
+        diciplineDescription: 'test wo dicipline description',
+    },
+];
+
 export const testMcPkgPreview: McPkgPreview[] = [
     {
         id: 1,
         mcPkgNo: '21',
-        description: 'Test description',
+        description: 'Test mcpkg description',
         status: CompletionStatus.OK,
         commPkgNo: 'Test comm pkg number',
         phaseCode: 'Test phase code',
@@ -105,6 +118,11 @@ export const testMcPkgPreview: McPkgPreview[] = [
 export const testMcPkgSearch: SearchResults = {
     maxAvailable: 1,
     items: testMcPkgPreview,
+};
+
+export const testWoSearch: SearchResults = {
+    maxAvailable: 1,
+    items: testWoPreview,
 };
 
 export const testScope: ChecklistPreview[] = [

@@ -73,4 +73,4 @@ const Search = (): JSX.Element => {
     );
 };
 
-export default withAccessControl(Search, ['MCPKG/READ']);
+export default withAccessControl(Search, ['MCPKG/READ', 'WO/READ']);

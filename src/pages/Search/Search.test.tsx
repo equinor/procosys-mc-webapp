@@ -2,7 +2,11 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
 import { withPlantContext } from '../../test/contexts';
-import { testMcPkgPreview, testMcPkgSearch } from '../../test/dummyData';
+import {
+    testMcPkgPreview,
+    testMcPkgSearch,
+    testWoPreview,
+} from '../../test/dummyData';
 import { causeApiError, ENDPOINTS, server } from '../../test/setupServer';
 import { rest } from 'msw';
 import Search, { SearchType } from './Search';
@@ -37,7 +41,8 @@ describe('<Search/> successes', () => {
     });
     it('Renders MC SearchArea if MC SearchTypeButton is clicked and removes SearchArea if the button is cliced again', async () => {
         // TODO: once saved search implemented: expect saved search
-        userEvent.click(screen.getByRole('button', { name: 'MC' }));
+        const mcButton = await screen.findByRole('button', { name: 'MC' });
+        userEvent.click(mcButton);
         expect(
             await screen.findByPlaceholderText('For example: "1002-A001"')
         ).toBeInTheDocument();
@@ -46,21 +51,28 @@ describe('<Search/> successes', () => {
                 'Start typing your MC Package number in the field above.'
             )
         ).toBeInTheDocument();
-        userEvent.click(screen.getByRole('button', { name: 'MC' }));
+        userEvent.click(mcButton);
         expect(
             screen.queryByPlaceholderText('For example: "1002-A001"')
         ).not.toBeInTheDocument(); // TODO: once saved search implemented: expect saved search
     });
-    it('Renders search results if user inputs value into search field in SearchArea', async () => {
+    it('Renders MC search results if user inputs value into search field in SearchArea', async () => {
         await search(SearchType.MC, testMcPkgPreview[0].mcPkgNo);
-        const resultAmountMessage = await screen.findByText(
-            'Displaying 1 out of 1 MC packages'
-        );
-        expect(resultAmountMessage).toBeInTheDocument();
-        const description = await screen.findByText(
-            testMcPkgPreview[0].description
-        );
-        expect(description).toBeInTheDocument();
+        expect(
+            await screen.findByText('Displaying 1 out of 1 MC packages')
+        ).toBeInTheDocument();
+        expect(
+            await screen.findByText(testMcPkgPreview[0].description)
+        ).toBeInTheDocument();
+    });
+    it('Renders WO search results if user inputs value into search field in SearchArea', async () => {
+        await search(SearchType.WO, testWoPreview[0].workOrderNo);
+        expect(
+            await screen.findByText('Displaying 1 out of 1 Work Orders')
+        ).toBeInTheDocument();
+        expect(
+            await screen.findByText(testWoPreview[0].description)
+        ).toBeInTheDocument();
     });
 });
 
@@ -77,10 +89,11 @@ describe('<Search> negative tests', () => {
         renderSearch();
         causeApiError(ENDPOINTS.searchForMcPackage, 'get');
         await search(SearchType.MC, testMcPkgPreview[0].mcPkgNo);
-        const errorMessage = await screen.findByText(
-            'An error occurred, please refresh this page and try again.'
-        );
-        expect(errorMessage).toBeInTheDocument();
+        expect(
+            await screen.findByText(
+                'An error occurred, please refresh this page and try again.'
+            )
+        ).toBeInTheDocument();
     });
     it('Renders a loading screen while awaiting search results', async () => {
         server.use(
@@ -97,8 +110,10 @@ describe('<Search> negative tests', () => {
         );
         renderSearch();
         await search(SearchType.MC, testMcPkgPreview[0].mcPkgNo);
-        const loading = await screen.findByTestId('skeleton-row');
-        expect(loading).toBeInTheDocument();
+        expect(await screen.findByTestId('skeleton-row')).toBeInTheDocument();
+        expect(
+            await screen.findByText(testMcPkgPreview[0].description)
+        ).toBeInTheDocument();
     });
     it('Renders placeholder text when no matching MC packages are found', async () => {
         server.use(
@@ -117,9 +132,8 @@ describe('<Search> negative tests', () => {
         );
         renderSearch();
         await search(SearchType.MC, '44');
-        const infoMessage = await screen.findByText(
-            'No MC packages found for this search.'
-        );
-        expect(infoMessage).toBeInTheDocument();
+        expect(
+            await screen.findByText('No MC packages found for this search.')
+        ).toBeInTheDocument();
     });
 });

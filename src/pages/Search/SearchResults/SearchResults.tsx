@@ -100,19 +100,6 @@ const SearchResults = ({
                     {searchResults.maxAvailable} {getSearchResultType()}
                 </SearchResultAmountWrapper>
                 {determineContentToRender()}
-                {searchResults.items.map((searchResult) => {
-                    if (
-                        searchType === SearchType.MC &&
-                        isOfType<McPkgPreview>(searchResult, 'mcPkgNo')
-                    ) {
-                        return (
-                            <McDetails
-                                key={searchResult.id}
-                                mcPkgDetails={searchResult}
-                            />
-                        );
-                    }
-                })}
             </div>
         );
     } else if (searchStatus === SearchStatus.LOADING) {
