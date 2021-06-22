@@ -28,6 +28,21 @@ export const StatusImageWrapper = styled.div`
     width: 24px;
 `;
 
+const StatusTextWrapper = styled.div`
+    display: flex;
+    & > p {
+        margin: 0;
+    }
+`;
+
+const HandoverStatus = styled.p<{ accepted: boolean }>`
+    font-weight: bolder;
+    font-size: 0.75rem;
+    color: ${(props): string =>
+        props.accepted ? COLORS.black : COLORS.darkGrey};
+    width: 24px;
+`;
+
 export const DetailsWrapper = styled.div`
     flex-direction: column;
     flex: 1;
@@ -74,19 +89,30 @@ const McDetails = ({
             as={clickable ? 'a' : 'article'}
         >
             <StatusImageWrapper>
-                <StatusColumn
-                    statusIcon={
-                        <McPackageStatusIcon status={mcPkgDetails.status} />
-                    }
-                    statusLetters={[
-                        mcPkgDetails.commissioningHandoverStatus == 'ACCEPTED'
-                            ? 'C'
-                            : null,
-                        mcPkgDetails.operationHandoverStatus == 'ACCEPTED'
-                            ? 'O'
-                            : null,
-                    ]}
-                />
+                <McPackageStatusIcon status={mcPkgDetails.status} />
+                <StatusTextWrapper>
+                    {mcPkgDetails.commissioningHandoverStatus !=
+                    'NOCERTIFICATE' ? (
+                        <HandoverStatus
+                            accepted={
+                                mcPkgDetails.commissioningHandoverStatus ===
+                                'ACCEPTED'
+                            }
+                        >
+                            C
+                        </HandoverStatus>
+                    ) : null}
+                    {mcPkgDetails.operationHandoverStatus != 'NOCERTIFICATE' ? (
+                        <HandoverStatus
+                            accepted={
+                                mcPkgDetails.operationHandoverStatus ===
+                                'ACCEPTED'
+                            }
+                        >
+                            O
+                        </HandoverStatus>
+                    ) : null}
+                </StatusTextWrapper>
             </StatusImageWrapper>
             <DetailsWrapper>
                 <HeaderWrapper clickable={clickable}>
