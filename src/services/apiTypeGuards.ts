@@ -16,6 +16,7 @@ import {
     PunchType,
     SearchResults,
     Tag,
+    WoPreview,
 } from './apiTypes';
 
 export class TypeguardError extends Error {
@@ -46,67 +47,17 @@ export const isArrayOfType = <T>(
 export const isCorrectPreview = (
     data: unknown,
     searchType: SearchType
-): data is McPkgPreview => {
+): data is McPkgPreview | WoPreview => {
     if (searchType === SearchType.MC) {
-        return (
-            data != null && typeof (data as McPkgPreview).mcPkgNo === 'string'
-        );
+        return isOfType<McPkgPreview>(data, 'mcPkgNo');
+    } else if (searchType === SearchType.WO) {
+        return isOfType<WoPreview>(data, 'workOrderNo');
     } else {
         return false;
     }
 };
 
-const isArrayOfCorrectPreview = (
-    data: unknown,
-    searchType: SearchType
-): data is McPkgPreview[] => {
-    if (Array.isArray(data)) {
-        data.forEach((item) => {
-            if (isCorrectPreview(item, searchType) === false) return false;
-        });
-        return true;
-    }
-    return false;
-};
-
-export const isCorrectSearchResults = (
-    data: unknown,
-    searchType: SearchType
-): data is SearchResults => {
-    return (
-        data != null &&
-        data != undefined &&
-        isArrayOfCorrectPreview((data as SearchResults).items, searchType)
-    );
-};
-
 // SCOPE
-const isChecklistPreview = (data: unknown): data is ChecklistPreview => {
-    return (
-        data != null &&
-        typeof (data as ChecklistPreview).attachmentCount === 'number'
-    );
-};
-
-export const isArrayOfChecklistPreview = (
-    data: unknown
-): data is ChecklistPreview[] => {
-    return Array.isArray(data) && data.every(isChecklistPreview);
-};
-
-const isPunchPreview = (data: unknown): data is PunchPreview => {
-    return (
-        data != null &&
-        typeof (data as PunchPreview).statusControlledBySwcr === 'boolean'
-    );
-};
-
-export const isArrayOfPunchPreview = (
-    data: unknown
-): data is PunchPreview[] => {
-    return Array.isArray(data) && data.every(isPunchPreview);
-};
-
 const isPerson = (data: unknown): data is Person => {
     return data != null && typeof (data as Person).firstName === 'string';
 };

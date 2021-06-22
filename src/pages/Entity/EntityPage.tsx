@@ -10,6 +10,7 @@ import {
     ChecklistPreview,
     PunchPreview,
     McPkgPreview,
+    WoPreview,
 } from '../../services/apiTypes';
 import { DotProgress } from '@equinor/eds-core-react';
 import NavigationFooterShell from '../../components/navigation/NavigationFooterShell';
@@ -22,6 +23,7 @@ import { COLORS } from '../../style/GlobalStyles';
 import McDetails from '../../components/detailCards/McDetails';
 import { SearchType } from '../Search/Search';
 import { URLError } from '../../utils/matchPlantInURL';
+import { isOfType } from '../../services/apiTypeGuards';
 
 const EntityPageWrapper = styled.main``;
 
@@ -38,8 +40,11 @@ const EntityPage = (): JSX.Element => {
     const { api, params, path, history, url } = useCommonHooks();
     const [scope, setScope] = useState<ChecklistPreview[]>(); // TODO: is same for WO?
     const [punchList, setPunchList] = useState<PunchPreview[]>(); // TODO: is same for WO?
-    const [details, setDetails] = useState<McPkgPreview>();
-    const [fetchFooterStatus, setFetchFooterStatus] = useState(
+    const [details, setDetails] = useState<McPkgPreview | WoPreview>();
+    const [fetchScopeStatus, setFetchScopeStatus] = useState(
+        AsyncStatus.LOADING
+    );
+    const [fetchPunchListStatus, setFetchPunchListStatus] = useState(
         AsyncStatus.LOADING
     );
     const [fetchDetailsStatus, setFetchDetailsStatus] = useState(
@@ -56,26 +61,20 @@ const EntityPage = (): JSX.Element => {
     useEffect(() => {
         (async (): Promise<void> => {
             try {
-                const [scopeFromApi, punchListFromApi] = await Promise.all([
-                    api.getScope(
-                        params.plant,
-                        params.searchType,
-                        params.entityId,
-                        source.token
-                    ),
-                    api.getPunchList(
-                        params.plant,
-                        params.searchType,
-                        params.entityId,
-                        source.token
-                    ),
-                ]);
-                setScope(scopeFromApi);
+                const punchListFromApi = await api.getPunchList(
+                    params.plant,
+                    params.searchType,
+                    params.entityId,
+                    source.token
+                );
                 setPunchList(punchListFromApi);
-                // TODO: split into two (?)
-                setFetchFooterStatus(AsyncStatus.SUCCESS);
+                if (punchListFromApi.length > 0) {
+                    setFetchPunchListStatus(AsyncStatus.SUCCESS);
+                } else {
+                    setFetchPunchListStatus(AsyncStatus.EMPTY_RESPONSE);
+                }
             } catch {
-                setFetchFooterStatus(AsyncStatus.ERROR);
+                setFetchPunchListStatus(AsyncStatus.ERROR);
             }
         })();
     }, [api, params]);
@@ -83,7 +82,28 @@ const EntityPage = (): JSX.Element => {
     useEffect(() => {
         (async (): Promise<void> => {
             try {
-                const detailsFromApi = await api.getItemDetails(
+                const scopeFromApi = await api.getScope(
+                    params.plant,
+                    params.searchType,
+                    params.entityId,
+                    source.token
+                );
+                setScope(scopeFromApi);
+                if (scopeFromApi.length > 0) {
+                    setFetchScopeStatus(AsyncStatus.SUCCESS);
+                } else {
+                    setFetchScopeStatus(AsyncStatus.EMPTY_RESPONSE);
+                }
+            } catch {
+                setFetchDetailsStatus(AsyncStatus.ERROR);
+            }
+        })();
+    }, [api, params]);
+
+    useEffect(() => {
+        (async (): Promise<void> => {
+            try {
+                const detailsFromApi = await api.getEntityDetails(
                     params.plant,
                     params.searchType,
                     params.entityId,
@@ -109,7 +129,10 @@ const EntityPage = (): JSX.Element => {
             details != undefined
         ) {
             // TODO: add WO
-            if (params.searchType === SearchType.MC) {
+            if (
+                params.searchType === SearchType.MC &&
+                isOfType<McPkgPreview>(details, 'mcPkgNo')
+            ) {
                 return (
                     <McDetails
                         key={details.id}
@@ -135,7 +158,25 @@ const EntityPage = (): JSX.Element => {
 
     const determineFooterToRender = (): JSX.Element => {
         // TOOD: make else if
-        if (fetchFooterStatus === AsyncStatus.SUCCESS && scope && punchList) {
+        if (
+            fetchScopeStatus === AsyncStatus.ERROR ||
+            fetchPunchListStatus === AsyncStatus.ERROR
+        ) {
+            return (
+                <NavigationFooterShell>
+                    <p>Unable to load footer. Please reload</p>
+                </NavigationFooterShell>
+            );
+        } else if (
+            fetchScopeStatus === AsyncStatus.LOADING ||
+            fetchPunchListStatus === AsyncStatus.LOADING
+        ) {
+            return (
+                <NavigationFooterShell>
+                    <DotProgress color="primary" />
+                </NavigationFooterShell>
+            );
+        } else {
             return (
                 <NavigationFooter>
                     <FooterButton
@@ -145,7 +186,7 @@ const EntityPage = (): JSX.Element => {
                         goTo={(): void => history.push(url)}
                         icon={<EdsIcon name="list" color={COLORS.mossGreen} />}
                         label="Scope"
-                        numberOfItems={scope.length}
+                        numberOfItems={scope?.length}
                     />
                     <FooterButton
                         active={history.location.pathname.includes(
@@ -159,23 +200,11 @@ const EntityPage = (): JSX.Element => {
                             />
                         }
                         label="Punch list"
-                        numberOfItems={punchList.length}
+                        numberOfItems={punchList?.length}
                     />
                 </NavigationFooter>
             );
         }
-        if (fetchFooterStatus === AsyncStatus.ERROR) {
-            return (
-                <NavigationFooterShell>
-                    <p>Unable to load footer. Please reload</p>
-                </NavigationFooterShell>
-            );
-        }
-        return (
-            <NavigationFooterShell>
-                <DotProgress color="primary" />
-            </NavigationFooterShell>
-        );
     };
 
     return (
@@ -202,7 +231,7 @@ const EntityPage = (): JSX.Element => {
                         render={(): JSX.Element => (
                             <Scope
                                 scope={scope}
-                                fetchScopeStatus={fetchFooterStatus}
+                                fetchScopeStatus={fetchScopeStatus}
                             />
                         )}
                     />
