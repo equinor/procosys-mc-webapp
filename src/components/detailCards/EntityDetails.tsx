@@ -24,7 +24,7 @@ const IconWrapper = styled.div`
 
 const ContentWrapper = styled.div`
     flex-direction: column;
-    flex: 1;
+    word-break: break-all;
     & > p {
         margin: 0;
     }
