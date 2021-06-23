@@ -154,9 +154,9 @@ const EntityPage = (): JSX.Element => {
                         headerText={details.workOrderNo}
                         description={details.description}
                         details={
-                            details.diciplineCode
+                            details.disciplineCode
                                 ? [
-                                      `${details.diciplineCode}, ${details.diciplineDescription}`,
+                                      `${details.disciplineCode}, ${details.disciplineDescription}`,
                                   ]
                                 : undefined
                         }
@@ -255,7 +255,12 @@ const EntityPage = (): JSX.Element => {
                     <Route
                         exact
                         path={`${path}/punch-list`}
-                        component={PunchList}
+                        render={(): JSX.Element => (
+                            <PunchList
+                                punchList={punchList}
+                                fetchPunchListStatus={fetchPunchListStatus}
+                            />
+                        )}
                     />
                 </Switch>
             </ContentWrapper>

@@ -86,9 +86,9 @@ const SearchResults = ({
                                 headerText={searchResult.workOrderNo}
                                 description={searchResult.description}
                                 details={
-                                    searchResult.diciplineCode
+                                    searchResult.disciplineCode
                                         ? [
-                                              `${searchResult.diciplineCode}, ${searchResult.diciplineDescription}`,
+                                              `${searchResult.disciplineCode}, ${searchResult.disciplineDescription}`,
                                           ]
                                         : undefined
                                 }

@@ -1,7 +1,7 @@
 import { Typography } from '@equinor/eds-core-react';
 import React from 'react';
 import styled from 'styled-components';
-import { COLORS } from '../../style/GlobalStyles';
+import { Caption, COLORS } from '../../style/GlobalStyles';
 
 const EntityDetailsWrapper = styled.article<{ isDetailsCard?: boolean }>`
     cursor: ${(props): string => (props.isDetailsCard ? 'none' : 'pointer')};
@@ -25,6 +25,7 @@ const IconWrapper = styled.div`
 const ContentWrapper = styled.div`
     flex-direction: column;
     word-break: break-all;
+    width: 100%;
     & > p {
         margin: 0;
     }
@@ -35,7 +36,6 @@ const HeaderWrapper = styled.div<{ isDetailsCard?: boolean }>`
     align-items: baseline;
     & > h6 {
         margin: 0;
-        flex: 1.4;
         color: ${(props): string =>
             props.isDetailsCard ? COLORS.black : COLORS.mossGreen};
     }
@@ -74,7 +74,7 @@ const EntityDetails = ({
                 <HeaderWrapper isDetailsCard={isDetailsCard}>
                     <h6>{headerText}</h6>
                     {details?.map((detail) => (
-                        <p key={detail}>{detail}</p>
+                        <Caption key={detail}>{detail}</Caption>
                     ))}
                 </HeaderWrapper>
                 <Typography lines={2}>{description}</Typography>

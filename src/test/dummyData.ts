@@ -96,8 +96,8 @@ export const testWoPreview: WoPreview[] = [
         workOrderNo: 'test-wo-no',
         title: 'test wo title',
         description: 'test wo description',
-        diciplineCode: 'test-wo-dic-code',
-        diciplineDescription: 'test wo dicipline description',
+        disciplineCode: 'test-wo-dic-code',
+        disciplineDescription: 'test wo dicipline description',
     },
 ];
 

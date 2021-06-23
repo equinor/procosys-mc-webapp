@@ -38,8 +38,8 @@ export interface WoPreview {
     workOrderNo: string;
     title: string;
     description: string;
-    diciplineCode: string;
-    diciplineDescription: string;
+    disciplineCode: string;
+    disciplineDescription: string;
 }
 
 export type SearchResults = {

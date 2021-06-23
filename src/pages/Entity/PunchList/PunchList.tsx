@@ -8,38 +8,16 @@ import Axios from 'axios';
 import removeSubdirectories from '../../../utils/removeSubdirectories';
 import { InfoItem } from '@equinor/procosys-webapp-components';
 
-const PunchList = (): JSX.Element => {
-    const { api, params, history, url } = useCommonHooks();
-    const [punchList, setPunchList] = useState<PunchPreview[]>();
-    const [fetchPunchListStatus, setFetchPunchListStatus] = useState(
-        AsyncStatus.LOADING
-    );
+type PunchListProps = {
+    punchList?: PunchPreview[];
+    fetchPunchListStatus: AsyncStatus;
+};
 
-    useEffect(() => {
-        const source = Axios.CancelToken.source();
-        (async (): Promise<void> => {
-            setFetchPunchListStatus(AsyncStatus.LOADING);
-            try {
-                const punchListFromApi = await api.getPunchList(
-                    params.plant,
-                    params.searchType,
-                    params.entityId,
-                    source.token
-                );
-                setPunchList(punchListFromApi);
-                if (punchListFromApi.length < 1) {
-                    setFetchPunchListStatus(AsyncStatus.EMPTY_RESPONSE);
-                } else {
-                    setFetchPunchListStatus(AsyncStatus.SUCCESS);
-                }
-            } catch {
-                setFetchPunchListStatus(AsyncStatus.ERROR);
-            }
-        })();
-        return (): void => {
-            source.cancel();
-        };
-    }, [params.entityId, params.searchType, params.plant, api]);
+const PunchList = ({
+    punchList,
+    fetchPunchListStatus,
+}: PunchListProps): JSX.Element => {
+    const { history, url } = useCommonHooks();
 
     return (
         <ScopeWrapper>
