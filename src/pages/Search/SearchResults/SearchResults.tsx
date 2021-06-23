@@ -13,6 +13,7 @@ import { isArrayOfType } from '../../../services/apiTypeGuards';
 import EntityDetails from '../../../components/detailCards/EntityDetails';
 import TextIcon from '../../../components/detailCards/TextIcon';
 import useCommonHooks from '../../../utils/useCommonHooks';
+import { COLORS } from '../../../style/GlobalStyles';
 
 const SearchResultAmountWrapper = styled.h6`
     margin: 10px 0px;
@@ -76,7 +77,12 @@ const SearchResults = ({
                         return (
                             <EntityDetails
                                 key={searchResult.id}
-                                icon={<TextIcon color="#990025" text="WO" />}
+                                icon={
+                                    <TextIcon
+                                        color={COLORS.workOrderIcon}
+                                        text="WO"
+                                    />
+                                }
                                 headerText={searchResult.workOrderNo}
                                 description={searchResult.description}
                                 details={

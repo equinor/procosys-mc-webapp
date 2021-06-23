@@ -24,6 +24,8 @@ import McDetails from '../../components/detailCards/McDetails';
 import { SearchType } from '../Search/Search';
 import { URLError } from '../../utils/matchPlantInURL';
 import { isOfType } from '../../services/apiTypeGuards';
+import EntityDetails from '../../components/detailCards/EntityDetails';
+import TextIcon from '../../components/detailCards/TextIcon';
 
 const EntityPageWrapper = styled.main``;
 
@@ -40,7 +42,7 @@ const EntityPage = (): JSX.Element => {
     const { api, params, path, history, url } = useCommonHooks();
     const [scope, setScope] = useState<ChecklistPreview[]>(); // TODO: is same for WO?
     const [punchList, setPunchList] = useState<PunchPreview[]>(); // TODO: is same for WO?
-    const [details, setDetails] = useState<McPkgPreview | WoPreview>();
+    const [details, setDetails] = useState<McPkgPreview | WoPreview>(); // TODO: same type gotten from search as in get entity?
     const [fetchScopeStatus, setFetchScopeStatus] = useState(
         AsyncStatus.LOADING
     );
@@ -117,7 +119,7 @@ const EntityPage = (): JSX.Element => {
         })();
     }, [api, params]);
 
-    if (Object.values(SearchType).includes(params.searchType) === false) {
+    if (!Object.values(SearchType).includes(params.searchType)) {
         throw new URLError(
             `The "${params.searchType}" item type is not supported. Please double check your URL and make sure the type of the item you're trying to reach is either MC, PO, WO or Tag.`
         );
@@ -128,7 +130,6 @@ const EntityPage = (): JSX.Element => {
             fetchDetailsStatus === AsyncStatus.SUCCESS &&
             details != undefined
         ) {
-            // TODO: add WO
             if (
                 params.searchType === SearchType.MC &&
                 isOfType<McPkgPreview>(details, 'mcPkgNo')
@@ -138,6 +139,27 @@ const EntityPage = (): JSX.Element => {
                         key={details.id}
                         mcPkgDetails={details}
                         clickable={false}
+                    />
+                );
+            } else if (
+                params.searchType === SearchType.WO &&
+                isOfType<WoPreview>(details, 'workOrderNo')
+            ) {
+                return (
+                    <EntityDetails
+                        isDetailsCard
+                        icon={
+                            <TextIcon color={COLORS.workOrderIcon} text="WO" />
+                        }
+                        headerText={details.workOrderNo}
+                        description={details.description}
+                        details={
+                            details.diciplineCode
+                                ? [
+                                      `${details.diciplineCode}, ${details.diciplineDescription}`,
+                                  ]
+                                : undefined
+                        }
                     />
                 );
             } else return <></>;
@@ -220,10 +242,6 @@ const EntityPage = (): JSX.Element => {
             />
             {determineDetailsToRender()}
             <ContentWrapper>
-                {
-                    // TODO: pass scope to Scope & remove the thing from scope component
-                    // TOOD: pass punch list to PunchList & remove the thing from PunchList component
-                }
                 <Switch>
                     <Route
                         exact

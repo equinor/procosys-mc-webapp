@@ -1,3 +1,4 @@
+import { Typography } from '@equinor/eds-core-react';
 import React from 'react';
 import styled from 'styled-components';
 import { COLORS } from '../../style/GlobalStyles';
@@ -76,7 +77,7 @@ const EntityDetails = ({
                         <p key={detail}>{detail}</p>
                     ))}
                 </HeaderWrapper>
-                <p>{description}</p>
+                <Typography lines={2}>{description}</Typography>
             </ContentWrapper>
         </EntityDetailsWrapper>
     );

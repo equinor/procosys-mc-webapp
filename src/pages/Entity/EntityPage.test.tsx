@@ -38,6 +38,7 @@ const renderEntityPage = (
 
 describe('<EntityPage> general and Scope component', () => {
     it('Shows an error message in Scope component, footer card if getMcScope API call fails', async () => {
+        // TODO: fix test
         causeApiError(ENDPOINTS.getMcScope, 'get');
         renderEntityPage(SearchType.MC);
         expect(
