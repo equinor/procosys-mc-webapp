@@ -13,8 +13,10 @@ const SearchTypeButtonWrapper = styled(Button)<{ active: boolean }>`
 
 type SearchTypeButtonProps = {
     searchType: SearchType;
-    currentSearchType: SearchType;
-    setCurrentSearchType: React.Dispatch<React.SetStateAction<SearchType>>;
+    currentSearchType: SearchType | null;
+    setCurrentSearchType: React.Dispatch<
+        React.SetStateAction<SearchType | null>
+    >;
 };
 
 const SearchTypeButton = ({
@@ -27,13 +29,13 @@ const SearchTypeButton = ({
             variant={'outlined'}
             onClick={(): void => {
                 setCurrentSearchType(
-                    searchType === currentSearchType
-                        ? SearchType.SAVED
-                        : searchType
+                    searchType === currentSearchType ? null : searchType
                 );
             }}
             active={searchType === currentSearchType}
-            disabled={searchType != SearchType.MC}
+            disabled={
+                searchType != SearchType.MC && searchType != SearchType.WO
+            }
         >
             {searchType}
         </SearchTypeButtonWrapper>

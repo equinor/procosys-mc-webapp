@@ -93,12 +93,14 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
         let url = '';
         if (searchType === SearchType.MC) {
             url = `McPkg/Search?plantId=${plantId}&startsWithMcPkgNo=${query}&includeClosedProjects=false&projectId=${projectId}${apiVersion}`;
+        } else if (searchType === SearchType.WO) {
+            url = `WorkOrder/Search?plantId=${plantId}&startsWithWorkOrderNo=${query}&includeClosedProjects=false&projectId=${projectId}${apiVersion}`;
         } else {
             throw new Error('An error occurred, please try again.');
         }
         const { data } = await axios.get(url, { cancelToken });
-        if (!isCorrectSearchResults(data, searchType)) {
-            throw new Error('An error occurred, please try again.');
+        if (!isOfType<SearchResults>(data, 'maxAvailable')) {
+            throw new Error(typeGuardErrorMessage('search results'));
         }
         return data;
     };
