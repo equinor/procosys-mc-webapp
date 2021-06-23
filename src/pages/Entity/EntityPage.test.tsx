@@ -11,6 +11,7 @@ import {
     dummyPunchListResponse,
     testMcPkgPreview,
     testScope,
+    testWoPreview,
 } from '../../test/dummyData';
 
 const renderEntityPage = (
@@ -38,7 +39,6 @@ const renderEntityPage = (
 
 describe('<EntityPage> general and Scope component', () => {
     it('Shows an error message in Scope component, footer card if getMcScope API call fails', async () => {
-        // TODO: fix test
         causeApiError(ENDPOINTS.getMcScope, 'get');
         renderEntityPage(SearchType.MC);
         expect(
@@ -103,6 +103,24 @@ describe('<EntityPage> general and Scope component', () => {
             await screen.findByText(testMcPkgPreview[0].mcPkgNo)
         ).toBeInTheDocument();
     });
+    it('Renders the Scope component, footer, and WO details card if API calls are successfull', async () => {
+        renderEntityPage(SearchType.WO);
+        expect(await screen.findByText(testScope[0].tagNo)).toBeInTheDocument();
+        expect(
+            await screen.findByRole('button', {
+                name: `Scope ${testScope.length}`,
+            })
+        ).toBeInTheDocument();
+        expect(
+            await screen.findByText(testWoPreview[0].workOrderNo)
+        ).toBeInTheDocument();
+    });
+    it.todo(
+        'Renders the Scope component, footer, and PO details card if API calls are successfull'
+    );
+    it.todo(
+        'Renders the Scope component, footer, and Tag details card if API calls are successfull'
+    );
     it('Shows a placeholder message if scope is empty', async () => {
         server.use(
             rest.get(ENDPOINTS.getMcScope, (request, response, context) => {

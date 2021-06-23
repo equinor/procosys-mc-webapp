@@ -17,6 +17,7 @@ import {
     dummyPersonsSearch,
     dummyTagResponse,
     testWoSearch,
+    testWoPreview,
 } from './dummyData';
 import objectToCamelCase from '../utils/objectToCamelCase';
 
@@ -24,6 +25,7 @@ export const baseURL = 'https://test-url.com';
 export const ENDPOINTS = {
     //General
     getMcPkgDetails: `${baseURL}/McPkg`,
+    getWorkOrderDetails: `${baseURL}/WorkOrder`,
     getPermissions: `${baseURL}/Permissions`,
     getProjects: `${baseURL}/Projects`,
 
@@ -33,6 +35,7 @@ export const ENDPOINTS = {
 
     // Checklist
     getMcScope: `${baseURL}/McPkg/CheckLists`,
+    getWorkOrderScope: `${baseURL}/WorkOrder/CheckLists`,
     getChecklist: `${baseURL}/CheckList/MC`,
     getChecklistPunchList: `${baseURL}/CheckList/PunchList`,
 
@@ -41,6 +44,7 @@ export const ENDPOINTS = {
 
     //PUNCH
     getMcPunchList: `${baseURL}/McPkg/PunchList`,
+    getWorkOrderPunchList: `${baseURL}/WorkOrder/PunchList`,
     getPunchAttachment: `${baseURL}/PunchListItem/Attachment`,
     deletePunchAttachment: `${baseURL}/PunchListItem/Attachment`,
     postTempPunchAttachment: `${baseURL}/PunchListItem/TempAttachment`,
@@ -81,6 +85,12 @@ export const server = setupServer(
             context.status(200)
         );
     }),
+    rest.get(ENDPOINTS.getWorkOrderDetails, (_, response, context) => {
+        return response(
+            context.json(objectToCamelCase(testWoPreview[0])),
+            context.status(200)
+        );
+    }),
     rest.get(ENDPOINTS.getProjects, (_, response, context) => {
         return response(context.json(testProjects), context.status(200));
     }),
@@ -115,6 +125,12 @@ export const server = setupServer(
             context.status(200)
         );
     }),
+    rest.get(ENDPOINTS.getWorkOrderScope, (_, response, context) => {
+        return response(
+            context.json(objectToCamelCase(testScope)),
+            context.status(200)
+        );
+    }),
 
     // TAG
     rest.get(ENDPOINTS.getTag, (_, response, context) => {
@@ -123,6 +139,12 @@ export const server = setupServer(
 
     // PUNCH
     rest.get(ENDPOINTS.getMcPunchList, (_, response, context) => {
+        return response(
+            context.json(objectToCamelCase(dummyPunchListResponse)),
+            context.status(200)
+        );
+    }),
+    rest.get(ENDPOINTS.getWorkOrderPunchList, (_, response, context) => {
         return response(
             context.json(objectToCamelCase(dummyPunchListResponse)),
             context.status(200)

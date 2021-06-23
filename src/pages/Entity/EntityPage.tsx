@@ -97,7 +97,7 @@ const EntityPage = (): JSX.Element => {
                     setFetchScopeStatus(AsyncStatus.EMPTY_RESPONSE);
                 }
             } catch {
-                setFetchDetailsStatus(AsyncStatus.ERROR);
+                setFetchScopeStatus(AsyncStatus.ERROR);
             }
         })();
     }, [api, params]);
@@ -179,7 +179,6 @@ const EntityPage = (): JSX.Element => {
     };
 
     const determineFooterToRender = (): JSX.Element => {
-        // TOOD: make else if
         if (
             fetchScopeStatus === AsyncStatus.ERROR ||
             fetchPunchListStatus === AsyncStatus.ERROR
