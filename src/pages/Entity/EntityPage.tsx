@@ -40,9 +40,9 @@ const ContentWrapper = styled.div`
 
 const EntityPage = (): JSX.Element => {
     const { api, params, path, history, url } = useCommonHooks();
-    const [scope, setScope] = useState<ChecklistPreview[]>(); // TODO: is same for WO?
-    const [punchList, setPunchList] = useState<PunchPreview[]>(); // TODO: is same for WO?
-    const [details, setDetails] = useState<McPkgPreview | WoPreview>(); // TODO: same type gotten from search as in get entity?
+    const [scope, setScope] = useState<ChecklistPreview[]>();
+    const [punchList, setPunchList] = useState<PunchPreview[]>();
+    const [details, setDetails] = useState<McPkgPreview | WoPreview>();
     const [fetchScopeStatus, setFetchScopeStatus] = useState(
         AsyncStatus.LOADING
     );
@@ -265,9 +265,9 @@ const EntityPage = (): JSX.Element => {
     );
 };
 
-// TODO: add correct permissions
 export default withAccessControl(EntityPage, [
     'MCPKG/READ',
+    'WO/READ',
     'MCCR/READ',
     'PUNCHLISTITEM/READ',
 ]);

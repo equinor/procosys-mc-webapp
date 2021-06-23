@@ -26,7 +26,9 @@ export interface McPkgPreview {
     status: CompletionStatus;
     commPkgNo: string;
     phaseCode: string;
+    phaseDescription: string;
     responsibleCode: string;
+    responsibleDescription: string;
     commissioningHandoverStatus: string;
     operationHandoverStatus: string;
 }
@@ -63,12 +65,15 @@ export type CommPkg = {
 
 export type ChecklistPreview = {
     id: number;
+    tagId: number;
     tagNo: string;
     tagDescription: string;
     responsibleCode: string;
     status: CompletionStatus;
     formularType: string;
     formularGroup: string;
+    sheetNo: number;
+    subSheetNo: number;
     isRestrictedForUser: boolean;
     hasElectronicForm: boolean;
     attachmentCount: number;
