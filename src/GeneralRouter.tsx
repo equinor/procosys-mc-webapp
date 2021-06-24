@@ -15,11 +15,6 @@ const McRouter = (): JSX.Element => {
                 <Route exact path={'/'} component={SelectPlant} />
                 <Route exact path={'/:plant'} component={SelectProject} />
                 <Route exact path={'/:plant/:project'} component={Search} />
-                <Redirect
-                    exact
-                    path={'/:plant/:project/:searchType'}
-                    to={'/:plant/:project'}
-                />
                 <Route
                     path={
                         '/:plant/:project/:searchType/:entityId/punch-item/:punchItemId'
@@ -37,11 +32,6 @@ const McRouter = (): JSX.Element => {
                         '/:plant/:project/:searchType/:entityId/checklist/:checklistId'
                     }
                     component={ChecklistPage}
-                />
-                <Redirect
-                    exact
-                    path={'/:plant/:project/:searchType/:entityId/checklist'}
-                    to={'/:plant/:project/:searchType/:entityId'}
                 />
                 <Route
                     path={'/:plant/:project/:searchType/:entityId'}

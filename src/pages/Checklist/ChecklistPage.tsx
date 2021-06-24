@@ -17,6 +17,7 @@ import { DetailsWrapper } from '../Entity/EntityPage';
 import TagInfo from './TagInfo';
 import { InfoItem } from '@equinor/procosys-webapp-components';
 import ChecklistPunchList from './ChecklistPunchList';
+import removeSubdirectories from '../../utils/removeSubdirectories';
 
 const ChecklistPage = (): JSX.Element => {
     const { history, url, path, api, params } = useCommonHooks();
@@ -170,7 +171,7 @@ const ChecklistPage = (): JSX.Element => {
                     label: 'Back',
                     url: history.location.pathname.includes('/new-punch')
                         ? `/${params.plant}/${params.project}/${params.searchType}/${params.entityId}/checklist/${params.checklistId}/punch-list`
-                        : undefined,
+                        : `${removeSubdirectories(url, 2)}`,
                 }}
                 midContent={'MCCR'}
                 rightContent={

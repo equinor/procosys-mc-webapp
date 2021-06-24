@@ -27,6 +27,7 @@ import { isOfType } from '../../services/apiTypeGuards';
 import EntityDetails from '../../components/detailCards/EntityDetails';
 import TextIcon from '../../components/detailCards/TextIcon';
 import WorkOrderInfo from './WorkOrderInfo';
+import removeSubdirectories from '../../utils/removeSubdirectories';
 
 const EntityPageWrapper = styled.main``;
 
@@ -246,7 +247,11 @@ const EntityPage = (): JSX.Element => {
         <EntityPageWrapper>
             <Navbar
                 noBorder
-                leftContent={{ name: 'back', label: 'Back' }}
+                leftContent={{
+                    name: 'back',
+                    label: 'Back',
+                    url: `${removeSubdirectories(url, 2)}`,
+                }}
                 midContent={
                     params.searchType === SearchType.MC
                         ? 'MC Package'
