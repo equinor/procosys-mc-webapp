@@ -42,14 +42,14 @@ export interface WoPreview {
     disciplineDescription: string;
 }
 
-export type SearchResults = {
+export interface SearchResults {
     maxAvailable: number;
     items: McPkgPreview[] | WoPreview[];
-};
+}
 
 // COMM PKG AND LISTS
 
-export type CommPkg = {
+export interface CommPkg {
     id: number;
     commPkgNo: string;
     description: string;
@@ -61,9 +61,9 @@ export type CommPkg = {
     commissioningHandoverStatus: string;
     operationHandoverStatus: string;
     systemId: number;
-};
+}
 
-export type ChecklistPreview = {
+export interface ChecklistPreview {
     id: number;
     tagId: number;
     tagNo: string;
@@ -79,9 +79,9 @@ export type ChecklistPreview = {
     attachmentCount: number;
     isSigned: boolean;
     isVerified: boolean;
-};
+}
 
-export type PunchPreview = {
+export interface PunchPreview {
     id: number;
     status: CompletionStatus;
     description: string;
@@ -98,7 +98,7 @@ export type PunchPreview = {
     statusControlledBySwcr: boolean;
     attachmentCount: number;
     callOffNo?: string;
-};
+}
 
 // CHECKLIST
 export interface ChecklistDetails {
