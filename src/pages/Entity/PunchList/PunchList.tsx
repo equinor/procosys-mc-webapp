@@ -1,10 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { ScopeWrapper } from '../Scope/Scope';
 import { AsyncStatus } from '../../../contexts/McAppContext';
 import { PunchPreview } from '../../../services/apiTypes';
 import useCommonHooks from '../../../utils/useCommonHooks';
 import AsyncPage from '../../../components/AsyncPage';
-import Axios from 'axios';
 import removeSubdirectories from '../../../utils/removeSubdirectories';
 import { InfoItem } from '@equinor/procosys-webapp-components';
 
