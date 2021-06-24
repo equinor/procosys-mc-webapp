@@ -12,6 +12,8 @@ import styled from 'styled-components';
 import { isArrayOfType } from '../../../services/apiTypeGuards';
 import EntityDetails from '../../../components/detailCards/EntityDetails';
 import TextIcon from '../../../components/detailCards/TextIcon';
+import useCommonHooks from '../../../utils/useCommonHooks';
+import { COLORS } from '../../../style/GlobalStyles';
 
 const SearchResultAmountWrapper = styled.h6`
     margin: 10px 0px;
@@ -28,6 +30,8 @@ const SearchResults = ({
     searchResults,
     searchType,
 }: SearchResultsProps): JSX.Element => {
+    const { history, url } = useCommonHooks();
+
     const getPlaceholderTextType = (): string => {
         if (searchType === SearchType.MC) {
             return 'MC Package number';
@@ -73,15 +77,23 @@ const SearchResults = ({
                         return (
                             <EntityDetails
                                 key={searchResult.id}
-                                icon={<TextIcon color="#990025" text="WO" />}
+                                icon={
+                                    <TextIcon
+                                        color={COLORS.workOrderIcon}
+                                        text="WO"
+                                    />
+                                }
                                 headerText={searchResult.workOrderNo}
                                 description={searchResult.description}
                                 details={
-                                    searchResult.diciplineCode
+                                    searchResult.disciplineCode
                                         ? [
-                                              `${searchResult.diciplineCode}, ${searchResult.diciplineDescription}`,
+                                              `${searchResult.disciplineCode}, ${searchResult.disciplineDescription}`,
                                           ]
                                         : undefined
+                                }
+                                onClick={(): void =>
+                                    history.push(`${url}/WO/${searchResult.id}`)
                                 }
                             />
                         );
