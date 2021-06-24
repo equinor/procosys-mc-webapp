@@ -217,17 +217,23 @@ const EntityPage = (): JSX.Element => {
                         label="Scope"
                         numberOfItems={scope?.length}
                     />
-                    <FooterButton
-                        active={history.location.pathname.includes('/WO-info')}
-                        goTo={(): void => history.push(`${url}/WO-info`)}
-                        icon={
-                            <EdsIcon
-                                name="info_circle"
-                                color={COLORS.mossGreen}
-                            />
-                        }
-                        label="WO info"
-                    />
+                    {params.searchType === SearchType.WO ? (
+                        <FooterButton
+                            active={history.location.pathname.includes(
+                                '/WO-info'
+                            )}
+                            goTo={(): void => history.push(`${url}/WO-info`)}
+                            icon={
+                                <EdsIcon
+                                    name="info_circle"
+                                    color={COLORS.mossGreen}
+                                />
+                            }
+                            label="WO info"
+                        />
+                    ) : (
+                        <></>
+                    )}
                     <FooterButton
                         active={history.location.pathname.includes(
                             '/punch-list'
