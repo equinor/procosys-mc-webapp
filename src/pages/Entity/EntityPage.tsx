@@ -26,6 +26,7 @@ import { URLError } from '../../utils/matchPlantInURL';
 import { isOfType } from '../../services/apiTypeGuards';
 import EntityDetails from '../../components/detailCards/EntityDetails';
 import TextIcon from '../../components/detailCards/TextIcon';
+import WorkOrderInfo from './WorkOrderInfo';
 
 const EntityPageWrapper = styled.main``;
 
@@ -202,12 +203,25 @@ const EntityPage = (): JSX.Element => {
                 <NavigationFooter>
                     <FooterButton
                         active={
-                            !history.location.pathname.includes('/punch-list')
+                            !history.location.pathname.includes(
+                                '/punch-list'
+                            ) && !history.location.pathname.includes('/WO-info')
                         }
                         goTo={(): void => history.push(url)}
                         icon={<EdsIcon name="list" color={COLORS.mossGreen} />}
                         label="Scope"
                         numberOfItems={scope?.length}
+                    />
+                    <FooterButton
+                        active={history.location.pathname.includes('/WO-info')}
+                        goTo={(): void => history.push(`${url}/WO-info`)}
+                        icon={
+                            <EdsIcon
+                                name="info_circle"
+                                color={COLORS.mossGreen}
+                            />
+                        }
+                        label="WO info"
                     />
                     <FooterButton
                         active={history.location.pathname.includes(
@@ -260,6 +274,13 @@ const EntityPage = (): JSX.Element => {
                                 punchList={punchList}
                                 fetchPunchListStatus={fetchPunchListStatus}
                             />
+                        )}
+                    />
+                    <Route
+                        exact
+                        path={`${path}/WO-info`}
+                        render={(): JSX.Element => (
+                            <WorkOrderInfo workOrder={details} />
                         )}
                     />
                 </Switch>
