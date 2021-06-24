@@ -3,6 +3,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { Caption, COLORS } from '../../style/GlobalStyles';
 
+
 const EntityDetailsWrapper = styled.article<{ isDetailsCard?: boolean }>`
     cursor: ${(props): string => (props.isDetailsCard ? 'none' : 'pointer')};
     display: flex;
@@ -26,6 +27,7 @@ const ContentWrapper = styled.div`
     flex-direction: column;
     word-break: break-all;
     width: 100%;
+
     & > p {
         margin: 0;
     }
@@ -78,6 +80,7 @@ const EntityDetails = ({
                     ))}
                 </HeaderWrapper>
                 <Typography lines={2}>{description}</Typography>
+
             </ContentWrapper>
         </EntityDetailsWrapper>
     );

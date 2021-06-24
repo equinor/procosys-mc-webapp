@@ -15,6 +15,7 @@ import TextIcon from '../../../components/detailCards/TextIcon';
 import useCommonHooks from '../../../utils/useCommonHooks';
 import { COLORS } from '../../../style/GlobalStyles';
 
+
 const SearchResultAmountWrapper = styled.h6`
     margin: 10px 0px;
 `;
@@ -77,6 +78,7 @@ const SearchResults = ({
                         return (
                             <EntityDetails
                                 key={searchResult.id}
+
                                 icon={
                                     <TextIcon
                                         color={COLORS.workOrderIcon}

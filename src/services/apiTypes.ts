@@ -40,6 +40,7 @@ export interface WoPreview {
     description: string;
     disciplineCode: string;
     disciplineDescription: string;
+
 }
 
 export type SearchResults = {
