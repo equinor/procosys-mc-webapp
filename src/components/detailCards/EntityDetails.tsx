@@ -50,7 +50,7 @@ type EntityDetailsProps = {
     isDetailsCard?: boolean;
     icon: JSX.Element;
     headerText: string;
-    description: string;
+    description?: string;
     details?: string[];
     onClick?: () => void;
 };

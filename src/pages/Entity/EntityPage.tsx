@@ -37,7 +37,7 @@ export const DetailsWrapper = styled.p`
 `;
 
 const ContentWrapper = styled.div`
-    padding-bottom: 85px;
+    padding-bottom: 66px;
 `;
 
 const EntityPage = (): JSX.Element => {
@@ -154,7 +154,11 @@ const EntityPage = (): JSX.Element => {
                             <TextIcon color={COLORS.workOrderIcon} text="WO" />
                         }
                         headerText={details.workOrderNo}
-                        description={details.description}
+                        description={
+                            history.location.pathname.includes('/WO-info')
+                                ? undefined
+                                : details.description
+                        }
                         details={
                             details.disciplineCode
                                 ? [
@@ -285,7 +289,10 @@ const EntityPage = (): JSX.Element => {
                         exact
                         path={`${path}/WO-info`}
                         render={(): JSX.Element => (
-                            <WorkOrderInfo workOrder={details} />
+                            <WorkOrderInfo
+                                workOrder={details}
+                                fetchWorkOrderStatus={fetchDetailsStatus}
+                            />
                         )}
                     />
                 </Switch>
