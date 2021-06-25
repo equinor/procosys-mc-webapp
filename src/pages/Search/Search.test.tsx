@@ -71,7 +71,7 @@ describe('<Search/> successes', () => {
             await screen.findByText('Displaying 1 out of 1 Work Orders')
         ).toBeInTheDocument();
         expect(
-            await screen.findByText(testWoPreview[0].description)
+            await screen.findByText(testWoPreview[0].title)
         ).toBeInTheDocument();
     });
 });

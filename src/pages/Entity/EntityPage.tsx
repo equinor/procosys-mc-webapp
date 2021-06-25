@@ -26,6 +26,8 @@ import { URLError } from '../../utils/matchPlantInURL';
 import { isOfType } from '../../services/apiTypeGuards';
 import EntityDetails from '../../components/detailCards/EntityDetails';
 import TextIcon from '../../components/detailCards/TextIcon';
+import WorkOrderInfo from './WorkOrderInfo';
+import removeSubdirectories from '../../utils/removeSubdirectories';
 
 const EntityPageWrapper = styled.main``;
 
@@ -35,7 +37,7 @@ export const DetailsWrapper = styled.p`
 `;
 
 const ContentWrapper = styled.div`
-    padding-bottom: 85px;
+    padding-bottom: 66px;
 `;
 
 const EntityPage = (): JSX.Element => {
@@ -152,7 +154,7 @@ const EntityPage = (): JSX.Element => {
                             <TextIcon color={COLORS.workOrderIcon} text="WO" />
                         }
                         headerText={details.workOrderNo}
-                        description={details.description}
+                        description={details.title}
                         details={
                             details.disciplineCode
                                 ? [
@@ -202,13 +204,32 @@ const EntityPage = (): JSX.Element => {
                 <NavigationFooter>
                     <FooterButton
                         active={
-                            !history.location.pathname.includes('/punch-list')
+                            !history.location.pathname.includes(
+                                '/punch-list'
+                            ) && !history.location.pathname.includes('/WO-info')
                         }
                         goTo={(): void => history.push(url)}
                         icon={<EdsIcon name="list" color={COLORS.mossGreen} />}
                         label="Scope"
                         numberOfItems={scope?.length}
                     />
+                    {params.searchType === SearchType.WO ? (
+                        <FooterButton
+                            active={history.location.pathname.includes(
+                                '/WO-info'
+                            )}
+                            goTo={(): void => history.push(`${url}/WO-info`)}
+                            icon={
+                                <EdsIcon
+                                    name="info_circle"
+                                    color={COLORS.mossGreen}
+                                />
+                            }
+                            label="WO info"
+                        />
+                    ) : (
+                        <></>
+                    )}
                     <FooterButton
                         active={history.location.pathname.includes(
                             '/punch-list'
@@ -232,7 +253,11 @@ const EntityPage = (): JSX.Element => {
         <EntityPageWrapper>
             <Navbar
                 noBorder
-                leftContent={{ name: 'back', label: 'Back' }}
+                leftContent={{
+                    name: 'back',
+                    label: 'Back',
+                    url: `${removeSubdirectories(url, 2)}`,
+                }}
                 midContent={
                     params.searchType === SearchType.MC
                         ? 'MC Package'
@@ -259,6 +284,16 @@ const EntityPage = (): JSX.Element => {
                             <PunchList
                                 punchList={punchList}
                                 fetchPunchListStatus={fetchPunchListStatus}
+                            />
+                        )}
+                    />
+                    <Route
+                        exact
+                        path={`${path}/WO-info`}
+                        render={(): JSX.Element => (
+                            <WorkOrderInfo
+                                workOrder={details}
+                                fetchWorkOrderStatus={fetchDetailsStatus}
                             />
                         )}
                     />

@@ -84,7 +84,7 @@ const SearchResults = ({
                                     />
                                 }
                                 headerText={searchResult.workOrderNo}
-                                description={searchResult.description}
+                                description={searchResult.title}
                                 details={
                                     searchResult.disciplineCode
                                         ? [

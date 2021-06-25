@@ -179,6 +179,38 @@ describe('<EntityPage> in-page routing', () => {
         ).toBeInTheDocument();
         expect(await screen.findByText(testScope[0].tagNo)).toBeInTheDocument();
     });
+    it('Renders the WorkOrderInfo component if the WO info button is clicked', async () => {
+        renderEntityPage(SearchType.WO);
+        expect(
+            await screen.findByText(testWoPreview[0].workOrderNo)
+        ).toBeInTheDocument();
+        expect(await screen.findByText(testScope[0].tagNo)).toBeInTheDocument();
+        const workOrderButton = await screen.findByRole('button', {
+            name: 'WO info',
+        });
+        expect(workOrderButton).toBeInTheDocument();
+        userEvent.click(workOrderButton);
+        expect(
+            await screen.findByText(testWoPreview[0].workOrderNo)
+        ).toBeInTheDocument();
+        expect(await screen.findByText('Description')).toBeInTheDocument();
+        await waitFor(() =>
+            expect(
+                screen.queryByText(testScope[0].tagNo)
+            ).not.toBeInTheDocument()
+        );
+    });
+    it("Shouldn't show 'WO info' button if search type isn't WO", async () => {
+        renderEntityPage(SearchType.MC);
+        expect(
+            await screen.findByText(testMcPkgPreview[0].mcPkgNo)
+        ).toBeInTheDocument();
+        await waitFor(() =>
+            expect(
+                screen.queryByRole('button', { name: 'WO info' })
+            ).not.toBeInTheDocument()
+        );
+    });
 });
 
 describe('<EntityPage> punch list', () => {

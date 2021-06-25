@@ -24,7 +24,7 @@ const IconWrapper = styled.div`
 
 const ContentWrapper = styled.div`
     flex-direction: column;
-    word-break: break-all;
+    word-break: break-word;
     width: 100%;
     & > p {
         margin: 0;
@@ -50,7 +50,7 @@ type EntityDetailsProps = {
     isDetailsCard?: boolean;
     icon: JSX.Element;
     headerText: string;
-    description: string;
+    description?: string;
     details?: string[];
     onClick?: () => void;
 };
