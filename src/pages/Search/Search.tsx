@@ -19,7 +19,6 @@ const ButtonsWrapper = styled.div`
 `;
 
 export enum SearchType {
-    SAVED = 'SAVED',
     PO = 'PO',
     MC = 'MC',
     WO = 'WO',
@@ -27,10 +26,10 @@ export enum SearchType {
 }
 
 const Search = (): JSX.Element => {
-    const [searchType, setSearchType] = useState<SearchType>(SearchType.SAVED);
+    const [searchType, setSearchType] = useState<SearchType | null>(null);
 
     const determineComponent = (): JSX.Element => {
-        if (searchType === SearchType.SAVED || searchType === undefined) {
+        if (searchType === null) {
             return <></>;
         }
         return <SearchArea searchType={searchType} />;
@@ -73,4 +72,4 @@ const Search = (): JSX.Element => {
     );
 };
 
-export default withAccessControl(Search, ['MCPKG/READ']);
+export default withAccessControl(Search, ['MCPKG/READ', 'WO/READ']);

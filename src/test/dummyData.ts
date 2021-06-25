@@ -10,6 +10,7 @@ import {
     McPkgPreview,
     SearchResults,
     PunchItem,
+    WoPreview,
 } from '../services/apiTypes';
 
 type DummyMetatableData = {
@@ -67,6 +68,7 @@ export const dummyPermissions: string[] = [
     'PUNCHLISTITEM/WRITE',
     'PUNCHLISTITEM/CLEAR',
     'PUNCHLISTITEM/VERIFY',
+    'WO/READ',
 ];
 
 export const testProjects: Project[] = [
@@ -88,15 +90,28 @@ export const testDetails: CommPkg = {
     systemId: 1,
 };
 
+export const testWoPreview: WoPreview[] = [
+    {
+        id: 1,
+        workOrderNo: 'test-wo-no',
+        title: 'test wo title',
+        description: 'test wo description',
+        disciplineCode: 'test-wo-dic-code',
+        disciplineDescription: 'test wo dicipline description',
+    },
+];
+
 export const testMcPkgPreview: McPkgPreview[] = [
     {
         id: 1,
         mcPkgNo: '21',
-        description: 'Test description',
+        description: 'Test mcpkg description',
         status: CompletionStatus.OK,
         commPkgNo: 'Test comm pkg number',
         phaseCode: 'Test phase code',
+        phaseDescription: 'Test mcPkgPreview phase descr.',
         responsibleCode: 'Test resp. code',
+        responsibleDescription: 'Test mcPkgPreview responsible descr.',
         commissioningHandoverStatus: 'OK',
         operationHandoverStatus: 'OK',
     },
@@ -107,15 +122,23 @@ export const testMcPkgSearch: SearchResults = {
     items: testMcPkgPreview,
 };
 
+export const testWoSearch: SearchResults = {
+    maxAvailable: 1,
+    items: testWoPreview,
+};
+
 export const testScope: ChecklistPreview[] = [
     {
         id: 1,
+        tagId: 11,
         tagNo: 'Test tag number scope',
         tagDescription: 'Test tag description',
         responsibleCode: 'Respcode',
         status: CompletionStatus.OK,
-        formularGroup: 'Test formular group',
         formularType: 'Test formular type',
+        formularGroup: 'Test formular group',
+        sheetNo: 2,
+        subSheetNo: 24,
         isRestrictedForUser: false,
         hasElectronicForm: true,
         attachmentCount: 1,

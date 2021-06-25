@@ -1,45 +1,22 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { ScopeWrapper } from '../Scope/Scope';
 import { AsyncStatus } from '../../../contexts/McAppContext';
 import { PunchPreview } from '../../../services/apiTypes';
 import useCommonHooks from '../../../utils/useCommonHooks';
 import AsyncPage from '../../../components/AsyncPage';
-import Axios from 'axios';
 import removeSubdirectories from '../../../utils/removeSubdirectories';
 import { InfoItem } from '@equinor/procosys-webapp-components';
 
-const PunchList = (): JSX.Element => {
-    const { api, params, history, url } = useCommonHooks();
-    const [punchList, setPunchList] = useState<PunchPreview[]>();
-    const [fetchPunchListStatus, setFetchPunchListStatus] = useState(
-        AsyncStatus.LOADING
-    );
+type PunchListProps = {
+    punchList?: PunchPreview[];
+    fetchPunchListStatus: AsyncStatus;
+};
 
-    useEffect(() => {
-        const source = Axios.CancelToken.source();
-        (async (): Promise<void> => {
-            setFetchPunchListStatus(AsyncStatus.LOADING);
-            try {
-                const punchListFromApi = await api.getPunchList(
-                    params.plant,
-                    params.searchType,
-                    params.entityId,
-                    source.token
-                );
-                setPunchList(punchListFromApi);
-                if (punchListFromApi.length < 1) {
-                    setFetchPunchListStatus(AsyncStatus.EMPTY_RESPONSE);
-                } else {
-                    setFetchPunchListStatus(AsyncStatus.SUCCESS);
-                }
-            } catch {
-                setFetchPunchListStatus(AsyncStatus.ERROR);
-            }
-        })();
-        return (): void => {
-            source.cancel();
-        };
-    }, [params.entityId, params.searchType, params.plant, api]);
+const PunchList = ({
+    punchList,
+    fetchPunchListStatus,
+}: PunchListProps): JSX.Element => {
+    const { history, url } = useCommonHooks();
 
     return (
         <ScopeWrapper>

@@ -63,24 +63,17 @@ const fetchHits = async (
 ): Promise<void> => {
     dispatch({ type: 'FETCH_START' });
     try {
-        if (searchType === SearchType.MC) {
-            const mcPackages = await api.getSearchResults(
-                query,
-                projectId,
-                plantId,
-                searchType,
-                cancelToken
-            );
-            dispatch({
-                type: 'FETCH_SUCCESS',
-                payload: mcPackages,
-            });
-        } else {
-            dispatch({
-                type: 'FETCH_ERROR',
-                error: 'Nonexistent search type',
-            });
-        }
+        const results = await api.getSearchResults(
+            query,
+            projectId,
+            plantId,
+            searchType,
+            cancelToken
+        );
+        dispatch({
+            type: 'FETCH_SUCCESS',
+            payload: results,
+        });
     } catch (err) {
         dispatch({ type: 'FETCH_ERROR', error: 'err' });
     }
@@ -120,7 +113,7 @@ const useSearchPageFacade = (searchType: SearchType) => {
             cancel('A new search has taken place instead');
             clearTimeout(timeOutId);
         };
-    }, [query, currentProject, currentPlant, api]);
+    }, [query, currentProject, currentPlant, api, searchType]);
 
     return {
         hits,

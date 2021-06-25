@@ -10,6 +10,7 @@ import {
     ChecklistPreview,
     PunchPreview,
     McPkgPreview,
+    WoPreview,
 } from '../../services/apiTypes';
 import { DotProgress } from '@equinor/eds-core-react';
 import NavigationFooterShell from '../../components/navigation/NavigationFooterShell';
@@ -22,6 +23,11 @@ import { COLORS } from '../../style/GlobalStyles';
 import McDetails from '../../components/detailCards/McDetails';
 import { SearchType } from '../Search/Search';
 import { URLError } from '../../utils/matchPlantInURL';
+import { isOfType } from '../../services/apiTypeGuards';
+import EntityDetails from '../../components/detailCards/EntityDetails';
+import TextIcon from '../../components/detailCards/TextIcon';
+import WorkOrderInfo from './WorkOrderInfo';
+import removeSubdirectories from '../../utils/removeSubdirectories';
 
 const EntityPageWrapper = styled.main``;
 
@@ -31,15 +37,18 @@ export const DetailsWrapper = styled.p`
 `;
 
 const ContentWrapper = styled.div`
-    padding-bottom: 85px;
+    padding-bottom: 66px;
 `;
 
 const EntityPage = (): JSX.Element => {
     const { api, params, path, history, url } = useCommonHooks();
     const [scope, setScope] = useState<ChecklistPreview[]>();
     const [punchList, setPunchList] = useState<PunchPreview[]>();
-    const [details, setDetails] = useState<McPkgPreview>();
-    const [fetchFooterStatus, setFetchFooterStatus] = useState(
+    const [details, setDetails] = useState<McPkgPreview | WoPreview>();
+    const [fetchScopeStatus, setFetchScopeStatus] = useState(
+        AsyncStatus.LOADING
+    );
+    const [fetchPunchListStatus, setFetchPunchListStatus] = useState(
         AsyncStatus.LOADING
     );
     const [fetchDetailsStatus, setFetchDetailsStatus] = useState(
@@ -56,25 +65,20 @@ const EntityPage = (): JSX.Element => {
     useEffect(() => {
         (async (): Promise<void> => {
             try {
-                const [scopeFromApi, punchListFromApi] = await Promise.all([
-                    api.getScope(
-                        params.plant,
-                        params.searchType,
-                        params.entityId,
-                        source.token
-                    ),
-                    api.getPunchList(
-                        params.plant,
-                        params.searchType,
-                        params.entityId,
-                        source.token
-                    ),
-                ]);
-                setScope(scopeFromApi);
+                const punchListFromApi = await api.getPunchList(
+                    params.plant,
+                    params.searchType,
+                    params.entityId,
+                    source.token
+                );
                 setPunchList(punchListFromApi);
-                setFetchFooterStatus(AsyncStatus.SUCCESS);
+                if (punchListFromApi.length > 0) {
+                    setFetchPunchListStatus(AsyncStatus.SUCCESS);
+                } else {
+                    setFetchPunchListStatus(AsyncStatus.EMPTY_RESPONSE);
+                }
             } catch {
-                setFetchFooterStatus(AsyncStatus.ERROR);
+                setFetchPunchListStatus(AsyncStatus.ERROR);
             }
         })();
     }, [api, params]);
@@ -82,7 +86,28 @@ const EntityPage = (): JSX.Element => {
     useEffect(() => {
         (async (): Promise<void> => {
             try {
-                const detailsFromApi = await api.getItemDetails(
+                const scopeFromApi = await api.getScope(
+                    params.plant,
+                    params.searchType,
+                    params.entityId,
+                    source.token
+                );
+                setScope(scopeFromApi);
+                if (scopeFromApi.length > 0) {
+                    setFetchScopeStatus(AsyncStatus.SUCCESS);
+                } else {
+                    setFetchScopeStatus(AsyncStatus.EMPTY_RESPONSE);
+                }
+            } catch {
+                setFetchScopeStatus(AsyncStatus.ERROR);
+            }
+        })();
+    }, [api, params]);
+
+    useEffect(() => {
+        (async (): Promise<void> => {
+            try {
+                const detailsFromApi = await api.getEntityDetails(
                     params.plant,
                     params.searchType,
                     params.entityId,
@@ -96,12 +121,7 @@ const EntityPage = (): JSX.Element => {
         })();
     }, [api, params]);
 
-    if (
-        params.searchType != SearchType.MC &&
-        params.searchType != SearchType.WO &&
-        params.searchType != SearchType.PO &&
-        params.searchType != SearchType.Tag
-    ) {
+    if (!Object.values(SearchType).includes(params.searchType)) {
         throw new URLError(
             `The "${params.searchType}" item type is not supported. Please double check your URL and make sure the type of the item you're trying to reach is either MC, PO, WO or Tag.`
         );
@@ -112,7 +132,10 @@ const EntityPage = (): JSX.Element => {
             fetchDetailsStatus === AsyncStatus.SUCCESS &&
             details != undefined
         ) {
-            if (params.searchType === SearchType.MC) {
+            if (
+                params.searchType === SearchType.MC &&
+                isOfType<McPkgPreview>(details, 'mcPkgNo')
+            ) {
                 return (
                     <McDetails
                         key={details.id}
@@ -120,35 +143,93 @@ const EntityPage = (): JSX.Element => {
                         clickable={false}
                     />
                 );
-            }
-        }
-        if (fetchDetailsStatus === AsyncStatus.ERROR) {
+            } else if (
+                params.searchType === SearchType.WO &&
+                isOfType<WoPreview>(details, 'workOrderNo')
+            ) {
+                return (
+                    <EntityDetails
+                        isDetailsCard
+                        icon={
+                            <TextIcon color={COLORS.workOrderIcon} text="WO" />
+                        }
+                        headerText={details.workOrderNo}
+                        description={details.title}
+                        details={
+                            details.disciplineCode
+                                ? [
+                                      `${details.disciplineCode}, ${details.disciplineDescription}`,
+                                  ]
+                                : undefined
+                        }
+                    />
+                );
+            } else return <></>;
+        } else if (fetchDetailsStatus === AsyncStatus.ERROR) {
             return (
                 <DetailsWrapper>
                     Unable to load details. Please reload
                 </DetailsWrapper>
             );
+        } else {
+            return (
+                <DetailsWrapper>
+                    <DotProgress color="primary" />
+                </DetailsWrapper>
+            );
         }
-        return (
-            <DetailsWrapper>
-                <DotProgress color="primary" />
-            </DetailsWrapper>
-        );
     };
 
     const determineFooterToRender = (): JSX.Element => {
-        if (fetchFooterStatus === AsyncStatus.SUCCESS && scope && punchList) {
+        if (
+            fetchScopeStatus === AsyncStatus.ERROR ||
+            fetchPunchListStatus === AsyncStatus.ERROR
+        ) {
+            return (
+                <NavigationFooterShell>
+                    <p>Unable to load footer. Please reload</p>
+                </NavigationFooterShell>
+            );
+        } else if (
+            fetchScopeStatus === AsyncStatus.LOADING ||
+            fetchPunchListStatus === AsyncStatus.LOADING
+        ) {
+            return (
+                <NavigationFooterShell>
+                    <DotProgress color="primary" />
+                </NavigationFooterShell>
+            );
+        } else {
             return (
                 <NavigationFooter>
                     <FooterButton
                         active={
-                            !history.location.pathname.includes('/punch-list')
+                            !history.location.pathname.includes(
+                                '/punch-list'
+                            ) && !history.location.pathname.includes('/WO-info')
                         }
                         goTo={(): void => history.push(url)}
                         icon={<EdsIcon name="list" color={COLORS.mossGreen} />}
                         label="Scope"
-                        numberOfItems={scope.length}
+                        numberOfItems={scope?.length}
                     />
+                    {params.searchType === SearchType.WO ? (
+                        <FooterButton
+                            active={history.location.pathname.includes(
+                                '/WO-info'
+                            )}
+                            goTo={(): void => history.push(`${url}/WO-info`)}
+                            icon={
+                                <EdsIcon
+                                    name="info_circle"
+                                    color={COLORS.mossGreen}
+                                />
+                            }
+                            label="WO info"
+                        />
+                    ) : (
+                        <></>
+                    )}
                     <FooterButton
                         active={history.location.pathname.includes(
                             '/punch-list'
@@ -161,29 +242,22 @@ const EntityPage = (): JSX.Element => {
                             />
                         }
                         label="Punch list"
-                        numberOfItems={punchList.length}
+                        numberOfItems={punchList?.length}
                     />
                 </NavigationFooter>
             );
         }
-        if (fetchFooterStatus === AsyncStatus.ERROR) {
-            return (
-                <NavigationFooterShell>
-                    <p>Unable to load footer. Please reload</p>
-                </NavigationFooterShell>
-            );
-        }
-        return (
-            <NavigationFooterShell>
-                <DotProgress color="primary" />
-            </NavigationFooterShell>
-        );
     };
+
     return (
         <EntityPageWrapper>
             <Navbar
                 noBorder
-                leftContent={{ name: 'back', label: 'Back' }}
+                leftContent={{
+                    name: 'back',
+                    label: 'Back',
+                    url: `${removeSubdirectories(url, 2)}`,
+                }}
                 midContent={
                     params.searchType === SearchType.MC
                         ? 'MC Package'
@@ -192,16 +266,38 @@ const EntityPage = (): JSX.Element => {
             />
             {determineDetailsToRender()}
             <ContentWrapper>
-                {
-                    <Switch>
-                        <Route exact path={`${path}`} component={Scope} />
-                        <Route
-                            exact
-                            path={`${path}/punch-list`}
-                            component={PunchList}
-                        />
-                    </Switch>
-                }
+                <Switch>
+                    <Route
+                        exact
+                        path={`${path}`}
+                        render={(): JSX.Element => (
+                            <Scope
+                                scope={scope}
+                                fetchScopeStatus={fetchScopeStatus}
+                            />
+                        )}
+                    />
+                    <Route
+                        exact
+                        path={`${path}/punch-list`}
+                        render={(): JSX.Element => (
+                            <PunchList
+                                punchList={punchList}
+                                fetchPunchListStatus={fetchPunchListStatus}
+                            />
+                        )}
+                    />
+                    <Route
+                        exact
+                        path={`${path}/WO-info`}
+                        render={(): JSX.Element => (
+                            <WorkOrderInfo
+                                workOrder={details}
+                                fetchWorkOrderStatus={fetchDetailsStatus}
+                            />
+                        )}
+                    />
+                </Switch>
             </ContentWrapper>
             {determineFooterToRender()}
         </EntityPageWrapper>
@@ -210,6 +306,7 @@ const EntityPage = (): JSX.Element => {
 
 export default withAccessControl(EntityPage, [
     'MCPKG/READ',
+    'WO/READ',
     'MCCR/READ',
     'PUNCHLISTITEM/READ',
 ]);

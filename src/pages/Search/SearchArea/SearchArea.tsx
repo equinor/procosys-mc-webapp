@@ -27,6 +27,8 @@ const SearchArea = ({ searchType }: SearchAreaProps): JSX.Element => {
     const getPlaceholderText = (): string => {
         if (searchType === SearchType.MC) {
             return '1002-A001';
+        } else if (searchType === SearchType.WO) {
+            return '21317165';
         }
         return '';
     };

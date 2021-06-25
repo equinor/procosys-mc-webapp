@@ -26,19 +26,30 @@ export interface McPkgPreview {
     status: CompletionStatus;
     commPkgNo: string;
     phaseCode: string;
+    phaseDescription: string;
     responsibleCode: string;
+    responsibleDescription: string;
     commissioningHandoverStatus: string;
     operationHandoverStatus: string;
 }
 
-export type SearchResults = {
+export interface WoPreview {
+    id: number;
+    workOrderNo: string;
+    title: string;
+    description: string;
+    disciplineCode: string;
+    disciplineDescription: string;
+}
+
+export interface SearchResults {
     maxAvailable: number;
-    items: McPkgPreview[];
-};
+    items: McPkgPreview[] | WoPreview[];
+}
 
 // COMM PKG AND LISTS
 
-export type CommPkg = {
+export interface CommPkg {
     id: number;
     commPkgNo: string;
     description: string;
@@ -50,24 +61,27 @@ export type CommPkg = {
     commissioningHandoverStatus: string;
     operationHandoverStatus: string;
     systemId: number;
-};
+}
 
-export type ChecklistPreview = {
+export interface ChecklistPreview {
     id: number;
+    tagId: number;
     tagNo: string;
     tagDescription: string;
     responsibleCode: string;
     status: CompletionStatus;
     formularType: string;
     formularGroup: string;
+    sheetNo: number;
+    subSheetNo: number;
     isRestrictedForUser: boolean;
     hasElectronicForm: boolean;
     attachmentCount: number;
     isSigned: boolean;
     isVerified: boolean;
-};
+}
 
-export type PunchPreview = {
+export interface PunchPreview {
     id: number;
     status: CompletionStatus;
     description: string;
@@ -84,7 +98,7 @@ export type PunchPreview = {
     statusControlledBySwcr: boolean;
     attachmentCount: number;
     callOffNo?: string;
-};
+}
 
 // CHECKLIST
 export interface ChecklistDetails {
