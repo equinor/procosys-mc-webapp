@@ -154,11 +154,7 @@ const EntityPage = (): JSX.Element => {
                             <TextIcon color={COLORS.workOrderIcon} text="WO" />
                         }
                         headerText={details.workOrderNo}
-                        description={
-                            history.location.pathname.includes('/WO-info')
-                                ? undefined
-                                : details.description
-                        }
+                        description={details.title}
                         details={
                             details.disciplineCode
                                 ? [
