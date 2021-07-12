@@ -42,9 +42,22 @@ export interface WoPreview {
     disciplineDescription: string;
 }
 
+export interface TagPreview {
+    id: number;
+    tagNo: string;
+    description: string;
+    registerCode: string;
+    tagFunctionCode: string;
+    commPkgNo: string;
+    mcPkgNo: string;
+    callOffNo: string;
+    punchaseOrderTitle: string;
+    mccrResponsibleCode: string;
+}
+
 export interface SearchResults {
     maxAvailable: number;
-    items: McPkgPreview[] | WoPreview[];
+    items: McPkgPreview[] | WoPreview[] | TagPreview[];
 }
 
 // COMM PKG AND LISTS

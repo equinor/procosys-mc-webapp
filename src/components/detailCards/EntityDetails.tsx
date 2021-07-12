@@ -77,7 +77,9 @@ const EntityDetails = ({
                         <Caption key={detail}>{detail}</Caption>
                     ))}
                 </HeaderWrapper>
-                <Typography lines={2}>{description}</Typography>
+                <Typography variant="caption" lines={2}>
+                    {description}
+                </Typography>
             </ContentWrapper>
         </EntityDetailsWrapper>
     );

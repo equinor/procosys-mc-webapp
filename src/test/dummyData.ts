@@ -69,6 +69,7 @@ export const dummyPermissions: string[] = [
     'PUNCHLISTITEM/CLEAR',
     'PUNCHLISTITEM/VERIFY',
     'WO/READ',
+    'TAG/READ',
 ];
 
 export const testProjects: Project[] = [

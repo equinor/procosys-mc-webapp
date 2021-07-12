@@ -93,6 +93,8 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
             url = `McPkg/Search?plantId=${plantId}&startsWithMcPkgNo=${query}&includeClosedProjects=false&projectId=${projectId}${apiVersion}`;
         } else if (searchType === SearchType.WO) {
             url = `WorkOrder/Search?plantId=${plantId}&startsWithWorkOrderNo=${query}&includeClosedProjects=false&projectId=${projectId}${apiVersion}`;
+        } else if (searchType === SearchType.Tag) {
+            url = `Tag/Search?plantId=${plantId}&startsWithTagNo=${query}&projectId=${projectId}${apiVersion}`;
         } else {
             throw new Error('An error occurred, please try again.');
         }
