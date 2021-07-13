@@ -35,21 +35,22 @@ export const isArrayOfType = <T>(
     );
 };
 
-// SEARCH
-export const isCorrectPreview = (
+// SCOPE
+export const isCorrectDetails = (
     data: unknown,
     searchType: SearchType
-): data is McPkgPreview | WoPreview => {
+): data is McPkgPreview | WoPreview | Tag => {
     if (searchType === SearchType.MC) {
         return isOfType<McPkgPreview>(data, 'mcPkgNo');
     } else if (searchType === SearchType.WO) {
         return isOfType<WoPreview>(data, 'workOrderNo');
+    } else if (searchType === SearchType.Tag) {
+        return isOfType<Tag>(data, 'tag');
     } else {
         return false;
     }
 };
 
-// SCOPE
 const isPerson = (data: unknown): data is Person => {
     return data != null && typeof (data as Person).firstName === 'string';
 };

@@ -11,6 +11,7 @@ import {
     PunchPreview,
     McPkgPreview,
     WoPreview,
+    Tag,
 } from '../../services/apiTypes';
 import { DotProgress } from '@equinor/eds-core-react';
 import NavigationFooterShell from '../../components/navigation/NavigationFooterShell';
@@ -44,7 +45,7 @@ const EntityPage = (): JSX.Element => {
     const { api, params, path, history, url } = useCommonHooks();
     const [scope, setScope] = useState<ChecklistPreview[]>();
     const [punchList, setPunchList] = useState<PunchPreview[]>();
-    const [details, setDetails] = useState<McPkgPreview | WoPreview>();
+    const [details, setDetails] = useState<McPkgPreview | WoPreview | Tag>();
     const [fetchScopeStatus, setFetchScopeStatus] = useState(
         AsyncStatus.LOADING
     );
@@ -162,6 +163,18 @@ const EntityPage = (): JSX.Element => {
                                   ]
                                 : undefined
                         }
+                    />
+                );
+            } else if (
+                params.searchType === SearchType.Tag &&
+                isOfType<Tag>(details, 'tag')
+            ) {
+                return (
+                    <EntityDetails
+                        isDetailsCard
+                        icon={<TextIcon color={COLORS.tagIcon} text="Tag" />}
+                        headerText={details.tag.tagNo}
+                        description={details.tag.description}
                     />
                 );
             } else return <></>;
@@ -307,6 +320,7 @@ const EntityPage = (): JSX.Element => {
 export default withAccessControl(EntityPage, [
     'MCPKG/READ',
     'WO/READ',
+    'TAG/READ',
     'MCCR/READ',
     'PUNCHLISTITEM/READ',
 ]);
