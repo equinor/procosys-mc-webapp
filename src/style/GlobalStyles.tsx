@@ -16,6 +16,7 @@ export const COLORS = {
     black: '#000',
     greyBackground: tokens.colors.ui.background__light.hex,
     workOrderIcon: '#990025',
+    tagIcon: '#007079',
 };
 
 const GlobalStyles = createGlobalStyle`

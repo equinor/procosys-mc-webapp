@@ -11,6 +11,7 @@ import {
     SearchResults,
     PunchItem,
     WoPreview,
+    TagPreview,
 } from '../services/apiTypes';
 
 type DummyMetatableData = {
@@ -69,6 +70,7 @@ export const dummyPermissions: string[] = [
     'PUNCHLISTITEM/CLEAR',
     'PUNCHLISTITEM/VERIFY',
     'WO/READ',
+    'TAG/READ',
 ];
 
 export const testProjects: Project[] = [
@@ -89,6 +91,21 @@ export const testDetails: CommPkg = {
     operationHandoverStatus: 'Test operationHandoverStatus',
     systemId: 1,
 };
+
+export const testTagPreview: TagPreview[] = [
+    {
+        id: 1,
+        tagNo: 'tag-no',
+        description: 'tag description',
+        registerCode: 'tag-reg-code',
+        tagFunctionCode: 'tag-func-code',
+        commPkgNo: 'tag-commPkgNo',
+        mcPkgNo: 'tag-mcPkgNo',
+        callOffNo: 'tag-callOffNo',
+        punchaseOrderTitle: 'tag PO title',
+        mccrResponsibleCode: 'tag-resp-code',
+    },
+];
 
 export const testWoPreview: WoPreview[] = [
     {
@@ -125,6 +142,11 @@ export const testMcPkgSearch: SearchResults = {
 export const testWoSearch: SearchResults = {
     maxAvailable: 1,
     items: testWoPreview,
+};
+
+export const testTagSearch: SearchResults = {
+    maxAvailable: 1,
+    items: testTagPreview,
 };
 
 export const testScope: ChecklistPreview[] = [
