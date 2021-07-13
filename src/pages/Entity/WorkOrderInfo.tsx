@@ -1,7 +1,5 @@
-/* eslint-disable prettier/prettier */
 import { CollapsibleCard } from '@equinor/procosys-webapp-components';
-import React, { useState } from 'react';
-import { useEffect } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import AsyncPage from '../../components/AsyncPage';
 import ErrorPage from '../../components/error/ErrorPage';
@@ -34,13 +32,13 @@ const WorkOrderInfo = ({
         return (
             <AsyncPage
                 fetchStatus={fetchWorkOrderStatus}
-                errorMessage={'Unable to load Work Order info. Please try again.'}
+                errorMessage={
+                    'Unable to load Work Order info. Please try again.'
+                }
             >
                 <TagInfoWrapper>
                     <CollapsibleCard cardTitle="Description">
-                        <p>
-                            {workOrder?.description}
-                        </p>
+                        <p>{workOrder?.description}</p>
                     </CollapsibleCard>
                 </TagInfoWrapper>
             </AsyncPage>

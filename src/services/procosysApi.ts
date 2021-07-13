@@ -31,7 +31,6 @@ import {
     Person,
     Tag,
     WoPreview,
-    TagPreview,
 } from './apiTypes';
 
 type ProcosysApiServiceProps = {
