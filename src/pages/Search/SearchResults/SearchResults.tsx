@@ -3,6 +3,7 @@ import { SearchStatus } from '../useSearchPageFacade';
 import {
     McPkgPreview,
     SearchResults as SearchResultsType,
+    TagPreview,
     WoPreview,
 } from '../../../services/apiTypes';
 import SkeletonLoadingPage from '../../../components/loading/SkeletonLoader';
@@ -37,6 +38,8 @@ const SearchResults = ({
             return 'MC Package number';
         } else if (searchType === SearchType.WO) {
             return 'Work Order number';
+        } else if (searchType === SearchType.Tag) {
+            return 'Tag number';
         }
         return '';
     };
@@ -46,6 +49,8 @@ const SearchResults = ({
             return 'MC packages';
         } else if (searchType === SearchType.WO) {
             return 'Work Orders';
+        } else if (searchType === SearchType.Tag) {
+            return 'Tags';
         }
         return '';
     };
@@ -94,6 +99,34 @@ const SearchResults = ({
                                 }
                                 onClick={(): void =>
                                     history.push(`${url}/WO/${searchResult.id}`)
+                                }
+                            />
+                        );
+                    })}
+                </>
+            );
+        } else if (
+            searchType === SearchType.Tag &&
+            isArrayOfType<TagPreview>(searchResults.items, 'tagNo')
+        ) {
+            return (
+                <>
+                    {searchResults.items.map((searchResult) => {
+                        return (
+                            <EntityDetails
+                                key={searchResult.id}
+                                icon={
+                                    <TextIcon
+                                        color={COLORS.tagIcon}
+                                        text="Tag"
+                                    />
+                                }
+                                headerText={searchResult.tagNo}
+                                description={searchResult.description}
+                                onClick={(): void =>
+                                    history.push(
+                                        `${url}/Tag/${searchResult.id}`
+                                    )
                                 }
                             />
                         );

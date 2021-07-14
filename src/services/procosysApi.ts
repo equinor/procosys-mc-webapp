@@ -9,7 +9,7 @@ import {
     isArrayofPerson,
     isArrayOfType,
     isChecklistResponse,
-    isCorrectPreview,
+    isCorrectDetails,
     isOfType,
 } from './apiTypeGuards';
 import {
@@ -93,6 +93,8 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
             url = `McPkg/Search?plantId=${plantId}&startsWithMcPkgNo=${query}&includeClosedProjects=false&projectId=${projectId}${apiVersion}`;
         } else if (searchType === SearchType.WO) {
             url = `WorkOrder/Search?plantId=${plantId}&startsWithWorkOrderNo=${query}&includeClosedProjects=false&projectId=${projectId}${apiVersion}`;
+        } else if (searchType === SearchType.Tag) {
+            url = `Tag/Search?plantId=${plantId}&startsWithTagNo=${query}&projectId=${projectId}${apiVersion}`;
         } else {
             throw new Error('An error occurred, please try again.');
         }
@@ -108,17 +110,19 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
         searchType: string,
         entityId: string,
         cancelToken: CancelToken
-    ): Promise<McPkgPreview | WoPreview> => {
+    ): Promise<McPkgPreview | WoPreview | Tag> => {
         let url = '';
         if (searchType === SearchType.MC) {
             url = `McPkg?plantId=PCS$${plantId}&mcPkgId=${entityId}${apiVersion}`;
         } else if (searchType === SearchType.WO) {
             url = `WorkOrder?plantId=PCS$${plantId}&WorkOrderId=${entityId}${apiVersion}`;
+        } else if (searchType === SearchType.Tag) {
+            url = `Tag?plantId=PCS$${plantId}&tagId=${entityId}${apiVersion}`;
         } else {
             throw new Error('The chosen scope type is not supported.');
         }
         const { data } = await axios.get(url, { cancelToken });
-        if (!isCorrectPreview(data, searchType)) {
+        if (!isCorrectDetails(data, searchType)) {
             throw new Error(typeGuardErrorMessage('details'));
         }
         return data;
@@ -152,6 +156,8 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
             url = `McPkg/CheckLists?plantId=PCS$${plantId}&mcPkgId=${entityId}${apiVersion}`;
         } else if (searchType === SearchType.WO) {
             url = `WorkOrder/CheckLists?plantId=PCS$${plantId}&workOrderId=${entityId}${apiVersion}`;
+        } else if (searchType === SearchType.Tag) {
+            url = `Tag/CheckLists?plantId=PCS$${plantId}&tagId=${entityId}${apiVersion}`;
         } else {
             throw new Error('The chosen scope type is not supported.');
         }
@@ -206,6 +212,8 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
             url = `McPkg/PunchList?plantId=PCS$${plantId}&mcPkgId=${entityId}${apiVersion}`;
         } else if (searchType === SearchType.WO) {
             url = `WorkOrder/PunchList?plantId=PCS$${plantId}&workOrderId=${entityId}${apiVersion}`;
+        } else if (searchType === SearchType.Tag) {
+            url = `Tag/PunchList?plantId=PCS$${plantId}&tagId=${entityId}${apiVersion}`;
         } else {
             throw new Error('The chosen scope type is not supported.');
         }

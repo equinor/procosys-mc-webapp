@@ -18,6 +18,7 @@ import {
     dummyTagResponse,
     testWoSearch,
     testWoPreview,
+    testTagSearch,
 } from './dummyData';
 import objectToCamelCase from '../utils/objectToCamelCase';
 
@@ -26,25 +27,26 @@ export const ENDPOINTS = {
     //General
     getMcPkgDetails: `${baseURL}/McPkg`,
     getWorkOrderDetails: `${baseURL}/WorkOrder`,
+    getTag: `${baseURL}/Tag`,
     getPermissions: `${baseURL}/Permissions`,
     getProjects: `${baseURL}/Projects`,
 
     //Search
     searchForMcPackage: `${baseURL}/McPkg/Search`,
     searchForWo: `${baseURL}/WorkOrder/Search`,
+    searchForTag: `${baseURL}/Tag/Search`,
 
     // Checklist
     getMcScope: `${baseURL}/McPkg/CheckLists`,
     getWorkOrderScope: `${baseURL}/WorkOrder/CheckLists`,
+    getTagScope: `${baseURL}/Tag/CheckLists`,
     getChecklist: `${baseURL}/CheckList/MC`,
     getChecklistPunchList: `${baseURL}/CheckList/PunchList`,
-
-    // Tag
-    getTag: `${baseURL}/Tag`,
 
     //PUNCH
     getMcPunchList: `${baseURL}/McPkg/PunchList`,
     getWorkOrderPunchList: `${baseURL}/WorkOrder/PunchList`,
+    getTagPunchList: `${baseURL}/Tag/PunchList`,
     getPunchAttachment: `${baseURL}/PunchListItem/Attachment`,
     deletePunchAttachment: `${baseURL}/PunchListItem/Attachment`,
     postTempPunchAttachment: `${baseURL}/PunchListItem/TempAttachment`,
@@ -105,6 +107,9 @@ export const server = setupServer(
     rest.get(ENDPOINTS.searchForWo, (_, response, context) => {
         return response(context.json(testWoSearch), context.status(200));
     }),
+    rest.get(ENDPOINTS.searchForTag, (_, response, context) => {
+        return response(context.json(testTagSearch), context.status(200));
+    }),
 
     //Checklist
     rest.get(ENDPOINTS.getChecklist, (_, response, context) => {
@@ -131,6 +136,12 @@ export const server = setupServer(
             context.status(200)
         );
     }),
+    rest.get(ENDPOINTS.getTagScope, (_, response, context) => {
+        return response(
+            context.json(objectToCamelCase(testScope)),
+            context.status(200)
+        );
+    }),
 
     // TAG
     rest.get(ENDPOINTS.getTag, (_, response, context) => {
@@ -145,6 +156,12 @@ export const server = setupServer(
         );
     }),
     rest.get(ENDPOINTS.getWorkOrderPunchList, (_, response, context) => {
+        return response(
+            context.json(objectToCamelCase(dummyPunchListResponse)),
+            context.status(200)
+        );
+    }),
+    rest.get(ENDPOINTS.getTagPunchList, (_, response, context) => {
         return response(
             context.json(objectToCamelCase(dummyPunchListResponse)),
             context.status(200)

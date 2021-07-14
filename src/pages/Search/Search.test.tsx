@@ -5,6 +5,7 @@ import { withPlantContext } from '../../test/contexts';
 import {
     testMcPkgPreview,
     testMcPkgSearch,
+    testTagPreview,
     testWoPreview,
 } from '../../test/dummyData';
 import { causeApiError, ENDPOINTS, server } from '../../test/setupServer';
@@ -72,6 +73,15 @@ describe('<Search/> successes', () => {
         ).toBeInTheDocument();
         expect(
             await screen.findByText(testWoPreview[0].title)
+        ).toBeInTheDocument();
+    });
+    it('Renders Tag search results if user inputs value into search field in SearchArea', async () => {
+        await search(SearchType.Tag, testTagPreview[0].tagNo);
+        expect(
+            await screen.findByText('Displaying 1 out of 1 Tags')
+        ).toBeInTheDocument();
+        expect(
+            await screen.findByText(testTagPreview[0].description)
         ).toBeInTheDocument();
     });
 });
