@@ -86,7 +86,7 @@ const ChecklistPage = (): JSX.Element => {
                     status={details.checkList.status}
                     statusLetters={[
                         details.checkList.signedByUser ? 'S' : null,
-                        details.checkList.signedByUser ? 'V' : null,
+                        details.checkList.verifiedByUser ? 'V' : null,
                     ]}
                     headerText={details.checkList.tagNo}
                     description={details.checkList.tagDescription}
