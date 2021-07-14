@@ -7,6 +7,7 @@ import styled from 'styled-components';
 
 export const TallSearchField = styled(SearchField)`
     height: 54px;
+    margin-top: 18px;
 `;
 
 type SearchAreaProps = {
@@ -17,8 +18,17 @@ const SearchArea = ({ searchType }: SearchAreaProps): JSX.Element => {
     const searchbarRef = useRef<HTMLInputElement>(
         document.createElement('input')
     );
-    const { hits, searchStatus, query, setQuery } =
-        useSearchPageFacade(searchType);
+    const callOffSearchbarRef = useRef<HTMLInputElement>(
+        document.createElement('input')
+    );
+    const {
+        hits,
+        searchStatus,
+        query,
+        setQuery,
+        callOffQuery,
+        setCallOffQuery,
+    } = useSearchPageFacade(searchType);
 
     useEffect(() => {
         searchbarRef.current?.focus();
@@ -39,7 +49,7 @@ const SearchArea = ({ searchType }: SearchAreaProps): JSX.Element => {
             <TallSearchField
                 placeholder={
                     searchType === SearchType.PO
-                        ? 'Type to search PO number'
+                        ? 'Type to search PO no'
                         : `For example: "${getPlaceholderText()}"`
                 }
                 value={query}
@@ -48,6 +58,16 @@ const SearchArea = ({ searchType }: SearchAreaProps): JSX.Element => {
                 }
                 ref={searchbarRef}
             />
+            {searchType === SearchType.PO ? (
+                <TallSearchField
+                    placeholder={'Type to search call off no'}
+                    value={callOffQuery}
+                    onChange={(e: ChangeEvent<HTMLInputElement>): void =>
+                        setCallOffQuery(e.target.value)
+                    }
+                    ref={callOffSearchbarRef}
+                />
+            ) : null}
             <SearchResults
                 searchStatus={searchStatus}
                 searchResults={hits}

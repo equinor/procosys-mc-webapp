@@ -83,6 +83,7 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
 
     const getSearchResults = async (
         query: string,
+        callOffQuery: string,
         projectId: number,
         plantId: string,
         searchType: SearchType,
@@ -96,7 +97,7 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
         } else if (searchType === SearchType.Tag) {
             url = `Tag/Search?plantId=${plantId}&startsWithTagNo=${query}&projectId=${projectId}${apiVersion}`;
         } else if (searchType === SearchType.PO) {
-            url = `PurchaseOrder/Search?plantId=${plantId}&startsWithPurchaseOrderNo=${query}&projectId=${projectId}${apiVersion}`;
+            url = `PurchaseOrder/Search?plantId=${plantId}&startsWithPurchaseOrderNo=${query}&startsWithCallOffNo=${callOffQuery}&projectId=${projectId}${apiVersion}`;
         } else {
             throw new Error('An error occurred, please try again.');
         }
