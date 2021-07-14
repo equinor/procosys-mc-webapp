@@ -55,9 +55,17 @@ export interface TagPreview {
     mccrResponsibleCode: string;
 }
 
+export interface PoPreview {
+    callOffId: number;
+    isPurchaseOrder: boolean;
+    title: string;
+    description: string;
+    responsibleCode: string;
+}
+
 export interface SearchResults {
     maxAvailable: number;
-    items: McPkgPreview[] | WoPreview[] | TagPreview[];
+    items: McPkgPreview[] | WoPreview[] | TagPreview[] | PoPreview[];
 }
 
 // COMM PKG AND LISTS

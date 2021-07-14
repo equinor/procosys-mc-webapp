@@ -29,16 +29,19 @@ const SearchArea = ({ searchType }: SearchAreaProps): JSX.Element => {
             return '1002-A001';
         } else if (searchType === SearchType.WO) {
             return '21317165';
-        } else if (searchType === SearchType.Tag) {
+        } else {
             return '#M-2601-P013';
         }
-        return '';
     };
 
     return (
         <>
             <TallSearchField
-                placeholder={`For example: "${getPlaceholderText()}"`}
+                placeholder={
+                    searchType === SearchType.PO
+                        ? 'Type to search PO number'
+                        : `For example: "${getPlaceholderText()}"`
+                }
                 value={query}
                 onChange={(e: ChangeEvent<HTMLInputElement>): void =>
                     setQuery(e.target.value)

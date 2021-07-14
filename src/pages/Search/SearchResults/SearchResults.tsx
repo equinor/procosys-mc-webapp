@@ -2,6 +2,7 @@ import React from 'react';
 import { SearchStatus } from '../useSearchPageFacade';
 import {
     McPkgPreview,
+    PoPreview,
     SearchResults as SearchResultsType,
     TagPreview,
     WoPreview,
@@ -15,6 +16,7 @@ import EntityDetails from '../../../components/detailCards/EntityDetails';
 import TextIcon from '../../../components/detailCards/TextIcon';
 import useCommonHooks from '../../../utils/useCommonHooks';
 import { COLORS } from '../../../style/GlobalStyles';
+import { useLocation } from 'react-router-dom';
 
 const SearchResultAmountWrapper = styled.h6`
     margin: 10px 0px;
@@ -40,8 +42,9 @@ const SearchResults = ({
             return 'Work Order number';
         } else if (searchType === SearchType.Tag) {
             return 'Tag number';
+        } else {
+            return 'Purchase Order number and/or call off number'; // TODO: should this say call off id?
         }
-        return '';
     };
 
     const getSearchResultType = (): string => {
@@ -51,8 +54,9 @@ const SearchResults = ({
             return 'Work Orders';
         } else if (searchType === SearchType.Tag) {
             return 'Tags';
+        } else {
+            return 'Purchase Orders';
         }
-        return '';
     };
 
     const determineContentToRender = (): JSX.Element => {
@@ -133,6 +137,34 @@ const SearchResults = ({
                     })}
                 </>
             );
+        } else if (
+            searchType === SearchType.PO &&
+            isArrayOfType<PoPreview>(searchResults.items, 'isPurchaseOrder')
+        ) {
+            return (
+                <>
+                    {searchResults.items.map((searchResult) => {
+                        return (
+                            <EntityDetails
+                                key={searchResult.title}
+                                icon={
+                                    <TextIcon
+                                        color={COLORS.purchaseOrderIcon}
+                                        text="PO"
+                                    />
+                                }
+                                headerText={searchResult.title}
+                                description={searchResult.description}
+                                onClick={(): void =>
+                                    history.push(
+                                        `${url}/PO/${searchResult.callOffId}`
+                                    )
+                                }
+                            />
+                        );
+                    })}
+                </>
+            );
         }
         return <></>;
     };
@@ -158,7 +190,7 @@ const SearchResults = ({
                 <p>
                     <i>
                         Start typing your {getPlaceholderTextType()} in the
-                        field above. <br />
+                        field{searchType === SearchType.PO ? 's' : ''} above.
                     </i>
                 </p>
             </div>
