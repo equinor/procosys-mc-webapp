@@ -10,6 +10,7 @@ import userEvent from '@testing-library/user-event';
 import {
     dummyPunchListResponse,
     testMcPkgPreview,
+    testPoPreview,
     testScope,
     testWoPreview,
 } from '../../test/dummyData';
@@ -115,9 +116,18 @@ describe('<EntityPage> general and Scope component', () => {
             await screen.findByText(testWoPreview[0].workOrderNo)
         ).toBeInTheDocument();
     });
-    it.todo(
-        'Renders the Scope component, footer, and PO details card if API calls are successfull'
-    );
+    it('Renders the Scope component, footer, and PO details card if API calls are successfull', async () => {
+        renderEntityPage(SearchType.PO);
+        expect(await screen.findByText(testScope[0].tagNo)).toBeInTheDocument();
+        expect(
+            await screen.findByRole('button', {
+                name: `Scope ${testScope.length}`,
+            })
+        ).toBeInTheDocument();
+        expect(
+            await screen.findByText(testPoPreview[0].title)
+        ).toBeInTheDocument();
+    });
     it('Renders the Scope component, footer, and Tag details card if API calls are successfull', async () => {
         renderEntityPage(SearchType.Tag);
         expect(await screen.findByText(testScope[0].tagNo)).toBeInTheDocument();

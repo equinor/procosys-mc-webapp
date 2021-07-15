@@ -20,6 +20,7 @@ import {
     testWoPreview,
     testTagSearch,
     testPoSearch,
+    testPoPreview,
 } from './dummyData';
 import objectToCamelCase from '../utils/objectToCamelCase';
 
@@ -29,6 +30,7 @@ export const ENDPOINTS = {
     getMcPkgDetails: `${baseURL}/McPkg`,
     getWorkOrderDetails: `${baseURL}/WorkOrder`,
     getTag: `${baseURL}/Tag`,
+    getPoDetails: `${baseURL}/PurchaseOrder`,
     getPermissions: `${baseURL}/Permissions`,
     getProjects: `${baseURL}/Projects`,
 
@@ -42,6 +44,7 @@ export const ENDPOINTS = {
     getMcScope: `${baseURL}/McPkg/CheckLists`,
     getWorkOrderScope: `${baseURL}/WorkOrder/CheckLists`,
     getTagScope: `${baseURL}/Tag/CheckLists`,
+    getPoScope: `${baseURL}/PurchaseOrder/CheckLists`,
     getChecklist: `${baseURL}/CheckList/MC`,
     getChecklistPunchList: `${baseURL}/CheckList/PunchList`,
 
@@ -49,6 +52,7 @@ export const ENDPOINTS = {
     getMcPunchList: `${baseURL}/McPkg/PunchList`,
     getWorkOrderPunchList: `${baseURL}/WorkOrder/PunchList`,
     getTagPunchList: `${baseURL}/Tag/PunchList`,
+    getPoPunchList: `${baseURL}/PurchaseOrder/PunchList`,
     getPunchAttachment: `${baseURL}/PunchListItem/Attachment`,
     deletePunchAttachment: `${baseURL}/PunchListItem/Attachment`,
     postTempPunchAttachment: `${baseURL}/PunchListItem/TempAttachment`,
@@ -92,6 +96,12 @@ export const server = setupServer(
     rest.get(ENDPOINTS.getWorkOrderDetails, (_, response, context) => {
         return response(
             context.json(objectToCamelCase(testWoPreview[0])),
+            context.status(200)
+        );
+    }),
+    rest.get(ENDPOINTS.getPoDetails, (_, response, context) => {
+        return response(
+            context.json(objectToCamelCase(testPoPreview[0])),
             context.status(200)
         );
     }),
@@ -147,6 +157,12 @@ export const server = setupServer(
             context.status(200)
         );
     }),
+    rest.get(ENDPOINTS.getPoScope, (_, response, context) => {
+        return response(
+            context.json(objectToCamelCase(testScope)),
+            context.status(200)
+        );
+    }),
 
     // TAG
     rest.get(ENDPOINTS.getTag, (_, response, context) => {
@@ -167,6 +183,12 @@ export const server = setupServer(
         );
     }),
     rest.get(ENDPOINTS.getTagPunchList, (_, response, context) => {
+        return response(
+            context.json(objectToCamelCase(dummyPunchListResponse)),
+            context.status(200)
+        );
+    }),
+    rest.get(ENDPOINTS.getPoPunchList, (_, response, context) => {
         return response(
             context.json(objectToCamelCase(dummyPunchListResponse)),
             context.status(200)
