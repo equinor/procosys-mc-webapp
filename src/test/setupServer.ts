@@ -19,6 +19,7 @@ import {
     testWoSearch,
     testWoPreview,
     testTagSearch,
+    testPoSearch,
 } from './dummyData';
 import objectToCamelCase from '../utils/objectToCamelCase';
 
@@ -35,6 +36,7 @@ export const ENDPOINTS = {
     searchForMcPackage: `${baseURL}/McPkg/Search`,
     searchForWo: `${baseURL}/WorkOrder/Search`,
     searchForTag: `${baseURL}/Tag/Search`,
+    searchForPo: `${baseURL}/PurchaseOrder/Search`,
 
     // Checklist
     getMcScope: `${baseURL}/McPkg/CheckLists`,
@@ -109,6 +111,9 @@ export const server = setupServer(
     }),
     rest.get(ENDPOINTS.searchForTag, (_, response, context) => {
         return response(context.json(testTagSearch), context.status(200));
+    }),
+    rest.get(ENDPOINTS.searchForPo, (_, response, context) => {
+        return response(context.json(testPoSearch), context.status(200));
     }),
 
     //Checklist

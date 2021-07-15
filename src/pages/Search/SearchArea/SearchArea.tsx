@@ -7,6 +7,7 @@ import styled from 'styled-components';
 
 export const TallSearchField = styled(SearchField)`
     height: 54px;
+    margin-top: 18px;
 `;
 
 type SearchAreaProps = {
@@ -17,8 +18,17 @@ const SearchArea = ({ searchType }: SearchAreaProps): JSX.Element => {
     const searchbarRef = useRef<HTMLInputElement>(
         document.createElement('input')
     );
-    const { hits, searchStatus, query, setQuery } =
-        useSearchPageFacade(searchType);
+    const callOffSearchbarRef = useRef<HTMLInputElement>(
+        document.createElement('input')
+    );
+    const {
+        hits,
+        searchStatus,
+        query,
+        setQuery,
+        callOffQuery,
+        setCallOffQuery,
+    } = useSearchPageFacade(searchType);
 
     useEffect(() => {
         searchbarRef.current?.focus();
@@ -29,22 +39,37 @@ const SearchArea = ({ searchType }: SearchAreaProps): JSX.Element => {
             return '1002-A001';
         } else if (searchType === SearchType.WO) {
             return '21317165';
-        } else if (searchType === SearchType.Tag) {
+        } else {
             return '#M-2601-P013';
         }
-        return '';
     };
 
     return (
         <>
             <TallSearchField
-                placeholder={`For example: "${getPlaceholderText()}"`}
+                placeholder={
+                    searchType === SearchType.PO
+                        ? 'Type to search PO no'
+                        : `For example: "${getPlaceholderText()}"`
+                }
                 value={query}
                 onChange={(e: ChangeEvent<HTMLInputElement>): void =>
                     setQuery(e.target.value)
                 }
                 ref={searchbarRef}
+                aria-label="Searchbar"
             />
+            {searchType === SearchType.PO ? (
+                <TallSearchField
+                    placeholder={'Type to search call off no'}
+                    value={callOffQuery}
+                    onChange={(e: ChangeEvent<HTMLInputElement>): void =>
+                        setCallOffQuery(e.target.value)
+                    }
+                    ref={callOffSearchbarRef}
+                    aria-label="CallOffSearchbar"
+                />
+            ) : null}
             <SearchResults
                 searchStatus={searchStatus}
                 searchResults={hits}
