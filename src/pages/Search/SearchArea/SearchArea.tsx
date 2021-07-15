@@ -57,6 +57,7 @@ const SearchArea = ({ searchType }: SearchAreaProps): JSX.Element => {
                     setQuery(e.target.value)
                 }
                 ref={searchbarRef}
+                aria-label="Searchbar"
             />
             {searchType === SearchType.PO ? (
                 <TallSearchField
@@ -66,6 +67,7 @@ const SearchArea = ({ searchType }: SearchAreaProps): JSX.Element => {
                         setCallOffQuery(e.target.value)
                     }
                     ref={callOffSearchbarRef}
+                    aria-label="CallOffSearchbar"
                 />
             ) : null}
             <SearchResults

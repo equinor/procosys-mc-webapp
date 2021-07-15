@@ -12,6 +12,7 @@ import {
     PunchItem,
     WoPreview,
     TagPreview,
+    PoPreview,
 } from '../services/apiTypes';
 
 type DummyMetatableData = {
@@ -135,6 +136,16 @@ export const testMcPkgPreview: McPkgPreview[] = [
     },
 ];
 
+export const testPoPreview: PoPreview[] = [
+    {
+        callOffId: 1,
+        isPurchaseOrder: true,
+        title: 'test-po-title',
+        description: 'test po description',
+        responsibleCode: 'test-po-resp-code',
+    },
+];
+
 export const testMcPkgSearch: SearchResults = {
     maxAvailable: 1,
     items: testMcPkgPreview,
@@ -148,6 +159,11 @@ export const testWoSearch: SearchResults = {
 export const testTagSearch: SearchResults = {
     maxAvailable: 1,
     items: testTagPreview,
+};
+
+export const testPoSearch: SearchResults = {
+    maxAvailable: 1,
+    items: testPoPreview,
 };
 
 export const testScope: ChecklistPreview[] = [
