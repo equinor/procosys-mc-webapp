@@ -12,6 +12,7 @@ import {
     McPkgPreview,
     WoPreview,
     Tag,
+    PoPreview,
 } from '../../services/apiTypes';
 import { DotProgress } from '@equinor/eds-core-react';
 import NavigationFooterShell from '../../components/navigation/NavigationFooterShell';
@@ -45,7 +46,9 @@ const EntityPage = (): JSX.Element => {
     const { api, params, path, history, url } = useCommonHooks();
     const [scope, setScope] = useState<ChecklistPreview[]>();
     const [punchList, setPunchList] = useState<PunchPreview[]>();
-    const [details, setDetails] = useState<McPkgPreview | WoPreview | Tag>();
+    const [details, setDetails] = useState<
+        McPkgPreview | WoPreview | Tag | PoPreview
+    >();
     const [fetchScopeStatus, setFetchScopeStatus] = useState(
         AsyncStatus.LOADING
     );
@@ -175,6 +178,24 @@ const EntityPage = (): JSX.Element => {
                         icon={<TextIcon color={COLORS.tagIcon} text="Tag" />}
                         headerText={details.tag.tagNo}
                         description={details.tag.description}
+                    />
+                );
+            } else if (
+                params.searchType === SearchType.PO &&
+                isOfType<PoPreview>(details, 'callOffId')
+            ) {
+                return (
+                    <EntityDetails
+                        isDetailsCard
+                        icon={
+                            <TextIcon
+                                color={COLORS.purchaseOrderIcon}
+                                text="PO"
+                            />
+                        }
+                        headerText={details.title}
+                        description={details.description}
+                        details={[details.responsibleCode]}
                     />
                 );
             } else return <></>;
@@ -323,4 +344,5 @@ export default withAccessControl(EntityPage, [
     'TAG/READ',
     'MCCR/READ',
     'PUNCHLISTITEM/READ',
+    'PURCHASEORDER/READ',
 ]);
