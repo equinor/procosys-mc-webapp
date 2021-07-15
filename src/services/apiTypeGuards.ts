@@ -7,6 +7,7 @@ import {
     LoopTag,
     McPkgPreview,
     Person,
+    PoPreview,
     Tag,
     WoPreview,
 } from './apiTypes';
@@ -46,6 +47,8 @@ export const isCorrectDetails = (
         return isOfType<WoPreview>(data, 'workOrderNo');
     } else if (searchType === SearchType.Tag) {
         return isOfType<Tag>(data, 'tag');
+    } else if (searchType === SearchType.PO) {
+        return isOfType<PoPreview>(data, 'callOffId');
     } else {
         return false;
     }

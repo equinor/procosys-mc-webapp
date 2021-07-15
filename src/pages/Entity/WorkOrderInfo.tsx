@@ -5,7 +5,12 @@ import AsyncPage from '../../components/AsyncPage';
 import ErrorPage from '../../components/error/ErrorPage';
 import { AsyncStatus } from '../../contexts/McAppContext';
 import { isOfType } from '../../services/apiTypeGuards';
-import { McPkgPreview, Tag, WoPreview } from '../../services/apiTypes';
+import {
+    McPkgPreview,
+    PoPreview,
+    Tag,
+    WoPreview,
+} from '../../services/apiTypes';
 
 const TagInfoWrapper = styled.main`
     min-height: 0px;
@@ -17,7 +22,7 @@ const TagInfoWrapper = styled.main`
 `;
 
 type WorkOrderInfoProps = {
-    workOrder?: WoPreview | McPkgPreview | Tag;
+    workOrder?: WoPreview | McPkgPreview | Tag | PoPreview;
     fetchWorkOrderStatus: AsyncStatus;
 };
 
