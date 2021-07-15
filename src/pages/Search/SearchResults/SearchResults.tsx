@@ -16,7 +16,6 @@ import EntityDetails from '../../../components/detailCards/EntityDetails';
 import TextIcon from '../../../components/detailCards/TextIcon';
 import useCommonHooks from '../../../utils/useCommonHooks';
 import { COLORS } from '../../../style/GlobalStyles';
-import { useLocation } from 'react-router-dom';
 
 const SearchResultAmountWrapper = styled.h6`
     margin: 10px 0px;
@@ -43,7 +42,7 @@ const SearchResults = ({
         } else if (searchType === SearchType.Tag) {
             return 'Tag number';
         } else {
-            return 'Purchase Order number and/or call off number'; // TODO: should this say call off id?
+            return 'Purchase Order number and/or call off number';
         }
     };
 
@@ -146,7 +145,7 @@ const SearchResults = ({
                     {searchResults.items.map((searchResult) => {
                         return (
                             <EntityDetails
-                                key={searchResult.title}
+                                key={searchResult.callOffId}
                                 icon={
                                     <TextIcon
                                         color={COLORS.purchaseOrderIcon}
@@ -155,6 +154,7 @@ const SearchResults = ({
                                 }
                                 headerText={searchResult.title}
                                 description={searchResult.description}
+                                details={[searchResult.responsibleCode]}
                                 onClick={(): void =>
                                     history.push(
                                         `${url}/PO/${searchResult.callOffId}`
