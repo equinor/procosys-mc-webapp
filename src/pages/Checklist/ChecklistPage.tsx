@@ -14,7 +14,7 @@ import { ChecklistResponse, PunchPreview } from '../../services/apiTypes';
 import NavigationFooterShell from '../../components/navigation/NavigationFooterShell';
 import { DotProgress } from '@equinor/eds-core-react';
 import { DetailsWrapper } from '../Entity/EntityPage';
-import TagInfo from './TagInfo';
+import TagInfo from '../../components/TagInfo';
 import { InfoItem } from '@equinor/procosys-webapp-components';
 import ChecklistPunchList from './ChecklistPunchList';
 import removeSubdirectories from '../../utils/removeSubdirectories';

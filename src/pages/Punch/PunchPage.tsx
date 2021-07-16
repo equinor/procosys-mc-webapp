@@ -18,7 +18,7 @@ import { InfoItem } from '@equinor/procosys-webapp-components';
 import { DetailsWrapper } from '../Entity/EntityPage';
 import { DotProgress } from '@equinor/eds-core-react';
 import AsyncPage from '../../components/AsyncPage';
-import TagInfo from '../Checklist/TagInfo';
+import TagInfo from '../../components/TagInfo';
 
 const PunchPage = (): JSX.Element => {
     const { api, params, path, history, url } = useCommonHooks();
