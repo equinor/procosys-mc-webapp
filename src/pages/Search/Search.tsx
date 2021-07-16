@@ -10,7 +10,6 @@ const SearchPageWrapper = styled.main`
 `;
 
 const ButtonsWrapper = styled.div`
-    margin-bottom: 18px;
     display: flex;
     height: 60px;
     & > button:not(:last-child) {
@@ -72,4 +71,9 @@ const Search = (): JSX.Element => {
     );
 };
 
-export default withAccessControl(Search, ['MCPKG/READ', 'WO/READ', 'TAG/READ']);
+export default withAccessControl(Search, [
+    'MCPKG/READ',
+    'WO/READ',
+    'TAG/READ',
+    'PURCHASEORDER/READ',
+]);

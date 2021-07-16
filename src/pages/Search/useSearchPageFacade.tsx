@@ -54,6 +54,7 @@ const fetchReducer = (state: SearchState, action: Action): SearchState => {
 
 const fetchHits = async (
     query: string,
+    callOffQuery: string,
     dispatch: React.Dispatch<Action>,
     plantId: string,
     projectId: number,
@@ -65,6 +66,7 @@ const fetchHits = async (
     try {
         const results = await api.getSearchResults(
             query,
+            callOffQuery,
             projectId,
             plantId,
             searchType,
@@ -87,11 +89,17 @@ const useSearchPageFacade = (searchType: SearchType) => {
         searchStatus: SearchStatus.INACTIVE,
     });
     const [query, setQuery] = useState('');
+    const [callOffQuery, setCallOffQuery] = useState('');
     const { currentProject, currentPlant } = useContext(PlantContext);
 
     useEffect(() => {
+        setCallOffQuery('');
+        setQuery('');
+    }, [searchType]);
+
+    useEffect(() => {
         if (!currentPlant || !currentProject) return;
-        if (query.length < 2) {
+        if (query.length < 2 && callOffQuery.length < 2) {
             dispatch({ type: 'FETCH_INACTIVE' });
             return;
         }
@@ -100,6 +108,7 @@ const useSearchPageFacade = (searchType: SearchType) => {
             () =>
                 fetchHits(
                     query,
+                    callOffQuery,
                     dispatch,
                     currentPlant.id,
                     currentProject.id,
@@ -113,13 +122,15 @@ const useSearchPageFacade = (searchType: SearchType) => {
             cancel('A new search has taken place instead');
             clearTimeout(timeOutId);
         };
-    }, [query, currentProject, currentPlant, api, searchType]);
+    }, [query, callOffQuery, currentProject, currentPlant, api, searchType]);
 
     return {
         hits,
         searchStatus,
         query,
         setQuery,
+        callOffQuery,
+        setCallOffQuery,
     };
 };
 

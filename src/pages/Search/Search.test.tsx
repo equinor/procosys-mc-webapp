@@ -5,6 +5,7 @@ import { withPlantContext } from '../../test/contexts';
 import {
     testMcPkgPreview,
     testMcPkgSearch,
+    testPoPreview,
     testTagPreview,
     testWoPreview,
 } from '../../test/dummyData';
@@ -21,7 +22,9 @@ const search = async (
     });
     expect(searchButton).toBeInTheDocument();
     userEvent.click(searchButton);
-    const searchField = await screen.findByRole('searchbox');
+    const searchField = await screen.findByRole('search', {
+        name: 'Searchbar',
+    });
     expect(searchField).toBeInTheDocument();
     userEvent.type(searchField, searchString);
 };
@@ -34,6 +37,7 @@ describe('<Search/> successes', () => {
             })
         );
     });
+
     it('Renders the search type buttons', () => {
         expect(screen.getByRole('button', { name: 'PO' })).toBeInTheDocument();
         expect(screen.getByRole('button', { name: 'MC' })).toBeInTheDocument();
@@ -57,7 +61,7 @@ describe('<Search/> successes', () => {
             screen.queryByPlaceholderText('For example: "1002-A001"')
         ).not.toBeInTheDocument(); // TODO: once saved search implemented: expect saved search
     });
-    it('Renders MC search results if user inputs value into search field in SearchArea', async () => {
+    it('Renders MC search results if user inputs value into the MC search field', async () => {
         await search(SearchType.MC, testMcPkgPreview[0].mcPkgNo);
         expect(
             await screen.findByText('Displaying 1 out of 1 MC packages')
@@ -66,7 +70,7 @@ describe('<Search/> successes', () => {
             await screen.findByText(testMcPkgPreview[0].description)
         ).toBeInTheDocument();
     });
-    it('Renders WO search results if user inputs value into search field in SearchArea', async () => {
+    it('Renders WO search results if user inputs value into the WO search field', async () => {
         await search(SearchType.WO, testWoPreview[0].workOrderNo);
         expect(
             await screen.findByText('Displaying 1 out of 1 Work Orders')
@@ -75,13 +79,42 @@ describe('<Search/> successes', () => {
             await screen.findByText(testWoPreview[0].title)
         ).toBeInTheDocument();
     });
-    it('Renders Tag search results if user inputs value into search field in SearchArea', async () => {
+    it('Renders Tag search results if user inputs value into the Tag search field', async () => {
         await search(SearchType.Tag, testTagPreview[0].tagNo);
         expect(
             await screen.findByText('Displaying 1 out of 1 Tags')
         ).toBeInTheDocument();
         expect(
             await screen.findByText(testTagPreview[0].description)
+        ).toBeInTheDocument();
+    });
+
+    it('Renders PO search results if user inputs value into the PO number search field', async () => {
+        await search(SearchType.PO, testPoPreview[0].title);
+        expect(
+            await screen.findByText('Displaying 1 out of 1 Purchase Orders')
+        ).toBeInTheDocument();
+        expect(
+            await screen.findByText(testPoPreview[0].description)
+        ).toBeInTheDocument();
+    });
+
+    it('Renders PO search results if user inputs value into the call off number search field', async () => {
+        const searchButton = await screen.findByRole('button', {
+            name: SearchType.PO,
+        });
+        expect(searchButton).toBeInTheDocument();
+        userEvent.click(searchButton);
+        const searchField = await screen.findByRole('search', {
+            name: 'CallOffSearchbar',
+        });
+        expect(searchField).toBeInTheDocument();
+        userEvent.type(searchField, 'CO1');
+        expect(
+            await screen.findByText('Displaying 1 out of 1 Purchase Orders')
+        ).toBeInTheDocument();
+        expect(
+            await screen.findByText(testPoPreview[0].description)
         ).toBeInTheDocument();
     });
 });

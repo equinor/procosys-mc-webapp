@@ -33,7 +33,6 @@ const SearchTypeButton = ({
                 );
             }}
             active={searchType === currentSearchType}
-            disabled={searchType === SearchType.PO}
         >
             {searchType}
         </SearchTypeButtonWrapper>
