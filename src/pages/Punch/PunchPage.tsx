@@ -142,7 +142,7 @@ const PunchPage = (): JSX.Element => {
                 <FooterButton
                     active={history.location.pathname.includes('/tag-info')}
                     goTo={(): void => history.push(`${url}/tag-info`)}
-                    icon={<EdsIcon name="info_circle" />}
+                    icon={<EdsIcon name="tag" />}
                     label={'Tag info'}
                 />
             </NavigationFooter>
