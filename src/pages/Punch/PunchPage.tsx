@@ -18,6 +18,7 @@ import { InfoItem } from '@equinor/procosys-webapp-components';
 import { DetailsWrapper } from '../Entity/EntityPage';
 import { DotProgress } from '@equinor/eds-core-react';
 import AsyncPage from '../../components/AsyncPage';
+import TagInfo from '../Checklist/TagInfo';
 
 const PunchPage = (): JSX.Element => {
     const { api, params, path, history, url } = useCommonHooks();
@@ -115,7 +116,9 @@ const PunchPage = (): JSX.Element => {
                     <Route
                         exact
                         path={`${path}/tag-info`}
-                        render={(): JSX.Element => <h1>tag info</h1>}
+                        render={(): JSX.Element => (
+                            <TagInfo tagId={punch?.tagId} />
+                        )}
                     />
                     <Route
                         exact
