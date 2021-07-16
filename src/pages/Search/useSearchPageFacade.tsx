@@ -93,6 +93,11 @@ const useSearchPageFacade = (searchType: SearchType) => {
     const { currentProject, currentPlant } = useContext(PlantContext);
 
     useEffect(() => {
+        setCallOffQuery('');
+        setQuery('');
+    }, [searchType]);
+
+    useEffect(() => {
         if (!currentPlant || !currentProject) return;
         if (query.length < 2 && callOffQuery.length < 2) {
             dispatch({ type: 'FETCH_INACTIVE' });
