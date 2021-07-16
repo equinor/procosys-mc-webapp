@@ -20,6 +20,7 @@ import { Attachment, PunchItem } from '../../../services/apiTypes';
 import PersonsSearch from '../../../components/PersonsSearch/PersonsSearch';
 import { COLORS } from '../../../style/GlobalStyles';
 import { Attachments } from '@equinor/procosys-webapp-components';
+import { AttachmentsWrapper } from '../../Checklist/NewPunch/NewPunch';
 
 export const PunchWrapper = styled.main``;
 
@@ -326,50 +327,52 @@ const ClearPunch = ({
                             onChange={handleEstimateChange}
                         />
                         <h5>Attachments</h5>
-                        <Attachments
-                            getAttachments={(
-                                cancelToken: CancelToken
-                            ): Promise<Attachment[]> =>
-                                api.getPunchAttachments(
-                                    params.plant,
-                                    params.punchItemId,
-                                    cancelToken
-                                )
-                            }
-                            getAttachment={(
-                                cancelToken: CancelToken,
-                                attachmentId: number
-                            ): Promise<Blob> =>
-                                api.getPunchAttachment(
-                                    cancelToken,
-                                    params.plant,
-                                    params.punchItemId,
-                                    attachmentId
-                                )
-                            }
-                            postAttachment={(
-                                file: FormData,
-                                title: string
-                            ): Promise<void> =>
-                                api.postPunchAttachment(
-                                    params.plant,
-                                    punchItem.id,
-                                    file,
-                                    title
-                                )
-                            }
-                            deleteAttachment={(
-                                attachmentId: number
-                            ): Promise<void> =>
-                                api.deletePunchAttachment(
-                                    params.plant,
-                                    params.punchItemId,
-                                    attachmentId
-                                )
-                            }
-                            setSnackbarText={setSnackbarText}
-                            readOnly={false}
-                        />
+                        <AttachmentsWrapper>
+                            <Attachments
+                                getAttachments={(
+                                    cancelToken: CancelToken
+                                ): Promise<Attachment[]> =>
+                                    api.getPunchAttachments(
+                                        params.plant,
+                                        params.punchItemId,
+                                        cancelToken
+                                    )
+                                }
+                                getAttachment={(
+                                    cancelToken: CancelToken,
+                                    attachmentId: number
+                                ): Promise<Blob> =>
+                                    api.getPunchAttachment(
+                                        cancelToken,
+                                        params.plant,
+                                        params.punchItemId,
+                                        attachmentId
+                                    )
+                                }
+                                postAttachment={(
+                                    file: FormData,
+                                    title: string
+                                ): Promise<void> =>
+                                    api.postPunchAttachment(
+                                        params.plant,
+                                        punchItem.id,
+                                        file,
+                                        title
+                                    )
+                                }
+                                deleteAttachment={(
+                                    attachmentId: number
+                                ): Promise<void> =>
+                                    api.deletePunchAttachment(
+                                        params.plant,
+                                        params.punchItemId,
+                                        attachmentId
+                                    )
+                                }
+                                setSnackbarText={setSnackbarText}
+                                readOnly={false}
+                            />
+                        </AttachmentsWrapper>
                         <FormButton
                             type="submit"
                             disabled={
