@@ -155,4 +155,5 @@ export default withAccessControl(PunchPage, [
     'PUNCHLISTITEM/WRITE',
     'PUNCHLISTITEM/CLEAR',
     'PUNCHLISTITEM/VERIFY',
+    'TAG/READ',
 ]);
