@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import Axios from 'axios';
-import { AsyncStatus } from '../../contexts/McAppContext';
-import { SavedSearch } from '../../services/apiTypes';
-import useCommonHooks from '../../utils/useCommonHooks';
+import { AsyncStatus } from '../../../contexts/McAppContext';
+import { SavedSearch } from '../../../services/apiTypes';
+import useCommonHooks from '../../../utils/useCommonHooks';
 import { CollapsibleCard } from '@equinor/procosys-webapp-components';
-import EntityDetails from '../../components/detailCards/EntityDetails';
-import SkeletonLoadingPage from '../../components/loading/SkeletonLoader';
+import EntityDetails from '../../../components/detailCards/EntityDetails';
+import SkeletonLoadingPage from '../../../components/loading/SkeletonLoader';
 
 const SavedSearches = (): JSX.Element => {
     const [searches, setSearches] = useState<SavedSearch[]>();
@@ -13,6 +13,8 @@ const SavedSearches = (): JSX.Element => {
         AsyncStatus.LOADING
     );
     const { params, api } = useCommonHooks();
+
+    // TODO: determine why saved searches don't return anything!!
     useEffect(() => {
         const source = Axios.CancelToken.source();
         async (): Promise<void> => {
@@ -34,7 +36,7 @@ const SavedSearches = (): JSX.Element => {
         return (): void => {
             source.cancel();
         };
-    }, [params]);
+    }, [params.plant]);
 
     const determineContent = (): JSX.Element => {
         // TODO: determine whether or not to use <i> inside the info <p>s
@@ -70,6 +72,7 @@ const SavedSearches = (): JSX.Element => {
         }
     };
 
+    // TODO: add space before the collaprible card starts. See WorkOrderInfo or TagInfo page
     return (
         <CollapsibleCard cardTitle="Saved Searches">
             {determineContent()}

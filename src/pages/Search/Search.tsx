@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import withAccessControl from '../../services/withAccessControl';
 import styled from 'styled-components';
 import Navbar from '../../components/navigation/Navbar';
-import SearchArea from './SearchArea/SearchArea';
+import SearchArea from './Searching/SearchArea';
 import SearchTypeButton from './SearchTypeButton';
-import SavedSearches from './SavedSearches';
+import SavedSearches from './SavedSearches/SavedSearches';
 
 const SearchPageWrapper = styled.main`
     padding: 0 4%;
