@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import Navbar from '../../components/navigation/Navbar';
 import SearchArea from './SearchArea/SearchArea';
 import SearchTypeButton from './SearchTypeButton';
+import SavedSearches from './SavedSearches';
 
 const SearchPageWrapper = styled.main`
     padding: 0 4%;
@@ -29,7 +30,7 @@ const Search = (): JSX.Element => {
 
     const determineComponent = (): JSX.Element => {
         if (searchType === null) {
-            return <></>;
+            return <SavedSearches />;
         }
         return <SearchArea searchType={searchType} />;
     };

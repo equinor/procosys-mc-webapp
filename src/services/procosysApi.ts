@@ -32,6 +32,7 @@ import {
     Tag,
     WoPreview,
     PoPreview,
+    SavedSearch,
 } from './apiTypes';
 
 type ProcosysApiServiceProps = {
@@ -105,6 +106,22 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
         const { data } = await axios.get(url, { cancelToken });
         if (!isOfType<SearchResults>(data, 'maxAvailable')) {
             throw new Error(typeGuardErrorMessage('search results'));
+        }
+        return data;
+    };
+
+    const getSavedSearches = async (
+        plantId: string,
+        cancelToken: CancelToken
+    ): Promise<SavedSearch[]> => {
+        const { data } = await axios.get(
+            `/SavedSearches?plantId=${plantId}${apiVersion}`,
+            {
+                cancelToken,
+            }
+        );
+        if (!isArrayOfType<SavedSearch>(data, 'type')) {
+            throw new Error(typeGuardErrorMessage('saved search'));
         }
         return data;
     };
@@ -480,6 +497,7 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
         getSearchResults,
         getEntityDetails,
         getPersonsByName,
+        getSavedSearches,
     };
 };
 
