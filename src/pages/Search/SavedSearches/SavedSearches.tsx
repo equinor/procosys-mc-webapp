@@ -14,10 +14,9 @@ const SavedSearches = (): JSX.Element => {
     );
     const { params, api } = useCommonHooks();
 
-    // TODO: determine why saved searches don't return anything!!
     useEffect(() => {
         const source = Axios.CancelToken.source();
-        async (): Promise<void> => {
+        (async (): Promise<void> => {
             try {
                 const searchesFromApi = await api.getSavedSearches(
                     params.plant,
@@ -32,25 +31,30 @@ const SavedSearches = (): JSX.Element => {
             } catch {
                 setFetchSearchesStatus(AsyncStatus.ERROR);
             }
-        };
+        })();
         return (): void => {
             source.cancel();
         };
     }, [params.plant]);
 
     const determineContent = (): JSX.Element => {
-        // TODO: determine whether or not to use <i> inside the info <p>s
         if (fetchSearchesStatus === AsyncStatus.LOADING) {
             return <SkeletonLoadingPage nrOfRows={5} />;
         } else if (fetchSearchesStatus === AsyncStatus.ERROR) {
             return (
                 <p>
-                    An error occurred, please refresh this page and try again.
+                    <i>
+                        An error occurred, please refresh this page and try
+                        again.
+                    </i>
                 </p>
             );
         } else if (fetchSearchesStatus === AsyncStatus.EMPTY_RESPONSE) {
-            // TODO: replace with a better message
-            return <p>No saved searches in ProCoSys.</p>;
+            return (
+                <p>
+                    <i> No saved searches in ProCoSys.</i>
+                </p>
+            );
         } else {
             // TODO: change icon based on which search type
             // TODO: exchange entity details with component for saved searches

@@ -115,7 +115,7 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
         cancelToken: CancelToken
     ): Promise<SavedSearch[]> => {
         const { data } = await axios.get(
-            `/SavedSearches?plantId=${plantId}${apiVersion}`,
+            `/SavedSearches?plantId=PCS$${plantId}${apiVersion}`,
             {
                 cancelToken,
             }
