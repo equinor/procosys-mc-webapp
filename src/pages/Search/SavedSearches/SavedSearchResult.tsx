@@ -5,6 +5,7 @@ import { IconWrapper } from '../../../components/detailCards/EntityDetails';
 import EdsIcon from '../../../components/icons/EdsIcon';
 import { SavedSearch, SavedSearchType } from '../../../services/apiTypes';
 import { Caption, COLORS } from '../../../style/GlobalStyles';
+import useCommonHooks from '../../../utils/useCommonHooks';
 
 const SavedSearchWrapper = styled.article`
     cursor: pointer;
@@ -44,6 +45,8 @@ const SavedSearchResult = ({
     search,
     deleteSavedSearch,
 }: SavedSearchProps): JSX.Element => {
+    const { history, url } = useCommonHooks();
+
     const determineIcon = (): JSX.Element => {
         if (search.type === SavedSearchType.CHECKLIST) {
             return <EdsIcon name="playlist_added" />;
@@ -55,7 +58,15 @@ const SavedSearchResult = ({
     return (
         <SavedSearchWrapper
             role="link"
-            onClick={(): void => console.log('route to new page')}
+            onClick={(): void =>
+                history.push(
+                    `${url}/saved-search/${
+                        search.type === SavedSearchType.CHECKLIST
+                            ? 'checklist'
+                            : 'punch-item'
+                    }/${search.id}`
+                )
+            }
         >
             <IconWrapper>{determineIcon()}</IconWrapper>
             <ContentWrapper>
