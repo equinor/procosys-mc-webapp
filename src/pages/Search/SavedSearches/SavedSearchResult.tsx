@@ -3,7 +3,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { IconWrapper } from '../../../components/detailCards/EntityDetails';
 import EdsIcon from '../../../components/icons/EdsIcon';
-import { SavedSearch } from '../../../services/apiTypes';
+import { SavedSearch, SavedSearchType } from '../../../services/apiTypes';
 import { Caption, COLORS } from '../../../style/GlobalStyles';
 
 const SavedSearchWrapper = styled.article`
@@ -33,11 +33,6 @@ const DeleteButtonWrapper = styled.div`
     padding-top: 3px;
     margin-left: 16px;
 `;
-
-export enum SavedSearchType {
-    CHECKLIST = 'Check Lists',
-    PUNCH = 'Punch List Items',
-}
 
 type SavedSearchProps = {
     search: SavedSearch;

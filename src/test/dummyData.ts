@@ -13,6 +13,8 @@ import {
     WoPreview,
     TagPreview,
     PoPreview,
+    SavedSearch,
+    SavedSearchType,
 } from '../services/apiTypes';
 
 type DummyMetatableData = {
@@ -165,6 +167,15 @@ export const testPoSearch: SearchResults = {
     maxAvailable: 1,
     items: testPoPreview,
 };
+
+export const testSavedSearch: SavedSearch[] = [
+    {
+        id: 1,
+        name: 'Test checklist saved search title',
+        description: 'Test checklist saved search description',
+        type: SavedSearchType.CHECKLIST,
+    },
+];
 
 export const testScope: ChecklistPreview[] = [
     {

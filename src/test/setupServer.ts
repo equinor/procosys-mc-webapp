@@ -21,6 +21,7 @@ import {
     testTagSearch,
     testPoSearch,
     testPoPreview,
+    testSavedSearch,
 } from './dummyData';
 import objectToCamelCase from '../utils/objectToCamelCase';
 
@@ -39,6 +40,8 @@ export const ENDPOINTS = {
     searchForWo: `${baseURL}/WorkOrder/Search`,
     searchForTag: `${baseURL}/Tag/Search`,
     searchForPo: `${baseURL}/PurchaseOrder/Search`,
+    getSavedSearches: `${baseURL}/SavedSearches`,
+    deleteSavedSearch: `${baseURL}/Search`,
 
     // Checklist
     getMcScope: `${baseURL}/McPkg/CheckLists`,
@@ -124,6 +127,12 @@ export const server = setupServer(
     }),
     rest.get(ENDPOINTS.searchForPo, (_, response, context) => {
         return response(context.json(testPoSearch), context.status(200));
+    }),
+    rest.get(ENDPOINTS.getSavedSearches, (_, response, context) => {
+        return response(context.json(testSavedSearch), context.status(200));
+    }),
+    rest.delete(ENDPOINTS.deleteSavedSearch, (_, response, context) => {
+        return response(context.status(200));
     }),
 
     //Checklist

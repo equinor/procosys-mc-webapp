@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
 import { withPlantContext } from '../../test/contexts';
@@ -6,6 +6,7 @@ import {
     testMcPkgPreview,
     testMcPkgSearch,
     testPoPreview,
+    testSavedSearch,
     testTagPreview,
     testWoPreview,
 } from '../../test/dummyData';
@@ -45,7 +46,9 @@ describe('<Search/> successes', () => {
         expect(screen.getByRole('button', { name: 'Tag' })).toBeInTheDocument();
     });
     it('Renders MC SearchArea if MC SearchTypeButton is clicked and removes SearchArea if the button is cliced again', async () => {
-        // TODO: once saved search implemented: expect saved search
+        expect(
+            await screen.findByText(testSavedSearch[0].name)
+        ).toBeInTheDocument();
         const mcButton = await screen.findByRole('button', { name: 'MC' });
         userEvent.click(mcButton);
         expect(
@@ -59,7 +62,10 @@ describe('<Search/> successes', () => {
         userEvent.click(mcButton);
         expect(
             screen.queryByPlaceholderText('For example: "1002-A001"')
-        ).not.toBeInTheDocument(); // TODO: once saved search implemented: expect saved search
+        ).not.toBeInTheDocument();
+        expect(
+            await screen.findByText(testSavedSearch[0].name)
+        ).toBeInTheDocument();
     });
     it('Renders MC search results if user inputs value into the MC search field', async () => {
         await search(SearchType.MC, testMcPkgPreview[0].mcPkgNo);
@@ -117,6 +123,21 @@ describe('<Search/> successes', () => {
             await screen.findByText(testPoPreview[0].description)
         ).toBeInTheDocument();
     });
+    it('Removes a saved search if the delete button is clicked', async () => {
+        expect(
+            await screen.findByText(testSavedSearch[0].name)
+        ).toBeInTheDocument();
+        const deleteButton = await screen.findByRole('button', {
+            name: 'Delete saved search',
+        });
+        expect(deleteButton).toBeInTheDocument();
+        userEvent.click(deleteButton);
+        await waitFor(() =>
+            expect(
+                screen.queryByText(testSavedSearch[0].name)
+            ).not.toBeInTheDocument()
+        );
+    });
 });
 
 const renderSearch = (): void => {
@@ -128,7 +149,7 @@ const renderSearch = (): void => {
 };
 
 describe('<Search> negative tests', () => {
-    it('Should show an error message if API call fails', async () => {
+    it('Should show an error message if search API call fails', async () => {
         renderSearch();
         causeApiError(ENDPOINTS.searchForMcPackage, 'get');
         await search(SearchType.MC, testMcPkgPreview[0].mcPkgNo);

@@ -20,11 +20,16 @@ export interface Plant {
 
 //SEARCH
 
+export enum SavedSearchType {
+    CHECKLIST = 'Check Lists',
+    PUNCH = 'Punch List Items',
+}
+
 export interface SavedSearch {
     id: number;
     name: string;
     description: string;
-    type: string;
+    type: SavedSearchType;
 }
 
 export interface McPkgPreview {
