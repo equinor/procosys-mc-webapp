@@ -5,6 +5,7 @@ import Navbar from '../../components/navigation/Navbar';
 import SearchArea from './Searching/SearchArea';
 import SearchTypeButton from './SearchTypeButton';
 import SavedSearches from './SavedSearches/SavedSearches';
+import useSnackbar from '../../utils/useSnackbar';
 
 const SearchPageWrapper = styled.main`
     padding: 0 4%;
@@ -27,10 +28,11 @@ export enum SearchType {
 
 const Search = (): JSX.Element => {
     const [searchType, setSearchType] = useState<SearchType | null>(null);
+    const { snackbar, setSnackbarText } = useSnackbar();
 
     const determineComponent = (): JSX.Element => {
         if (searchType === null) {
-            return <SavedSearches />;
+            return <SavedSearches setSnackbarText={setSnackbarText} />;
         }
         return <SearchArea searchType={searchType} />;
     };
@@ -67,6 +69,7 @@ const Search = (): JSX.Element => {
                     />
                 </ButtonsWrapper>
                 {determineComponent()}
+                {snackbar}
             </SearchPageWrapper>
         </>
     );

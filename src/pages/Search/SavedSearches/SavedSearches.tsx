@@ -4,11 +4,17 @@ import { AsyncStatus } from '../../../contexts/McAppContext';
 import { SavedSearch } from '../../../services/apiTypes';
 import useCommonHooks from '../../../utils/useCommonHooks';
 import { CollapsibleCard } from '@equinor/procosys-webapp-components';
-import EntityDetails from '../../../components/detailCards/EntityDetails';
 import SkeletonLoadingPage from '../../../components/loading/SkeletonLoader';
+import SavedSearchResult from './SavedSearchResult';
 
-const SavedSearches = (): JSX.Element => {
-    const [searches, setSearches] = useState<SavedSearch[]>();
+type SavedSearchesProps = {
+    setSnackbarText: React.Dispatch<React.SetStateAction<string>>;
+};
+
+const SavedSearches = ({
+    setSnackbarText,
+}: SavedSearchesProps): JSX.Element => {
+    const [searches, setSearches] = useState<SavedSearch[]>([]);
     const [fetchSearchesStatus, setFetchSearchesStatus] = useState(
         AsyncStatus.LOADING
     );
@@ -37,9 +43,33 @@ const SavedSearches = (): JSX.Element => {
         };
     }, [params.plant]);
 
+    const deleteASavedSearch = async (id: number): Promise<void> => {
+        try {
+            await api.deleteSavedSearch(params.plant, id);
+            setSearches(searches.filter((search) => search.id != id));
+        } catch (error) {
+            setSnackbarText(error.toString());
+        }
+    };
+
     const determineContent = (): JSX.Element => {
-        if (fetchSearchesStatus === AsyncStatus.LOADING) {
-            return <SkeletonLoadingPage nrOfRows={5} />;
+        if (
+            fetchSearchesStatus === AsyncStatus.SUCCESS &&
+            searches != undefined
+        ) {
+            return (
+                <div>
+                    {searches.map((search) => {
+                        return (
+                            <SavedSearchResult
+                                key={search.id}
+                                search={search}
+                                deleteSavedSearch={deleteASavedSearch}
+                            />
+                        );
+                    })}
+                </div>
+            );
         } else if (fetchSearchesStatus === AsyncStatus.ERROR) {
             return (
                 <p>
@@ -56,23 +86,7 @@ const SavedSearches = (): JSX.Element => {
                 </p>
             );
         } else {
-            // TODO: change icon based on which search type
-            // TODO: exchange entity details with component for saved searches
-            return (
-                <div>
-                    {searches?.map((search) => {
-                        <EntityDetails
-                            key={search.id}
-                            headerText={search.name}
-                            icon={<></>}
-                            description={search.description}
-                            onClick={(): void => {
-                                // TODO: routing for saved searches
-                            }}
-                        />;
-                    })}
-                </div>
-            );
+            return <SkeletonLoadingPage />;
         }
     };
 

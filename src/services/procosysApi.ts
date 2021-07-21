@@ -126,6 +126,15 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
         return data;
     };
 
+    const deleteSavedSearch = async (
+        plantId: string,
+        savedSearchId: number
+    ): Promise<void> => {
+        await axios.delete(
+            `Search?plantId=PCS$${plantId}&savedSearchId=${savedSearchId}${apiVersion}`
+        );
+    };
+
     const getEntityDetails = async (
         plantId: string,
         searchType: string,
@@ -498,6 +507,7 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
         getEntityDetails,
         getPersonsByName,
         getSavedSearches,
+        deleteSavedSearch,
     };
 };
 
