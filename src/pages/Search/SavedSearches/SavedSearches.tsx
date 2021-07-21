@@ -6,6 +6,11 @@ import useCommonHooks from '../../../utils/useCommonHooks';
 import { CollapsibleCard } from '@equinor/procosys-webapp-components';
 import SkeletonLoadingPage from '../../../components/loading/SkeletonLoader';
 import SavedSearchResult from './SavedSearchResult';
+import styled from 'styled-components';
+
+const SavedSearchesWrapper = styled.div`
+    margin: 16px 0;
+`;
 
 type SavedSearchesProps = {
     setSnackbarText: React.Dispatch<React.SetStateAction<string>>;
@@ -92,9 +97,11 @@ const SavedSearches = ({
 
     // TODO: add space before the collaprible card starts. See WorkOrderInfo or TagInfo page
     return (
-        <CollapsibleCard cardTitle="Saved Searches">
-            {determineContent()}
-        </CollapsibleCard>
+        <SavedSearchesWrapper>
+            <CollapsibleCard cardTitle="Saved Searches">
+                {determineContent()}
+            </CollapsibleCard>
+        </SavedSearchesWrapper>
     );
 };
 

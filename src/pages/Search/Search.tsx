@@ -9,6 +9,11 @@ import useSnackbar from '../../utils/useSnackbar';
 
 const SearchPageWrapper = styled.main`
     padding: 0 4%;
+    margin: 0;
+    & > p {
+        margin: 0;
+        padding: 16px 0;
+    }
 `;
 
 const ButtonsWrapper = styled.div`
@@ -38,40 +43,38 @@ const Search = (): JSX.Element => {
     };
 
     return (
-        <>
+        <SearchPageWrapper>
             <Navbar
                 leftContent={{
                     name: 'hamburger',
                 }}
             />
-            <SearchPageWrapper>
-                <p>Search for</p>
-                <ButtonsWrapper>
-                    <SearchTypeButton
-                        searchType={SearchType.PO}
-                        currentSearchType={searchType}
-                        setCurrentSearchType={setSearchType}
-                    />
-                    <SearchTypeButton
-                        searchType={SearchType.MC}
-                        currentSearchType={searchType}
-                        setCurrentSearchType={setSearchType}
-                    />
-                    <SearchTypeButton
-                        searchType={SearchType.WO}
-                        currentSearchType={searchType}
-                        setCurrentSearchType={setSearchType}
-                    />
-                    <SearchTypeButton
-                        searchType={SearchType.Tag}
-                        currentSearchType={searchType}
-                        setCurrentSearchType={setSearchType}
-                    />
-                </ButtonsWrapper>
-                {determineComponent()}
-                {snackbar}
-            </SearchPageWrapper>
-        </>
+            <p>Search for</p>
+            <ButtonsWrapper>
+                <SearchTypeButton
+                    searchType={SearchType.PO}
+                    currentSearchType={searchType}
+                    setCurrentSearchType={setSearchType}
+                />
+                <SearchTypeButton
+                    searchType={SearchType.MC}
+                    currentSearchType={searchType}
+                    setCurrentSearchType={setSearchType}
+                />
+                <SearchTypeButton
+                    searchType={SearchType.WO}
+                    currentSearchType={searchType}
+                    setCurrentSearchType={setSearchType}
+                />
+                <SearchTypeButton
+                    searchType={SearchType.Tag}
+                    currentSearchType={searchType}
+                    setCurrentSearchType={setSearchType}
+                />
+            </ButtonsWrapper>
+            {determineComponent()}
+            {snackbar}
+        </SearchPageWrapper>
     );
 };
 
