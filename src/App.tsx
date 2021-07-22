@@ -12,6 +12,7 @@ import {
 } from '@microsoft/applicationinsights-react-js';
 import { SearchType } from './pages/Search/Search';
 import { ProcosysApiSettings } from './services/appConfiguration';
+import { SavedSearchType } from './pages/Search/SavedSearches/SavedSearchResult';
 
 export type McParams = {
     plant: string;
@@ -20,7 +21,7 @@ export type McParams = {
     punchItemId: string;
     searchType: SearchType;
     entityId: string;
-    savedSearchType: 'checklist' | 'punch-item';
+    savedSearchType: SavedSearchType;
     savedSearchId: string;
 };
 

@@ -3,7 +3,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { IconWrapper } from '../../../components/detailCards/EntityDetails';
 import EdsIcon from '../../../components/icons/EdsIcon';
-import { SavedSearch, SavedSearchType } from '../../../services/apiTypes';
+import { SavedSearch, ApiSavedSearchType } from '../../../services/apiTypes';
 import { Caption, COLORS } from '../../../style/GlobalStyles';
 import useCommonHooks from '../../../utils/useCommonHooks';
 
@@ -36,6 +36,11 @@ const DeleteButtonWrapper = styled.div`
     margin-left: 16px;
 `;
 
+export enum SavedSearchType {
+    CHECKLIST = 'checklist',
+    PUNCH = 'punch',
+}
+
 type SavedSearchProps = {
     search: SavedSearch;
     deleteSavedSearch: (id: number) => void;
@@ -48,7 +53,7 @@ const SavedSearchResult = ({
     const { history, url } = useCommonHooks();
 
     const determineIcon = (): JSX.Element => {
-        if (search.type === SavedSearchType.CHECKLIST) {
+        if (search.type === ApiSavedSearchType.CHECKLIST) {
             return <EdsIcon name="playlist_added" />;
         } else {
             return <EdsIcon name="warning_outlined" />;
@@ -61,9 +66,9 @@ const SavedSearchResult = ({
             onClick={(): void =>
                 history.push(
                     `${url}/saved-search/${
-                        search.type === SavedSearchType.CHECKLIST
+                        search.type === ApiSavedSearchType.CHECKLIST
                             ? 'checklist'
-                            : 'punch-item'
+                            : 'punch'
                     }/${search.id}`
                 )
             }

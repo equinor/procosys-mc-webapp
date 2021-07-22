@@ -14,7 +14,7 @@ import {
     TagPreview,
     PoPreview,
     SavedSearch,
-    SavedSearchType,
+    ApiSavedSearchType,
 } from '../services/apiTypes';
 
 type DummyMetatableData = {
@@ -173,7 +173,7 @@ export const testSavedSearch: SavedSearch[] = [
         id: 1,
         name: 'Test checklist saved search title',
         description: 'Test checklist saved search description',
-        type: SavedSearchType.CHECKLIST,
+        type: ApiSavedSearchType.CHECKLIST,
     },
 ];
 

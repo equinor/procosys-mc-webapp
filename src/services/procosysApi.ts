@@ -4,12 +4,14 @@ import {
     UpdatePunchData,
     UpdatePunchEndpoint,
 } from '../pages/Punch/ClearPunch/useClearPunchFacade';
+import { SavedSearchType } from '../pages/Search/SavedSearches/SavedSearchResult';
 import { SearchType } from '../pages/Search/Search';
 import {
     isArrayofPerson,
     isArrayOfType,
     isChecklistResponse,
     isCorrectDetails,
+    isCorrectSavedSearchResults,
     isOfType,
 } from './apiTypeGuards';
 import {
@@ -33,6 +35,8 @@ import {
     WoPreview,
     PoPreview,
     SavedSearch,
+    PunchItemSavedSearch,
+    ChecklistSavedSearch,
 } from './apiTypes';
 
 type ProcosysApiServiceProps = {
@@ -133,6 +137,29 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
         await axios.delete(
             `Search?plantId=PCS$${plantId}&savedSearchId=${savedSearchId}${apiVersion}`
         );
+    };
+
+    const getSavedSearchResults = async (
+        plantId: string,
+        savedSearchId: string,
+        savedSearchType: string,
+        cancelToken: CancelToken
+    ): Promise<PunchItemSavedSearch[] | ChecklistSavedSearch[]> => {
+        let url = '';
+        if (savedSearchType === SavedSearchType.CHECKLIST) {
+            url = `CheckList/Search?plantId=PCS$${plantId}&savedSearchId=${savedSearchId}${apiVersion}`;
+        } else if (savedSearchType === SavedSearchType.PUNCH) {
+            url = `PunchListItem/Search?plantId=PCS$${plantId}&savedSearchId=${savedSearchId}${apiVersion}`;
+        } else {
+            throw new Error('The current saved search type is not supported.');
+        }
+        const { data } = await axios.get(url, {
+            cancelToken,
+        });
+        if (!isCorrectSavedSearchResults(data, savedSearchType)) {
+            throw new Error(typeGuardErrorMessage('saved search results'));
+        }
+        return data;
     };
 
     const getEntityDetails = async (

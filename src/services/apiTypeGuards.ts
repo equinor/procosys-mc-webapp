@@ -1,13 +1,16 @@
+import { SavedSearchType } from '../pages/Search/SavedSearches/SavedSearchResult';
 import { SearchType } from '../pages/Search/Search';
 import {
     CheckItem,
     ChecklistDetails,
     ChecklistResponse,
+    ChecklistSavedSearch,
     CustomCheckItem,
     LoopTag,
     McPkgPreview,
     Person,
     PoPreview,
+    PunchItemSavedSearch,
     Tag,
     WoPreview,
 } from './apiTypes';
@@ -36,10 +39,24 @@ export const isArrayOfType = <T>(
     );
 };
 
+// SAVED SEARCH
+export const isCorrectSavedSearchResults = (
+    data: unknown,
+    savedSearchType: string
+): data is ChecklistSavedSearch[] | PunchItemSavedSearch[] => {
+    if (savedSearchType === SavedSearchType.CHECKLIST) {
+        return isArrayOfType<ChecklistSavedSearch>(data, 'projectDescription');
+    } else if (savedSearchType === SavedSearchType.PUNCH) {
+        return isArrayOfType<PunchItemSavedSearch>(data, 'isCleared');
+    } else {
+        return false;
+    }
+};
+
 // SCOPE
 export const isCorrectDetails = (
     data: unknown,
-    searchType: SearchType
+    searchType: string
 ): data is McPkgPreview | WoPreview | Tag => {
     if (searchType === SearchType.MC) {
         return isOfType<McPkgPreview>(data, 'mcPkgNo');
