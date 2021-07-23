@@ -13,6 +13,14 @@ import { SavedSearchType } from '../Search/SavedSearches/SavedSearchResult';
 import AsyncPage from '../../components/AsyncPage';
 import { isArrayOfType } from '../../services/apiTypeGuards';
 import { InfoItem } from '@equinor/procosys-webapp-components';
+import styled from 'styled-components';
+import { DotProgress } from '@equinor/eds-core-react';
+import { COLORS } from '../../style/GlobalStyles';
+
+const DetailsWrapper = styled.p`
+    padding: 12px;
+    background-color: ${COLORS.fadedBlue};
+`;
 
 const SavedSearchPage = (): JSX.Element => {
     const { url, params, api, history } = useCommonHooks();
@@ -59,22 +67,24 @@ const SavedSearchPage = (): JSX.Element => {
     }, [params]);
 
     const determineDetails = (): JSX.Element => {
-        // TODO: return based on asyncstatus and whether or not details exists
-        if (
-            fetchResultsStatus === AsyncStatus.ERROR ||
-            savedSearch === undefined
-        ) {
-            // TODO: how is error shown in other detail cards??
-            return <></>;
+        if (fetchResultsStatus === AsyncStatus.LOADING) {
+            return (
+                <DetailsWrapper>
+                    <DotProgress color="primary" />
+                </DetailsWrapper>
+            );
         } else if (
-            fetchResultsStatus === AsyncStatus.SUCCESS ||
-            fetchResultsStatus === AsyncStatus.EMPTY_RESPONSE
+            (fetchResultsStatus === AsyncStatus.SUCCESS ||
+                fetchResultsStatus === AsyncStatus.EMPTY_RESPONSE) &&
+            savedSearch != undefined
         ) {
-            // TODO: return the details card. Check how they are styled elsewhere
-            return <></>;
+            return <DetailsWrapper>{savedSearch.name}</DetailsWrapper>;
         } else {
-            // TODO: return loading things used in other detail cards. Dot progress??
-            return <></>;
+            return (
+                <DetailsWrapper>
+                    Unable to load title. Please reload
+                </DetailsWrapper>
+            );
         }
     };
 
@@ -108,10 +118,33 @@ const SavedSearchPage = (): JSX.Element => {
                     ))}
                 </div>
             );
-        } else if (params.savedSearchType === SavedSearchType.PUNCH) {
-            return <></>;
+        } else if (
+            params.savedSearchType === SavedSearchType.PUNCH &&
+            isArrayOfType<PunchItemSavedSearchResult>(results, 'isCleared')
+        ) {
+            return (
+                <div>
+                    {results.map((punch) => (
+                        <InfoItem
+                            key={punch.id}
+                            status={punch.status}
+                            statusLetters={[
+                                punch.isCleared ? 'C' : null,
+                                punch.isVerified ? 'V' : null,
+                            ]}
+                            attachments={punch.attachmentCount}
+                            headerText={punch.id.toString()}
+                            description={punch.description}
+                            chips={[punch.formularType, punch.responsibleCode]}
+                            tag={punch.tagNo}
+                            onClick={(): void =>
+                                history.push(`${url}/punch-item/${punch.id}`)
+                            }
+                        />
+                    ))}
+                </div>
+            );
         } else {
-            // TODO: return some kind of message about only cheklist and punch item being the only supported types
             return <></>;
         }
     };

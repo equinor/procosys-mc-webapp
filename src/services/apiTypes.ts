@@ -102,7 +102,7 @@ export interface ChecklistSavedSearchResult {
 
 export interface PunchItemSavedSearchResult {
     id: number;
-    status: string;
+    status: CompletionStatus;
     description: string;
     tagNo: string;
     tagId: number;
