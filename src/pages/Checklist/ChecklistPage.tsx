@@ -93,7 +93,7 @@ const ChecklistPage = (): JSX.Element => {
                     chips={[
                         details.checkList.mcPkgNo,
                         details.checkList.formularType,
-                    ]}
+                    ].filter((x) => x != null)}
                     attachments={details.checkList.attachmentCount}
                 />
             );
