@@ -5,13 +5,12 @@ import GeneralRouter from './GeneralRouter';
 import ErrorBoundary from './components/error/ErrorBoundary';
 import { IAuthService } from './services/authService';
 import { ProcosysApiService } from './services/procosysApi';
-import { ApplicationInsights } from '@microsoft/applicationinsights-web';
 import {
     AppInsightsContext,
     ReactPlugin,
 } from '@microsoft/applicationinsights-react-js';
 import { SearchType } from './pages/Search/Search';
-import { ProcosysApiSettings } from './services/appConfiguration';
+import { AppConfig } from './services/appConfiguration';
 
 export type McParams = {
     plant: string;
@@ -26,13 +25,13 @@ type AppProps = {
     authInstance: IAuthService;
     procosysApiInstance: ProcosysApiService;
     appInsightsReactPlugin: ReactPlugin;
-    procosysApiSettings: ProcosysApiSettings;
+    appConfig: AppConfig;
 };
 
 const App = ({
     procosysApiInstance,
     authInstance,
-    procosysApiSettings,
+    appConfig,
     appInsightsReactPlugin: reactPlugin,
 }: AppProps): JSX.Element => {
     let rootDirectory = '';
@@ -45,7 +44,7 @@ const App = ({
             <McAppContextProvider
                 api={procosysApiInstance}
                 auth={authInstance}
-                procosysApiSettings={procosysApiSettings}
+                appConfig={appConfig}
             >
                 <Router basename={rootDirectory}>
                     <ErrorBoundary>

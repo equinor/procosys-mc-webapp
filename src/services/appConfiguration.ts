@@ -15,6 +15,11 @@ export type ProcosysApiSettings = {
     scope: string[];
 };
 
+type OcrSettings = {
+    url: string;
+    subscriptionKey: string;
+};
+
 type AppInsightsConfig = {
     instrumentationKey: string;
 };
@@ -27,11 +32,14 @@ type AuthConfigResponse = {
     configurationEndpoint: string;
 };
 
+export type AppConfig = {
+    procosysWebApi: ProcosysApiSettings;
+    appInsights: AppInsightsConfig;
+    ocr: OcrSettings;
+};
+
 type AppConfigResponse = {
-    configuration: {
-        procosysWebApi: ProcosysApiSettings;
-        appInsights: AppInsightsConfig;
-    };
+    configuration: AppConfig;
 };
 
 export const getAuthConfig = async () => {
@@ -64,9 +72,7 @@ export const getAppConfig = async (endpoint: string, accessToken: string) => {
             Authorization: 'Bearer ' + accessToken,
         },
     });
-    const procosysApiConfig = data.configuration
-        .procosysWebApi as ProcosysApiSettings;
-    const appInsightsConfig = data.configuration
-        .appInsights as AppInsightsConfig;
-    return { procosysApiConfig, appInsightsConfig };
+
+    const appConfig: AppConfig = data.configuration;
+    return { appConfig };
 };
