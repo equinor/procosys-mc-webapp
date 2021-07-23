@@ -95,7 +95,6 @@ const SavedSearches = ({
         }
     };
 
-    // TODO: add space before the collaprible card starts. See WorkOrderInfo or TagInfo page
     return (
         <SavedSearchesWrapper>
             <CollapsibleCard cardTitle="Saved Searches">
