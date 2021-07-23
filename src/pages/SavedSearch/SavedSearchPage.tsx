@@ -20,6 +20,11 @@ import { COLORS } from '../../style/GlobalStyles';
 const DetailsWrapper = styled.p`
     padding: 12px;
     background-color: ${COLORS.fadedBlue};
+    margin-top: 0;
+`;
+
+const ResultAmount = styled.h6`
+    margin: 0 4%;
 `;
 
 const SavedSearchPage = (): JSX.Element => {
@@ -168,7 +173,12 @@ const SavedSearchPage = (): JSX.Element => {
                 emptyContentMessage={'This search has no results.'}
                 fetchStatus={fetchResultsStatus}
             >
-                {determineContent()}
+                <div>
+                    <ResultAmount>
+                        Displaying {results?.length} search results
+                    </ResultAmount>
+                    {determineContent()}
+                </div>
             </AsyncPage>
         </main>
     );
