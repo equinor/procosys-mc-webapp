@@ -81,7 +81,7 @@ export interface SearchResults {
     items: McPkgPreview[] | WoPreview[] | TagPreview[] | PoPreview[];
 }
 
-export interface ChecklistSavedSearch {
+export interface ChecklistSavedSearchResult {
     id: number;
     tagNo: string;
     tagDescription: string;
@@ -100,7 +100,7 @@ export interface ChecklistSavedSearch {
     updatedByLastName: string;
 }
 
-export interface PunchItemSavedSearch {
+export interface PunchItemSavedSearchResult {
     id: number;
     status: string;
     description: string;

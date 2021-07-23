@@ -17,7 +17,9 @@ const McRouter = (): JSX.Element => {
                 <Route exact path={'/:plant'} component={SelectProject} />
                 <Route exact path={'/:plant/:project'} component={Search} />
                 <Route
-                    path={'/:plant/:project/saved-search/:savedSearchType'}
+                    path={
+                        '/:plant/:project/saved-search/:savedSearchType/:savedSearchId'
+                    }
                     component={SavedSearchRouter}
                 />
                 <Route

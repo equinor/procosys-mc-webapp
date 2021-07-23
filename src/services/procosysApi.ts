@@ -35,8 +35,8 @@ import {
     WoPreview,
     PoPreview,
     SavedSearch,
-    PunchItemSavedSearch,
-    ChecklistSavedSearch,
+    PunchItemSavedSearchResult,
+    ChecklistSavedSearchResult,
 } from './apiTypes';
 
 type ProcosysApiServiceProps = {
@@ -144,7 +144,7 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
         savedSearchId: string,
         savedSearchType: string,
         cancelToken: CancelToken
-    ): Promise<PunchItemSavedSearch[] | ChecklistSavedSearch[]> => {
+    ): Promise<PunchItemSavedSearchResult[] | ChecklistSavedSearchResult[]> => {
         let url = '';
         if (savedSearchType === SavedSearchType.CHECKLIST) {
             url = `CheckList/Search?plantId=PCS$${plantId}&savedSearchId=${savedSearchId}${apiVersion}`;
@@ -535,6 +535,7 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
         getPersonsByName,
         getSavedSearches,
         deleteSavedSearch,
+        getSavedSearchResults,
     };
 };
 

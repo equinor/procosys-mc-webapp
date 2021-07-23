@@ -4,13 +4,13 @@ import {
     CheckItem,
     ChecklistDetails,
     ChecklistResponse,
-    ChecklistSavedSearch,
+    ChecklistSavedSearchResult,
     CustomCheckItem,
     LoopTag,
     McPkgPreview,
     Person,
     PoPreview,
-    PunchItemSavedSearch,
+    PunchItemSavedSearchResult,
     Tag,
     WoPreview,
 } from './apiTypes';
@@ -43,11 +43,14 @@ export const isArrayOfType = <T>(
 export const isCorrectSavedSearchResults = (
     data: unknown,
     savedSearchType: string
-): data is ChecklistSavedSearch[] | PunchItemSavedSearch[] => {
+): data is ChecklistSavedSearchResult[] | PunchItemSavedSearchResult[] => {
     if (savedSearchType === SavedSearchType.CHECKLIST) {
-        return isArrayOfType<ChecklistSavedSearch>(data, 'projectDescription');
+        return isArrayOfType<ChecklistSavedSearchResult>(
+            data,
+            'projectDescription'
+        );
     } else if (savedSearchType === SavedSearchType.PUNCH) {
-        return isArrayOfType<PunchItemSavedSearch>(data, 'isCleared');
+        return isArrayOfType<PunchItemSavedSearchResult>(data, 'isCleared');
     } else {
         return false;
     }
