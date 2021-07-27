@@ -7,9 +7,20 @@ import { CollapsibleCard } from '@equinor/procosys-webapp-components';
 import SkeletonLoadingPage from '../../../components/loading/SkeletonLoader';
 import SavedSearchResult from './SavedSearchResult';
 import styled from 'styled-components';
+import { Button, Scrim } from '@equinor/eds-core-react';
+import { COLORS, SHADOW } from '../../../style/GlobalStyles';
 
 const SavedSearchesWrapper = styled.div`
     margin: 16px 0;
+`;
+const DeletionPopup = styled.div`
+    border-radius: 5px;
+    background-color: ${COLORS.white};
+    padding: 15px;
+    box-shadow: ${SHADOW};
+    & > :last-child {
+        margin-left: 15px;
+    }
 `;
 
 type SavedSearchesProps = {
@@ -19,11 +30,15 @@ type SavedSearchesProps = {
 const SavedSearches = ({
     setSnackbarText,
 }: SavedSearchesProps): JSX.Element => {
+    const { params, api } = useCommonHooks();
     const [searches, setSearches] = useState<SavedSearch[]>([]);
     const [fetchSearchesStatus, setFetchSearchesStatus] = useState(
         AsyncStatus.LOADING
     );
-    const { params, api } = useCommonHooks();
+    const [searchToBeDeleted, setSearchToBeDeleted] = useState<number>(0);
+    const [deleteSearchStatus, setDeleteSearchStatus] = useState<AsyncStatus>(
+        AsyncStatus.SUCCESS
+    );
 
     useEffect(() => {
         const source = Axios.CancelToken.source();
@@ -49,13 +64,17 @@ const SavedSearches = ({
     }, [params.plant]);
 
     const deleteASavedSearch = async (id: number): Promise<void> => {
+        setDeleteSearchStatus(AsyncStatus.LOADING);
         try {
             await api.deleteSavedSearch(params.plant, id);
             setSearches((prevSearches) =>
                 prevSearches.filter((search) => search.id != id)
             );
-        } catch (error) {
-            setSnackbarText(error.toString());
+            setSearchToBeDeleted(0);
+            setDeleteSearchStatus(AsyncStatus.SUCCESS);
+        } catch {
+            setSnackbarText('Unable to delete the search');
+            setDeleteSearchStatus(AsyncStatus.ERROR);
         }
     };
 
@@ -71,7 +90,8 @@ const SavedSearches = ({
                             <SavedSearchResult
                                 key={search.id}
                                 search={search}
-                                deleteSavedSearch={deleteASavedSearch}
+                                deleteSavedSearch={setSearchToBeDeleted}
+                                deleteSavedSearchStatus={deleteSearchStatus}
                             />
                         );
                     })}
@@ -102,6 +122,33 @@ const SavedSearches = ({
             <CollapsibleCard cardTitle="Saved Searches">
                 {determineContent()}
             </CollapsibleCard>
+            {searchToBeDeleted ? (
+                <Scrim
+                    isDismissable
+                    onClose={(): void => setSearchToBeDeleted(0)}
+                >
+                    <DeletionPopup>
+                        <p>Really delete this item?</p>
+                        <Button
+                            variant={'outlined'}
+                            onClick={(): void => setSearchToBeDeleted(0)}
+                        >
+                            Cancel
+                        </Button>
+                        <Button
+                            color={'danger'}
+                            disabled={
+                                deleteSearchStatus === AsyncStatus.LOADING
+                            }
+                            onClick={async (): Promise<void> =>
+                                deleteASavedSearch(searchToBeDeleted)
+                            }
+                        >
+                            Delete
+                        </Button>
+                    </DeletionPopup>
+                </Scrim>
+            ) : null}
         </SavedSearchesWrapper>
     );
 };

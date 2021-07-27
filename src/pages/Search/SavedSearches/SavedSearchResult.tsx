@@ -1,7 +1,9 @@
+import { Button } from '@equinor/eds-core-react';
 import React from 'react';
 import styled from 'styled-components';
 import { IconWrapper } from '../../../components/detailCards/EntityDetails';
 import EdsIcon from '../../../components/icons/EdsIcon';
+import { AsyncStatus } from '../../../contexts/McAppContext';
 import { SavedSearch, ApiSavedSearchType } from '../../../services/apiTypes';
 import { Caption, COLORS } from '../../../style/GlobalStyles';
 import useCommonHooks from '../../../utils/useCommonHooks';
@@ -30,9 +32,11 @@ const ContentWrapper = styled.div`
     }
 `;
 
-const DeleteButtonWrapper = styled.div`
-    padding-top: 3px;
-    margin-left: 16px;
+const DeleteButton = styled(Button)`
+    padding: 3px 0 0 0;
+    margin: 0 0 0 16px;
+    width: 24px;
+    height: 24px;
 `;
 
 export enum SavedSearchType {
@@ -42,12 +46,14 @@ export enum SavedSearchType {
 
 type SavedSearchProps = {
     search: SavedSearch;
-    deleteSavedSearch: (id: number) => void;
+    deleteSavedSearch: React.Dispatch<React.SetStateAction<number>>;
+    deleteSavedSearchStatus: AsyncStatus;
 };
 
 const SavedSearchResult = ({
     search,
     deleteSavedSearch,
+    deleteSavedSearchStatus,
 }: SavedSearchProps): JSX.Element => {
     const { history, url } = useCommonHooks();
 
@@ -77,16 +83,17 @@ const SavedSearchResult = ({
                 <h6>{search.name}</h6>
                 <Caption>{search.description}</Caption>
             </ContentWrapper>
-            <DeleteButtonWrapper
-                role="button"
+            <DeleteButton
                 aria-label="Delete saved search"
                 onClick={(e): void => {
                     e.stopPropagation();
                     deleteSavedSearch(search.id);
                 }}
+                variant="ghost_icon"
+                disabled={deleteSavedSearchStatus === AsyncStatus.LOADING}
             >
-                <EdsIcon name="delete_forever" color={COLORS.mossGreen} />
-            </DeleteButtonWrapper>
+                <EdsIcon name="delete_forever" color={COLORS.danger} />
+            </DeleteButton>
         </SavedSearchWrapper>
     );
 };
