@@ -51,7 +51,9 @@ const SavedSearches = ({
     const deleteASavedSearch = async (id: number): Promise<void> => {
         try {
             await api.deleteSavedSearch(params.plant, id);
-            setSearches(searches.filter((search) => search.id != id));
+            setSearches((prevSearches) =>
+                prevSearches.filter((search) => search.id != id)
+            );
         } catch (error) {
             setSnackbarText(error.toString());
         }

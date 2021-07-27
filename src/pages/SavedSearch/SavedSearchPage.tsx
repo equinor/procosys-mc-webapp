@@ -3,6 +3,7 @@ import Axios from 'axios';
 import Navbar from '../../components/navigation/Navbar';
 import { AsyncStatus } from '../../contexts/McAppContext';
 import {
+    ApiSavedSearchType,
     ChecklistSavedSearchResult,
     PunchItemSavedSearchResult,
     SavedSearch,
@@ -16,11 +17,13 @@ import { InfoItem } from '@equinor/procosys-webapp-components';
 import styled from 'styled-components';
 import { DotProgress } from '@equinor/eds-core-react';
 import { COLORS } from '../../style/GlobalStyles';
+import PageHeader from '../../components/PageHeader';
 
-const DetailsWrapper = styled.p`
-    padding: 12px;
-    background-color: ${COLORS.fadedBlue};
-    margin-top: 0;
+const DetailsWrapper = styled.div`
+    padding: 0 4%;
+    & > p {
+        padding: 12px 0;
+    }
 `;
 
 const ResultAmount = styled.h6`
@@ -72,22 +75,23 @@ const SavedSearchPage = (): JSX.Element => {
     }, [params]);
 
     const determineDetails = (): JSX.Element => {
-        if (fetchResultsStatus === AsyncStatus.LOADING) {
-            return (
-                <DetailsWrapper>
-                    <DotProgress color="primary" />
-                </DetailsWrapper>
-            );
-        } else if (
+        if (
             (fetchResultsStatus === AsyncStatus.SUCCESS ||
                 fetchResultsStatus === AsyncStatus.EMPTY_RESPONSE) &&
             savedSearch != undefined
         ) {
-            return <DetailsWrapper>{savedSearch.name}</DetailsWrapper>;
+            return (
+                <DetailsWrapper>
+                    <PageHeader
+                        title="Saved search"
+                        subtitle={savedSearch.name}
+                    />
+                </DetailsWrapper>
+            );
         } else {
             return (
                 <DetailsWrapper>
-                    Unable to load title. Please reload
+                    <p>Unable to load title. Please reload</p>
                 </DetailsWrapper>
             );
         }
@@ -163,9 +167,7 @@ const SavedSearchPage = (): JSX.Element => {
                     label: 'Back',
                     url: `${removeSubdirectories(url, 3)}`,
                 }}
-                midContent={`Saved ${params.savedSearchType} search`}
             />
-            {determineDetails()}
             <AsyncPage
                 errorMessage={
                     'Unable to load the search results. Please try again.'
@@ -174,6 +176,7 @@ const SavedSearchPage = (): JSX.Element => {
                 fetchStatus={fetchResultsStatus}
             >
                 <div>
+                    {determineDetails()}
                     <ResultAmount>
                         Displaying {results?.length} search results
                     </ResultAmount>
