@@ -3,7 +3,6 @@ import Axios from 'axios';
 import Navbar from '../../components/navigation/Navbar';
 import { AsyncStatus } from '../../contexts/McAppContext';
 import {
-    ApiSavedSearchType,
     ChecklistSavedSearchResult,
     PunchItemSavedSearchResult,
     SavedSearch,
@@ -15,8 +14,6 @@ import AsyncPage from '../../components/AsyncPage';
 import { isArrayOfType } from '../../services/apiTypeGuards';
 import { InfoItem } from '@equinor/procosys-webapp-components';
 import styled from 'styled-components';
-import { DotProgress } from '@equinor/eds-core-react';
-import { COLORS } from '../../style/GlobalStyles';
 import PageHeader from '../../components/PageHeader';
 
 const DetailsWrapper = styled.div`
