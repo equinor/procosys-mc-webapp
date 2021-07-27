@@ -143,6 +143,7 @@ const SavedSearches = ({
                             onClick={async (): Promise<void> =>
                                 deleteASavedSearch(searchToBeDeleted)
                             }
+                            aria-label="Delete"
                         >
                             Delete
                         </Button>

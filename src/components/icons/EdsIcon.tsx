@@ -41,7 +41,6 @@ import {
     assignment_turned_in,
     attachment,
     attach_file,
-    delete_forever,
 } from '@equinor/eds-icons';
 import { Icon } from '@equinor/eds-core-react';
 import React from 'react';
@@ -89,7 +88,6 @@ Icon.add({
     check,
     attachment,
     attach_file,
-    delete_forever,
 });
 
 type IconProps = {

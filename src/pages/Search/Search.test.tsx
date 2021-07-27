@@ -132,6 +132,11 @@ describe('<Search/> successes', () => {
         });
         expect(deleteButton).toBeInTheDocument();
         userEvent.click(deleteButton);
+        const deleteButton2 = await screen.findByRole('button', {
+            name: 'Delete',
+        });
+        expect(deleteButton2).toBeInTheDocument;
+        userEvent.click(deleteButton2);
         await waitFor(() =>
             expect(
                 screen.queryByText(testSavedSearch[0].name)

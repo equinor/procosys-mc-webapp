@@ -92,7 +92,7 @@ const SavedSearchResult = ({
                 variant="ghost_icon"
                 disabled={deleteSavedSearchStatus === AsyncStatus.LOADING}
             >
-                <EdsIcon name="delete_forever" color={COLORS.danger} />
+                <EdsIcon name="delete_to_trash" color={COLORS.danger} />
             </DeleteButton>
         </SavedSearchWrapper>
     );
