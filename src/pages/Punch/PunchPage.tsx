@@ -18,6 +18,7 @@ import { InfoItem } from '@equinor/procosys-webapp-components';
 import { DetailsWrapper } from '../Entity/EntityPage';
 import { DotProgress } from '@equinor/eds-core-react';
 import AsyncPage from '../../components/AsyncPage';
+import TagInfo from '../../components/TagInfo';
 
 const PunchPage = (): JSX.Element => {
     const { api, params, path, history, url } = useCommonHooks();
@@ -115,7 +116,9 @@ const PunchPage = (): JSX.Element => {
                     <Route
                         exact
                         path={`${path}/tag-info`}
-                        render={(): JSX.Element => <h1>tag info</h1>}
+                        render={(): JSX.Element => (
+                            <TagInfo tagId={punch?.tagId} />
+                        )}
                     />
                     <Route
                         exact
@@ -139,7 +142,7 @@ const PunchPage = (): JSX.Element => {
                 <FooterButton
                     active={history.location.pathname.includes('/tag-info')}
                     goTo={(): void => history.push(`${url}/tag-info`)}
-                    icon={<EdsIcon name="info_circle" />}
+                    icon={<EdsIcon name="tag" />}
                     label={'Tag info'}
                 />
             </NavigationFooter>
@@ -152,4 +155,5 @@ export default withAccessControl(PunchPage, [
     'PUNCHLISTITEM/WRITE',
     'PUNCHLISTITEM/CLEAR',
     'PUNCHLISTITEM/VERIFY',
+    'TAG/READ',
 ]);
