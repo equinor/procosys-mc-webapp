@@ -1,10 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { AsyncStatus } from '../../../contexts/McAppContext';
-import { ChecklistPreview } from '../../../services/apiTypes';
+import { ChecklistPreview, PunchPreview } from '../../../services/apiTypes';
 import useCommonHooks from '../../../utils/useCommonHooks';
 import AsyncPage from '../../../components/AsyncPage';
 import { InfoItem } from '@equinor/procosys-webapp-components';
+import useFilterFacade from '../useFilterFacade';
+import Filter from '../Filter';
 
 export const ScopeWrapper = styled.div`
     & h3 {
@@ -20,6 +22,10 @@ type ScopeProps = {
 
 const Scope = ({ scope, fetchScopeStatus }: ScopeProps): JSX.Element => {
     const { url, history } = useCommonHooks();
+    const [filterCount, setFilterCount] = useState<number>(0);
+    const [shownScope, setShownScope] = useState<
+        ChecklistPreview[] | PunchPreview[] | undefined
+    >(scope);
 
     return (
         <ScopeWrapper>
@@ -29,6 +35,11 @@ const Scope = ({ scope, fetchScopeStatus }: ScopeProps): JSX.Element => {
                 fetchStatus={fetchScopeStatus}
             >
                 <div>
+                    <Filter
+                        setFilterCount={setFilterCount}
+                        setShownItems={setShownScope}
+                        allItems={scope}
+                    />
                     {scope?.map((checklist) => (
                         <InfoItem
                             isScope
