@@ -93,7 +93,7 @@ const ChecklistPage = (): JSX.Element => {
                     chips={[
                         details.checkList.mcPkgNo,
                         details.checkList.formularType,
-                    ]}
+                    ].filter((x) => x != null)}
                     attachments={details.checkList.attachmentCount}
                 />
             );
@@ -170,7 +170,10 @@ const ChecklistPage = (): JSX.Element => {
                     name: 'back',
                     label: 'Back',
                     url: history.location.pathname.includes('/new-punch')
-                        ? `/${params.plant}/${params.project}/${params.searchType}/${params.entityId}/checklist/${params.checklistId}/punch-list`
+                        ? `${removeSubdirectories(
+                              history.location.pathname,
+                              1
+                          )}`
                         : `${removeSubdirectories(url, 2)}`,
                 }}
                 midContent={'MCCR'}
