@@ -133,27 +133,52 @@ const useFilterFacade = (
     }, [filter, allItems]);
 
     const handleStatusChange = (status: string): void => {
-        // TODO: handle status change
+        if (isPunchFilter) {
+            if (status === 'All') {
+                setFilter((prevFilter) => ({ ...prevFilter, status: [] }));
+            } else {
+                setFilter((prevFilter) => ({
+                    ...prevFilter,
+                    status: [status],
+                }));
+            }
+        } else {
+            if (filter.status.indexOf(status) === -1) {
+                setFilter((prevFilter) => ({
+                    ...prevFilter,
+                    status: [...prevFilter.status, status],
+                }));
+            } else {
+                setFilter((prevFilter) => ({
+                    ...prevFilter,
+                    status: prevFilter.status.filter((item) => {
+                        return item != status;
+                    }),
+                }));
+            }
+        }
     };
 
     const handleSignatureChange = (signature: string): void => {
         setFilter((prevFilter) => ({ ...prevFilter, signature }));
     };
 
-    // TODO: can I make a common handler for the two handlers below??
-
     const handleResponsibleChange = (
         e: React.ChangeEvent<HTMLSelectElement>
     ): void => {
-        console.log(e.target.value);
-        // TODO: change the status filter value
+        setFilter((prevFilter) => ({
+            ...prevFilter,
+            responsible: e.target.value,
+        }));
     };
 
     const handleFormTypeChange = (
         e: React.ChangeEvent<HTMLSelectElement>
     ): void => {
-        // TODO: change the status filter value
-        console.log(e.target.value);
+        setFilter((prevFilter) => ({
+            ...prevFilter,
+            formType: e.target.value,
+        }));
     };
 
     return {
