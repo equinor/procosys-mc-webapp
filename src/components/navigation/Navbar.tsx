@@ -32,6 +32,7 @@ const NavbarWrapper = styled.nav<{ noBorder: boolean }>`
         transform: scale(1.3);
     }
     & h4 {
+        text-align: center;
         margin: 0;
         position: absolute;
         left: 50%;

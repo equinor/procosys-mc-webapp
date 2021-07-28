@@ -1,7 +1,7 @@
 import React, { ChangeEvent, useEffect, useRef } from 'react';
 import { Search as SearchField } from '@equinor/eds-core-react';
 import useSearchPageFacade from '../useSearchPageFacade';
-import SearchResults from '../SearchResults/SearchResults';
+import SearchResults from './SearchResults';
 import { SearchType } from '../Search';
 import styled from 'styled-components';
 

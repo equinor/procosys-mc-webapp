@@ -13,6 +13,10 @@ import {
     WoPreview,
     TagPreview,
     PoPreview,
+    SavedSearch,
+    ApiSavedSearchType,
+    ChecklistSavedSearchResult,
+    PunchItemSavedSearchResult,
 } from '../services/apiTypes';
 
 type DummyMetatableData = {
@@ -165,6 +169,52 @@ export const testPoSearch: SearchResults = {
     maxAvailable: 1,
     items: testPoPreview,
 };
+
+export const testSavedSearch: SavedSearch[] = [
+    {
+        id: 1,
+        name: 'Test checklist saved search title',
+        description: 'Test checklist saved search description',
+        type: ApiSavedSearchType.CHECKLIST,
+    },
+];
+
+export const testChecklistSavedSearch: ChecklistSavedSearchResult[] = [
+    {
+        id: 1,
+        tagNo: 'test-checklist-saved-search-tagNo',
+        tagDescription: 'test checklist saved search tagDescription',
+        responsibleCode: 'test-checklist-saved-search-resp-code',
+        status: CompletionStatus.OK,
+        projectDescription: 'test checklist saved search project description',
+        formularType: 'BBA',
+        formularGroup: 'F19',
+        hasElectronicForm: true,
+        attachmentCount: 1,
+        isSigned: true,
+        isVerified: true,
+        updatedAt: new Date(),
+        updatedByUser: 'test',
+        updatedByFirstName: 'Jane',
+        updatedByLastName: 'Doe',
+    },
+];
+
+export const testPunchListItemSavedSearch: PunchItemSavedSearchResult[] = [
+    {
+        id: 1,
+        status: CompletionStatus.PA,
+        description: 'test punch list item saved search description',
+        tagNo: 'test-punch-item-saved-search-tagNo',
+        tagId: 1,
+        formularType: 'AAB',
+        responsibleCode: 'OK42',
+        isCleared: false,
+        isVerified: false,
+        statusControlledBySwcr: false,
+        attachmentCount: 2,
+    },
+];
 
 export const testScope: ChecklistPreview[] = [
     {

@@ -19,6 +19,19 @@ export interface Plant {
 }
 
 //SEARCH
+
+export enum ApiSavedSearchType {
+    CHECKLIST = 'Check Lists',
+    PUNCH = 'Punch List Items',
+}
+
+export interface SavedSearch {
+    id: number;
+    name: string;
+    description: string;
+    type: ApiSavedSearchType;
+}
+
 export interface McPkgPreview {
     id: number;
     mcPkgNo: string;
@@ -66,6 +79,39 @@ export interface PoPreview {
 export interface SearchResults {
     maxAvailable: number;
     items: McPkgPreview[] | WoPreview[] | TagPreview[] | PoPreview[];
+}
+
+export interface ChecklistSavedSearchResult {
+    id: number;
+    tagNo: string;
+    tagDescription: string;
+    responsibleCode: string;
+    status: CompletionStatus;
+    projectDescription: string;
+    formularType: string;
+    formularGroup: string;
+    hasElectronicForm: boolean;
+    attachmentCount: number;
+    isSigned: boolean;
+    isVerified: boolean;
+    updatedAt: Date;
+    updatedByUser: string;
+    updatedByFirstName: string;
+    updatedByLastName: string;
+}
+
+export interface PunchItemSavedSearchResult {
+    id: number;
+    status: CompletionStatus;
+    description: string;
+    tagNo: string;
+    tagId: number;
+    formularType: string;
+    responsibleCode: string;
+    isCleared: boolean;
+    isVerified: boolean;
+    statusControlledBySwcr: boolean;
+    attachmentCount: number;
 }
 
 // COMM PKG AND LISTS
