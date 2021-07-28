@@ -1,18 +1,18 @@
 import React from 'react';
 import { useEffect } from 'react';
 import { useState } from 'react';
+import { isArrayOfType } from '../../services/apiTypeGuards';
 import { ChecklistPreview, PunchPreview } from '../../services/apiTypes';
 
-// TODO: easier if they are strings that match the value??
-type StatusFilter = {
-    OS: boolean;
-    PA: boolean;
-    PB: boolean;
-    OK: boolean;
-};
+enum Signatures {
+    NOTCLEARED = 'Not cleared',
+    CLEARED = 'Cleared not verified',
+    NOTSIGNED = 'Not signed',
+    SIGNED = 'Signed not verified',
+}
 
 type Filter = {
-    status: StatusFilter;
+    status: string[];
     signature: string;
     responsible: string;
     formType: string;
@@ -24,19 +24,15 @@ const useFilterFacade = (
     setShownItems: React.Dispatch<
         React.SetStateAction<ChecklistPreview[] | PunchPreview[] | undefined>
     >,
-    allItems?: ChecklistPreview[] | PunchPreview[]
+    allItems?: ChecklistPreview[] | PunchPreview[],
+    isPunchFilter?: boolean
 ) => {
     const [filter, setFilter] = useState<Filter>({
-        status: {
-            OS: false,
-            PA: false,
-            PB: false,
-            OK: false,
-        },
+        status: [],
         signature: '',
         responsible: '',
         formType: '',
-    }); // TODO: make a empty filter const outside the component and use here??
+    });
     const [statuses, setStatuses] = useState<string[]>();
     const [responsibles, setResponsibles] = useState<string[]>();
     const [formTypes, setFormTypes] = useState<string[]>();
@@ -56,24 +52,92 @@ const useFilterFacade = (
         setFormTypes(Array.from(uniqueFormTypes));
     }, [allItems]);
 
-    // TODO: should this be a function the handler(s) call instead??
     useEffect(() => {
-        // TODO: filter based on the filter values
-        // TODO: set filter count
-    }, [filter]);
+        let filterCount = 0;
+        if (isArrayOfType<PunchPreview>(allItems, 'cleared')) {
+            let filtered = allItems;
+            if (filter.status.length > 0) {
+                filtered = filtered.filter((item) => {
+                    return filter.status.indexOf(item.status) != -1;
+                });
+                filterCount++;
+            }
+            switch (filter.signature) {
+                case Signatures.NOTCLEARED:
+                    filtered = filtered.filter((item) => {
+                        return !item.cleared;
+                    });
+                    filterCount++;
+                    break;
+                case Signatures.CLEARED:
+                    filtered = filtered.filter((item) => {
+                        return item.cleared && !item.verified;
+                    });
+                    filterCount++;
+                    break;
+                default:
+            }
+            if (filter.responsible) {
+                filtered = filtered.filter((item) => {
+                    return item.responsibleCode === filter.responsible;
+                });
+                filterCount++;
+            }
+            if (filter.formType) {
+                filtered = filtered.filter((item) => {
+                    return item.formularType === filter.formType;
+                });
+                filterCount++;
+            }
+            setShownItems(filtered);
+        } else if (isArrayOfType<ChecklistPreview>(allItems, 'isSigned')) {
+            let filtered = allItems;
+            if (filter.status.length > 0) {
+                filtered = filtered.filter((item) => {
+                    return filter.status.indexOf(item.status) != -1;
+                });
+                filterCount++;
+            }
+            switch (filter.signature) {
+                case Signatures.NOTSIGNED:
+                    filtered = filtered.filter((item) => {
+                        return !item.isSigned;
+                    });
+                    filterCount++;
+                    break;
+                case Signatures.SIGNED:
+                    filtered = filtered.filter((item) => {
+                        return item.isSigned && !item.isVerified;
+                    });
+                    filterCount++;
+                    break;
+                default:
+            }
+            if (filter.responsible) {
+                filtered = filtered.filter((item) => {
+                    return item.responsibleCode === filter.responsible;
+                });
+                filterCount++;
+            }
+            if (filter.formType) {
+                filtered = filtered.filter((item) => {
+                    return item.formularType === filter.formType;
+                });
+                filterCount++;
+            }
+            setShownItems(filtered);
+        } else {
+            return;
+        }
+        setFilterCount(filterCount);
+    }, [filter, allItems]);
 
-    const handleStatusChange = (
-        e: React.ChangeEvent<HTMLInputElement>
-    ): void => {
-        console.log(e.target.value);
-        // TODO: change the status filter value
+    const handleStatusChange = (status: string): void => {
+        // TODO: handle status change
     };
 
-    const handleSignatureChange = (
-        e: React.ChangeEvent<HTMLInputElement>
-    ): void => {
-        console.log(e.target.value);
-        // TODO: change the status filter value
+    const handleSignatureChange = (signature: string): void => {
+        setFilter((prevFilter) => ({ ...prevFilter, signature }));
     };
 
     // TODO: can I make a common handler for the two handlers below??

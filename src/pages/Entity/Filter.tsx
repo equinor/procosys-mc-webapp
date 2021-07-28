@@ -31,13 +31,12 @@ const Filter = ({
         if (url.includes('/punch-list')) {
             return <></>;
         } else {
-            // TODO: fix onChange to be just {handleStatusChange} if no other info needed
             return (
                 <div>
                     <Checkbox
-                        label="Test 1"
-                        onChange={(e: ChangeEvent<HTMLInputElement>): void => {
-                            handleStatusChange(e);
+                        label="PB"
+                        onChange={(): void => {
+                            handleStatusChange('PB');
                         }}
                     />
                 </div>
@@ -49,8 +48,18 @@ const Filter = ({
         <form>
             {determineStatusFieldToRender()}
             <div>
-                <Radio label="test 1" onChange={handleSignatureChange} />
-                <Radio label="test 2" onChange={handleSignatureChange} />
+                {
+                    // TODO: replace radio fields with proper fields
+                    // TODO: make all field default
+                }
+                <Radio
+                    label="test 1"
+                    onChange={(): void => handleSignatureChange('test1')}
+                />
+                <Radio
+                    label="test 2"
+                    onChange={(): void => handleSignatureChange('test2')}
+                />
             </div>
             <NativeSelect
                 id="ResponsibleSelect"
