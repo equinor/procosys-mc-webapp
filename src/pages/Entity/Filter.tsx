@@ -36,7 +36,26 @@ const Filter = ({
 
     const determineStatusFieldsToRender = (): JSX.Element => {
         if (url.includes('/punch-list')) {
-            return <></>;
+            return (
+                <div>
+                    <Radio
+                        label={'All'}
+                        onChange={(): void => handleSignatureChange('All')}
+                    />
+                    <Radio
+                        label={CompletionStatus.PA}
+                        onChange={(): void =>
+                            handleSignatureChange(CompletionStatus.PA)
+                        }
+                    />
+                    <Radio
+                        label={CompletionStatus.PB}
+                        onChange={(): void =>
+                            handleSignatureChange(CompletionStatus.PB)
+                        }
+                    />
+                </div>
+            );
         } else {
             return (
                 <div>
@@ -58,7 +77,22 @@ const Filter = ({
 
     const determineSignatureFieldsToRender = (): JSX.Element => {
         if (url.includes('/punch-list')) {
-            return <></>;
+            return (
+                <>
+                    <Radio
+                        label={Signatures.NOTCLEARED}
+                        onChange={(): void =>
+                            handleSignatureChange(Signatures.NOTCLEARED)
+                        }
+                    />
+                    <Radio
+                        label={Signatures.CLEARED}
+                        onChange={(): void =>
+                            handleSignatureChange(Signatures.CLEARED)
+                        }
+                    />
+                </>
+            );
         } else {
             return (
                 <>
