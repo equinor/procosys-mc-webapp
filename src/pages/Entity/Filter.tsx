@@ -1,7 +1,11 @@
-import React, { ChangeEvent } from 'react';
+import React from 'react';
 import { Checkbox, NativeSelect, Radio } from '@equinor/eds-core-react';
-import { ChecklistPreview, PunchPreview } from '../../services/apiTypes';
-import useFilterFacade from './useFilterFacade';
+import {
+    ChecklistPreview,
+    CompletionStatus,
+    PunchPreview,
+} from '../../services/apiTypes';
+import useFilterFacade, { Signatures } from './useFilterFacade';
 import useCommonHooks from '../../utils/useCommonHooks';
 
 type FilterProps = {
@@ -10,57 +14,80 @@ type FilterProps = {
         React.SetStateAction<ChecklistPreview[] | PunchPreview[] | undefined>
     >;
     allItems?: ChecklistPreview[] | PunchPreview[];
+    isPunchFilter?: boolean;
 };
 
 const Filter = ({
     setFilterCount,
     setShownItems,
     allItems,
+    isPunchFilter,
 }: FilterProps): JSX.Element => {
     const { url } = useCommonHooks();
     const {
+        statuses,
         responsibles,
         formTypes,
         handleStatusChange,
         handleSignatureChange,
         handleResponsibleChange,
         handleFormTypeChange,
-    } = useFilterFacade(setFilterCount, setShownItems, allItems);
+    } = useFilterFacade(setFilterCount, setShownItems, allItems, isPunchFilter);
 
-    const determineStatusFieldToRender = (): JSX.Element => {
+    const determineStatusFieldsToRender = (): JSX.Element => {
         if (url.includes('/punch-list')) {
             return <></>;
         } else {
             return (
                 <div>
-                    <Checkbox
-                        label="PB"
-                        onChange={(): void => {
-                            handleStatusChange('PB');
-                        }}
-                    />
+                    {statuses?.map((status) => {
+                        return (
+                            <Checkbox
+                                key={status}
+                                label={status}
+                                onChange={(): void => {
+                                    handleStatusChange(status);
+                                }}
+                            />
+                        );
+                    })}
                 </div>
+            );
+        }
+    };
+
+    const determineSignatureFieldsToRender = (): JSX.Element => {
+        if (url.includes('/punch-list')) {
+            return <></>;
+        } else {
+            return (
+                <>
+                    <Radio
+                        label={Signatures.NOTSIGNED}
+                        onChange={(): void =>
+                            handleSignatureChange(Signatures.NOTSIGNED)
+                        }
+                    />
+                    <Radio
+                        label={Signatures.SIGNED}
+                        onChange={(): void =>
+                            handleSignatureChange(Signatures.SIGNED)
+                        }
+                    />
+                </>
             );
         }
     };
 
     return (
         <form>
-            {determineStatusFieldToRender()}
-            <div>
-                {
-                    // TODO: replace radio fields with proper fields
-                    // TODO: make all field default
-                }
-                <Radio
-                    label="test 1"
-                    onChange={(): void => handleSignatureChange('test1')}
-                />
-                <Radio
-                    label="test 2"
-                    onChange={(): void => handleSignatureChange('test2')}
-                />
-            </div>
+            {determineStatusFieldsToRender()}
+            <Radio
+                label="All"
+                defaultChecked
+                onChange={(): void => handleSignatureChange('All')}
+            />
+            {determineSignatureFieldsToRender()}
             <NativeSelect
                 id="ResponsibleSelect"
                 label="Responsible"
@@ -70,14 +97,26 @@ const Filter = ({
                 <option key="Empty" value="">
                     Select
                 </option>
-                <option key="Tester" value="testing">
-                    Test
-                </option>
-                {responsibles?.map((responsible) => {
+                {responsibles?.map((responsible) => (
                     <option key={responsible} value={responsible}>
                         {responsible}
-                    </option>;
-                })}
+                    </option>
+                ))}
+            </NativeSelect>
+            <NativeSelect
+                id="FormTypeSelect"
+                label="Form type"
+                defaultValue=""
+                onChange={handleFormTypeChange}
+            >
+                <option key="Empty" value="">
+                    Select
+                </option>
+                {formTypes?.map((formType) => (
+                    <option key={formType} value={formType}>
+                        {formType}
+                    </option>
+                ))}
             </NativeSelect>
         </form>
     );

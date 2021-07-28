@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { isArrayOfType } from '../../services/apiTypeGuards';
 import { ChecklistPreview, PunchPreview } from '../../services/apiTypes';
 
-enum Signatures {
+export enum Signatures {
     NOTCLEARED = 'Not cleared',
     CLEARED = 'Cleared not verified',
     NOTSIGNED = 'Not signed',
