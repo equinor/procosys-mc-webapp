@@ -1,7 +1,6 @@
 import React from 'react';
 import { useEffect } from 'react';
 import { useState } from 'react';
-import { isArrayOfType } from '../../services/apiTypeGuards';
 import { ChecklistPreview, PunchPreview } from '../../services/apiTypes';
 
 export enum Signatures {
@@ -41,7 +40,6 @@ const useFilterFacade = (
     const [formTypes, setFormTypes] = useState<string[]>();
 
     useEffect(() => {
-        // TODO: is there a better way to declare these variables??
         let allItems = null;
         if (scopeItems) {
             allItems = scopeItems;

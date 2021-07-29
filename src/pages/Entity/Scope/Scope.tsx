@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { AsyncStatus } from '../../../contexts/McAppContext';
-import { ChecklistPreview, PunchPreview } from '../../../services/apiTypes';
+import { ChecklistPreview } from '../../../services/apiTypes';
 import useCommonHooks from '../../../utils/useCommonHooks';
 import AsyncPage from '../../../components/AsyncPage';
 import { InfoItem } from '@equinor/procosys-webapp-components';
