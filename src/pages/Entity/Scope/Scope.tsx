@@ -23,7 +23,7 @@ type ScopeProps = {
 const Scope = ({ scope, fetchScopeStatus }: ScopeProps): JSX.Element => {
     const { url, history } = useCommonHooks();
     const [shownScope, setShownScope] = useState<
-        ChecklistPreview[] | PunchPreview[] | undefined
+        ChecklistPreview[] | undefined
     >(scope);
 
     return (
@@ -34,8 +34,8 @@ const Scope = ({ scope, fetchScopeStatus }: ScopeProps): JSX.Element => {
                 fetchStatus={fetchScopeStatus}
             >
                 <div>
-                    <Filter setShownItems={setShownScope} allItems={scope} />
-                    {scope?.map((checklist) => (
+                    <Filter setShownScope={setShownScope} scopeItems={scope} />
+                    {shownScope?.map((checklist) => (
                         <InfoItem
                             isScope
                             key={checklist.id}

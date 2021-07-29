@@ -21,11 +21,14 @@ type Filter = {
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const useFilterFacade = (
     setFilterCount: React.Dispatch<React.SetStateAction<number>>,
-    setShownItems: React.Dispatch<
-        React.SetStateAction<ChecklistPreview[] | PunchPreview[] | undefined>
+    setShownScope?: React.Dispatch<
+        React.SetStateAction<ChecklistPreview[] | undefined>
     >,
-    allItems?: ChecklistPreview[] | PunchPreview[],
-    isPunchFilter?: boolean
+    setShownPunches?: React.Dispatch<
+        React.SetStateAction<PunchPreview[] | undefined>
+    >,
+    scopeItems?: ChecklistPreview[],
+    punchItems?: PunchPreview[]
 ) => {
     const [filter, setFilter] = useState<Filter>({
         status: [],
@@ -39,6 +42,12 @@ const useFilterFacade = (
 
     useEffect(() => {
         // TODO: is there a better way to declare these variables??
+        let allItems = null;
+        if (scopeItems) {
+            allItems = scopeItems;
+        } else if (punchItems) {
+            allItems = punchItems;
+        }
         const uniqueResponsibles = new Set<string>();
         const uniqueFormTypes = new Set<string>();
         const uniqueStatuses = new Set<string>();
@@ -50,12 +59,12 @@ const useFilterFacade = (
         setStatuses(Array.from(uniqueStatuses));
         setResponsibles(Array.from(uniqueResponsibles));
         setFormTypes(Array.from(uniqueFormTypes));
-    }, [allItems]);
+    }, [scopeItems, punchItems]);
 
     useEffect(() => {
         let filterCount = 0;
-        if (isArrayOfType<PunchPreview>(allItems, 'cleared')) {
-            let filtered = allItems;
+        if (punchItems != undefined && setShownPunches != undefined) {
+            let filtered = punchItems;
             if (filter.status.length > 0) {
                 filtered = filtered.filter((item) => {
                     return filter.status.indexOf(item.status) != -1;
@@ -89,9 +98,9 @@ const useFilterFacade = (
                 });
                 filterCount++;
             }
-            setShownItems(filtered);
-        } else if (isArrayOfType<ChecklistPreview>(allItems, 'isSigned')) {
-            let filtered = allItems;
+            setShownPunches(filtered);
+        } else if (scopeItems != undefined && setShownScope != undefined) {
+            let filtered = scopeItems;
             if (filter.status.length > 0) {
                 filtered = filtered.filter((item) => {
                     return filter.status.indexOf(item.status) != -1;
@@ -125,15 +134,15 @@ const useFilterFacade = (
                 });
                 filterCount++;
             }
-            setShownItems(filtered);
+            setShownScope(filtered);
         } else {
             return;
         }
         setFilterCount(filterCount);
-    }, [filter, allItems]);
+    }, [filter, scopeItems, punchItems]);
 
     const handleStatusChange = (status: string): void => {
-        if (isPunchFilter) {
+        if (punchItems != undefined) {
             if (status === 'All') {
                 setFilter((prevFilter) => ({ ...prevFilter, status: [] }));
             } else {
@@ -142,7 +151,7 @@ const useFilterFacade = (
                     status: [status],
                 }));
             }
-        } else {
+        } else if (scopeItems != undefined) {
             if (filter.status.indexOf(status) === -1) {
                 setFilter((prevFilter) => ({
                     ...prevFilter,

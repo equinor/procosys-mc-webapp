@@ -37,17 +37,21 @@ const SelectFieldsWrapper = styled.form`
 `;
 
 type FilterProps = {
-    setShownItems: React.Dispatch<
-        React.SetStateAction<ChecklistPreview[] | PunchPreview[] | undefined>
+    setShownScope?: React.Dispatch<
+        React.SetStateAction<ChecklistPreview[] | undefined>
     >;
-    allItems?: ChecklistPreview[] | PunchPreview[];
-    isPunchFilter?: boolean;
+    setShownPunches?: React.Dispatch<
+        React.SetStateAction<PunchPreview[] | undefined>
+    >;
+    scopeItems?: ChecklistPreview[];
+    punchItems?: PunchPreview[];
 };
 
 const Filter = ({
-    setShownItems,
-    allItems,
-    isPunchFilter,
+    setShownScope,
+    setShownPunches,
+    scopeItems,
+    punchItems,
 }: FilterProps): JSX.Element => {
     const { url } = useCommonHooks();
     const [filterCount, setFilterCount] = useState<number>(0);
@@ -62,7 +66,13 @@ const Filter = ({
         handleSignatureChange,
         handleResponsibleChange,
         handleFormTypeChange,
-    } = useFilterFacade(setFilterCount, setShownItems, allItems, isPunchFilter);
+    } = useFilterFacade(
+        setFilterCount,
+        setShownScope,
+        setShownPunches,
+        scopeItems,
+        punchItems
+    );
 
     const determineStatusFieldsToRender = (): JSX.Element => {
         if (url.includes('/punch-list')) {
