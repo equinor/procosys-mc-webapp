@@ -152,6 +152,27 @@ describe('<EntityPage> general and Scope component', () => {
             await screen.findByText(testMcPkgPreview[0].mcPkgNo)
         ).toBeInTheDocument();
     });
+    it('Only shows the checklist previews that match the filter values', async () => {
+        renderEntityPage(SearchType.MC);
+        const firstChecklistPreview = await screen.findByText(
+            testScope[0].tagNo
+        );
+        expect(firstChecklistPreview).toBeInTheDocument();
+        const secondChecklistPreview = await screen.findByText(
+            testScope[1].tagNo
+        );
+        expect(secondChecklistPreview).toBeInTheDocument();
+        const filterButton = await screen.findByRole('button', {
+            name: 'filter button',
+        });
+        expect(filterButton).toBeInTheDocument();
+        userEvent.click(filterButton);
+        const okStatusCheckbox = await screen.findByLabelText('OK');
+        expect(okStatusCheckbox).toBeInTheDocument();
+        userEvent.click(okStatusCheckbox);
+        expect(firstChecklistPreview).toBeInTheDocument();
+        expect(secondChecklistPreview).not.toBeInTheDocument();
+    });
 });
 
 describe('<EntityPage> in-page routing', () => {

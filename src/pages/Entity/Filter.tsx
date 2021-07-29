@@ -176,6 +176,8 @@ const Filter = ({
                 onClick={(): void => {
                     setIsOpen((prevIsOpen) => !prevIsOpen);
                 }}
+                role="button"
+                aria-label="filter button"
             >
                 <p>
                     {isOpen ? 'Hide' : 'Show'} filter{' '}

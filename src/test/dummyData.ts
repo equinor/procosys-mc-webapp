@@ -234,6 +234,23 @@ export const testScope: ChecklistPreview[] = [
         isSigned: false,
         isVerified: false,
     },
+    {
+        id: 2,
+        tagId: 11,
+        tagNo: '11-45-MN',
+        tagDescription: 'Test tag description',
+        responsibleCode: 'Respcode',
+        status: CompletionStatus.PA,
+        formularType: 'AB3',
+        formularGroup: 'Test formular group',
+        sheetNo: 2,
+        subSheetNo: 24,
+        isRestrictedForUser: false,
+        hasElectronicForm: true,
+        attachmentCount: 1,
+        isSigned: false,
+        isVerified: false,
+    },
 ];
 
 export const testPunchList: PunchPreview[] = [
