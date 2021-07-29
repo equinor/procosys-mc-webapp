@@ -6,7 +6,7 @@ import useCommonHooks from '../../../utils/useCommonHooks';
 import AsyncPage from '../../../components/AsyncPage';
 import removeSubdirectories from '../../../utils/removeSubdirectories';
 import { InfoItem } from '@equinor/procosys-webapp-components';
-import Filter from '../Filter';
+import Filter from '../../../components/Filter/Filter';
 import { useState } from 'react';
 
 type PunchListProps = {

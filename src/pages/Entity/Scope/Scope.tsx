@@ -5,8 +5,7 @@ import { ChecklistPreview, PunchPreview } from '../../../services/apiTypes';
 import useCommonHooks from '../../../utils/useCommonHooks';
 import AsyncPage from '../../../components/AsyncPage';
 import { InfoItem } from '@equinor/procosys-webapp-components';
-import useFilterFacade from '../useFilterFacade';
-import Filter from '../Filter';
+import Filter from '../../../components/Filter/Filter';
 
 export const ScopeWrapper = styled.div`
     & h3 {

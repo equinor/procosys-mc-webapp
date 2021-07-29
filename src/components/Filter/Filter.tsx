@@ -9,7 +9,7 @@ import useFilterFacade, { Signatures } from './useFilterFacade';
 import useCommonHooks from '../../utils/useCommonHooks';
 import styled from 'styled-components';
 import { COLORS } from '../../style/GlobalStyles';
-import EdsIcon from '../../components/icons/EdsIcon';
+import EdsIcon from '../icons/EdsIcon';
 
 const FilterWrapper = styled.div`
     padding: 0 4%;
