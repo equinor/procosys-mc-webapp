@@ -63,6 +63,9 @@ const expectPunchListPage = async (): Promise<void> => {
     expect(
         await screen.findByText('Test punch description')
     ).toBeInTheDocument();
+    expect(
+        await screen.findByRole('button', { name: 'filter button' })
+    ).toBeInTheDocument();
 };
 
 describe('<ChecklistPage>', () => {
