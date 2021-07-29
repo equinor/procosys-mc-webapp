@@ -6,6 +6,8 @@ import useCommonHooks from '../../../utils/useCommonHooks';
 import AsyncPage from '../../../components/AsyncPage';
 import removeSubdirectories from '../../../utils/removeSubdirectories';
 import { InfoItem } from '@equinor/procosys-webapp-components';
+import Filter from '../Filter';
+import { useState } from 'react';
 
 type PunchListProps = {
     punchList?: PunchPreview[];
@@ -17,6 +19,9 @@ const PunchList = ({
     fetchPunchListStatus,
 }: PunchListProps): JSX.Element => {
     const { history, url } = useCommonHooks();
+    const [filteredPunchList, setFilteredPunchList] = useState<
+        PunchPreview[] | undefined
+    >(punchList);
 
     return (
         <ScopeWrapper>
@@ -28,7 +33,11 @@ const PunchList = ({
                 emptyContentMessage={'The punch list is empty.'}
             >
                 <>
-                    {punchList?.map((punch) => (
+                    <Filter
+                        setShownPunches={setFilteredPunchList}
+                        punchItems={punchList}
+                    />
+                    {filteredPunchList?.map((punch) => (
                         <InfoItem
                             key={punch.id}
                             status={punch.status}
