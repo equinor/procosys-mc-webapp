@@ -38,6 +38,7 @@ const ChecklistPunchList = ({
                 <Filter
                     setShownPunches={setFilteredPunchList}
                     punchItems={punchList}
+                    isChecklistPunchList
                 />
                 {filteredPunchList?.map((punch) => (
                     <InfoItem

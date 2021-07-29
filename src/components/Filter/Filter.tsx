@@ -45,6 +45,7 @@ type FilterProps = {
     >;
     scopeItems?: ChecklistPreview[];
     punchItems?: PunchPreview[];
+    isChecklistPunchList?: boolean;
 };
 
 const Filter = ({
@@ -52,6 +53,7 @@ const Filter = ({
     setShownPunches,
     scopeItems,
     punchItems,
+    isChecklistPunchList,
 }: FilterProps): JSX.Element => {
     const { url } = useCommonHooks();
     const [filterCount, setFilterCount] = useState<number>(0);
@@ -199,38 +201,45 @@ const Filter = ({
                         }}
                     />
                     {determineSignatureFieldsToRender()}
-                    <SelectFieldsWrapper>
-                        <NativeSelect
-                            id="ResponsibleSelect"
-                            label="Responsible"
-                            defaultValue=""
-                            onChange={handleResponsibleChange}
-                        >
-                            <option key="Empty" value="">
-                                Select
-                            </option>
-                            {responsibles?.map((responsible) => (
-                                <option key={responsible} value={responsible}>
-                                    {responsible}
+                    {isChecklistPunchList ? null : (
+                        <SelectFieldsWrapper>
+                            <NativeSelect
+                                id="ResponsibleSelect"
+                                label="Responsible"
+                                defaultValue=""
+                                onChange={handleResponsibleChange}
+                            >
+                                <option key="Empty" value="">
+                                    Select
                                 </option>
-                            ))}
-                        </NativeSelect>
-                        <NativeSelect
-                            id="FormTypeSelect"
-                            label="Form type"
-                            defaultValue=""
-                            onChange={handleFormTypeChange}
-                        >
-                            <option key="Empty" value="">
-                                Select
-                            </option>
-                            {formTypes?.map((formType) => (
-                                <option key={formType} value={formType}>
-                                    {formType}
-                                </option>
-                            ))}
-                        </NativeSelect>
-                    </SelectFieldsWrapper>
+                                {responsibles?.map((responsible) => (
+                                    <option
+                                        key={responsible}
+                                        value={responsible}
+                                    >
+                                        {responsible}
+                                    </option>
+                                ))}
+                            </NativeSelect>
+                            {url.includes('/PO') ? null : (
+                                <NativeSelect
+                                    id="FormTypeSelect"
+                                    label="Form type"
+                                    defaultValue=""
+                                    onChange={handleFormTypeChange}
+                                >
+                                    <option key="Empty" value="">
+                                        Select
+                                    </option>
+                                    {formTypes?.map((formType) => (
+                                        <option key={formType} value={formType}>
+                                            {formType}
+                                        </option>
+                                    ))}
+                                </NativeSelect>
+                            )}
+                        </SelectFieldsWrapper>
+                    )}
                 </div>
             ) : null}
         </FilterWrapper>
