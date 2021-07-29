@@ -152,27 +152,6 @@ describe('<EntityPage> general and Scope component', () => {
             await screen.findByText(testMcPkgPreview[0].mcPkgNo)
         ).toBeInTheDocument();
     });
-    it('Only shows the checklist previews that match the filter values', async () => {
-        renderEntityPage(SearchType.MC);
-        const firstChecklistPreview = await screen.findByText(
-            testScope[0].tagNo
-        );
-        expect(firstChecklistPreview).toBeInTheDocument();
-        const secondChecklistPreview = await screen.findByText(
-            testScope[1].tagNo
-        );
-        expect(secondChecklistPreview).toBeInTheDocument();
-        const filterButton = await screen.findByRole('button', {
-            name: 'filter button',
-        });
-        expect(filterButton).toBeInTheDocument();
-        userEvent.click(filterButton);
-        const okStatusCheckbox = await screen.findByLabelText('OK');
-        expect(okStatusCheckbox).toBeInTheDocument();
-        userEvent.click(okStatusCheckbox);
-        expect(firstChecklistPreview).toBeInTheDocument();
-        expect(secondChecklistPreview).not.toBeInTheDocument();
-    });
 });
 
 describe('<EntityPage> in-page routing', () => {
@@ -310,5 +289,52 @@ describe('<EntityPage> punch list', () => {
         expect(
             await screen.findByText(testMcPkgPreview[0].mcPkgNo)
         ).toBeInTheDocument();
+    });
+});
+
+describe('<Filter> component', () => {
+    it('Only shows the checklist previews that match the filter values', async () => {
+        renderEntityPage(SearchType.MC);
+        const firstChecklistPreview = await screen.findByText(
+            testScope[0].tagNo
+        );
+        expect(firstChecklistPreview).toBeInTheDocument();
+        const secondChecklistPreview = await screen.findByText(
+            testScope[1].tagNo
+        );
+        expect(secondChecklistPreview).toBeInTheDocument();
+        const filterButton = await screen.findByRole('button', {
+            name: 'filter button',
+        });
+        expect(filterButton).toBeInTheDocument();
+        userEvent.click(filterButton);
+        const okStatusCheckbox = await screen.findByLabelText('OK');
+        expect(okStatusCheckbox).toBeInTheDocument();
+        userEvent.click(okStatusCheckbox);
+        expect(firstChecklistPreview).toBeInTheDocument();
+        expect(secondChecklistPreview).not.toBeInTheDocument();
+    });
+    it('Only shows the checklist previews that match the filter values', async () => {
+        renderEntityPage(SearchType.MC, true);
+        const firstPunchItemPreview = await screen.findByText(
+            dummyPunchListResponse[0].description
+        );
+        expect(firstPunchItemPreview).toBeInTheDocument();
+        const secondPuncItemPreview = await screen.findByText(
+            dummyPunchListResponse[1].description
+        );
+        expect(secondPuncItemPreview).toBeInTheDocument();
+        const filterButton = await screen.findByRole('button', {
+            name: 'filter button',
+        });
+        expect(filterButton).toBeInTheDocument();
+        userEvent.click(filterButton);
+        const clearedSignatureRadioButton = await screen.findByLabelText(
+            'Cleared not verified'
+        );
+        expect(clearedSignatureRadioButton).toBeInTheDocument();
+        userEvent.click(clearedSignatureRadioButton);
+        expect(firstPunchItemPreview).toBeInTheDocument();
+        expect(secondPuncItemPreview).not.toBeInTheDocument();
     });
 });
