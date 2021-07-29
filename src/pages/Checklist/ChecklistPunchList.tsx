@@ -1,7 +1,9 @@
 import { InfoItem } from '@equinor/procosys-webapp-components';
 import React from 'react';
+import { useState } from 'react';
 import styled from 'styled-components';
 import AsyncPage from '../../components/AsyncPage';
+import Filter from '../../components/Filter/Filter';
 import { AsyncStatus } from '../../contexts/McAppContext';
 import { PunchPreview } from '../../services/apiTypes';
 import removeSubdirectories from '../../utils/removeSubdirectories';
@@ -23,6 +25,9 @@ const ChecklistPunchList = ({
     fetchPunchListStatus,
 }: ChecklistPunchListProps): JSX.Element => {
     const { history, url } = useCommonHooks();
+    const [filteredPunchList, setFilteredPunchList] = useState<
+        PunchPreview[] | undefined
+    >(punchList);
     return (
         <AsyncPage
             fetchStatus={fetchPunchListStatus}
@@ -30,7 +35,11 @@ const ChecklistPunchList = ({
             emptyContentMessage={'The punch list is empty.'}
         >
             <FillHeightWrapper>
-                {punchList?.map((punch) => (
+                <Filter
+                    setShownPunches={setFilteredPunchList}
+                    punchItems={punchList}
+                />
+                {filteredPunchList?.map((punch) => (
                     <InfoItem
                         key={punch.id}
                         status={punch.status}
