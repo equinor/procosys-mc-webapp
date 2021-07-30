@@ -1,10 +1,11 @@
 import { Button } from '@equinor/eds-core-react';
+import axios from 'axios';
 import React, { useRef, useState } from 'react';
 import styled from 'styled-components';
 import EdsIcon from '../../../components/icons/EdsIcon';
+import { AsyncStatus } from '../../../contexts/McAppContext';
 import useCommonHooks from '../../../utils/useCommonHooks';
-import { SearchType } from '../Search';
-import useSearchPageFacade from '../useSearchPageFacade';
+import TagSelectionModal from './TagSelectionModal';
 
 const CaptureInput = styled.input`
     display: none;
@@ -14,12 +15,26 @@ const CaptureButton = styled(Button)`
     position: absolute;
     right: 1.5%;
     top: 7px;
-    z-index: 100;
+    z-index: 200;
+    background-color: #f7f7f7;
 `;
 
-const TagPhotoRecognition = (): JSX.Element => {
+export type TextResult = {
+    id: string;
+    value: string;
+};
+
+type TagPhotoRecognitionProps = {
+    setQuery: React.Dispatch<React.SetStateAction<string>>;
+};
+
+const TagPhotoRecognition = ({
+    setQuery,
+}: TagPhotoRecognitionProps): JSX.Element => {
     const { appConfig } = useCommonHooks();
-    const { query, setQuery } = useSearchPageFacade(SearchType.Tag);
+    const [showTagSelectionModal, setShowTagSelectionModal] = useState(false);
+    const [suggestedTags, setSuggestedTags] = useState<TextResult[]>([]);
+    const [ocrStatus, setOcrStatus] = useState(AsyncStatus.INACTIVE);
     const captureImageInputRef = useRef<HTMLInputElement>(
         document.createElement('input')
     );
@@ -31,22 +46,25 @@ const TagPhotoRecognition = (): JSX.Element => {
         const uploadHeaders = new Headers();
         uploadHeaders.append('Content-Type', 'multipart/form-data');
         uploadHeaders.append('Accept', 'application/json');
-        uploadHeaders.append(
-            'Ocp-Apim-Subscription-Key',
-            appConfig.ocr.subscriptionKey
-        );
-
         const data = new FormData();
-        data.append('photo_to_check', currentFiles[0]);
-
-        const uploadConfig = {
-            method: 'POST',
-            headers: uploadHeaders,
-            body: data,
-        };
-
-        const response = await fetch(appConfig.ocr.url, uploadConfig);
-        console.log(response);
+        data.append('my_photo', currentFiles[0]);
+        setOcrStatus(AsyncStatus.LOADING);
+        setShowTagSelectionModal(true);
+        try {
+            const response = await axios.post(
+                appConfig.ocrFunctionEndpoint,
+                data
+            );
+            setSuggestedTags(response.data);
+            if (response.data.length < 1) {
+                setOcrStatus(AsyncStatus.EMPTY_RESPONSE);
+            } else {
+                setOcrStatus(AsyncStatus.SUCCESS);
+            }
+        } catch {
+            setOcrStatus(AsyncStatus.ERROR);
+        }
+        captureImageInputRef.current.files = null;
     };
 
     return (
@@ -64,6 +82,15 @@ const TagPhotoRecognition = (): JSX.Element => {
             >
                 <EdsIcon name="camera_add_photo" />
             </CaptureButton>
+            {showTagSelectionModal ? (
+                <TagSelectionModal
+                    setShowTagSelectionModal={setShowTagSelectionModal}
+                    suggestedTags={suggestedTags}
+                    setSuggestedTags={setSuggestedTags}
+                    setQuery={setQuery}
+                    ocrStatus={ocrStatus}
+                />
+            ) : null}
         </>
     );
 };
