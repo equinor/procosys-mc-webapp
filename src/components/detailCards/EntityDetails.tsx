@@ -17,7 +17,7 @@ const EntityDetailsWrapper = styled.article<{ isDetailsCard?: boolean }>`
     }
 `;
 
-const IconWrapper = styled.div`
+export const IconWrapper = styled.div`
     padding-top: 3px;
     margin-right: 16px;
 `;
@@ -67,7 +67,7 @@ const EntityDetails = ({
         <EntityDetailsWrapper
             isDetailsCard={isDetailsCard}
             onClick={onClick}
-            role={isDetailsCard ? 'heading' : 'button'}
+            role={isDetailsCard ? 'heading' : 'link'}
         >
             <IconWrapper>{icon}</IconWrapper>
             <ContentWrapper>

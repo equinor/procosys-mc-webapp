@@ -14,7 +14,7 @@ import { ChecklistResponse, PunchPreview } from '../../services/apiTypes';
 import NavigationFooterShell from '../../components/navigation/NavigationFooterShell';
 import { DotProgress } from '@equinor/eds-core-react';
 import { DetailsWrapper } from '../Entity/EntityPage';
-import TagInfo from './TagInfo';
+import TagInfo from '../../components/TagInfo';
 import { InfoItem } from '@equinor/procosys-webapp-components';
 import ChecklistPunchList from './ChecklistPunchList';
 import removeSubdirectories from '../../utils/removeSubdirectories';
@@ -93,7 +93,7 @@ const ChecklistPage = (): JSX.Element => {
                     chips={[
                         details.checkList.mcPkgNo,
                         details.checkList.formularType,
-                    ]}
+                    ].filter((x) => x != null)}
                     attachments={details.checkList.attachmentCount}
                 />
             );
@@ -170,7 +170,10 @@ const ChecklistPage = (): JSX.Element => {
                     name: 'back',
                     label: 'Back',
                     url: history.location.pathname.includes('/new-punch')
-                        ? `/${params.plant}/${params.project}/${params.searchType}/${params.entityId}/checklist/${params.checklistId}/punch-list`
+                        ? `${removeSubdirectories(
+                              history.location.pathname,
+                              1
+                          )}`
                         : `${removeSubdirectories(url, 2)}`,
                 }}
                 midContent={'MCCR'}
