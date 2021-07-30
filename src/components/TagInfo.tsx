@@ -3,11 +3,11 @@ import axios from 'axios';
 import React, { useState } from 'react';
 import { useEffect } from 'react';
 import styled from 'styled-components';
-import AsyncPage from '../../components/AsyncPage';
-import { AsyncStatus } from '../../contexts/McAppContext';
-import { AdditionalTagField, TagDetails } from '../../services/apiTypes';
-import { COLORS } from '../../style/GlobalStyles';
-import useCommonHooks from '../../utils/useCommonHooks';
+import AsyncPage from './AsyncPage';
+import { AsyncStatus } from '../contexts/McAppContext';
+import { AdditionalTagField, TagDetails } from '../services/apiTypes';
+import { COLORS } from '../style/GlobalStyles';
+import useCommonHooks from '../utils/useCommonHooks';
 
 const InfoRow = styled.div`
     & > p {

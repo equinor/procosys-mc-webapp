@@ -3,7 +3,7 @@ import React, { ChangeEvent, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import SkeletonLoadingPage from '../loading/SkeletonLoader';
 import { COLORS } from '../../style/GlobalStyles';
-import { TallSearchField } from '../../pages/Search/SearchArea/SearchArea';
+import { TallSearchField } from '../../pages/Search/Searching/SearchArea';
 import { SearchStatus } from '../../pages/Search/useSearchPageFacade';
 import usePersonsSearchFacade from './usePersonsSearchFacade';
 

@@ -81,6 +81,25 @@ describe('<PunchPage>', () => {
         expect(await screen.findByText('Unable to load punch item.'));
         await expectFooter();
     });
+    it('Renders the tag info page if the tag info footer button is clicked', async () => {
+        renderPunchPage();
+        await expectDetails();
+        expect(
+            await screen.findByRole('button', {
+                name: 'Clear',
+            })
+        ).toBeInTheDocument();
+        const tagInfoButton = await screen.findByRole('button', {
+            name: `Tag info`,
+        });
+        expect(tagInfoButton).toBeInTheDocument();
+        userEvent.click(tagInfoButton);
+        await expectDetails();
+        expect(
+            await screen.findByText('Nye pumper - TEST PROJECT')
+        ).toBeInTheDocument();
+        expect(tagInfoButton).toBeInTheDocument();
+    });
     it('Renders the VerifyPunch component when the "Clear" button has been clicked', async () => {
         renderPunchPage();
         await expectDetails();
