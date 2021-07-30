@@ -51,7 +51,9 @@ const SearchArea = ({ searchType }: SearchAreaProps): JSX.Element => {
 
     return (
         <SearchAreaWrapper>
-            {searchType === SearchType.Tag ? <TagPhotoRecognition /> : null}
+            {searchType === SearchType.Tag ? (
+                <TagPhotoRecognition setQuery={setQuery} />
+            ) : null}
             <TallSearchField
                 placeholder={
                     searchType === SearchType.PO

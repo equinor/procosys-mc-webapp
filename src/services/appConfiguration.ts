@@ -15,11 +15,6 @@ export type ProcosysApiSettings = {
     scope: string[];
 };
 
-type OcrSettings = {
-    url: string;
-    subscriptionKey: string;
-};
-
 type AppInsightsConfig = {
     instrumentationKey: string;
 };
@@ -35,7 +30,7 @@ type AuthConfigResponse = {
 export type AppConfig = {
     procosysWebApi: ProcosysApiSettings;
     appInsights: AppInsightsConfig;
-    ocr: OcrSettings;
+    ocrFunctionEndpoint: string;
 };
 
 type AppConfigResponse = {

@@ -27,10 +27,7 @@ const dummyAppConfig: AppConfig = {
     appInsights: {
         instrumentationKey: '',
     },
-    ocr: {
-        url: '',
-        subscriptionKey: '',
-    },
+    ocrFunctionEndpoint: 'https://dummy-org-endpoint.com',
 };
 
 const authInstance = authService({ MSAL: client, scopes: ['testScope'] });
