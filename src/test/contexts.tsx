@@ -12,16 +12,22 @@ import authService from '../services/__mocks__/authService';
 import { testProjects, testPlants, dummyPermissions } from './dummyData';
 import { IAuthService } from '../services/authService';
 import { baseURL } from './setupServer';
-import { ProcosysApiSettings } from '../services/appConfiguration';
+import { AppConfig, ProcosysApiSettings } from '../services/appConfiguration';
 
 const client = new Msal.PublicClientApplication({
     auth: { clientId: 'testId', authority: 'testAuthority' },
 });
 
-const dummyApiSettings: ProcosysApiSettings = {
-    baseUrl: 'testUrl',
-    scope: [''],
-    apiVersion: '',
+const dummyAppConfig: AppConfig = {
+    procosysWebApi: {
+        baseUrl: 'testUrl',
+        scope: [''],
+        apiVersion: '',
+    },
+    appInsights: {
+        instrumentationKey: '',
+    },
+    ocrFunctionEndpoint: 'https://dummy-org-endpoint.com',
 };
 
 const authInstance = authService({ MSAL: client, scopes: ['testScope'] });
@@ -58,7 +64,7 @@ export const withMcAppContext = ({
                     fetchPlantsStatus: asyncStatus,
                     auth: auth,
                     api: api,
-                    procosysApiSettings: dummyApiSettings,
+                    appConfig: dummyAppConfig,
                 }}
             >
                 {Component}

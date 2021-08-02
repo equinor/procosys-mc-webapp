@@ -17,6 +17,7 @@ const PageHeaderWrapper = styled.div<{ hasSubtitle: boolean }>`
         text-align: center;
         margin: 0 0 5px 0;
         margin-bottom: 32px;
+        max-width: 80vw;
     }
 `;
 type PageHeaderProps = {

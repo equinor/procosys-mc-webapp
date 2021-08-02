@@ -1,13 +1,18 @@
-import React, { ChangeEvent, useEffect, useRef } from 'react';
+import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { Search as SearchField } from '@equinor/eds-core-react';
 import useSearchPageFacade from '../useSearchPageFacade';
 import SearchResults from './SearchResults';
 import { SearchType } from '../Search';
 import styled from 'styled-components';
+import TagPhotoRecognition from './TagPhotoRecognition';
 
 export const TallSearchField = styled(SearchField)`
     height: 54px;
     margin-top: 18px;
+`;
+
+const SearchAreaWrapper = styled.div`
+    position: relative;
 `;
 
 type SearchAreaProps = {
@@ -45,7 +50,10 @@ const SearchArea = ({ searchType }: SearchAreaProps): JSX.Element => {
     };
 
     return (
-        <>
+        <SearchAreaWrapper>
+            {searchType === SearchType.Tag ? (
+                <TagPhotoRecognition setQuery={setQuery} />
+            ) : null}
             <TallSearchField
                 placeholder={
                     searchType === SearchType.PO
@@ -75,7 +83,7 @@ const SearchArea = ({ searchType }: SearchAreaProps): JSX.Element => {
                 searchResults={hits}
                 searchType={searchType}
             />
-        </>
+        </SearchAreaWrapper>
     );
 };
 
