@@ -110,6 +110,7 @@ const TagSelectionModal = ({
             {determineModalHeader(ocrStatus)}
             {suggestedTags.map((tag) => (
                 <SelectorButton
+                    role={'button'}
                     key={tag.id}
                     onClick={(): void => handleSelectClick(tag.value)}
                 >
