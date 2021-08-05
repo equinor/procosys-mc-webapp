@@ -10,8 +10,9 @@ import {
     ReactPlugin,
 } from '@microsoft/applicationinsights-react-js';
 import { SearchType } from './pages/Search/Search';
-import { AppConfig } from './services/appConfiguration';
+import { AppConfig, FeatureFlags } from './services/appConfiguration';
 import { SavedSearchType } from './pages/Search/SavedSearches/SavedSearchResult';
+import PageHeader from './components/PageHeader';
 
 export type McParams = {
     plant: string;
@@ -29,6 +30,7 @@ type AppProps = {
     procosysApiInstance: ProcosysApiService;
     appInsightsReactPlugin: ReactPlugin;
     appConfig: AppConfig;
+    featureFlags: FeatureFlags;
 };
 
 const App = ({
@@ -36,18 +38,19 @@ const App = ({
     authInstance,
     appConfig,
     appInsightsReactPlugin: reactPlugin,
+    featureFlags,
 }: AppProps): JSX.Element => {
     let rootDirectory = '';
     if (window.location.pathname.substr(0, 5) === '/mc') {
         rootDirectory = '/mc';
     }
-
     return (
         <AppInsightsContext.Provider value={reactPlugin}>
             <McAppContextProvider
                 api={procosysApiInstance}
                 auth={authInstance}
                 appConfig={appConfig}
+                featureFlags={featureFlags}
             >
                 <Router basename={rootDirectory}>
                     <ErrorBoundary>
