@@ -45,7 +45,7 @@ const initialize = async () => {
         configurationScope
     );
 
-    const { appConfig } = await getAppConfig(
+    const { appConfig, featureFlags } = await getAppConfig(
         configurationEndpoint,
         configurationAccessToken
     );
@@ -67,6 +67,7 @@ const initialize = async () => {
         procosysApiInstance,
         appInsightsReactPlugin,
         appConfig,
+        featureFlags,
     };
 };
 
@@ -78,6 +79,7 @@ const initialize = async () => {
             procosysApiInstance,
             appInsightsReactPlugin,
             appConfig,
+            featureFlags,
         } = await initialize();
         render(
             <App
@@ -85,6 +87,7 @@ const initialize = async () => {
                 procosysApiInstance={procosysApiInstance}
                 appInsightsReactPlugin={appInsightsReactPlugin}
                 appConfig={appConfig}
+                featureFlags={featureFlags}
             />
         );
     } catch (error) {

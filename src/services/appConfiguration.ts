@@ -27,6 +27,10 @@ type AuthConfigResponse = {
     configurationEndpoint: string;
 };
 
+export type FeatureFlags = {
+    mcAppIsEnabled: boolean;
+};
+
 export type AppConfig = {
     procosysWebApi: ProcosysApiSettings;
     appInsights: AppInsightsConfig;
@@ -35,6 +39,7 @@ export type AppConfig = {
 
 type AppConfigResponse = {
     configuration: AppConfig;
+    featureFlags: FeatureFlags;
 };
 
 export const getAuthConfig = async () => {
@@ -69,5 +74,6 @@ export const getAppConfig = async (endpoint: string, accessToken: string) => {
     });
 
     const appConfig: AppConfig = data.configuration;
-    return { appConfig };
+    const featureFlags: FeatureFlags = data.featureFlags;
+    return { appConfig, featureFlags };
 };
