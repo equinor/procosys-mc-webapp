@@ -1,10 +1,9 @@
-import { ChecklistPreview, PunchPreview } from '../../services/apiTypes';
+import { ChecklistPreview } from '../../services/apiTypes';
 import {
     filterChecklistPreviewsOnSignature,
     filterOnFormType,
     filterOnResponsible,
     filterOnStatus,
-    filterPunchPreviewsOnSignature,
 } from './helperFunctions';
 import { Filter } from './useFilterFacade';
 
