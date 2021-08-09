@@ -61,6 +61,7 @@ const Filter = ({
     const [statusChosen, setStatusChosen] = useState<string>('All');
     const [signatureChosen, setSignatureChosen] = useState<string>('All');
     const {
+        filter,
         statuses,
         responsibles,
         formTypes,
@@ -206,7 +207,15 @@ const Filter = ({
                             <NativeSelect
                                 id="ResponsibleSelect"
                                 label="Responsible"
-                                defaultValue=""
+                                defaultValue={
+                                    filter.responsible
+                                        ? responsibles?.find(
+                                              (responsible) =>
+                                                  responsible ===
+                                                  filter.responsible
+                                          )
+                                        : ''
+                                }
                                 onChange={handleResponsibleChange}
                             >
                                 <option key="Empty" value="">
@@ -225,7 +234,15 @@ const Filter = ({
                                 <NativeSelect
                                     id="FormTypeSelect"
                                     label="Form type"
-                                    defaultValue=""
+                                    defaultValue={
+                                        filter.formType
+                                            ? formTypes?.find(
+                                                  (formType) =>
+                                                      formType ===
+                                                      filter.formType
+                                              )
+                                            : ''
+                                    }
                                     onChange={handleFormTypeChange}
                                 >
                                     <option key="Empty" value="">

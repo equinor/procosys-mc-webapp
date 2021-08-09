@@ -131,6 +131,7 @@ const useFilterFacade = (
     };
 
     return {
+        filter,
         statuses,
         responsibles,
         formTypes,
