@@ -13,7 +13,7 @@ import EdsIcon from '../icons/EdsIcon';
 
 const FilterWrapper = styled.div`
     padding: 0 4%;
-    width: 100vw;
+    width: 100%;
     box-sizing: border-box;
 `;
 
