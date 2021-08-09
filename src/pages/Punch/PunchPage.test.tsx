@@ -157,6 +157,7 @@ describe('<PunchPage>', () => {
         expect(clearButton).toBeInTheDocument();
     });
     it('Updates the punch item when a form field is changed', async () => {
+        jest.setTimeout(10000);
         renderPunchPage();
         expect(
             await screen.findByRole('button', {

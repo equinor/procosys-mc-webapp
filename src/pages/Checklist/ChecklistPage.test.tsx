@@ -182,6 +182,7 @@ describe('<ChecklistPage> New Punch', () => {
         await expectNewPunchPage();
     });
     it('Is possible to create a new punch', async () => {
+        jest.setTimeout(10000);
         renderChecklistPage('punch-list/new-punch');
         await expectNewPunchPage();
         // choosing punch category
