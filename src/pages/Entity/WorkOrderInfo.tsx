@@ -1,3 +1,4 @@
+import { Button } from '@equinor/eds-core-react';
 import { CollapsibleCard } from '@equinor/procosys-webapp-components';
 import React from 'react';
 import styled from 'styled-components';
@@ -11,6 +12,8 @@ import {
     Tag,
     WoPreview,
 } from '../../services/apiTypes';
+import removeSubdirectories from '../../utils/removeSubdirectories';
+import useCommonHooks from '../../utils/useCommonHooks';
 
 const TagInfoWrapper = styled.main`
     min-height: 0px;
@@ -30,6 +33,7 @@ const WorkOrderInfo = ({
     workOrder,
     fetchWorkOrderStatus,
 }: WorkOrderInfoProps): JSX.Element => {
+    const { history, url } = useCommonHooks();
     if (
         workOrder === undefined ||
         isOfType<WoPreview>(workOrder, 'workOrderNo')
@@ -53,6 +57,19 @@ const WorkOrderInfo = ({
             <ErrorPage
                 title="Unable to load Work Order info."
                 description="The Work Order info page is only available for Work Orders."
+                actions={[
+                    <Button key={'home'} onClick={(): void => history.push('')}>
+                        Home
+                    </Button>,
+                    <Button
+                        key={'refresh'}
+                        onClick={(): void =>
+                            history.push(removeSubdirectories(url, 1))
+                        }
+                    >
+                        Scope page
+                    </Button>,
+                ]}
             />
         );
     }

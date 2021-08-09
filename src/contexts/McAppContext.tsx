@@ -70,6 +70,12 @@ export const McAppContextProvider: React.FC<McAppContextProviderProps> = ({
                         <Button key={'signOut'} onClick={auth.logout}>
                             Sign out
                         </Button>,
+                        <Button
+                            key={'refresh'}
+                            onClick={(): void => window.location.reload()}
+                        >
+                            Refresh
+                        </Button>,
                     ]}
                     title="Error: Could not load plants"
                     description="We were unable to get a list of available plants. Please check your connection, sign in with a different user or refresh this page."

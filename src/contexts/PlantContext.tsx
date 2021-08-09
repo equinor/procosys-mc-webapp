@@ -7,6 +7,7 @@ import McAppContext, { AsyncStatus } from './McAppContext';
 import useCommonHooks from '../utils/useCommonHooks';
 import ErrorPage from '../components/error/ErrorPage';
 import Navbar from '../components/navigation/Navbar';
+import { Button } from '@equinor/eds-core-react';
 
 export enum StorageKey {
     PLANT = 'currentPlant',
@@ -28,7 +29,7 @@ const PlantContext = React.createContext({} as PlantContextProps);
 export const PlantContextProvider: React.FC<{ children: ReactNode }> = ({
     children,
 }) => {
-    const { params, api, history } = useCommonHooks();
+    const { params, api, history, auth } = useCommonHooks();
     const [currentPlant, setCurrentPlant] = useState<Plant | undefined>();
     const { availablePlants } = useContext(McAppContext);
     const [availableProjects, setAvailableProjects] = useState<Project[]>([]);
@@ -139,6 +140,17 @@ export const PlantContextProvider: React.FC<{ children: ReactNode }> = ({
                         description={
                             'Please check your internet connection or refresh this page.'
                         }
+                        actions={[
+                            <Button key={'signOut'} onClick={auth.logout}>
+                                Sign out
+                            </Button>,
+                            <Button
+                                key={'refresh'}
+                                onClick={(): void => window.location.reload()}
+                            >
+                                Refresh
+                            </Button>,
+                        ]}
                     />
                 </>
             );
