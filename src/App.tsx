@@ -5,14 +5,14 @@ import GeneralRouter from './GeneralRouter';
 import ErrorBoundary from './components/error/ErrorBoundary';
 import { IAuthService } from './services/authService';
 import { ProcosysApiService } from './services/procosysApi';
-import { ApplicationInsights } from '@microsoft/applicationinsights-web';
 import {
     AppInsightsContext,
     ReactPlugin,
 } from '@microsoft/applicationinsights-react-js';
 import { SearchType } from './pages/Search/Search';
-import { ProcosysApiSettings } from './services/appConfiguration';
+import { AppConfig, FeatureFlags } from './services/appConfiguration';
 import { SavedSearchType } from './pages/Search/SavedSearches/SavedSearchResult';
+import PageHeader from './components/PageHeader';
 
 export type McParams = {
     plant: string;
@@ -29,26 +29,28 @@ type AppProps = {
     authInstance: IAuthService;
     procosysApiInstance: ProcosysApiService;
     appInsightsReactPlugin: ReactPlugin;
-    procosysApiSettings: ProcosysApiSettings;
+    appConfig: AppConfig;
+    featureFlags: FeatureFlags;
 };
 
 const App = ({
     procosysApiInstance,
     authInstance,
-    procosysApiSettings,
+    appConfig,
     appInsightsReactPlugin: reactPlugin,
+    featureFlags,
 }: AppProps): JSX.Element => {
     let rootDirectory = '';
     if (window.location.pathname.substr(0, 5) === '/mc') {
         rootDirectory = '/mc';
     }
-
     return (
         <AppInsightsContext.Provider value={reactPlugin}>
             <McAppContextProvider
                 api={procosysApiInstance}
                 auth={authInstance}
-                procosysApiSettings={procosysApiSettings}
+                appConfig={appConfig}
+                featureFlags={featureFlags}
             >
                 <Router basename={rootDirectory}>
                     <ErrorBoundary>
