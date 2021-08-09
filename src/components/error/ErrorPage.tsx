@@ -1,8 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Banner } from '@equinor/eds-core-react';
+import { Banner, Button } from '@equinor/eds-core-react';
 import { COLORS } from '../../style/GlobalStyles';
 import EdsIcon from '../icons/EdsIcon';
+import useCommonHooks from '../../utils/useCommonHooks';
 
 interface WebAppError {
     title: string;
@@ -20,6 +21,9 @@ const ErrorPage = ({
     description,
     actions,
 }: WebAppError): JSX.Element => {
+    const { params, history } = useCommonHooks();
+    // bruk below hvis common hooks et problem
+    //const history = useHistory();
     return (
         <ErrorPageWrapper>
             <Banner>
@@ -42,7 +46,18 @@ const ErrorPage = ({
                         <Banner.Actions placement={'bottom'}>
                             {actions.map((button) => button)}
                         </Banner.Actions>
-                    ) : null}
+                    ) : (
+                        <Banner.Actions placement={'bottom'}>
+                            <Button
+                                onClick={(): void => window.location.reload()}
+                            >
+                                Refresh
+                            </Button>
+                            <Button onClick={(): void => history.push(``)}>
+                                Home
+                            </Button>
+                        </Banner.Actions>
+                    )}
                 </Banner>
             )}
         </ErrorPageWrapper>
