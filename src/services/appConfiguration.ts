@@ -27,11 +27,19 @@ type AuthConfigResponse = {
     configurationEndpoint: string;
 };
 
+export type FeatureFlags = {
+    mcAppIsEnabled: boolean;
+};
+
+export type AppConfig = {
+    procosysWebApi: ProcosysApiSettings;
+    appInsights: AppInsightsConfig;
+    ocrFunctionEndpoint: string;
+};
+
 type AppConfigResponse = {
-    configuration: {
-        procosysWebApi: ProcosysApiSettings;
-        appInsights: AppInsightsConfig;
-    };
+    configuration: AppConfig;
+    featureFlags: FeatureFlags;
 };
 
 export const getAuthConfig = async () => {
@@ -64,9 +72,8 @@ export const getAppConfig = async (endpoint: string, accessToken: string) => {
             Authorization: 'Bearer ' + accessToken,
         },
     });
-    const procosysApiConfig = data.configuration
-        .procosysWebApi as ProcosysApiSettings;
-    const appInsightsConfig = data.configuration
-        .appInsights as AppInsightsConfig;
-    return { procosysApiConfig, appInsightsConfig };
+
+    const appConfig: AppConfig = data.configuration;
+    const featureFlags: FeatureFlags = data.featureFlags;
+    return { appConfig, featureFlags };
 };

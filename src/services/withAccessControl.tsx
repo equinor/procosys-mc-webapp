@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext, ReactElement } from 'react';
 import ErrorPage from '../components/error/ErrorPage';
 import SkeletonLoader from '../components/loading/SkeletonLoader';
 import PlantContext from '../contexts/PlantContext';
-import { AsyncStatus } from '../contexts/McAppContext';
+import McAppContext, { AsyncStatus } from '../contexts/McAppContext';
 
 const withAccessControl =
     (
@@ -11,6 +11,7 @@ const withAccessControl =
     ) =>
     (props: JSX.IntrinsicAttributes): JSX.Element => {
         const { permissions } = useContext(PlantContext);
+        const { featureFlags } = useContext(McAppContext);
         const [checkPermissionsStatus, setCheckPermissionsStatus] = useState(
             AsyncStatus.LOADING
         );
@@ -29,6 +30,10 @@ const withAccessControl =
 
         if (checkPermissionsStatus === AsyncStatus.LOADING) {
             return <SkeletonLoader text="Checking permissions" />;
+        }
+
+        if (!featureFlags.mcAppIsEnabled) {
+            return <ErrorPage title="This app is disabled" />;
         }
 
         if (checkPermissionsStatus === AsyncStatus.SUCCESS) {
