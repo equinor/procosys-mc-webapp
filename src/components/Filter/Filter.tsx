@@ -196,7 +196,7 @@ const Filter = ({
                         label="All"
                         checked={signatureChosen === 'All'}
                         onChange={(): void => {
-                            handleSignatureChange('All');
+                            handleSignatureChange('');
                             setSignatureChosen('All');
                         }}
                     />

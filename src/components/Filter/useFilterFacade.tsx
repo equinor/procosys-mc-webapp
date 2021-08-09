@@ -2,6 +2,8 @@ import React from 'react';
 import { useEffect } from 'react';
 import { useState } from 'react';
 import { ChecklistPreview, PunchPreview } from '../../services/apiTypes';
+import { filterChecklistPreviews } from './filterChecklistPreviews';
+import { filterPunchPreviews } from './filterPunchPreviews';
 
 export enum Signatures {
     NOTCLEARED = 'Not cleared',
@@ -10,7 +12,7 @@ export enum Signatures {
     SIGNED = 'Signed not verified',
 }
 
-type Filter = {
+export type Filter = {
     status: string[];
     signature: string;
     responsible: string;
@@ -60,83 +62,23 @@ const useFilterFacade = (
     }, [scopeItems, punchItems]);
 
     useEffect(() => {
-        let filterCount = 0;
         if (punchItems != undefined && setShownPunches != undefined) {
-            let filtered = punchItems;
-            if (filter.status.length > 0) {
-                filtered = filtered.filter((item) => {
-                    return filter.status.indexOf(item.status) != -1;
-                });
-                filterCount++;
-            }
-            switch (filter.signature) {
-                case Signatures.NOTCLEARED:
-                    filtered = filtered.filter((item) => {
-                        return !item.cleared;
-                    });
-                    filterCount++;
-                    break;
-                case Signatures.CLEARED:
-                    filtered = filtered.filter((item) => {
-                        return item.cleared && !item.verified;
-                    });
-                    filterCount++;
-                    break;
-                default:
-            }
-            if (filter.responsible) {
-                filtered = filtered.filter((item) => {
-                    return item.responsibleCode === filter.responsible;
-                });
-                filterCount++;
-            }
-            if (filter.formType) {
-                filtered = filtered.filter((item) => {
-                    return item.formularType === filter.formType;
-                });
-                filterCount++;
-            }
+            const { filtered, filterCount } = filterPunchPreviews(
+                punchItems,
+                filter
+            );
             setShownPunches(filtered);
+            setFilterCount(filterCount);
         } else if (scopeItems != undefined && setShownScope != undefined) {
-            let filtered = scopeItems;
-            if (filter.status.length > 0) {
-                filtered = filtered.filter((item) => {
-                    return filter.status.indexOf(item.status) != -1;
-                });
-                filterCount++;
-            }
-            switch (filter.signature) {
-                case Signatures.NOTSIGNED:
-                    filtered = filtered.filter((item) => {
-                        return !item.isSigned;
-                    });
-                    filterCount++;
-                    break;
-                case Signatures.SIGNED:
-                    filtered = filtered.filter((item) => {
-                        return item.isSigned && !item.isVerified;
-                    });
-                    filterCount++;
-                    break;
-                default:
-            }
-            if (filter.responsible) {
-                filtered = filtered.filter((item) => {
-                    return item.responsibleCode === filter.responsible;
-                });
-                filterCount++;
-            }
-            if (filter.formType) {
-                filtered = filtered.filter((item) => {
-                    return item.formularType === filter.formType;
-                });
-                filterCount++;
-            }
+            const { filtered, filterCount } = filterChecklistPreviews(
+                scopeItems,
+                filter
+            );
             setShownScope(filtered);
+            setFilterCount(filterCount);
         } else {
             return;
         }
-        setFilterCount(filterCount);
     }, [filter, scopeItems, punchItems]);
 
     const handleStatusChange = (status: string): void => {
