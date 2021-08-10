@@ -2,13 +2,13 @@ import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import EdsIcon from '../../components/icons/EdsIcon';
-import ErrorPage from '../../components/error/ErrorPage';
 import CommAppContext from '../../contexts/McAppContext';
 import { COLORS } from '../../style/GlobalStyles';
 import PageHeader from '../../components/PageHeader';
 import Navbar from '../../components/navigation/Navbar';
 import useCommonHooks from '../../utils/useCommonHooks';
 import { Button } from '@equinor/eds-core-react';
+import { ErrorPage, ReloadButton } from '@equinor/procosys-webapp-components';
 
 export const SelectPlantWrapper = styled.main`
     display: flex;
@@ -52,12 +52,7 @@ const SelectPlant = (): JSX.Element => {
                         <Button key={'signOut'} onClick={auth.logout}>
                             Sign out
                         </Button>,
-                        <Button
-                            key={'refresh'}
-                            onClick={(): void => window.location.reload()}
-                        >
-                            Refresh
-                        </Button>,
+                        <ReloadButton key={'reload'} />,
                     ]}
                 />
             );

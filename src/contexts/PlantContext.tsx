@@ -5,9 +5,9 @@ import matchPlantInURL from '../utils/matchPlantInURL';
 import matchProjectInURL from '../utils/matchProjectInURL';
 import McAppContext, { AsyncStatus } from './McAppContext';
 import useCommonHooks from '../utils/useCommonHooks';
-import ErrorPage from '../components/error/ErrorPage';
 import Navbar from '../components/navigation/Navbar';
 import { Button } from '@equinor/eds-core-react';
+import { ErrorPage, ReloadButton } from '@equinor/procosys-webapp-components';
 
 export enum StorageKey {
     PLANT = 'currentPlant',
@@ -144,12 +144,7 @@ export const PlantContextProvider: React.FC<{ children: ReactNode }> = ({
                             <Button key={'signOut'} onClick={auth.logout}>
                                 Sign out
                             </Button>,
-                            <Button
-                                key={'refresh'}
-                                onClick={(): void => window.location.reload()}
-                            >
-                                Refresh
-                            </Button>,
+                            <ReloadButton key={'reload'} />,
                         ]}
                     />
                 </>

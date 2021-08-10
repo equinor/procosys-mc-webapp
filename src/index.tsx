@@ -1,4 +1,3 @@
-import ErrorPage from './components/error/ErrorPage';
 import LoadingPage from './components/loading/LoadingPage';
 import GlobalStyles from './style/GlobalStyles';
 import React from 'react';
@@ -10,7 +9,7 @@ import baseApiService from './services/baseApi';
 import procosysApiService from './services/procosysApi';
 import { getAppConfig, getAuthConfig } from './services/appConfiguration';
 import initializeAppInsights from './services/appInsights';
-import { Button } from '@equinor/eds-core-react';
+import { ErrorPage, ReloadButton } from '@equinor/procosys-webapp-components';
 
 const render = (content: JSX.Element): void => {
     ReactDOM.render(
@@ -100,14 +99,7 @@ const initialize = async () => {
                 <ErrorPage
                     title="Unable to initialize app"
                     description="Check your connection or reload this page and try again. If problem persists, contact customer support"
-                    actions={[
-                        <Button
-                            key={'refresh'}
-                            onClick={(): void => window.location.reload()}
-                        >
-                            Refresh
-                        </Button>,
-                    ]}
+                    actions={[<ReloadButton key={'reload'} />]}
                 />
             );
         }

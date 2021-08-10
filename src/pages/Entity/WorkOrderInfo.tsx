@@ -1,9 +1,12 @@
 import { Button } from '@equinor/eds-core-react';
-import { CollapsibleCard } from '@equinor/procosys-webapp-components';
+import {
+    CollapsibleCard,
+    ErrorPage,
+    HomeButton,
+} from '@equinor/procosys-webapp-components';
 import React from 'react';
 import styled from 'styled-components';
 import AsyncPage from '../../components/AsyncPage';
-import ErrorPage from '../../components/error/ErrorPage';
 import { AsyncStatus } from '../../contexts/McAppContext';
 import { isOfType } from '../../services/apiTypeGuards';
 import {
@@ -58,11 +61,9 @@ const WorkOrderInfo = ({
                 title="Unable to load Work Order info."
                 description="The Work Order info page is only available for Work Orders."
                 actions={[
-                    <Button key={'home'} onClick={(): void => history.push('')}>
-                        Home
-                    </Button>,
+                    <HomeButton key={'home'} />,
                     <Button
-                        key={'refresh'}
+                        key={'scopePage'}
                         onClick={(): void =>
                             history.push(removeSubdirectories(url, 1))
                         }

@@ -1,6 +1,6 @@
 import { Button } from '@equinor/eds-core-react';
 import React, { ReactNode, useEffect, useState } from 'react';
-import ErrorPage from '../components/error/ErrorPage';
+import { ErrorPage, ReloadButton } from '@equinor/procosys-webapp-components';
 import LoadingPage from '../components/loading/LoadingPage';
 import { Plant } from '../services/apiTypes';
 import { AppConfig, FeatureFlags } from '../services/appConfiguration';
@@ -70,12 +70,7 @@ export const McAppContextProvider: React.FC<McAppContextProviderProps> = ({
                         <Button key={'signOut'} onClick={auth.logout}>
                             Sign out
                         </Button>,
-                        <Button
-                            key={'refresh'}
-                            onClick={(): void => window.location.reload()}
-                        >
-                            Refresh
-                        </Button>,
+                        <ReloadButton key={'reload'} />,
                     ]}
                     title="Error: Could not load plants"
                     description="We were unable to get a list of available plants. Please check your connection, sign in with a different user or refresh this page."

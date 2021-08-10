@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useContext, ReactElement } from 'react';
-import ErrorPage from '../components/error/ErrorPage';
 import SkeletonLoader from '../components/loading/SkeletonLoader';
 import PlantContext from '../contexts/PlantContext';
 import McAppContext, { AsyncStatus } from '../contexts/McAppContext';
 import { Button } from '@equinor/eds-core-react';
 import useCommonHooks from '../utils/useCommonHooks';
+import { ErrorPage, HomeButton } from '@equinor/procosys-webapp-components';
 
 const withAccessControl =
     (
@@ -51,9 +51,7 @@ const withAccessControl =
                     <Button key={'signOut'} onClick={auth.logout}>
                         Sign out
                     </Button>,
-                    <Button key={'home'} onClick={(): void => history.push('')}>
-                        Home
-                    </Button>,
+                    <HomeButton key={'home'} />,
                 ]}
             />
         );
