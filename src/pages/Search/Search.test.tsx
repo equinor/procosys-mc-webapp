@@ -38,13 +38,6 @@ describe('<Search/> successes', () => {
             })
         );
     });
-
-    it('Renders the search type buttons', () => {
-        expect(screen.getByRole('button', { name: 'PO' })).toBeInTheDocument();
-        expect(screen.getByRole('button', { name: 'MC' })).toBeInTheDocument();
-        expect(screen.getByRole('button', { name: 'WO' })).toBeInTheDocument();
-        expect(screen.getByRole('button', { name: 'Tag' })).toBeInTheDocument();
-    });
     it('Renders MC SearchArea if MC SearchTypeButton is clicked and removes SearchArea if the button is cliced again', async () => {
         expect(
             await screen.findByText(testSavedSearch[0].name)

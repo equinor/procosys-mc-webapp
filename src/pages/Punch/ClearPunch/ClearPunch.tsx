@@ -180,7 +180,7 @@ const ClearPunch = ({
                             defaultValue={
                                 punchItem.actionByPerson
                                     ? `${punchItem.actionByPersonFirstName} ${punchItem.actionByPersonLastName}`
-                                    : undefined
+                                    : ''
                             }
                             readOnly
                             inputIcon={
@@ -210,7 +210,11 @@ const ClearPunch = ({
                                 type="date"
                                 id="DueDatePicker"
                                 role="datepicker"
-                                value={punchItem.dueDate?.split('T')[0]}
+                                value={
+                                    punchItem.dueDate
+                                        ? punchItem.dueDate.split('T')[0]
+                                        : ''
+                                }
                                 onChange={handleDueDateChange}
                                 onBlur={(): void => {
                                     updateDatabase(
@@ -301,9 +305,7 @@ const ClearPunch = ({
                         <TextField
                             type="number"
                             defaultValue={
-                                punchItem.estimate
-                                    ? punchItem.estimate
-                                    : undefined
+                                punchItem.estimate ? punchItem.estimate : ''
                             }
                             label="Estimate"
                             id="Estimate"
