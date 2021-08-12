@@ -6,9 +6,6 @@ declare global {
     interface Window {
         URL: any;
     }
-    interface FormData {
-        append(): any;
-    }
 }
 
 configure({

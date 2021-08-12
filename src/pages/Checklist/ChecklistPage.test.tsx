@@ -63,6 +63,9 @@ const expectPunchListPage = async (): Promise<void> => {
     expect(
         await screen.findByText('Test punch description')
     ).toBeInTheDocument();
+    expect(
+        await screen.findByRole('button', { name: 'filter button' })
+    ).toBeInTheDocument();
 };
 
 describe('<ChecklistPage>', () => {
@@ -179,6 +182,7 @@ describe('<ChecklistPage> New Punch', () => {
         await expectNewPunchPage();
     });
     it('Is possible to create a new punch', async () => {
+        jest.setTimeout(10000);
         renderChecklistPage('punch-list/new-punch');
         await expectNewPunchPage();
         // choosing punch category

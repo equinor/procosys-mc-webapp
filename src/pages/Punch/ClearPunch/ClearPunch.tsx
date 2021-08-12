@@ -1,6 +1,5 @@
 import { Label, NativeSelect, TextField } from '@equinor/eds-core-react';
 import React from 'react';
-import ErrorPage from '../../../components/error/ErrorPage';
 import SkeletonLoadingPage from '../../../components/loading/SkeletonLoader';
 import { AsyncStatus } from '../../../contexts/McAppContext';
 import {
@@ -19,7 +18,11 @@ import ensure from '../../../utils/ensure';
 import { Attachment, PunchItem } from '../../../services/apiTypes';
 import PersonsSearch from '../../../components/PersonsSearch/PersonsSearch';
 import { COLORS } from '../../../style/GlobalStyles';
-import { Attachments } from '@equinor/procosys-webapp-components';
+import {
+    Attachments,
+    ErrorPage,
+    ReloadButton,
+} from '@equinor/procosys-webapp-components';
 import { AttachmentsWrapper } from '../../Checklist/NewPunch/NewPunch';
 
 export const PunchWrapper = styled.main``;
@@ -180,7 +183,7 @@ const ClearPunch = ({
                             defaultValue={
                                 punchItem.actionByPerson
                                     ? `${punchItem.actionByPersonFirstName} ${punchItem.actionByPersonLastName}`
-                                    : undefined
+                                    : ''
                             }
                             readOnly
                             inputIcon={
@@ -210,7 +213,11 @@ const ClearPunch = ({
                                 type="date"
                                 id="DueDatePicker"
                                 role="datepicker"
-                                value={punchItem.dueDate?.split('T')[0]}
+                                value={
+                                    punchItem.dueDate
+                                        ? punchItem.dueDate.split('T')[0]
+                                        : ''
+                                }
                                 onChange={handleDueDateChange}
                                 onBlur={(): void => {
                                     updateDatabase(
@@ -301,9 +308,7 @@ const ClearPunch = ({
                         <TextField
                             type="number"
                             defaultValue={
-                                punchItem.estimate
-                                    ? punchItem.estimate
-                                    : undefined
+                                punchItem.estimate ? punchItem.estimate : ''
                             }
                             label="Estimate"
                             id="Estimate"
@@ -390,6 +395,7 @@ const ClearPunch = ({
                 <ErrorPage
                     title="Unable to load punch item."
                     description="Please check your connection, reload this page or try again later."
+                    actions={[<ReloadButton key={'reload'} />]}
                 />
             );
         } else {

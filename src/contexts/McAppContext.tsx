@@ -1,9 +1,9 @@
 import { Button } from '@equinor/eds-core-react';
 import React, { ReactNode, useEffect, useState } from 'react';
-import ErrorPage from '../components/error/ErrorPage';
+import { ErrorPage, ReloadButton } from '@equinor/procosys-webapp-components';
 import LoadingPage from '../components/loading/LoadingPage';
 import { Plant } from '../services/apiTypes';
-import { ProcosysApiSettings } from '../services/appConfiguration';
+import { AppConfig, FeatureFlags } from '../services/appConfiguration';
 import { IAuthService } from '../services/authService';
 import { ProcosysApiService } from '../services/procosysApi';
 
@@ -12,7 +12,8 @@ type McAppContextProps = {
     fetchPlantsStatus: AsyncStatus;
     api: ProcosysApiService;
     auth: IAuthService;
-    procosysApiSettings: ProcosysApiSettings;
+    appConfig: AppConfig;
+    featureFlags: FeatureFlags;
 };
 
 export enum AsyncStatus {
@@ -29,14 +30,16 @@ type McAppContextProviderProps = {
     children: ReactNode;
     auth: IAuthService;
     api: ProcosysApiService;
-    procosysApiSettings: ProcosysApiSettings;
+    appConfig: AppConfig;
+    featureFlags: FeatureFlags;
 };
 
 export const McAppContextProvider: React.FC<McAppContextProviderProps> = ({
     children,
     auth,
     api,
-    procosysApiSettings,
+    appConfig,
+    featureFlags,
 }: McAppContextProviderProps) => {
     const [availablePlants, setAvailablePlants] = useState<Plant[]>([]);
     const [fetchPlantsStatus, setFetchPlantsStatus] = useState<AsyncStatus>(
@@ -67,6 +70,7 @@ export const McAppContextProvider: React.FC<McAppContextProviderProps> = ({
                         <Button key={'signOut'} onClick={auth.logout}>
                             Sign out
                         </Button>,
+                        <ReloadButton key={'reload'} />,
                     ]}
                     title="Error: Could not load plants"
                     description="We were unable to get a list of available plants. Please check your connection, sign in with a different user or refresh this page."
@@ -81,7 +85,8 @@ export const McAppContextProvider: React.FC<McAppContextProviderProps> = ({
                 availablePlants,
                 api,
                 auth,
-                procosysApiSettings,
+                appConfig,
+                featureFlags,
             }}
         >
             {children}

@@ -1,7 +1,7 @@
 import React from 'react';
 import { MemoryRouter } from 'react-router-dom';
 import PlantContext from '../contexts/PlantContext';
-import CommAppContext, { AsyncStatus } from '../contexts/McAppContext';
+import McAppContext, { AsyncStatus } from '../contexts/McAppContext';
 import * as Msal from '@azure/msal-browser';
 import { Plant, Project } from '../services/apiTypes';
 import baseApiService from '../services/baseApi';
@@ -12,16 +12,30 @@ import authService from '../services/__mocks__/authService';
 import { testProjects, testPlants, dummyPermissions } from './dummyData';
 import { IAuthService } from '../services/authService';
 import { baseURL } from './setupServer';
-import { ProcosysApiSettings } from '../services/appConfiguration';
+import {
+    AppConfig,
+    FeatureFlags,
+    ProcosysApiSettings,
+} from '../services/appConfiguration';
 
 const client = new Msal.PublicClientApplication({
     auth: { clientId: 'testId', authority: 'testAuthority' },
 });
 
-const dummyApiSettings: ProcosysApiSettings = {
-    baseUrl: 'testUrl',
-    scope: [''],
-    apiVersion: '',
+const dummyAppConfig: AppConfig = {
+    procosysWebApi: {
+        baseUrl: 'testUrl',
+        scope: [''],
+        apiVersion: '',
+    },
+    appInsights: {
+        instrumentationKey: '',
+    },
+    ocrFunctionEndpoint: 'https://dummy-org-endpoint.com',
+};
+
+const dummyFeatureFlags: FeatureFlags = {
+    mcAppIsEnabled: true,
 };
 
 const authInstance = authService({ MSAL: client, scopes: ['testScope'] });
@@ -52,17 +66,18 @@ export const withMcAppContext = ({
 }: WithMcAppContextProps): JSX.Element => {
     return (
         <MemoryRouter initialEntries={['/test/sub/directory']}>
-            <CommAppContext.Provider
+            <McAppContext.Provider
                 value={{
                     availablePlants: plants,
                     fetchPlantsStatus: asyncStatus,
                     auth: auth,
                     api: api,
-                    procosysApiSettings: dummyApiSettings,
+                    appConfig: dummyAppConfig,
+                    featureFlags: dummyFeatureFlags,
                 }}
             >
                 {Component}
-            </CommAppContext.Provider>
+            </McAppContext.Provider>
         </MemoryRouter>
     );
 };

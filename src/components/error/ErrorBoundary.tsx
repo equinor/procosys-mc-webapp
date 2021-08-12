@@ -1,5 +1,9 @@
 import React, { ErrorInfo } from 'react';
-import ErrorPage from './ErrorPage';
+import {
+    ErrorPage,
+    HomeButton,
+    ReloadButton,
+} from '@equinor/procosys-webapp-components';
 
 type ErrorProps = {
     children: React.ReactChild;
@@ -38,6 +42,10 @@ class ErrorBoundary extends React.Component<ErrorProps, ErrorState> {
                 <ErrorPage
                     title={this.state.name ?? ''}
                     description={this.state.message ?? ''}
+                    actions={[
+                        <ReloadButton key={'reload'} />,
+                        <HomeButton key={'home'} />,
+                    ]}
                 />
             );
         }
