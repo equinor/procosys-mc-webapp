@@ -131,11 +131,11 @@ const Filter = ({
             return (
                 <>
                     <Radio
-                        label={Signatures.NOTCLEARED}
-                        checked={signatureChosen === Signatures.NOTCLEARED}
+                        label={Signatures.NOT_CLEARED}
+                        checked={signatureChosen === Signatures.NOT_CLEARED}
                         onChange={(): void => {
-                            handleSignatureChange(Signatures.NOTCLEARED);
-                            setSignatureChosen(Signatures.NOTCLEARED);
+                            handleSignatureChange(Signatures.NOT_CLEARED);
+                            setSignatureChosen(Signatures.NOT_CLEARED);
                         }}
                     />
                     <Radio
@@ -152,11 +152,11 @@ const Filter = ({
             return (
                 <>
                     <Radio
-                        label={Signatures.NOTSIGNED}
-                        checked={signatureChosen === Signatures.NOTSIGNED}
+                        label={Signatures.NOT_SIGNED}
+                        checked={signatureChosen === Signatures.NOT_SIGNED}
                         onChange={(): void => {
-                            handleSignatureChange(Signatures.NOTSIGNED);
-                            setSignatureChosen(Signatures.NOTSIGNED);
+                            handleSignatureChange(Signatures.NOT_SIGNED);
+                            setSignatureChosen(Signatures.NOT_SIGNED);
                         }}
                     />
                     <Radio

@@ -18,7 +18,7 @@ export const filterPunchPreviewsOnSignature = (
     arrayToFilter: PunchPreview[],
     signature: string
 ): PunchPreview[] => {
-    if (signature === Signatures.NOTCLEARED) {
+    if (signature === Signatures.NOT_CLEARED) {
         return arrayToFilter.filter((item) => {
             return !item.cleared;
         });
@@ -33,7 +33,7 @@ export const filterChecklistPreviewsOnSignature = (
     arrayToFilter: ChecklistPreview[],
     signature: string
 ): ChecklistPreview[] => {
-    if (signature === Signatures.NOTSIGNED) {
+    if (signature === Signatures.NOT_SIGNED) {
         return arrayToFilter.filter((item) => {
             return !item.isSigned;
         });
