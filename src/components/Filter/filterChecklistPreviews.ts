@@ -10,27 +10,36 @@ import { Filter } from './useFilterFacade';
 export const filterChecklistPreviews = (
     checklistPreviews: ChecklistPreview[],
     filter: Filter
-): { filtered: ChecklistPreview[]; filterCount: number } => {
-    let filtered = checklistPreviews;
+): { filteredChecklistPreviews: ChecklistPreview[]; filterCount: number } => {
+    let filteredChecklistPreviews = checklistPreviews;
     let filterCount = 0;
     if (filter.status.length > 0) {
-        filtered = filterOnStatus(filtered, filter.status);
+        filteredChecklistPreviews = filterOnStatus(
+            filteredChecklistPreviews,
+            filter.status
+        );
         filterCount++;
     }
     if (filter.signature) {
-        filtered = filterChecklistPreviewsOnSignature(
-            filtered,
+        filteredChecklistPreviews = filterChecklistPreviewsOnSignature(
+            filteredChecklistPreviews,
             filter.signature
         );
         filterCount++;
     }
     if (filter.responsible) {
-        filtered = filterOnResponsible(filtered, filter.responsible);
+        filteredChecklistPreviews = filterOnResponsible(
+            filteredChecklistPreviews,
+            filter.responsible
+        );
         filterCount++;
     }
     if (filter.formType) {
-        filtered = filterOnFormType(filtered, filter.formType);
+        filteredChecklistPreviews = filterOnFormType(
+            filteredChecklistPreviews,
+            filter.formType
+        );
         filterCount++;
     }
-    return { filtered, filterCount };
+    return { filteredChecklistPreviews, filterCount };
 };

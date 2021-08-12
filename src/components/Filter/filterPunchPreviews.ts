@@ -10,24 +10,36 @@ import { Filter } from './useFilterFacade';
 export const filterPunchPreviews = (
     punchPreviews: PunchPreview[],
     filter: Filter
-): { filtered: PunchPreview[]; filterCount: number } => {
-    let filtered = punchPreviews;
+): { filteredPunchPreviews: PunchPreview[]; filterCount: number } => {
+    let filteredPunchPreviews = punchPreviews;
     let filterCount = 0;
     if (filter.status.length > 0) {
-        filtered = filterOnStatus(filtered, filter.status);
+        filteredPunchPreviews = filterOnStatus(
+            filteredPunchPreviews,
+            filter.status
+        );
         filterCount++;
     }
     if (filter.signature) {
-        filtered = filterPunchPreviewsOnSignature(filtered, filter.signature);
+        filteredPunchPreviews = filterPunchPreviewsOnSignature(
+            filteredPunchPreviews,
+            filter.signature
+        );
         filterCount++;
     }
     if (filter.responsible) {
-        filtered = filterOnResponsible(filtered, filter.responsible);
+        filteredPunchPreviews = filterOnResponsible(
+            filteredPunchPreviews,
+            filter.responsible
+        );
         filterCount++;
     }
     if (filter.formType) {
-        filtered = filterOnFormType(filtered, filter.formType);
+        filteredPunchPreviews = filterOnFormType(
+            filteredPunchPreviews,
+            filter.formType
+        );
         filterCount++;
     }
-    return { filtered, filterCount };
+    return { filteredPunchPreviews, filterCount };
 };

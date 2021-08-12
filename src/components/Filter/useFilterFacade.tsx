@@ -6,9 +6,9 @@ import { filterChecklistPreviews } from './filterChecklistPreviews';
 import { filterPunchPreviews } from './filterPunchPreviews';
 
 export enum Signatures {
-    NOTCLEARED = 'Not cleared',
+    NOT_CLEARED = 'Not cleared',
     CLEARED = 'Cleared not verified',
-    NOTSIGNED = 'Not signed',
+    NOT_SIGNED = 'Not signed',
     SIGNED = 'Signed not verified',
 }
 
@@ -63,18 +63,16 @@ const useFilterFacade = (
 
     useEffect(() => {
         if (punchItems != undefined && setShownPunches != undefined) {
-            const { filtered, filterCount } = filterPunchPreviews(
+            const { filteredPunchPreviews, filterCount } = filterPunchPreviews(
                 punchItems,
                 filter
             );
-            setShownPunches(filtered);
+            setShownPunches(filteredPunchPreviews);
             setFilterCount(filterCount);
         } else if (scopeItems != undefined && setShownScope != undefined) {
-            const { filtered, filterCount } = filterChecklistPreviews(
-                scopeItems,
-                filter
-            );
-            setShownScope(filtered);
+            const { filteredChecklistPreviews, filterCount } =
+                filterChecklistPreviews(scopeItems, filter);
+            setShownScope(filteredChecklistPreviews);
             setFilterCount(filterCount);
         } else {
             return;
