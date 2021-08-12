@@ -2,11 +2,13 @@ import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import EdsIcon from '../../components/icons/EdsIcon';
-import ErrorPage from '../../components/error/ErrorPage';
 import CommAppContext from '../../contexts/McAppContext';
 import { COLORS } from '../../style/GlobalStyles';
 import PageHeader from '../../components/PageHeader';
 import Navbar from '../../components/navigation/Navbar';
+import useCommonHooks from '../../utils/useCommonHooks';
+import { Button } from '@equinor/eds-core-react';
+import { ErrorPage, ReloadButton } from '@equinor/procosys-webapp-components';
 
 export const SelectPlantWrapper = styled.main`
     display: flex;
@@ -38,6 +40,7 @@ export const SelectorButton = styled(Link)`
 
 const SelectPlant = (): JSX.Element => {
     const { availablePlants } = useContext(CommAppContext);
+    const { auth } = useCommonHooks();
 
     const content = (): JSX.Element => {
         if (availablePlants.length < 1) {
@@ -45,7 +48,13 @@ const SelectPlant = (): JSX.Element => {
                 <ErrorPage
                     title="No plants to show"
                     description="We were able to connect to the server, but there are no plants to show. Make sure you're logged in correctly, and that you have the necessary permissions"
-                ></ErrorPage>
+                    actions={[
+                        <Button key={'signOut'} onClick={auth.logout}>
+                            Sign out
+                        </Button>,
+                        <ReloadButton key={'reload'} />,
+                    ]}
+                />
             );
         } else {
             return (
