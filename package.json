@@ -2,6 +2,7 @@
   "name": "mc",
   "version": "0.1.0",
   "private": true,
+  "homepage": "./",
   "dependencies": {
     "@azure/msal-browser": "2.5.1",
     "@equinor/eds-core-react": "^0.12.1",
