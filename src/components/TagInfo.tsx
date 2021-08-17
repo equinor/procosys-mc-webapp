@@ -135,11 +135,7 @@ const TagInfo = ({ tagId }: TagInfoProps): JSX.Element => {
                     )}
                     {infoRow('Project', tagInfo?.projectDescription)}
                     {infoRow('MC Pkg', tagInfo?.mcPkgNo)}
-                    {infoRow(
-                        'Purchase order',
-                        tagInfo?.purchaseOrderTitle,
-                        tagInfo?.purchaseOrderNo
-                    )}
+                    {infoRow('Purchase order', tagInfo?.purchaseOrderTitle)}
                     {infoRow(
                         'Status',
                         tagInfo?.statusDescription,
