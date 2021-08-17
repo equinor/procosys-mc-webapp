@@ -2,6 +2,7 @@
 FROM node:14.9.0 as build
 WORKDIR /app
 COPY . /app
+RUN export PUBLIC_URL=https://apps.procosys.com/mc
 RUN yarn install
 RUN yarn build --mode=production
 
