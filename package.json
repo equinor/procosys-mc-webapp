@@ -1,7 +1,6 @@
 {
   "name": "mc",
   "version": "0.1.0",
-  "homepage": "https://apps.procosys.com/mc",
   "private": true,
   "dependencies": {
     "@azure/msal-browser": "2.5.1",
