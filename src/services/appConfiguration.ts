@@ -51,7 +51,7 @@ export const getAuthConfig = async () => {
         auth: {
             clientId: data.clientId,
             authority: data.authority,
-            redirectUri: window.location.origin,
+            redirectUri: window.location.origin + '/mc',
         },
     };
     const scopes = data.scopes;
