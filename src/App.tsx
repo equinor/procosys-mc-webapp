@@ -40,10 +40,6 @@ const App = ({
     appInsightsReactPlugin: reactPlugin,
     featureFlags,
 }: AppProps): JSX.Element => {
-    let rootDirectory = '';
-    if (window.location.pathname.substr(0, 5) === '/mc') {
-        rootDirectory = '/mc';
-    }
     return (
         <AppInsightsContext.Provider value={reactPlugin}>
             <McAppContextProvider
@@ -52,7 +48,7 @@ const App = ({
                 appConfig={appConfig}
                 featureFlags={featureFlags}
             >
-                <Router basename={rootDirectory}>
+                <Router basename={'/mc'}>
                     <ErrorBoundary>
                         <Switch>
                             <Route
