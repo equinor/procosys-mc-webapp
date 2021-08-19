@@ -13,7 +13,7 @@ export enum StorageKey {
     PLANT = 'currentPlant',
     PROJECT = 'currentProject',
     BOOKMARK = 'Procosys Bookmark',
-    REDIRECTPATH = 'ProCoSys-CWA-redirectPath',
+    REDIRECTPATH = 'ProCoSys-MCWA-redirectPath',
 }
 
 export type PlantContextProps = {
