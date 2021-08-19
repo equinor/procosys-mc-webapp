@@ -21,10 +21,9 @@ const authService = ({ MSAL, scopes }: IAuthServiceProps): IAuthService => {
     };
 
     const login = async (): Promise<void> => {
-        window.localStorage.setItem(
-            StorageKey.REDIRECTPATH,
-            window.location.pathname
-        );
+        let pathName = window.location.pathname;
+        if (pathName.substr(0, 3) === '/mc') pathName = '/' + pathName.slice(4);
+        window.localStorage.setItem(StorageKey.REDIRECTPATH, pathName);
         MSAL.loginRedirect({ scopes: scopes });
     };
 
