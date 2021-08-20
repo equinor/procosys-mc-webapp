@@ -8,6 +8,7 @@ RUN yarn build --mode=production
 # production environment
 FROM nginx:1.19.10-alpine
 ## add permissions for nginx user
+RUN apk add python3
 COPY --from=build /app/build /usr/share/nginx/html/mc
 COPY .docker/nginx/ /etc/nginx/
 COPY  .docker/scripts/ /etc/scripts/
