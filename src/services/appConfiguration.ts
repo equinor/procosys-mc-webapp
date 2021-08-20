@@ -44,7 +44,7 @@ type AppConfigResponse = {
 
 export const getAuthConfig = async () => {
     const { data } = await axios.get<AuthConfigResponse>(
-        'https://pcs-config-prod-func.azurewebsites.net/api/MCWebApp/Auth?'
+        Settings.authSettingsEndpoint
     );
     // Todo: TypeGuard authsettings
     const clientSettings = {
