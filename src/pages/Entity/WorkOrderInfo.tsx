@@ -1,15 +1,18 @@
 import { Button } from '@equinor/eds-core-react';
 import {
+    Attachments,
     CollapsibleCard,
     ErrorPage,
     HomeButton,
 } from '@equinor/procosys-webapp-components';
+import { CancelToken } from 'axios';
 import React from 'react';
 import styled from 'styled-components';
 import AsyncPage from '../../components/AsyncPage';
 import { AsyncStatus } from '../../contexts/McAppContext';
 import { isOfType } from '../../services/apiTypeGuards';
 import {
+    Attachment,
     McPkgPreview,
     PoPreview,
     Tag,
@@ -17,10 +20,11 @@ import {
 } from '../../services/apiTypes';
 import removeSubdirectories from '../../utils/removeSubdirectories';
 import useCommonHooks from '../../utils/useCommonHooks';
+import useSnackbar from '../../utils/useSnackbar';
 
 const TagInfoWrapper = styled.main`
     min-height: 0px;
-    padding: 16px 4% 0px 4%;
+    padding: 16px 4% 16px 4%;
     & p {
         word-break: break-word;
         margin: 0;
@@ -36,7 +40,8 @@ const WorkOrderInfo = ({
     workOrder,
     fetchWorkOrderStatus,
 }: WorkOrderInfoProps): JSX.Element => {
-    const { history, url } = useCommonHooks();
+    const { history, url, api, params } = useCommonHooks();
+    const { snackbar, setSnackbarText } = useSnackbar();
     if (
         workOrder === undefined ||
         isOfType<WoPreview>(workOrder, 'workOrderNo')
@@ -52,6 +57,52 @@ const WorkOrderInfo = ({
                     <CollapsibleCard cardTitle="Description">
                         <p>{workOrder?.description}</p>
                     </CollapsibleCard>
+                    <h5>Attachments</h5>
+                    <Attachments
+                        getAttachments={(
+                            cancelToken: CancelToken
+                        ): Promise<Attachment[]> =>
+                            api.getWorkOrderAttchments(
+                                params.plant,
+                                params.entityId,
+                                cancelToken
+                            )
+                        }
+                        getAttachment={(
+                            cancelToken: CancelToken,
+                            attachmentId: number
+                        ): Promise<Blob> =>
+                            api.getWorkOrderAttchment(
+                                params.plant,
+                                params.entityId,
+                                attachmentId,
+                                cancelToken
+                            )
+                        }
+                        postAttachment={(
+                            file: FormData,
+                            title: string
+                        ): Promise<void> =>
+                            api.postWorkOrderAttchment(
+                                params.plant,
+                                params.entityId,
+                                title,
+                                file
+                            )
+                        }
+                        deleteAttachment={(
+                            attachmentId: number
+                        ): Promise<void> =>
+                            api.deleteWorkOrderAttachment(
+                                params.plant,
+                                params.entityId,
+                                attachmentId
+                            )
+                        }
+                        setSnackbarText={setSnackbarText}
+                        readOnly={false}
+                    />
+                    {snackbar}
                 </TagInfoWrapper>
             </AsyncPage>
         );
