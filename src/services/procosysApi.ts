@@ -506,7 +506,7 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
         return data;
     };
 
-    const getWorkOrderAttchments = async (
+    const getWorkOrderAttachments = async (
         plantId: string,
         workOrderId: string,
         cancelToken: CancelToken
@@ -521,7 +521,7 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
         return data;
     };
 
-    const getWorkOrderAttchment = async (
+    const getWorkOrderAttachment = async (
         plantId: string,
         workOrderId: string,
         attachmentId: number,
@@ -544,7 +544,7 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
         return data as Blob;
     };
 
-    const postWorkOrderAttchment = async (
+    const postWorkOrderAttachment = async (
         plantId: string,
         workOrderId: string,
         title: string,
@@ -606,9 +606,9 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
         getSavedSearches,
         deleteSavedSearch,
         getSavedSearchResults,
-        getWorkOrderAttchments,
-        getWorkOrderAttchment,
-        postWorkOrderAttchment,
+        getWorkOrderAttachments,
+        getWorkOrderAttachment,
+        postWorkOrderAttachment,
         deleteWorkOrderAttachment,
     };
 };

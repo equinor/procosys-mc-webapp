@@ -62,7 +62,7 @@ const WorkOrderInfo = ({
                         getAttachments={(
                             cancelToken: CancelToken
                         ): Promise<Attachment[]> =>
-                            api.getWorkOrderAttchments(
+                            api.getWorkOrderAttachments(
                                 params.plant,
                                 params.entityId,
                                 cancelToken
@@ -72,7 +72,7 @@ const WorkOrderInfo = ({
                             cancelToken: CancelToken,
                             attachmentId: number
                         ): Promise<Blob> =>
-                            api.getWorkOrderAttchment(
+                            api.getWorkOrderAttachment(
                                 params.plant,
                                 params.entityId,
                                 attachmentId,
@@ -83,7 +83,7 @@ const WorkOrderInfo = ({
                             file: FormData,
                             title: string
                         ): Promise<void> =>
-                            api.postWorkOrderAttchment(
+                            api.postWorkOrderAttachment(
                                 params.plant,
                                 params.entityId,
                                 title,
