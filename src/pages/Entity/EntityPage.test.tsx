@@ -211,6 +211,7 @@ describe('<EntityPage> in-page routing', () => {
             await screen.findByText(testWoPreview[0].workOrderNo)
         ).toBeInTheDocument();
         expect(await screen.findByText('Description')).toBeInTheDocument();
+        expect(await screen.findByText('Attachments')).toBeInTheDocument();
         await waitFor(() =>
             expect(
                 screen.queryByText(testScope[0].tagNo)

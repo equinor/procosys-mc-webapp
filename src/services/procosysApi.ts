@@ -193,7 +193,7 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
         cancelToken: CancelToken
     ): Promise<Attachment[]> => {
         const { data } = await axios.get(
-            `PunchListItem/Attachments?plantId=PCS$${plantId}&punchItemId=${punchItemId}&thumbnailSize=32${apiVersion}`,
+            `PunchListItem/Attachments?plantId=PCS$${plantId}&punchItemId=${punchItemId}&thumbnailSize=128${apiVersion}`,
             {
                 cancelToken: cancelToken,
             }
@@ -506,6 +506,76 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
         return data;
     };
 
+    const getWorkOrderAttachments = async (
+        plantId: string,
+        workOrderId: string,
+        cancelToken: CancelToken
+    ): Promise<Attachment[]> => {
+        const { data } = await axios.get(
+            `WorkOrder/Attachments?plantId=PCS$${plantId}&workOrderId=${workOrderId}&thumbnailSize=128${apiVersion}`,
+            { cancelToken }
+        );
+        if (!isArrayOfType<Attachment>(data, 'fileName')) {
+            throw Error(typeGuardErrorMessage('attachments'));
+        }
+        return data;
+    };
+
+    const getWorkOrderAttachment = async (
+        plantId: string,
+        workOrderId: string,
+        attachmentId: number,
+        cancelToken: CancelToken
+    ): Promise<Blob> => {
+        const { data } = await axios.get(
+            `WorkOrder/Attachment?plantId=PCS$${plantId}&workOrderId=${workOrderId}&attachmentId=${attachmentId}${apiVersion}`,
+            {
+                cancelToken: cancelToken,
+                responseType: 'blob',
+                headers: {
+                    'Content-Disposition':
+                        'attachment; filename="filename.jpg"',
+                },
+            }
+        );
+        if (!isOfType<Blob>(data, 'stream')) {
+            throw Error(typeGuardErrorMessage('attachments'));
+        }
+        return data as Blob;
+    };
+
+    const postWorkOrderAttachment = async (
+        plantId: string,
+        workOrderId: string,
+        title: string,
+        file: FormData
+    ): Promise<void> => {
+        await axios.post(
+            `WorkOrder/Attachment?plantId=PCS$${plantId}&workOrderId=${workOrderId}&title=${title}${apiVersion}`,
+            file,
+            {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            }
+        );
+    };
+
+    const deleteWorkOrderAttachment = async (
+        plantId: string,
+        workOrderId: string,
+        attachmentId: number
+    ): Promise<void> => {
+        const dto = {
+            workOrderId: parseInt(workOrderId),
+            AttachmentId: attachmentId,
+        };
+        await axios.delete(
+            `WorkOrder/Attachment?plantId=PCS$${plantId}${apiVersion}`,
+            { data: dto }
+        );
+    };
+
     return {
         getTag,
         deletePunchAttachment,
@@ -536,6 +606,10 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
         getSavedSearches,
         deleteSavedSearch,
         getSavedSearchResults,
+        getWorkOrderAttachments,
+        getWorkOrderAttachment,
+        postWorkOrderAttachment,
+        deleteWorkOrderAttachment,
     };
 };
 
