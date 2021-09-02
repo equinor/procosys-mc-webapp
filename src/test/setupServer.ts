@@ -92,6 +92,10 @@ export const ENDPOINTS = {
 
     //PERSON
     getPersons: `${baseURL}/Person/PersonSearch`,
+
+    //Work Order Attachments
+    getWorkOrderAttachments: `${baseURL}/WorkOrder/Attachments`,
+    getWorkOrderAttachment: `${baseURL}/WorkOrder/Attachment`,
 };
 
 export const server = setupServer(
@@ -307,6 +311,17 @@ export const server = setupServer(
     }),
     rest.put(ENDPOINTS.putPunchEstimate, (_, response, context) => {
         return response(context.status(200));
+    }),
+
+    // Work Order Attachments
+    rest.get(ENDPOINTS.getWorkOrderAttachment, (_, response, context) => {
+        return response(context.json(new Blob()), context.status(200));
+    }),
+    rest.get(ENDPOINTS.getWorkOrderAttachments, (_, response, context) => {
+        return response(
+            context.json(dummyAttachmentsResponse),
+            context.status(200)
+        );
     })
 );
 
