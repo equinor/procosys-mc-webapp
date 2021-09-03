@@ -7,7 +7,7 @@
     "@azure/msal-browser": "2.5.1",
     "@equinor/eds-core-react": "^0.12.1",
     "@equinor/eds-icons": "^0.6.2",
-    "@equinor/procosys-webapp-components": "^1.6.7",
+    "@equinor/procosys-webapp-components": "^1.8.0",
     "@microsoft/applicationinsights-react-js": "^3.0.5",
     "@microsoft/applicationinsights-web": "^2.5.11",
     "axios": "^0.21.0",
