@@ -84,8 +84,9 @@ const useClearPunchFacade = (
             setUpdatePunchStatus(AsyncStatus.SUCCESS);
             setSnackbarText('Change successfully saved.');
         } catch (error) {
+            const pcsError = error as Error;
             setUpdatePunchStatus(AsyncStatus.ERROR);
-            setSnackbarText(error.toString());
+            setSnackbarText(pcsError.toString());
         }
     };
 
