@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import Axios from 'axios';
-import Navbar from '../../components/navigation/Navbar';
 import { AsyncStatus } from '../../contexts/McAppContext';
 import {
     ChecklistSavedSearchResult,
@@ -12,7 +11,11 @@ import useCommonHooks from '../../utils/useCommonHooks';
 import { SavedSearchType } from '../Search/SavedSearches/SavedSearchResult';
 import AsyncPage from '../../components/AsyncPage';
 import { isArrayOfType } from '../../services/apiTypeGuards';
-import { InfoItem } from '@equinor/procosys-webapp-components';
+import {
+    BackButton,
+    InfoItem,
+    Navbar,
+} from '@equinor/procosys-webapp-components';
 import styled from 'styled-components';
 import PageHeader from '../../components/PageHeader';
 
@@ -159,11 +162,9 @@ const SavedSearchPage = (): JSX.Element => {
         <main>
             <Navbar
                 noBorder
-                leftContent={{
-                    name: 'back',
-                    label: 'Back',
-                    url: `${removeSubdirectories(url, 3)}`,
-                }}
+                leftContent={
+                    <BackButton to={`${removeSubdirectories(url, 3)}`} />
+                }
             />
             <AsyncPage
                 errorMessage={

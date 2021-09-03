@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import Axios from 'axios';
 import EdsIcon from '../../components/icons/EdsIcon';
 import FooterButton from '../../components/navigation/FooterButton';
-import Navbar from '../../components/navigation/Navbar';
 import NavigationFooter from '../../components/navigation/NavigationFooter';
 import withAccessControl from '../../services/withAccessControl';
 import useCommonHooks from '../../utils/useCommonHooks';
@@ -12,10 +11,14 @@ import NewPunch from './NewPunch/NewPunch';
 import { AsyncStatus } from '../../contexts/McAppContext';
 import { ChecklistResponse, PunchPreview } from '../../services/apiTypes';
 import NavigationFooterShell from '../../components/navigation/NavigationFooterShell';
-import { DotProgress } from '@equinor/eds-core-react';
+import { Button, DotProgress } from '@equinor/eds-core-react';
 import { DetailsWrapper } from '../Entity/EntityPage';
 import TagInfo from '../../components/TagInfo';
-import { InfoItem } from '@equinor/procosys-webapp-components';
+import {
+    BackButton,
+    InfoItem,
+    Navbar,
+} from '@equinor/procosys-webapp-components';
 import ChecklistPunchList from './ChecklistPunchList';
 import removeSubdirectories from '../../utils/removeSubdirectories';
 
@@ -166,21 +169,32 @@ const ChecklistPage = (): JSX.Element => {
     return (
         <>
             <Navbar
-                leftContent={{
-                    name: 'back',
-                    label: 'Back',
-                    url: history.location.pathname.includes('/new-punch')
-                        ? `${removeSubdirectories(
-                              history.location.pathname,
-                              1
-                          )}`
-                        : `${removeSubdirectories(url, 2)}`,
-                }}
+                leftContent={
+                    <BackButton
+                        to={
+                            history.location.pathname.includes('/new-punch')
+                                ? `${removeSubdirectories(
+                                      history.location.pathname,
+                                      1
+                                  )}`
+                                : `${removeSubdirectories(url, 2)}`
+                        }
+                    />
+                }
                 midContent={'MCCR'}
                 rightContent={
-                    history.location.pathname.includes('/new-punch')
-                        ? undefined
-                        : { name: 'newPunch', url: `${url}/punch-list` }
+                    history.location.pathname.includes(
+                        '/new-punch'
+                    ) ? undefined : (
+                        <Button
+                            variant="ghost"
+                            onClick={(): void =>
+                                history.push(`${url}/punch-list/new-punch`)
+                            }
+                        >
+                            New punch
+                        </Button>
+                    )
                 }
             />
             {determineDetailsToRender()}

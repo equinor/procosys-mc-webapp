@@ -1,13 +1,17 @@
 import React, { ReactNode, useContext, useEffect, useState } from 'react';
-import LoadingPage from '../components/loading/LoadingPage';
 import { Plant, Project } from '../services/apiTypes';
 import matchPlantInURL from '../utils/matchPlantInURL';
 import matchProjectInURL from '../utils/matchProjectInURL';
 import McAppContext, { AsyncStatus } from './McAppContext';
 import useCommonHooks from '../utils/useCommonHooks';
-import Navbar from '../components/navigation/Navbar';
 import { Button } from '@equinor/eds-core-react';
-import { ErrorPage, ReloadButton } from '@equinor/procosys-webapp-components';
+import {
+    LoadingPage,
+    ErrorPage,
+    Navbar,
+    ProcosysButton,
+    ReloadButton,
+} from '@equinor/procosys-webapp-components';
 
 export enum StorageKey {
     PLANT = 'currentPlant',
@@ -128,13 +132,11 @@ export const PlantContextProvider: React.FC<{ children: ReactNode }> = ({
         return true;
     };
 
-    const Lala = ['lalal', 'lala'];
-
     if (!renderChildren()) {
         if (fetchProjectsAndPermissionsStatus === AsyncStatus.ERROR) {
             return (
                 <>
-                    <Navbar />
+                    <Navbar leftContent={<ProcosysButton />} />
                     <ErrorPage
                         title={'Unable to obtain permissions.'}
                         description={
