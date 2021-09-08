@@ -59,11 +59,13 @@ const WorkOrderInfo = ({
                 }
             >
                 <TagInfoWrapper>
-                    <CollapsibleCard cardTitle="Description">
-                        <Description>
-                            {removeHtmlFromText(workOrder?.description)}
-                        </Description>
-                    </CollapsibleCard>
+                    {workOrder?.description && (
+                        <CollapsibleCard cardTitle="Description">
+                            <Description>
+                                {removeHtmlFromText(workOrder?.description)}
+                            </Description>
+                        </CollapsibleCard>
+                    )}
                     <h5>Attachments</h5>
                     <Attachments
                         getAttachments={(
