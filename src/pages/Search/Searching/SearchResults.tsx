@@ -7,7 +7,6 @@ import {
     TagPreview,
     WoPreview,
 } from '../../../services/apiTypes';
-import SkeletonLoadingPage from '../../../components/loading/SkeletonLoader';
 import { SearchType } from '../Search';
 import McDetails from '../../../components/detailCards/McDetails';
 import styled from 'styled-components';
@@ -16,6 +15,7 @@ import EntityDetails from '../../../components/detailCards/EntityDetails';
 import TextIcon from '../../../components/detailCards/TextIcon';
 import useCommonHooks from '../../../utils/useCommonHooks';
 import { COLORS } from '../../../style/GlobalStyles';
+import { SkeletonLoadingPage } from '@equinor/procosys-webapp-components';
 
 const SearchResultAmountWrapper = styled.h6`
     margin: 10px 0px;

@@ -3,8 +3,10 @@ import Axios from 'axios';
 import { AsyncStatus } from '../../../contexts/McAppContext';
 import { SavedSearch } from '../../../services/apiTypes';
 import useCommonHooks from '../../../utils/useCommonHooks';
-import { CollapsibleCard } from '@equinor/procosys-webapp-components';
-import SkeletonLoadingPage from '../../../components/loading/SkeletonLoader';
+import {
+    CollapsibleCard,
+    SkeletonLoadingPage,
+} from '@equinor/procosys-webapp-components';
 import SavedSearchResult from './SavedSearchResult';
 import styled from 'styled-components';
 import { Button, Scrim } from '@equinor/eds-core-react';

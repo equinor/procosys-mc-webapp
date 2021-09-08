@@ -1,6 +1,5 @@
 import { Label, NativeSelect, TextField } from '@equinor/eds-core-react';
 import React from 'react';
-import SkeletonLoadingPage from '../../../components/loading/SkeletonLoader';
 import { AsyncStatus } from '../../../contexts/McAppContext';
 import {
     DateField,
@@ -22,6 +21,7 @@ import {
     Attachments,
     ErrorPage,
     ReloadButton,
+    SkeletonLoadingPage,
 } from '@equinor/procosys-webapp-components';
 import { AttachmentsWrapper } from '../../Checklist/NewPunch/NewPunch';
 

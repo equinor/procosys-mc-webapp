@@ -3,7 +3,6 @@ import { Route, Switch } from 'react-router-dom';
 import Axios from 'axios';
 import EdsIcon from '../../components/icons/EdsIcon';
 import FooterButton from '../../components/navigation/FooterButton';
-import Navbar from '../../components/navigation/Navbar';
 import NavigationFooter from '../../components/navigation/NavigationFooter';
 import withAccessControl from '../../services/withAccessControl';
 import { COLORS } from '../../style/GlobalStyles';
@@ -13,8 +12,12 @@ import ClearPunch from './ClearPunch/ClearPunch';
 import { PunchItem } from '../../services/apiTypes';
 import { AsyncStatus } from '../../contexts/McAppContext';
 import VerifyPunch from './VerifyPunch/VerifyPunch';
-import SkeletonLoadingPage from '../../components/loading/SkeletonLoader';
-import { InfoItem } from '@equinor/procosys-webapp-components';
+import {
+    SkeletonLoadingPage,
+    BackButton,
+    InfoItem,
+    Navbar,
+} from '@equinor/procosys-webapp-components';
 import { DetailsWrapper } from '../Entity/EntityPage';
 import { DotProgress } from '@equinor/eds-core-react';
 import AsyncPage from '../../components/AsyncPage';
@@ -100,11 +103,11 @@ const PunchPage = (): JSX.Element => {
         <>
             <Navbar
                 noBorder
-                leftContent={{
-                    name: 'back',
-                    label: 'Back',
-                    url: `${removeSubdirectories(url, 2)}/punch-list`,
-                }}
+                leftContent={
+                    <BackButton
+                        to={`${removeSubdirectories(url, 2)}/punch-list`}
+                    />
+                }
                 midContent="Punch Item"
             />
             {determineDetailsCard()}

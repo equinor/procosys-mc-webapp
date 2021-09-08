@@ -1,10 +1,13 @@
 import React, { useState, useEffect, useContext, ReactElement } from 'react';
-import SkeletonLoader from '../components/loading/SkeletonLoader';
 import PlantContext from '../contexts/PlantContext';
 import McAppContext, { AsyncStatus } from '../contexts/McAppContext';
 import { Button } from '@equinor/eds-core-react';
 import useCommonHooks from '../utils/useCommonHooks';
-import { ErrorPage, HomeButton } from '@equinor/procosys-webapp-components';
+import {
+    ErrorPage,
+    HomeButton,
+    SkeletonLoadingPage,
+} from '@equinor/procosys-webapp-components';
 
 const withAccessControl =
     (
@@ -17,7 +20,7 @@ const withAccessControl =
         const [checkPermissionsStatus, setCheckPermissionsStatus] = useState(
             AsyncStatus.LOADING
         );
-        const { history, auth } = useCommonHooks();
+        const { auth } = useCommonHooks();
         useEffect(() => {
             if (permissions.length < 1) return;
             if (
@@ -32,11 +35,13 @@ const withAccessControl =
         }, [permissions]);
 
         if (checkPermissionsStatus === AsyncStatus.LOADING) {
-            return <SkeletonLoader text="Checking permissions" />;
+            return <SkeletonLoadingPage text="Checking permissions" />;
         }
 
         if (!featureFlags.mcAppIsEnabled) {
-            return <ErrorPage title="This app is disabled" />;
+            return (
+                <ErrorPage title="This app is currently disabled. See procosys.com for more info." />
+            );
         }
 
         if (checkPermissionsStatus === AsyncStatus.SUCCESS) {

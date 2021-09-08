@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import withAccessControl from '../../services/withAccessControl';
 import styled from 'styled-components';
-import Navbar from '../../components/navigation/Navbar';
 import SearchArea from './Searching/SearchArea';
 import SearchTypeButton from './SearchTypeButton';
 import SavedSearches from './SavedSearches/SavedSearches';
 import useSnackbar from '../../utils/useSnackbar';
+import { Navbar, ProcosysButton } from '@equinor/procosys-webapp-components';
+import SideMenu from '../../components/navigation/SideMenu';
 
 const SearchPageWrapper = styled.main`
     padding: 0 4%;
@@ -45,9 +46,8 @@ const Search = (): JSX.Element => {
     return (
         <SearchPageWrapper>
             <Navbar
-                leftContent={{
-                    name: 'hamburger',
-                }}
+                leftContent={<ProcosysButton />}
+                rightContent={<SideMenu />}
             />
             <p>Search for</p>
             <ButtonsWrapper>

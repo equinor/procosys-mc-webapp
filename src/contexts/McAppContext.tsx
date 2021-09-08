@@ -1,7 +1,10 @@
 import { Button } from '@equinor/eds-core-react';
 import React, { ReactNode, useEffect, useState } from 'react';
-import { ErrorPage, ReloadButton } from '@equinor/procosys-webapp-components';
-import LoadingPage from '../components/loading/LoadingPage';
+import {
+    ErrorPage,
+    ReloadButton,
+    LoadingPage,
+} from '@equinor/procosys-webapp-components';
 import { Plant } from '../services/apiTypes';
 import { AppConfig, FeatureFlags } from '../services/appConfiguration';
 import { IAuthService } from '../services/authService';

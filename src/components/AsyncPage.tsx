@@ -3,7 +3,7 @@ import React from 'react';
 import { AsyncStatus } from '../contexts/McAppContext';
 import { COLORS } from '../style/GlobalStyles';
 import EdsIcon from './icons/EdsIcon';
-import SkeletonLoadingPage from './loading/SkeletonLoader';
+import { SkeletonLoadingPage } from '@equinor/procosys-webapp-components';
 
 type AsyncPageProps = {
     fetchStatus: AsyncStatus;
