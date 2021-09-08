@@ -18,6 +18,7 @@ import {
     Tag,
     WoPreview,
 } from '../../services/apiTypes';
+import { removeHtmlFromText } from '../../utils/removeHtmlFromText';
 import removeSubdirectories from '../../utils/removeSubdirectories';
 import useCommonHooks from '../../utils/useCommonHooks';
 import useSnackbar from '../../utils/useSnackbar';
@@ -29,6 +30,10 @@ const TagInfoWrapper = styled.main`
         word-break: break-word;
         margin: 0;
     }
+`;
+
+const Description = styled.p`
+    white-space: pre-line;
 `;
 
 type WorkOrderInfoProps = {
@@ -55,7 +60,9 @@ const WorkOrderInfo = ({
             >
                 <TagInfoWrapper>
                     <CollapsibleCard cardTitle="Description">
-                        <p>{workOrder?.description}</p>
+                        <Description>
+                            {removeHtmlFromText(workOrder?.description)}
+                        </Description>
                     </CollapsibleCard>
                     <h5>Attachments</h5>
                     <Attachments
