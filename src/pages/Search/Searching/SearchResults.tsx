@@ -26,9 +26,10 @@ const SearchResultAmountWrapper = styled.h6`
 type SearchResultsProps = {
     searchStatus: SearchStatus;
     searchResults: SearchResultsType;
-    searchType: SearchType;
+    searchType: string;
 };
 
+// TODO: descide what to do if search type is not in the SearchType enum
 const SearchResults = ({
     searchStatus,
     searchResults,
@@ -171,7 +172,19 @@ const SearchResults = ({
         return <></>;
     };
 
-    if (
+    if (searchType in SearchType === false) {
+        return (
+            <div>
+                <p>
+                    <i>
+                        The chosen search type is not supported. Please choose a
+                        supported search type by clicking one of the buttons
+                        above.
+                    </i>
+                </p>
+            </div>
+        );
+    } else if (
         searchStatus === SearchStatus.SUCCESS &&
         searchResults.items.length > 0
     ) {
