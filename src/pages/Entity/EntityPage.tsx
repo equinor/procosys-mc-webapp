@@ -25,11 +25,14 @@ import McDetails from '../../components/detailCards/McDetails';
 import { SearchType } from '../Search/Search';
 import { URLError } from '../../utils/matchPlantInURL';
 import { isOfType } from '../../services/apiTypeGuards';
-import EntityDetails from '../../components/detailCards/EntityDetails';
-import TextIcon from '../../components/detailCards/TextIcon';
 import WorkOrderInfo from './WorkOrderInfo';
 import removeSubdirectories from '../../utils/removeSubdirectories';
-import { BackButton, Navbar } from '@equinor/procosys-webapp-components';
+import {
+    BackButton,
+    EntityDetails,
+    Navbar,
+    TextIcon,
+} from '@equinor/procosys-webapp-components';
 
 const EntityPageWrapper = styled.main``;
 

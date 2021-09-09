@@ -11,11 +11,13 @@ import { SearchType } from '../Search';
 import McDetails from '../../../components/detailCards/McDetails';
 import styled from 'styled-components';
 import { isArrayOfType } from '../../../services/apiTypeGuards';
-import EntityDetails from '../../../components/detailCards/EntityDetails';
-import TextIcon from '../../../components/detailCards/TextIcon';
 import useCommonHooks from '../../../utils/useCommonHooks';
 import { COLORS } from '../../../style/GlobalStyles';
-import { SkeletonLoadingPage } from '@equinor/procosys-webapp-components';
+import {
+    EntityDetails,
+    SkeletonLoadingPage,
+    TextIcon,
+} from '@equinor/procosys-webapp-components';
 
 const SearchResultAmountWrapper = styled.h6`
     margin: 10px 0px;
