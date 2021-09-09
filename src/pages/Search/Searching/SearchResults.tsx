@@ -29,7 +29,6 @@ type SearchResultsProps = {
     searchType: string;
 };
 
-// TODO: descide what to do if search type is not in the SearchType enum
 const SearchResults = ({
     searchStatus,
     searchResults,

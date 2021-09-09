@@ -7,7 +7,7 @@ import useSnackbar from '../../utils/useSnackbar';
 import {
     Navbar,
     ProcosysButton,
-    SearchButton as SearchTypeButton,
+    SearchTypeButton,
 } from '@equinor/procosys-webapp-components';
 import SideMenu from '../../components/navigation/SideMenu';
 
