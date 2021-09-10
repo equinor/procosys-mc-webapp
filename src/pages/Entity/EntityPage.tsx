@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Route, Switch } from 'react-router-dom';
 import Scope from './Scope/Scope';
-import PunchList from './PunchList/PunchList';
 import styled from 'styled-components';
 import useCommonHooks from '../../utils/useCommonHooks';
 import { AsyncStatus } from '../../contexts/McAppContext';
@@ -29,7 +28,11 @@ import EntityDetails from '../../components/detailCards/EntityDetails';
 import TextIcon from '../../components/detailCards/TextIcon';
 import WorkOrderInfo from './WorkOrderInfo';
 import removeSubdirectories from '../../utils/removeSubdirectories';
-import { BackButton, Navbar } from '@equinor/procosys-webapp-components';
+import {
+    BackButton,
+    Navbar,
+    PunchList,
+} from '@equinor/procosys-webapp-components';
 
 const EntityPageWrapper = styled.main``;
 
@@ -314,6 +317,7 @@ const EntityPage = (): JSX.Element => {
                         path={`${path}/punch-list`}
                         render={(): JSX.Element => (
                             <PunchList
+                                url={url}
                                 punchList={punchList}
                                 fetchPunchListStatus={fetchPunchListStatus}
                             />
