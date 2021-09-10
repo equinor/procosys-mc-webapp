@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { Route, Switch } from 'react-router-dom';
-import Scope from './Scope/Scope';
 import styled from 'styled-components';
 import useCommonHooks from '../../utils/useCommonHooks';
 import { AsyncStatus } from '../../contexts/McAppContext';
@@ -32,6 +31,7 @@ import {
     BackButton,
     Navbar,
     PunchList,
+    Scope,
 } from '@equinor/procosys-webapp-components';
 
 const EntityPageWrapper = styled.main``;
@@ -307,6 +307,7 @@ const EntityPage = (): JSX.Element => {
                         path={`${path}`}
                         render={(): JSX.Element => (
                             <Scope
+                                url={url}
                                 scope={scope}
                                 fetchScopeStatus={fetchScopeStatus}
                             />
