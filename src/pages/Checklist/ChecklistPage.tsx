@@ -16,10 +16,10 @@ import { DetailsWrapper } from '../Entity/EntityPage';
 import TagInfo from '../../components/TagInfo';
 import {
     BackButton,
+    ChecklistPunchList,
     InfoItem,
     Navbar,
 } from '@equinor/procosys-webapp-components';
-import ChecklistPunchList from './ChecklistPunchList';
 import removeSubdirectories from '../../utils/removeSubdirectories';
 
 const ChecklistPage = (): JSX.Element => {
@@ -220,6 +220,7 @@ const ChecklistPage = (): JSX.Element => {
                     path={`${path}/punch-list`}
                     render={(): JSX.Element => (
                         <ChecklistPunchList
+                            url={url}
                             punchList={punchList}
                             fetchPunchListStatus={fetchPunchListStatus}
                         />
