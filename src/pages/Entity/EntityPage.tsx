@@ -307,7 +307,6 @@ const EntityPage = (): JSX.Element => {
                         path={`${path}`}
                         render={(): JSX.Element => (
                             <Scope
-                                url={url}
                                 scope={scope}
                                 fetchScopeStatus={fetchScopeStatus}
                             />
@@ -318,7 +317,6 @@ const EntityPage = (): JSX.Element => {
                         path={`${path}/punch-list`}
                         render={(): JSX.Element => (
                             <PunchList
-                                url={url}
                                 punchList={punchList}
                                 fetchPunchListStatus={fetchPunchListStatus}
                             />

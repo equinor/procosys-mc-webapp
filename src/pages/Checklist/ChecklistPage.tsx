@@ -16,9 +16,9 @@ import { DetailsWrapper } from '../Entity/EntityPage';
 import TagInfo from '../../components/TagInfo';
 import {
     BackButton,
-    ChecklistPunchList,
     InfoItem,
     Navbar,
+    PunchList,
 } from '@equinor/procosys-webapp-components';
 import removeSubdirectories from '../../utils/removeSubdirectories';
 
@@ -167,7 +167,7 @@ const ChecklistPage = (): JSX.Element => {
     };
 
     return (
-        <>
+        <main>
             <Navbar
                 leftContent={
                     <BackButton
@@ -219,10 +219,10 @@ const ChecklistPage = (): JSX.Element => {
                     exact
                     path={`${path}/punch-list`}
                     render={(): JSX.Element => (
-                        <ChecklistPunchList
-                            url={url}
+                        <PunchList
                             punchList={punchList}
                             fetchPunchListStatus={fetchPunchListStatus}
+                            isChecklistPunchList
                         />
                     )}
                 />
@@ -233,7 +233,7 @@ const ChecklistPage = (): JSX.Element => {
                 />
             </Switch>
             {determineFooterToRender()}
-        </>
+        </main>
     );
 };
 
