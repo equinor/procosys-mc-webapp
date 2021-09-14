@@ -12,11 +12,8 @@ import {
     PoPreview,
 } from '../../services/apiTypes';
 import { DotProgress } from '@equinor/eds-core-react';
-import NavigationFooterShell from '../../components/navigation/NavigationFooterShell';
 import withAccessControl from '../../services/withAccessControl';
 import Axios from 'axios';
-import NavigationFooter from '../../components/navigation/NavigationFooter';
-import FooterButton from '../../components/navigation/FooterButton';
 import EdsIcon from '../../components/icons/EdsIcon';
 import { COLORS } from '../../style/GlobalStyles';
 import McDetails from '../../components/detailCards/McDetails';
@@ -29,7 +26,9 @@ import WorkOrderInfo from './WorkOrderInfo';
 import removeSubdirectories from '../../utils/removeSubdirectories';
 import {
     BackButton,
+    FooterButton,
     Navbar,
+    NavigationFooter,
     PunchList,
     Scope,
 } from '@equinor/procosys-webapp-components';
@@ -58,6 +57,9 @@ const EntityPage = (): JSX.Element => {
     const [fetchPunchListStatus, setFetchPunchListStatus] = useState(
         AsyncStatus.LOADING
     );
+    const [fetchFooterStatus, setFetchFooterStatus] = useState(
+        AsyncStatus.LOADING
+    );
     const [fetchDetailsStatus, setFetchDetailsStatus] = useState(
         AsyncStatus.LOADING
     );
@@ -72,41 +74,37 @@ const EntityPage = (): JSX.Element => {
     useEffect(() => {
         (async (): Promise<void> => {
             try {
-                const punchListFromApi = await api.getPunchList(
-                    params.plant,
-                    params.searchType,
-                    params.entityId,
-                    source.token
-                );
+                const [punchListFromApi, scopeFromApi] = await Promise.all([
+                    api.getPunchList(
+                        params.plant,
+                        params.searchType,
+                        params.entityId,
+                        source.token
+                    ),
+                    api.getScope(
+                        params.plant,
+                        params.searchType,
+                        params.entityId,
+                        source.token
+                    ),
+                ]);
                 setPunchList(punchListFromApi);
                 if (punchListFromApi.length > 0) {
                     setFetchPunchListStatus(AsyncStatus.SUCCESS);
                 } else {
                     setFetchPunchListStatus(AsyncStatus.EMPTY_RESPONSE);
                 }
-            } catch {
-                setFetchPunchListStatus(AsyncStatus.ERROR);
-            }
-        })();
-    }, [api, params]);
-
-    useEffect(() => {
-        (async (): Promise<void> => {
-            try {
-                const scopeFromApi = await api.getScope(
-                    params.plant,
-                    params.searchType,
-                    params.entityId,
-                    source.token
-                );
                 setScope(scopeFromApi);
                 if (scopeFromApi.length > 0) {
                     setFetchScopeStatus(AsyncStatus.SUCCESS);
                 } else {
                     setFetchScopeStatus(AsyncStatus.EMPTY_RESPONSE);
                 }
+                setFetchFooterStatus(AsyncStatus.SUCCESS);
             } catch {
-                setFetchScopeStatus(AsyncStatus.ERROR);
+                setFetchPunchListStatus(AsyncStatus.ERROR);
+                setFetchPunchListStatus(AsyncStatus.ERROR);
+                setFetchFooterStatus(AsyncStatus.ERROR);
             }
         })();
     }, [api, params]);
@@ -127,12 +125,6 @@ const EntityPage = (): JSX.Element => {
             }
         })();
     }, [api, params]);
-
-    if (!Object.values(SearchType).includes(params.searchType)) {
-        throw new URLError(
-            `The "${params.searchType}" item type is not supported. Please double check your URL and make sure the type of the item you're trying to reach is either MC, PO, WO or Tag.`
-        );
-    }
 
     const determineDetailsToRender = (): JSX.Element => {
         if (
@@ -218,72 +210,47 @@ const EntityPage = (): JSX.Element => {
     };
 
     const determineFooterToRender = (): JSX.Element => {
-        if (
-            fetchScopeStatus === AsyncStatus.ERROR ||
-            fetchPunchListStatus === AsyncStatus.ERROR
-        ) {
-            return (
-                <NavigationFooterShell>
-                    <p>Unable to load footer. Please reload</p>
-                </NavigationFooterShell>
-            );
-        } else if (
-            fetchScopeStatus === AsyncStatus.LOADING ||
-            fetchPunchListStatus === AsyncStatus.LOADING
-        ) {
-            return (
-                <NavigationFooterShell>
-                    <DotProgress color="primary" />
-                </NavigationFooterShell>
-            );
-        } else {
-            return (
-                <NavigationFooter>
+        return (
+            <NavigationFooter footerStatus={fetchFooterStatus}>
+                <FooterButton
+                    active={
+                        !history.location.pathname.includes('/punch-list') &&
+                        !history.location.pathname.includes('/WO-info')
+                    }
+                    goTo={(): void => history.push(url)}
+                    icon={<EdsIcon name="list" color={COLORS.mossGreen} />}
+                    label="Scope"
+                    numberOfItems={scope?.length}
+                />
+                {params.searchType === SearchType.WO ? (
                     <FooterButton
-                        active={
-                            !history.location.pathname.includes(
-                                '/punch-list'
-                            ) && !history.location.pathname.includes('/WO-info')
-                        }
-                        goTo={(): void => history.push(url)}
-                        icon={<EdsIcon name="list" color={COLORS.mossGreen} />}
-                        label="Scope"
-                        numberOfItems={scope?.length}
-                    />
-                    {params.searchType === SearchType.WO ? (
-                        <FooterButton
-                            active={history.location.pathname.includes(
-                                '/WO-info'
-                            )}
-                            goTo={(): void => history.push(`${url}/WO-info`)}
-                            icon={
-                                <EdsIcon
-                                    name="info_circle"
-                                    color={COLORS.mossGreen}
-                                />
-                            }
-                            label="WO info"
-                        />
-                    ) : (
-                        <></>
-                    )}
-                    <FooterButton
-                        active={history.location.pathname.includes(
-                            '/punch-list'
-                        )}
-                        goTo={(): void => history.push(`${url}/punch-list`)}
+                        active={history.location.pathname.includes('/WO-info')}
+                        goTo={(): void => history.push(`${url}/WO-info`)}
                         icon={
                             <EdsIcon
-                                name="warning_outlined"
+                                name="info_circle"
                                 color={COLORS.mossGreen}
                             />
                         }
-                        label="Punch list"
-                        numberOfItems={punchList?.length}
+                        label="WO info"
                     />
-                </NavigationFooter>
-            );
-        }
+                ) : (
+                    <></>
+                )}
+                <FooterButton
+                    active={history.location.pathname.includes('/punch-list')}
+                    goTo={(): void => history.push(`${url}/punch-list`)}
+                    icon={
+                        <EdsIcon
+                            name="warning_outlined"
+                            color={COLORS.mossGreen}
+                        />
+                    }
+                    label="Punch list"
+                    numberOfItems={punchList?.length}
+                />
+            </NavigationFooter>
+        );
     };
 
     return (

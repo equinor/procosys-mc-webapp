@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Axios from 'axios';
 import EdsIcon from '../../components/icons/EdsIcon';
-import FooterButton from '../../components/navigation/FooterButton';
-import NavigationFooter from '../../components/navigation/NavigationFooter';
 import withAccessControl from '../../services/withAccessControl';
 import useCommonHooks from '../../utils/useCommonHooks';
 import { Route, Switch } from 'react-router-dom';
@@ -10,14 +8,15 @@ import ChecklistWrapper from './ChecklistWrapper';
 import NewPunch from './NewPunch/NewPunch';
 import { AsyncStatus } from '../../contexts/McAppContext';
 import { ChecklistResponse, PunchPreview } from '../../services/apiTypes';
-import NavigationFooterShell from '../../components/navigation/NavigationFooterShell';
 import { Button, DotProgress } from '@equinor/eds-core-react';
 import { DetailsWrapper } from '../Entity/EntityPage';
 import TagInfo from '../../components/TagInfo';
 import {
     BackButton,
+    FooterButton,
     InfoItem,
     Navbar,
+    NavigationFooter,
     PunchList,
 } from '@equinor/procosys-webapp-components';
 import removeSubdirectories from '../../utils/removeSubdirectories';
@@ -116,53 +115,31 @@ const ChecklistPage = (): JSX.Element => {
     };
 
     const determineFooterToRender = (): JSX.Element => {
-        if (
-            (fetchPunchListStatus === AsyncStatus.SUCCESS ||
-                fetchPunchListStatus === AsyncStatus.EMPTY_RESPONSE) &&
-            punchList != undefined
-        ) {
-            return (
-                <NavigationFooter>
-                    <FooterButton
-                        active={
-                            !history.location.pathname.includes(
-                                '/punch-list'
-                            ) &&
-                            !history.location.pathname.includes('/tag-info')
-                        }
-                        goTo={(): void => history.push(`${url}`)}
-                        icon={<EdsIcon name="playlist_added" />}
-                        label={'Checklist'}
-                    />
-                    <FooterButton
-                        active={history.location.pathname.includes('/tag-info')}
-                        goTo={(): void => history.push(`${url}/tag-info`)}
-                        icon={<EdsIcon name="tag" />}
-                        label={'Tag info'}
-                    />
-                    <FooterButton
-                        active={history.location.pathname.includes(
-                            '/punch-list'
-                        )}
-                        goTo={(): void => history.push(`${url}/punch-list`)}
-                        icon={<EdsIcon name="warning_outlined" />}
-                        label={'Punch list'}
-                        numberOfItems={punchList.length}
-                    />
-                </NavigationFooter>
-            );
-        }
-        if (fetchPunchListStatus === AsyncStatus.ERROR) {
-            return (
-                <NavigationFooterShell>
-                    <p>Unable to load footer. Please reload</p>
-                </NavigationFooterShell>
-            );
-        }
         return (
-            <NavigationFooterShell>
-                <DotProgress color="primary" />
-            </NavigationFooterShell>
+            <NavigationFooter footerStatus={fetchPunchListStatus}>
+                <FooterButton
+                    active={
+                        !history.location.pathname.includes('/punch-list') &&
+                        !history.location.pathname.includes('/tag-info')
+                    }
+                    goTo={(): void => history.push(`${url}`)}
+                    icon={<EdsIcon name="playlist_added" />}
+                    label={'Checklist'}
+                />
+                <FooterButton
+                    active={history.location.pathname.includes('/tag-info')}
+                    goTo={(): void => history.push(`${url}/tag-info`)}
+                    icon={<EdsIcon name="tag" />}
+                    label={'Tag info'}
+                />
+                <FooterButton
+                    active={history.location.pathname.includes('/punch-list')}
+                    goTo={(): void => history.push(`${url}/punch-list`)}
+                    icon={<EdsIcon name="warning_outlined" />}
+                    label={'Punch list'}
+                    numberOfItems={punchList?.length}
+                />
+            </NavigationFooter>
         );
     };
 

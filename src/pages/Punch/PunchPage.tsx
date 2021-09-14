@@ -2,8 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { Route, Switch } from 'react-router-dom';
 import Axios from 'axios';
 import EdsIcon from '../../components/icons/EdsIcon';
-import FooterButton from '../../components/navigation/FooterButton';
-import NavigationFooter from '../../components/navigation/NavigationFooter';
 import withAccessControl from '../../services/withAccessControl';
 import { COLORS } from '../../style/GlobalStyles';
 import removeSubdirectories from '../../utils/removeSubdirectories';
@@ -17,6 +15,8 @@ import {
     BackButton,
     InfoItem,
     Navbar,
+    NavigationFooter,
+    FooterButton,
 } from '@equinor/procosys-webapp-components';
 import { DetailsWrapper } from '../Entity/EntityPage';
 import { DotProgress } from '@equinor/eds-core-react';
