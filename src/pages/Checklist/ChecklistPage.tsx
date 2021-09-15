@@ -18,8 +18,8 @@ import {
     Navbar,
     NavigationFooter,
     PunchList,
+    removeSubdirectories,
 } from '@equinor/procosys-webapp-components';
-import removeSubdirectories from '../../utils/removeSubdirectories';
 
 const ChecklistPage = (): JSX.Element => {
     const { history, url, path, api, params } = useCommonHooks();
@@ -151,8 +151,7 @@ const ChecklistPage = (): JSX.Element => {
                         to={
                             history.location.pathname.includes('/new-punch')
                                 ? `${removeSubdirectories(
-                                      history.location.pathname,
-                                      1
+                                      history.location.pathname
                                   )}`
                                 : `${removeSubdirectories(url, 2)}`
                         }
@@ -197,8 +196,15 @@ const ChecklistPage = (): JSX.Element => {
                     path={`${path}/punch-list`}
                     render={(): JSX.Element => (
                         <PunchList
-                            punchList={punchList}
                             fetchPunchListStatus={fetchPunchListStatus}
+                            onPunchClick={(punchId: number): void =>
+                                history.push(
+                                    `${removeSubdirectories(
+                                        history.location.pathname
+                                    )}/punch-item/${punchId}`
+                                )
+                            }
+                            punchList={punchList}
                             isChecklistPunchList
                         />
                     )}

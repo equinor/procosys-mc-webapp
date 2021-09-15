@@ -4,7 +4,6 @@ import Axios from 'axios';
 import EdsIcon from '../../components/icons/EdsIcon';
 import withAccessControl from '../../services/withAccessControl';
 import { COLORS } from '../../style/GlobalStyles';
-import removeSubdirectories from '../../utils/removeSubdirectories';
 import useCommonHooks from '../../utils/useCommonHooks';
 import ClearPunch from './ClearPunch/ClearPunch';
 import { PunchItem } from '../../services/apiTypes';
@@ -17,6 +16,7 @@ import {
     Navbar,
     NavigationFooter,
     FooterButton,
+    removeSubdirectories,
 } from '@equinor/procosys-webapp-components';
 import { DetailsWrapper } from '../Entity/EntityPage';
 import { DotProgress } from '@equinor/eds-core-react';

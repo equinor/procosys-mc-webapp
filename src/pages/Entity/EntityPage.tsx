@@ -23,13 +23,13 @@ import { isOfType } from '../../services/apiTypeGuards';
 import EntityDetails from '../../components/detailCards/EntityDetails';
 import TextIcon from '../../components/detailCards/TextIcon';
 import WorkOrderInfo from './WorkOrderInfo';
-import removeSubdirectories from '../../utils/removeSubdirectories';
 import {
     BackButton,
     FooterButton,
     Navbar,
     NavigationFooter,
     PunchList,
+    removeSubdirectories,
     Scope,
 } from '@equinor/procosys-webapp-components';
 
@@ -274,8 +274,16 @@ const EntityPage = (): JSX.Element => {
                         path={`${path}`}
                         render={(): JSX.Element => (
                             <Scope
-                                scope={scope}
                                 fetchScopeStatus={fetchScopeStatus}
+                                onChecklistClick={(checklistId: number): void =>
+                                    history.push(
+                                        `${history.location.pathname}/checklist/${checklistId}`
+                                    )
+                                }
+                                scope={scope}
+                                isPoScope={history.location.pathname.includes(
+                                    '/PO/'
+                                )}
                             />
                         )}
                     />
@@ -284,8 +292,18 @@ const EntityPage = (): JSX.Element => {
                         path={`${path}/punch-list`}
                         render={(): JSX.Element => (
                             <PunchList
-                                punchList={punchList}
                                 fetchPunchListStatus={fetchPunchListStatus}
+                                onPunchClick={(punchId: number): void =>
+                                    history.push(
+                                        `${removeSubdirectories(
+                                            history.location.pathname
+                                        )}/punch-item/${punchId}`
+                                    )
+                                }
+                                punchList={punchList}
+                                isPoPunchList={history.location.pathname.includes(
+                                    '/PO/'
+                                )}
                             />
                         )}
                     />
