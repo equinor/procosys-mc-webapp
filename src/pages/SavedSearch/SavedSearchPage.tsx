@@ -10,7 +10,7 @@ import removeSubdirectories from '../../utils/removeSubdirectories';
 import useCommonHooks from '../../utils/useCommonHooks';
 import { SavedSearchType } from '../Search/SavedSearches/SavedSearchResult';
 import AsyncPage from '../../components/AsyncPage';
-import { isArrayOfType } from '../../services/apiTypeGuards';
+import { isArrayOfType, isOfType } from '../../services/apiTypeGuards';
 import {
     BackButton,
     InfoItem,
@@ -18,6 +18,7 @@ import {
 } from '@equinor/procosys-webapp-components';
 import styled from 'styled-components';
 import PageHeader from '../../components/PageHeader';
+import { Button } from '@equinor/eds-core-react';
 
 const DetailsWrapper = styled.div`
     padding: 0 4%;
@@ -30,18 +31,25 @@ const ResultAmount = styled.h6`
     margin: 0 4%;
 `;
 
+const ButtonWrapper = styled.div`
+    display: flex;
+    justify-content: center;
+    padding: 8px 0 32px 0;
+`;
+
 const SavedSearchPage = (): JSX.Element => {
     const { url, params, api, history } = useCommonHooks();
     const [savedSearch, setSavedSearch] = useState<SavedSearch>();
     const [results, setResults] = useState<
         ChecklistSavedSearchResult[] | PunchItemSavedSearchResult[]
-    >();
+    >([]);
     const [fetchResultsStatus, setFetchResultsStatus] = useState<AsyncStatus>(
         AsyncStatus.LOADING
     );
+    const [currentPageNumber, setCurrentPageNumber] = useState<number>(1);
+    const source = Axios.CancelToken.source();
 
     useEffect(() => {
-        const source = Axios.CancelToken.source();
         (async (): Promise<void> => {
             try {
                 const [savedSearchesFromApi, resultsFromAPI] =
@@ -73,6 +81,32 @@ const SavedSearchPage = (): JSX.Element => {
             source.cancel();
         };
     }, [params]);
+
+    const handleLoadMore = async (): Promise<void> => {
+        setCurrentPageNumber((prevPageNumber) => prevPageNumber++);
+        const newResults = await api.getSavedSearchResults(
+            params.plant,
+            params.savedSearchId,
+            params.savedSearchType,
+            source.token,
+            currentPageNumber
+        );
+        if (
+            isArrayOfType<ChecklistSavedSearchResult>(results, 'isSigned') &&
+            isArrayOfType<ChecklistSavedSearchResult>(newResults, 'isSigned')
+        ) {
+            const allResults = [...results, ...newResults];
+            setResults(allResults);
+        } else if (
+            isArrayOfType<PunchItemSavedSearchResult>(results, 'isCleared') &&
+            isArrayOfType<PunchItemSavedSearchResult>(newResults, 'isCleared')
+        ) {
+            const allResults = [...results, ...newResults];
+            setResults(allResults);
+        } else {
+            throw new Error(''); // TODO: decide
+        }
+    };
 
     const determineDetails = (): JSX.Element => {
         if (
@@ -179,6 +213,11 @@ const SavedSearchPage = (): JSX.Element => {
                         Displaying {results?.length} search results
                     </ResultAmount>
                     {determineContent()}
+                    <ButtonWrapper>
+                        <Button variant="ghost" onClick={handleLoadMore}>
+                            Load More
+                        </Button>
+                    </ButtonWrapper>
                 </div>
             </AsyncPage>
         </main>
