@@ -36,11 +36,11 @@ export enum SearchType {
 }
 
 const Search = (): JSX.Element => {
-    const [searchType, setSearchType] = useState<string | null>(null);
+    const [searchType, setSearchType] = useState<string>();
     const { snackbar, setSnackbarText } = useSnackbar();
 
     const determineComponent = (): JSX.Element => {
-        if (searchType === null) {
+        if (searchType === undefined) {
             return <SavedSearches setSnackbarText={setSnackbarText} />;
         }
         return <SearchArea searchType={searchType} />;
