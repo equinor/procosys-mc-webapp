@@ -6,7 +6,6 @@ import {
     PunchItemSavedSearchResult,
     SavedSearch,
 } from '../../services/apiTypes';
-import removeSubdirectories from '../../utils/removeSubdirectories';
 import useCommonHooks from '../../utils/useCommonHooks';
 import { SavedSearchType } from '../Search/SavedSearches/SavedSearchResult';
 import AsyncPage from '../../components/AsyncPage';
@@ -19,6 +18,7 @@ import {
 import styled from 'styled-components';
 import PageHeader from '../../components/PageHeader';
 import { Button, DotProgress } from '@equinor/eds-core-react';
+import removeSubdirectories from '../../utils/removeSubdirectories';
 
 const DetailsWrapper = styled.div`
     padding: 0 4%;
@@ -209,7 +209,7 @@ const SavedSearchPage = (): JSX.Element => {
         }
     };
 
-    const getLoadMoreButton = (): JSX.Element => {
+    const determineLoadMoreButton = (): JSX.Element => {
         if (fetchMoreResultsStatus === AsyncStatus.LOADING) {
             return (
                 <ButtonWrapper>
@@ -265,7 +265,7 @@ const SavedSearchPage = (): JSX.Element => {
                         Displaying {results?.length} search results
                     </ResultAmount>
                     {determineContent()}
-                    {getLoadMoreButton()}
+                    {determineLoadMoreButton()}
                 </div>
             </AsyncPage>
         </main>
