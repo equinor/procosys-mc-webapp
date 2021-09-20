@@ -32,11 +32,14 @@ const ResultAmount = styled.h6`
 `;
 
 const ButtonWrapper = styled.div`
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 8px 0 32px 0;
-    height: 36px;
+    padding: 0 4%;
+    & > div {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 8px 0 32px 0;
+        height: 36px;
+    }
 `;
 
 const SavedSearchPage = (): JSX.Element => {
@@ -112,7 +115,7 @@ const SavedSearchPage = (): JSX.Element => {
                 )
             ) {
                 setResults(allResults);
-                setFetchMoreResultsStatus(AsyncStatus.SUCCESS);
+                setFetchMoreResultsStatus(AsyncStatus.ERROR);
                 setNextPageNumber((prevValue) => prevValue + 1);
             } else {
                 setFetchMoreResultsStatus(AsyncStatus.ERROR);
@@ -215,16 +218,16 @@ const SavedSearchPage = (): JSX.Element => {
             );
         } else {
             return (
-                <div>
+                <ButtonWrapper>
                     {fetchMoreResultsStatus === AsyncStatus.ERROR ? (
                         <p>
                             <i>
                                 Could not load more results. Try again or reload
-                                page.
+                                the page.
                             </i>
                         </p>
                     ) : null}
-                    <ButtonWrapper>
+                    <div>
                         <Button
                             variant="ghost"
                             onClick={handleLoadMore}
@@ -235,8 +238,8 @@ const SavedSearchPage = (): JSX.Element => {
                         >
                             Load More
                         </Button>
-                    </ButtonWrapper>
-                </div>
+                    </div>
+                </ButtonWrapper>
             );
         }
     };
