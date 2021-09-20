@@ -10,7 +10,7 @@ import removeSubdirectories from '../../utils/removeSubdirectories';
 import useCommonHooks from '../../utils/useCommonHooks';
 import { SavedSearchType } from '../Search/SavedSearches/SavedSearchResult';
 import AsyncPage from '../../components/AsyncPage';
-import { isArrayOfType, isOfType } from '../../services/apiTypeGuards';
+import { isArrayOfType } from '../../services/apiTypeGuards';
 import {
     BackButton,
     InfoItem,
@@ -18,7 +18,7 @@ import {
 } from '@equinor/procosys-webapp-components';
 import styled from 'styled-components';
 import PageHeader from '../../components/PageHeader';
-import { Button } from '@equinor/eds-core-react';
+import { Button, DotProgress } from '@equinor/eds-core-react';
 
 const DetailsWrapper = styled.div`
     padding: 0 4%;
@@ -34,7 +34,9 @@ const ResultAmount = styled.h6`
 const ButtonWrapper = styled.div`
     display: flex;
     justify-content: center;
+    align-items: center;
     padding: 8px 0 32px 0;
+    height: 36px;
 `;
 
 const SavedSearchPage = (): JSX.Element => {
@@ -46,7 +48,9 @@ const SavedSearchPage = (): JSX.Element => {
     const [fetchResultsStatus, setFetchResultsStatus] = useState<AsyncStatus>(
         AsyncStatus.LOADING
     );
-    const [currentPageNumber, setCurrentPageNumber] = useState<number>(1);
+    const [fetchMoreResultsStatus, setFetchMoreResultsStatus] =
+        useState<AsyncStatus>(AsyncStatus.INACTIVE);
+    const [nextPageNumber, setNextPageNumber] = useState<number>(2);
     const source = Axios.CancelToken.source();
 
     useEffect(() => {
@@ -83,28 +87,38 @@ const SavedSearchPage = (): JSX.Element => {
     }, [params]);
 
     const handleLoadMore = async (): Promise<void> => {
-        setCurrentPageNumber((prevPageNumber) => prevPageNumber++);
-        const newResults = await api.getSavedSearchResults(
-            params.plant,
-            params.savedSearchId,
-            params.savedSearchType,
-            source.token,
-            currentPageNumber
-        );
-        if (
-            isArrayOfType<ChecklistSavedSearchResult>(results, 'isSigned') &&
-            isArrayOfType<ChecklistSavedSearchResult>(newResults, 'isSigned')
-        ) {
+        setFetchMoreResultsStatus(AsyncStatus.LOADING);
+        try {
+            const newResults = await api.getSavedSearchResults(
+                params.plant,
+                params.savedSearchId,
+                params.savedSearchType,
+                source.token,
+                nextPageNumber
+            );
+            if (newResults.length === 0) {
+                setFetchMoreResultsStatus(AsyncStatus.EMPTY_RESPONSE);
+                return;
+            }
             const allResults = [...results, ...newResults];
-            setResults(allResults);
-        } else if (
-            isArrayOfType<PunchItemSavedSearchResult>(results, 'isCleared') &&
-            isArrayOfType<PunchItemSavedSearchResult>(newResults, 'isCleared')
-        ) {
-            const allResults = [...results, ...newResults];
-            setResults(allResults);
-        } else {
-            throw new Error(''); // TODO: decide
+            if (
+                isArrayOfType<ChecklistSavedSearchResult>(
+                    allResults,
+                    'isSigned'
+                ) ||
+                isArrayOfType<PunchItemSavedSearchResult>(
+                    allResults,
+                    'isCleared'
+                )
+            ) {
+                setResults(allResults);
+                setFetchMoreResultsStatus(AsyncStatus.SUCCESS);
+                setNextPageNumber((prevValue) => prevValue + 1);
+            } else {
+                setFetchMoreResultsStatus(AsyncStatus.ERROR);
+            }
+        } catch {
+            setFetchMoreResultsStatus(AsyncStatus.ERROR);
         }
     };
 
@@ -192,6 +206,41 @@ const SavedSearchPage = (): JSX.Element => {
         }
     };
 
+    const getLoadMoreButton = (): JSX.Element => {
+        if (fetchMoreResultsStatus === AsyncStatus.LOADING) {
+            return (
+                <ButtonWrapper>
+                    <DotProgress color="primary" />
+                </ButtonWrapper>
+            );
+        } else {
+            return (
+                <div>
+                    {fetchMoreResultsStatus === AsyncStatus.ERROR ? (
+                        <p>
+                            <i>
+                                Could not load more results. Try again or reload
+                                page.
+                            </i>
+                        </p>
+                    ) : null}
+                    <ButtonWrapper>
+                        <Button
+                            variant="ghost"
+                            onClick={handleLoadMore}
+                            disabled={
+                                fetchMoreResultsStatus ===
+                                AsyncStatus.EMPTY_RESPONSE
+                            }
+                        >
+                            Load More
+                        </Button>
+                    </ButtonWrapper>
+                </div>
+            );
+        }
+    };
+
     return (
         <main>
             <Navbar
@@ -213,11 +262,7 @@ const SavedSearchPage = (): JSX.Element => {
                         Displaying {results?.length} search results
                     </ResultAmount>
                     {determineContent()}
-                    <ButtonWrapper>
-                        <Button variant="ghost" onClick={handleLoadMore}>
-                            Load More
-                        </Button>
-                    </ButtonWrapper>
+                    {getLoadMoreButton()}
                 </div>
             </AsyncPage>
         </main>
