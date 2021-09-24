@@ -3,7 +3,7 @@ import {
     Attachments,
     CollapsibleCard,
     ErrorPage,
-    HomeButton,
+    HomeButton
 } from '@equinor/procosys-webapp-components';
 import { CancelToken } from 'axios';
 import React from 'react';
@@ -16,7 +16,7 @@ import {
     McPkgPreview,
     PoPreview,
     Tag,
-    WoPreview,
+    WoPreview
 } from '../../services/apiTypes';
 import { removeHtmlFromText } from '../../utils/removeHtmlFromText';
 import removeSubdirectories from '../../utils/removeSubdirectories';
@@ -59,13 +59,14 @@ const WorkOrderInfo = ({
                 }
             >
                 <TagInfoWrapper>
-                    {workOrder?.description && (
-                        <CollapsibleCard cardTitle="Description">
-                            <Description>
-                                {removeHtmlFromText(workOrder?.description)}
-                            </Description>
-                        </CollapsibleCard>
-                    )}
+                    <CollapsibleCard cardTitle="Description">
+                        <Description>
+                            {workOrder?.description
+                                ? removeHtmlFromText(workOrder?.description)
+                                : 'There is no description present, for more information see the short description.'}
+                        </Description>
+                    </CollapsibleCard>
+
                     <h5>Attachments</h5>
                     <Attachments
                         getAttachments={(
