@@ -3,7 +3,7 @@ import {
     Attachments,
     CollapsibleCard,
     ErrorPage,
-    HomeButton
+    HomeButton,
 } from '@equinor/procosys-webapp-components';
 import { CancelToken } from 'axios';
 import React from 'react';
@@ -16,7 +16,7 @@ import {
     McPkgPreview,
     PoPreview,
     Tag,
-    WoPreview
+    WoPreview,
 } from '../../services/apiTypes';
 import { removeHtmlFromText } from '../../utils/removeHtmlFromText';
 import removeSubdirectories from '../../utils/removeSubdirectories';
