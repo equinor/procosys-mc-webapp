@@ -63,7 +63,7 @@ const WorkOrderInfo = ({
                         <Description>
                             {workOrder?.description
                                 ? removeHtmlFromText(workOrder?.description)
-                                : 'There is no description present, for more information see the short description.'}
+                                : 'A long description is not present, See the short description at the top of the page for all information available.'}
                         </Description>
                     </CollapsibleCard>
 
