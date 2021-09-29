@@ -28,13 +28,10 @@ export const NewPunchFormWrapper = styled.form`
     }
 `;
 
-export const FormButton = styled(Button)`
-    float: right;
+export const FormButtonWrapper = styled.div`
+    display: flex;
     margin: 16px 0;
-    & :disabled {
-        float: right;
-        margin: 16px 0;
-    }
+    justify-content: flex-end;
 `;
 
 export const DateField = styled.div`
@@ -52,6 +49,10 @@ export const DateField = styled.div`
     & > input:focus-visible {
         outline: 2px solid ${COLORS.mossGreen};
         box-shadow: none;
+    }
+    & > input:disabled {
+        box-shadow: none;
+        color: ${COLORS.disabledText};
     }
 `;
 
@@ -270,12 +271,14 @@ const NewPunchForm = ({
                     disabled={submitPunchStatus === AsyncStatus.LOADING}
                 />
                 {children}
-                <FormButton
-                    type="submit"
-                    disabled={submitPunchStatus === AsyncStatus.LOADING}
-                >
-                    {buttonText}
-                </FormButton>
+                <FormButtonWrapper>
+                    <Button
+                        type="submit"
+                        disabled={submitPunchStatus === AsyncStatus.LOADING}
+                    >
+                        {buttonText}
+                    </Button>
+                </FormButtonWrapper>
             </NewPunchFormWrapper>
         </>
     );

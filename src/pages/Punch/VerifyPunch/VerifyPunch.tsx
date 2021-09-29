@@ -29,9 +29,15 @@ const ButtonGroup = styled.div`
 
 type VerifyPunchProps = {
     punchItem: PunchItem;
+    canUnclear: boolean;
+    canVerify: boolean;
 };
 
-const VerifyPunch = ({ punchItem }: VerifyPunchProps): JSX.Element => {
+const VerifyPunch = ({
+    punchItem,
+    canUnclear,
+    canVerify,
+}: VerifyPunchProps): JSX.Element => {
     const { url, history, params, api } = useCommonHooks();
     const [punchActionStatus, setPunchActionStatus] = useState(
         AsyncStatus.INACTIVE
