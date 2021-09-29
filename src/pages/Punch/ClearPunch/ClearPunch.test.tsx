@@ -14,6 +14,8 @@ describe('<ClearPunch/>', () => {
                     <ClearPunch
                         punchItem={testPunchItemUncleared}
                         setPunchItem={jest.fn()}
+                        canEdit={true}
+                        canClear={true}
                     />
                 ),
             })
