@@ -183,7 +183,6 @@ const NewPunchForm = ({
                 <TextField
                     id="actionByPerson"
                     value={chosenPerson.name}
-                    readOnly
                     inputIcon={
                         chosenPerson.id ? (
                             <div

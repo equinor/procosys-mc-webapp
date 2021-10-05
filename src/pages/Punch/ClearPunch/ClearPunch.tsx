@@ -185,7 +185,6 @@ const ClearPunch = ({
                                     ? `${punchItem.actionByPersonFirstName} ${punchItem.actionByPersonLastName}`
                                     : ''
                             }
-                            readOnly
                             inputIcon={
                                 punchItem.actionByPerson ? (
                                     <div
