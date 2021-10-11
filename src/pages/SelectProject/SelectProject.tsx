@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import EdsIcon from '../../components/icons/EdsIcon';
-import PageHeader from '../../components/PageHeader';
+import { PageHeader } from '@equinor/procosys-webapp-components';
 import PlantContext from '../../contexts/PlantContext';
 import { SelectPlantWrapper, SelectorButton } from '../SelectPlant/SelectPlant';
 import AsyncPage from '../../components/AsyncPage';
