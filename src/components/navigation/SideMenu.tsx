@@ -1,11 +1,12 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext } from 'react';
 import styled from 'styled-components';
-import { animated, AnimatedValue, useSpring } from 'react-spring';
+import { animated } from 'react-spring';
 import { Button } from '@equinor/eds-core-react';
 import EdsIcon from '../icons/EdsIcon';
-import PlantContext, { StorageKey } from '../../contexts/PlantContext';
+import PlantContext from '../../contexts/PlantContext';
 import useCommonHooks from '../../utils/useCommonHooks';
 import { COLORS } from '../../style/GlobalStyles';
+import { StorageKey } from '@equinor/procosys-webapp-components';
 
 const SideMenuWrapper = styled(animated.aside)`
     width: 297px;
@@ -16,7 +17,6 @@ const SideMenuWrapper = styled(animated.aside)`
     z-index: 1000;
     background-color: ${COLORS.white};
     border-right: 2px solid ${COLORS.fadedBlue};
-    overflow-y: auto;
 `;
 
 const TopContent = styled.div`
@@ -73,34 +73,25 @@ const PlantInfo = styled.div`
 `;
 
 type SideMenuProps = {
-    animation: AnimatedValue<any>;
-    backdropAnimation: AnimatedValue<any>;
+    animation: any;
+    backdropAnimation: any;
     setDrawerIsOpen: (drawerIsOpen: boolean) => void;
 };
 
-const SideMenu = (): JSX.Element => {
+const SideMenu = ({
+    animation,
+    backdropAnimation,
+    setDrawerIsOpen,
+}: SideMenuProps): JSX.Element => {
     const { auth, history, params } = useCommonHooks();
     const { currentPlant, currentProject } = useContext(PlantContext);
-    const [drawerIsOpen, setDrawerIsOpen] = useState(false);
-    const sideDrawerAnimation = useSpring({
-        transform: drawerIsOpen ? 'translateX(0px)' : 'translateX(-300px)',
-    });
-    const backdropAnimation = useSpring({
-        opacity: drawerIsOpen ? 0.6 : 0,
-        display: drawerIsOpen ? 'block' : 'none',
-    });
-
     return (
         <>
-            <Button variant="ghost" onClick={(): void => setDrawerIsOpen(true)}>
-                <EdsIcon name={'menu'} color={COLORS.darkGrey} title="Menu" />
-                Menu
-            </Button>
             <Backdrop
                 style={backdropAnimation}
                 onClick={(): void => setDrawerIsOpen(false)}
             />
-            <SideMenuWrapper style={sideDrawerAnimation}>
+            <SideMenuWrapper style={animation}>
                 <TopContent>
                     <h2>Welcome</h2>
                     <Button
