@@ -143,13 +143,14 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
         plantId: string,
         savedSearchId: string,
         savedSearchType: string,
-        cancelToken: CancelToken
+        cancelToken: CancelToken,
+        currentPage = 1
     ): Promise<PunchItemSavedSearchResult[] | ChecklistSavedSearchResult[]> => {
         let url = '';
         if (savedSearchType === SavedSearchType.CHECKLIST) {
-            url = `CheckList/Search?plantId=PCS$${plantId}&savedSearchId=${savedSearchId}${apiVersion}`;
+            url = `CheckList/Search?plantId=PCS$${plantId}&savedSearchId=${savedSearchId}&currentPage=${currentPage}${apiVersion}`;
         } else if (savedSearchType === SavedSearchType.PUNCH) {
-            url = `PunchListItem/Search?plantId=PCS$${plantId}&savedSearchId=${savedSearchId}${apiVersion}`;
+            url = `PunchListItem/Search?plantId=PCS$${plantId}&savedSearchId=${savedSearchId}&currentPage=${currentPage}${apiVersion}`;
         } else {
             throw new Error('The current saved search type is not supported.');
         }
