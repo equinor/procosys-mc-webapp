@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react';
 import styled from 'styled-components';
-import { animated, AnimatedValue, useSpring } from 'react-spring';
+import { animated, useSpring } from 'react-spring';
 import { Button } from '@equinor/eds-core-react';
 import EdsIcon from '../icons/EdsIcon';
 import PlantContext, { StorageKey } from '../../contexts/PlantContext';
@@ -71,12 +71,6 @@ const PlantInfo = styled.div`
     flex-direction: column;
     background-color: ${COLORS.fadedBlue};
 `;
-
-type SideMenuProps = {
-    animation: AnimatedValue<any>;
-    backdropAnimation: AnimatedValue<any>;
-    setDrawerIsOpen: (drawerIsOpen: boolean) => void;
-};
 
 const SideMenu = (): JSX.Element => {
     const { auth, history, params } = useCommonHooks();
