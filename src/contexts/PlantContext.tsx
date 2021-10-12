@@ -1,20 +1,18 @@
 import React, { ReactNode, useContext, useEffect, useState } from 'react';
-import LoadingPage from '../components/loading/LoadingPage';
 import { Plant, Project } from '../services/apiTypes';
 import matchPlantInURL from '../utils/matchPlantInURL';
 import matchProjectInURL from '../utils/matchProjectInURL';
 import McAppContext, { AsyncStatus } from './McAppContext';
 import useCommonHooks from '../utils/useCommonHooks';
-import Navbar from '../components/navigation/Navbar';
 import { Button } from '@equinor/eds-core-react';
-import { ErrorPage, ReloadButton } from '@equinor/procosys-webapp-components';
-
-export enum StorageKey {
-    PLANT = 'currentPlant',
-    PROJECT = 'currentProject',
-    BOOKMARK = 'Procosys Bookmark',
-    REDIRECTPATH = 'ProCoSys-MCWA-redirectPath',
-}
+import {
+    LoadingPage,
+    ErrorPage,
+    Navbar,
+    ProcosysButton,
+    ReloadButton,
+    StorageKey,
+} from '@equinor/procosys-webapp-components';
 
 export type PlantContextProps = {
     fetchProjectsAndPermissionsStatus: AsyncStatus;
@@ -46,11 +44,11 @@ export const PlantContextProvider: React.FC<{ children: ReactNode }> = ({
             StorageKey.PROJECT
         );
         const redirectPath = window.localStorage.getItem(
-            StorageKey.REDIRECTPATH
+            StorageKey.MC_REDIRECTPATH
         );
         if (redirectPath && redirectPath.length > 1) {
             history.push(redirectPath);
-            window.localStorage.removeItem(StorageKey.REDIRECTPATH);
+            window.localStorage.removeItem(StorageKey.MC_REDIRECTPATH);
         }
 
         if (params.plant || !plantInStorage || !projectInStorage) return;
@@ -128,13 +126,11 @@ export const PlantContextProvider: React.FC<{ children: ReactNode }> = ({
         return true;
     };
 
-    const Lala = ['lalal', 'lala'];
-
     if (!renderChildren()) {
         if (fetchProjectsAndPermissionsStatus === AsyncStatus.ERROR) {
             return (
                 <>
-                    <Navbar />
+                    <Navbar leftContent={<ProcosysButton />} />
                     <ErrorPage
                         title={'Unable to obtain permissions.'}
                         description={

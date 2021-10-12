@@ -4,7 +4,8 @@ import useSearchPageFacade from '../useSearchPageFacade';
 import SearchResults from './SearchResults';
 import { SearchType } from '../Search';
 import styled from 'styled-components';
-import TagPhotoRecognition from './TagPhotoRecognition';
+import { TagPhotoRecognition } from '@equinor/procosys-webapp-components';
+import useCommonHooks from '../../../utils/useCommonHooks';
 
 export const TallSearchField = styled(SearchField)`
     height: 54px;
@@ -26,6 +27,7 @@ const SearchArea = ({ searchType }: SearchAreaProps): JSX.Element => {
     const callOffSearchbarRef = useRef<HTMLInputElement>(
         document.createElement('input')
     );
+    const { appConfig } = useCommonHooks();
     const {
         hits,
         searchStatus,
@@ -52,7 +54,10 @@ const SearchArea = ({ searchType }: SearchAreaProps): JSX.Element => {
     return (
         <SearchAreaWrapper>
             {searchType === SearchType.Tag ? (
-                <TagPhotoRecognition setQuery={setQuery} />
+                <TagPhotoRecognition
+                    setQuery={setQuery}
+                    tagOcrEndpoint={appConfig.ocrFunctionEndpoint}
+                />
             ) : null}
             <TallSearchField
                 placeholder={

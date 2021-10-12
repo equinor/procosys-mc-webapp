@@ -21,9 +21,10 @@ import styled from 'styled-components';
 import { COLORS } from '../../../style/GlobalStyles';
 
 export const AttachmentsWrapper = styled.div`
-    margin: 0 -4%;
+    margin: 0 -4% 16px -4%;
     padding: 16px 4%;
     background-color: ${COLORS.fadedBlue};
+    height: 100px;
 `;
 
 export type ChosenPerson = {
@@ -102,7 +103,8 @@ const NewPunch = (): JSX.Element => {
             await api.postNewPunch(params.plant, NewPunchDTO);
             setSubmitPunchStatus(AsyncStatus.SUCCESS);
         } catch (error) {
-            setSnackbarText(error.toString());
+            const pcsError = error as Error;
+            setSnackbarText(pcsError.toString());
             setSubmitPunchStatus(AsyncStatus.ERROR);
         }
     };

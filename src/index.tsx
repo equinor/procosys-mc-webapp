@@ -1,4 +1,3 @@
-import LoadingPage from './components/loading/LoadingPage';
 import GlobalStyles from './style/GlobalStyles';
 import React from 'react';
 import ReactDOM from 'react-dom';
@@ -9,7 +8,11 @@ import baseApiService from './services/baseApi';
 import procosysApiService from './services/procosysApi';
 import { getAppConfig, getAuthConfig } from './services/appConfiguration';
 import initializeAppInsights from './services/appInsights';
-import { ErrorPage, ReloadButton } from '@equinor/procosys-webapp-components';
+import {
+    ErrorPage,
+    ReloadButton,
+    LoadingPage,
+} from '@equinor/procosys-webapp-components';
 
 const render = (content: JSX.Element): void => {
     ReactDOM.render(

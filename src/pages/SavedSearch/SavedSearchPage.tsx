@@ -1,20 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import Axios from 'axios';
-import Navbar from '../../components/navigation/Navbar';
 import { AsyncStatus } from '../../contexts/McAppContext';
 import {
     ChecklistSavedSearchResult,
     PunchItemSavedSearchResult,
     SavedSearch,
 } from '../../services/apiTypes';
-import removeSubdirectories from '../../utils/removeSubdirectories';
 import useCommonHooks from '../../utils/useCommonHooks';
 import { SavedSearchType } from '../Search/SavedSearches/SavedSearchResult';
 import AsyncPage from '../../components/AsyncPage';
 import { isArrayOfType } from '../../services/apiTypeGuards';
-import { InfoItem } from '@equinor/procosys-webapp-components';
+import {
+    BackButton,
+    InfoItem,
+    Navbar,
+} from '@equinor/procosys-webapp-components';
 import styled from 'styled-components';
-import PageHeader from '../../components/PageHeader';
+import { Button, DotProgress } from '@equinor/eds-core-react';
+import removeSubdirectories from '../../utils/removeSubdirectories';
+import { PageHeader } from '@equinor/procosys-webapp-components';
 
 const DetailsWrapper = styled.div`
     padding: 0 4%;
@@ -27,18 +31,32 @@ const ResultAmount = styled.h6`
     margin: 0 4%;
 `;
 
+const ButtonWrapper = styled.div`
+    padding: 0 4%;
+    & > div {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 8px 0 32px 0;
+        height: 36px;
+    }
+`;
+
 const SavedSearchPage = (): JSX.Element => {
     const { url, params, api, history } = useCommonHooks();
     const [savedSearch, setSavedSearch] = useState<SavedSearch>();
     const [results, setResults] = useState<
         ChecklistSavedSearchResult[] | PunchItemSavedSearchResult[]
-    >();
+    >([]);
     const [fetchResultsStatus, setFetchResultsStatus] = useState<AsyncStatus>(
         AsyncStatus.LOADING
     );
+    const [fetchMoreResultsStatus, setFetchMoreResultsStatus] =
+        useState<AsyncStatus>(AsyncStatus.INACTIVE);
+    const [nextPageNumber, setNextPageNumber] = useState<number>(2);
+    const source = Axios.CancelToken.source();
 
     useEffect(() => {
-        const source = Axios.CancelToken.source();
         (async (): Promise<void> => {
             try {
                 const [savedSearchesFromApi, resultsFromAPI] =
@@ -70,6 +88,42 @@ const SavedSearchPage = (): JSX.Element => {
             source.cancel();
         };
     }, [params]);
+
+    const handleLoadMore = async (): Promise<void> => {
+        setFetchMoreResultsStatus(AsyncStatus.LOADING);
+        try {
+            const newResults = await api.getSavedSearchResults(
+                params.plant,
+                params.savedSearchId,
+                params.savedSearchType,
+                source.token,
+                nextPageNumber
+            );
+            if (newResults.length === 0) {
+                setFetchMoreResultsStatus(AsyncStatus.EMPTY_RESPONSE);
+                return;
+            }
+            const allResults = [...results, ...newResults];
+            if (
+                isArrayOfType<ChecklistSavedSearchResult>(
+                    allResults,
+                    'isSigned'
+                ) ||
+                isArrayOfType<PunchItemSavedSearchResult>(
+                    allResults,
+                    'isCleared'
+                )
+            ) {
+                setResults(allResults);
+                setFetchMoreResultsStatus(AsyncStatus.ERROR);
+                setNextPageNumber((prevValue) => prevValue + 1);
+            } else {
+                setFetchMoreResultsStatus(AsyncStatus.ERROR);
+            }
+        } catch {
+            setFetchMoreResultsStatus(AsyncStatus.ERROR);
+        }
+    };
 
     const determineDetails = (): JSX.Element => {
         if (
@@ -155,15 +209,48 @@ const SavedSearchPage = (): JSX.Element => {
         }
     };
 
+    const determineLoadMoreButton = (): JSX.Element => {
+        if (fetchMoreResultsStatus === AsyncStatus.LOADING) {
+            return (
+                <ButtonWrapper>
+                    <DotProgress color="primary" />
+                </ButtonWrapper>
+            );
+        } else {
+            return (
+                <ButtonWrapper>
+                    {fetchMoreResultsStatus === AsyncStatus.ERROR ? (
+                        <p>
+                            <i>
+                                Could not load more results. Try again or reload
+                                the page.
+                            </i>
+                        </p>
+                    ) : null}
+                    <div>
+                        <Button
+                            variant="ghost"
+                            onClick={handleLoadMore}
+                            disabled={
+                                fetchMoreResultsStatus ===
+                                AsyncStatus.EMPTY_RESPONSE
+                            }
+                        >
+                            Load More
+                        </Button>
+                    </div>
+                </ButtonWrapper>
+            );
+        }
+    };
+
     return (
         <main>
             <Navbar
                 noBorder
-                leftContent={{
-                    name: 'back',
-                    label: 'Back',
-                    url: `${removeSubdirectories(url, 3)}`,
-                }}
+                leftContent={
+                    <BackButton to={`${removeSubdirectories(url, 3)}`} />
+                }
             />
             <AsyncPage
                 errorMessage={
@@ -178,6 +265,7 @@ const SavedSearchPage = (): JSX.Element => {
                         Displaying {results?.length} search results
                     </ResultAmount>
                     {determineContent()}
+                    {determineLoadMoreButton()}
                 </div>
             </AsyncPage>
         </main>

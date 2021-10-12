@@ -4,11 +4,16 @@ import styled from 'styled-components';
 import EdsIcon from '../../components/icons/EdsIcon';
 import CommAppContext from '../../contexts/McAppContext';
 import { COLORS } from '../../style/GlobalStyles';
-import PageHeader from '../../components/PageHeader';
-import Navbar from '../../components/navigation/Navbar';
+import { PageHeader } from '@equinor/procosys-webapp-components';
 import useCommonHooks from '../../utils/useCommonHooks';
 import { Button } from '@equinor/eds-core-react';
-import { ErrorPage, ReloadButton } from '@equinor/procosys-webapp-components';
+import {
+    ErrorPage,
+    Navbar,
+    ProcosysButton,
+    ReloadButton,
+} from '@equinor/procosys-webapp-components';
+import SideMenu from '../../components/navigation/SideMenu';
 
 export const SelectPlantWrapper = styled.main`
     display: flex;
@@ -76,7 +81,10 @@ const SelectPlant = (): JSX.Element => {
 
     return (
         <>
-            <Navbar leftContent={{ name: 'hamburger' }} />
+            <Navbar
+                leftContent={<ProcosysButton />}
+                rightContent={<SideMenu />}
+            />
             <SelectPlantWrapper>{content()}</SelectPlantWrapper>
         </>
     );

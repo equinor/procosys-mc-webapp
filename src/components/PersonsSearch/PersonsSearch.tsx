@@ -1,7 +1,7 @@
 import { Button } from '@equinor/eds-core-react';
 import React, { ChangeEvent, useEffect, useRef } from 'react';
 import styled from 'styled-components';
-import SkeletonLoadingPage from '../loading/SkeletonLoader';
+import { SkeletonLoadingPage } from '@equinor/procosys-webapp-components';
 import { COLORS } from '../../style/GlobalStyles';
 import { TallSearchField } from '../../pages/Search/Searching/SearchArea';
 import { SearchStatus } from '../../pages/Search/useSearchPageFacade';

@@ -1,10 +1,11 @@
 import React, { useContext } from 'react';
 import EdsIcon from '../../components/icons/EdsIcon';
-import Navbar from '../../components/navigation/Navbar';
-import PageHeader from '../../components/PageHeader';
+import { PageHeader } from '@equinor/procosys-webapp-components';
 import PlantContext from '../../contexts/PlantContext';
 import { SelectPlantWrapper, SelectorButton } from '../SelectPlant/SelectPlant';
 import AsyncPage from '../../components/AsyncPage';
+import SideMenu from '../../components/navigation/SideMenu';
+import { Navbar, ProcosysButton } from '@equinor/procosys-webapp-components';
 
 const SelectProject = (): JSX.Element => {
     const {
@@ -15,7 +16,10 @@ const SelectProject = (): JSX.Element => {
 
     return (
         <>
-            <Navbar leftContent={{ name: 'hamburger' }} />
+            <Navbar
+                leftContent={<ProcosysButton />}
+                rightContent={<SideMenu />}
+            />
             <SelectPlantWrapper>
                 <AsyncPage
                     fetchStatus={fetchProjectsAndPermissionsStatus}
