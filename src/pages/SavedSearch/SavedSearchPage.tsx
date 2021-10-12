@@ -16,9 +16,9 @@ import {
     Navbar,
 } from '@equinor/procosys-webapp-components';
 import styled from 'styled-components';
-import PageHeader from '../../components/PageHeader';
 import { Button, DotProgress } from '@equinor/eds-core-react';
 import removeSubdirectories from '../../utils/removeSubdirectories';
+import { PageHeader } from '@equinor/procosys-webapp-components';
 
 const DetailsWrapper = styled.div`
     padding: 0 4%;

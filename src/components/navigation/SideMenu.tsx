@@ -1,13 +1,13 @@
 import React, { useContext, useState } from 'react';
 import styled from 'styled-components';
-import { animated, useSpring } from 'react-spring';
 import { Button } from '@equinor/eds-core-react';
 import EdsIcon from '../icons/EdsIcon';
-import PlantContext, { StorageKey } from '../../contexts/PlantContext';
+import PlantContext from '../../contexts/PlantContext';
 import useCommonHooks from '../../utils/useCommonHooks';
 import { COLORS } from '../../style/GlobalStyles';
+import { StorageKey } from '@equinor/procosys-webapp-components';
 
-const SideMenuWrapper = styled(animated.aside)`
+const SideMenuWrapper = styled.aside<{ isActive: boolean }>`
     width: 297px;
     position: fixed;
     top: 0;
@@ -17,6 +17,10 @@ const SideMenuWrapper = styled(animated.aside)`
     background-color: ${COLORS.white};
     border-right: 2px solid ${COLORS.fadedBlue};
     overflow-y: auto;
+    opacity: ${(props): string => (props.isActive ? '1' : '0')};
+    transform: ${(props): string =>
+        props.isActive ? 'translateX(0)' : 'translateX(-300px)'};
+    transition: transform 0.4s ease-in;
 `;
 
 const TopContent = styled.div`
@@ -44,7 +48,7 @@ const UserNameText = styled.p`
     color: ${COLORS.darkGrey};
 `;
 
-const Backdrop = styled(animated.div)`
+const Backdrop = styled.div<{ isActive: boolean }>`
     width: 100vw;
     height: 100vh;
     position: fixed;
@@ -53,6 +57,9 @@ const Backdrop = styled(animated.div)`
     background: ${COLORS.white};
     backdrop-filter: blur(1px);
     z-index: 500;
+    transition: transform 0.4s ease-in;
+    opacity: ${(props): string => (props.isActive ? '0.6' : '0')};
+    display: ${(props): string => (props.isActive ? 'block' : 'none')};
 `;
 
 const PlantInfo = styled.div`
@@ -76,13 +83,6 @@ const SideMenu = (): JSX.Element => {
     const { auth, history, params } = useCommonHooks();
     const { currentPlant, currentProject } = useContext(PlantContext);
     const [drawerIsOpen, setDrawerIsOpen] = useState(false);
-    const sideDrawerAnimation = useSpring({
-        transform: drawerIsOpen ? 'translateX(0px)' : 'translateX(-300px)',
-    });
-    const backdropAnimation = useSpring({
-        opacity: drawerIsOpen ? 0.6 : 0,
-        display: drawerIsOpen ? 'block' : 'none',
-    });
 
     return (
         <>
@@ -91,10 +91,10 @@ const SideMenu = (): JSX.Element => {
                 Menu
             </Button>
             <Backdrop
-                style={backdropAnimation}
+                isActive={drawerIsOpen}
                 onClick={(): void => setDrawerIsOpen(false)}
             />
-            <SideMenuWrapper style={sideDrawerAnimation}>
+            <SideMenuWrapper isActive={drawerIsOpen}>
                 <TopContent>
                     <h2>Welcome</h2>
                     <Button
