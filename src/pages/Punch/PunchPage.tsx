@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Route, Switch } from 'react-router-dom';
 import Axios from 'axios';
 import EdsIcon from '../../components/icons/EdsIcon';
@@ -22,6 +22,7 @@ import { DetailsWrapper } from '../Entity/EntityPage';
 import { DotProgress } from '@equinor/eds-core-react';
 import AsyncPage from '../../components/AsyncPage';
 import TagInfo from '../../components/TagInfo';
+import PlantContext from '../../contexts/PlantContext';
 
 const PunchPage = (): JSX.Element => {
     const { api, params, path, history, url } = useCommonHooks();
@@ -29,6 +30,7 @@ const PunchPage = (): JSX.Element => {
     const [fetchPunchStatus, setFetchPunchStatus] = useState<AsyncStatus>(
         AsyncStatus.LOADING
     );
+    const { permissions } = useContext(PlantContext);
 
     useEffect(() => {
         const source = Axios.CancelToken.source();
@@ -51,10 +53,17 @@ const PunchPage = (): JSX.Element => {
     }, [api, params]);
 
     const determineComponentToRender = (): JSX.Element => {
-        if (punch != undefined) {
-            return punch.clearedAt ? (
-                <VerifyPunch punchItem={punch} />
-            ) : (
+        if (punch === undefined) return <SkeletonLoadingPage />;
+        if (punch.clearedAt != null) {
+            return (
+                <VerifyPunch
+                    punchItem={punch}
+                    canUnclear={permissions.includes('PUNCHLISTITEM/CLEAR')}
+                    canVerify={permissions.includes('PUNCHLISTITEM/VERIFY')}
+                />
+            );
+        } else {
+            return (
                 <ClearPunch
                     punchItem={punch}
                     setPunchItem={
@@ -62,10 +71,11 @@ const PunchPage = (): JSX.Element => {
                             React.SetStateAction<PunchItem>
                         >
                     }
+                    canEdit={permissions.includes('PUNCHLISTITEM/WRITE')}
+                    canClear={permissions.includes('PUNCHLISTITEM/CLEAR')}
                 />
             );
         }
-        return <SkeletonLoadingPage />;
     };
 
     const determineDetailsCard = (): JSX.Element => {
@@ -100,7 +110,7 @@ const PunchPage = (): JSX.Element => {
     };
 
     return (
-        <>
+        <main>
             <Navbar
                 noBorder
                 leftContent={
@@ -149,14 +159,8 @@ const PunchPage = (): JSX.Element => {
                     label={'Tag info'}
                 />
             </NavigationFooter>
-        </>
+        </main>
     );
 };
 
-export default withAccessControl(PunchPage, [
-    'PUNCHLISTITEM/READ',
-    'PUNCHLISTITEM/WRITE',
-    'PUNCHLISTITEM/CLEAR',
-    'PUNCHLISTITEM/VERIFY',
-    'TAG/READ',
-]);
+export default withAccessControl(PunchPage, ['PUNCHLISTITEM/READ', 'TAG/READ']);

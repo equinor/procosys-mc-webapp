@@ -21,9 +21,10 @@ import styled from 'styled-components';
 import { COLORS } from '../../../style/GlobalStyles';
 
 export const AttachmentsWrapper = styled.div`
-    margin: 0 -4%;
+    margin: 0 -4% 16px -4%;
     padding: 16px 4%;
     background-color: ${COLORS.fadedBlue};
+    height: 100px;
 `;
 
 export type ChosenPerson = {
