@@ -53,14 +53,17 @@ const PunchPage = (): JSX.Element => {
     }, [api, params]);
 
     const determineComponentToRender = (): JSX.Element => {
-        if (punch != undefined) {
-            return punch.clearedAt ? (
+        if (punch === undefined) return <SkeletonLoadingPage />;
+        if (punch.clearedAt != null) {
+            return (
                 <VerifyPunch
                     punchItem={punch}
                     canUnclear={permissions.includes('PUNCHLISTITEM/CLEAR')}
                     canVerify={permissions.includes('PUNCHLISTITEM/VERIFY')}
                 />
-            ) : (
+            );
+        } else {
+            return (
                 <ClearPunch
                     punchItem={punch}
                     setPunchItem={
@@ -73,7 +76,6 @@ const PunchPage = (): JSX.Element => {
                 />
             );
         }
-        return <SkeletonLoadingPage />;
     };
 
     const determineDetailsCard = (): JSX.Element => {
