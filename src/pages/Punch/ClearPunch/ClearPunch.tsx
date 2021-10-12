@@ -1,9 +1,14 @@
-import { Label, NativeSelect, TextField } from '@equinor/eds-core-react';
+import {
+    Button,
+    Label,
+    NativeSelect,
+    TextField,
+} from '@equinor/eds-core-react';
 import React from 'react';
 import { AsyncStatus } from '../../../contexts/McAppContext';
 import {
     DateField,
-    FormButton,
+    FormButtonWrapper,
     NewPunchFormWrapper,
 } from '../../Checklist/NewPunch/NewPunchForm';
 import useClearPunchFacade, {
@@ -30,11 +35,15 @@ export const PunchWrapper = styled.main``;
 type ClearPunchProps = {
     punchItem: PunchItem;
     setPunchItem: React.Dispatch<React.SetStateAction<PunchItem>>;
+    canEdit: boolean;
+    canClear: boolean;
 };
 
 const ClearPunch = ({
     punchItem,
     setPunchItem,
+    canEdit,
+    canClear,
 }: ClearPunchProps): JSX.Element => {
     const {
         updatePunchStatus,
@@ -62,7 +71,7 @@ const ClearPunch = ({
         showPersonsSearch,
         setShowPersonsSearch,
     } = useClearPunchFacade(setPunchItem);
-    const { api, params, url } = useCommonHooks();
+    const { api, params } = useCommonHooks();
 
     let descriptionBeforeEntering = '';
     let estimateBeforeEntering: number | null = 0;
@@ -82,7 +91,10 @@ const ClearPunch = ({
                             required
                             id="PunchCategorySelect"
                             label="Punch category"
-                            disabled={clearPunchStatus === AsyncStatus.LOADING}
+                            disabled={
+                                clearPunchStatus === AsyncStatus.LOADING ||
+                                canEdit === false
+                            }
                             defaultValue={
                                 ensure(
                                     categories.find(
@@ -108,7 +120,10 @@ const ClearPunch = ({
                             multiline
                             rows={5}
                             id="NewPunchDescription"
-                            disabled={clearPunchStatus === AsyncStatus.LOADING}
+                            disabled={
+                                clearPunchStatus === AsyncStatus.LOADING ||
+                                canEdit === false
+                            }
                             onFocus={(): string =>
                                 (descriptionBeforeEntering =
                                     punchItem.description)
@@ -132,7 +147,10 @@ const ClearPunch = ({
                             required
                             label="Raised by"
                             id="RaisedBySelect"
-                            disabled={clearPunchStatus === AsyncStatus.LOADING}
+                            disabled={
+                                clearPunchStatus === AsyncStatus.LOADING ||
+                                canEdit === false
+                            }
                             defaultValue={
                                 ensure(
                                     organizations.find(
@@ -156,7 +174,10 @@ const ClearPunch = ({
                             required
                             id="ClearingBySelect"
                             label="Clearing by"
-                            disabled={clearPunchStatus === AsyncStatus.LOADING}
+                            disabled={
+                                clearPunchStatus === AsyncStatus.LOADING ||
+                                canEdit === false
+                            }
                             defaultValue={
                                 ensure(
                                     organizations.find(
@@ -185,8 +206,10 @@ const ClearPunch = ({
                                     ? `${punchItem.actionByPersonFirstName} ${punchItem.actionByPersonLastName}`
                                     : ''
                             }
+                            readOnly
+                            disabled={canEdit === false}
                             inputIcon={
-                                punchItem.actionByPerson ? (
+                                punchItem.actionByPerson && canEdit ? (
                                     <div
                                         onClick={(): void =>
                                             handleActionByPersonChange(
@@ -212,6 +235,10 @@ const ClearPunch = ({
                                 type="date"
                                 id="DueDatePicker"
                                 role="datepicker"
+                                disabled={
+                                    clearPunchStatus === AsyncStatus.LOADING ||
+                                    canEdit === false
+                                }
                                 value={
                                     punchItem.dueDate
                                         ? punchItem.dueDate.split('T')[0]
@@ -233,7 +260,8 @@ const ClearPunch = ({
                             label="Type"
                             disabled={
                                 clearPunchStatus === AsyncStatus.LOADING ||
-                                types.length < 1
+                                types.length < 1 ||
+                                canEdit === false
                             }
                             defaultValue={
                                 punchItem.typeCode
@@ -258,7 +286,8 @@ const ClearPunch = ({
                             label="Sorting"
                             disabled={
                                 clearPunchStatus === AsyncStatus.LOADING ||
-                                sortings.length < 1
+                                sortings.length < 1 ||
+                                canEdit === false
                             }
                             defaultValue={
                                 punchItem.sorting
@@ -283,7 +312,8 @@ const ClearPunch = ({
                             label="Priority"
                             disabled={
                                 clearPunchStatus === AsyncStatus.LOADING ||
-                                priorities.length < 1
+                                priorities.length < 1 ||
+                                canEdit === false
                             }
                             defaultValue={
                                 punchItem.priorityCode
@@ -311,7 +341,10 @@ const ClearPunch = ({
                             }
                             label="Estimate"
                             id="Estimate"
-                            disabled={clearPunchStatus === AsyncStatus.LOADING}
+                            disabled={
+                                clearPunchStatus === AsyncStatus.LOADING ||
+                                canEdit === false
+                            }
                             onFocus={(): number | null =>
                                 (estimateBeforeEntering = punchItem.estimate)
                             }
@@ -374,18 +407,21 @@ const ClearPunch = ({
                                     )
                                 }
                                 setSnackbarText={setSnackbarText}
-                                readOnly={false}
+                                readOnly={canEdit === false}
                             />
                         </AttachmentsWrapper>
-                        <FormButton
-                            type="submit"
-                            disabled={
-                                updatePunchStatus === AsyncStatus.LOADING ||
-                                clearPunchStatus === AsyncStatus.LOADING
-                            }
-                        >
-                            Clear
-                        </FormButton>
+                        <FormButtonWrapper>
+                            <Button
+                                type="submit"
+                                disabled={
+                                    updatePunchStatus === AsyncStatus.LOADING ||
+                                    clearPunchStatus === AsyncStatus.LOADING ||
+                                    canClear === false
+                                }
+                            >
+                                Clear
+                            </Button>
+                        </FormButtonWrapper>
                     </NewPunchFormWrapper>
                 </>
             );
