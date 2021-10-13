@@ -32,14 +32,11 @@ const ResultAmount = styled.h6`
 `;
 
 const ButtonWrapper = styled.div`
-    padding: 0 4%;
-    & > div {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        padding: 8px 0 32px 0;
-        height: 36px;
-    }
+    padding: 8px 0 32px 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 36px;
 `;
 
 const SavedSearchPage = (): JSX.Element => {
@@ -115,7 +112,7 @@ const SavedSearchPage = (): JSX.Element => {
                 )
             ) {
                 setResults(allResults);
-                setFetchMoreResultsStatus(AsyncStatus.ERROR);
+                setFetchMoreResultsStatus(AsyncStatus.SUCCESS);
                 setNextPageNumber((prevValue) => prevValue + 1);
             } else {
                 setFetchMoreResultsStatus(AsyncStatus.ERROR);
