@@ -206,7 +206,6 @@ const ClearPunch = ({
                                     ? `${punchItem.actionByPersonFirstName} ${punchItem.actionByPersonLastName}`
                                     : ''
                             }
-                            readOnly
                             disabled={canEdit === false}
                             inputIcon={
                                 punchItem.actionByPerson && canEdit ? (
