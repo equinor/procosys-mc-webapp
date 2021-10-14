@@ -144,7 +144,7 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
         savedSearchId: string,
         savedSearchType: string,
         cancelToken: CancelToken,
-        currentPage = 1
+        currentPage = 0
     ): Promise<PunchItemSavedSearchResult[] | ChecklistSavedSearchResult[]> => {
         let url = '';
         if (savedSearchType === SavedSearchType.CHECKLIST) {
