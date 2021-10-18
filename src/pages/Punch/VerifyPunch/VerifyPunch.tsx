@@ -10,7 +10,7 @@ import useSnackbar from '../../../utils/useSnackbar';
 import removeSubdirectories from '../../../utils/removeSubdirectories';
 import { Attachments } from '@equinor/procosys-webapp-components';
 
-const VerifyPunchWrapper = styled.main`
+const VerifyPunchWrapper = styled.div`
     padding: 16px 4% 78px 4%;
     & > p {
         margin-top: 0;
@@ -29,9 +29,15 @@ const ButtonGroup = styled.div`
 
 type VerifyPunchProps = {
     punchItem: PunchItem;
+    canUnclear: boolean;
+    canVerify: boolean;
 };
 
-const VerifyPunch = ({ punchItem }: VerifyPunchProps): JSX.Element => {
+const VerifyPunch = ({
+    punchItem,
+    canUnclear,
+    canVerify,
+}: VerifyPunchProps): JSX.Element => {
     const { url, history, params, api } = useCommonHooks();
     const [punchActionStatus, setPunchActionStatus] = useState(
         AsyncStatus.INACTIVE
@@ -60,7 +66,10 @@ const VerifyPunch = ({ punchItem }: VerifyPunchProps): JSX.Element => {
         if (punchItem.verifiedByFirstName) {
             return (
                 <Button
-                    disabled={punchActionStatus === AsyncStatus.LOADING}
+                    disabled={
+                        punchActionStatus === AsyncStatus.LOADING ||
+                        canVerify === false
+                    }
                     onClick={(): Promise<void> =>
                         handlePunchAction(PunchAction.UNVERIFY, () => {
                             history.push(url);
@@ -74,7 +83,10 @@ const VerifyPunch = ({ punchItem }: VerifyPunchProps): JSX.Element => {
             return (
                 <>
                     <Button
-                        disabled={punchActionStatus === AsyncStatus.LOADING}
+                        disabled={
+                            punchActionStatus === AsyncStatus.LOADING ||
+                            canUnclear === false
+                        }
                         onClick={(): Promise<void> =>
                             handlePunchAction(PunchAction.UNCLEAR, () =>
                                 history.push(url)
@@ -84,7 +96,10 @@ const VerifyPunch = ({ punchItem }: VerifyPunchProps): JSX.Element => {
                         Unclear
                     </Button>
                     <Button
-                        disabled={punchActionStatus === AsyncStatus.LOADING}
+                        disabled={
+                            punchActionStatus === AsyncStatus.LOADING ||
+                            canVerify === false
+                        }
                         onClick={(): Promise<void> =>
                             handlePunchAction(PunchAction.REJECT, () =>
                                 history.push(
@@ -97,7 +112,10 @@ const VerifyPunch = ({ punchItem }: VerifyPunchProps): JSX.Element => {
                     </Button>
 
                     <Button
-                        disabled={punchActionStatus === AsyncStatus.LOADING}
+                        disabled={
+                            punchActionStatus === AsyncStatus.LOADING ||
+                            canVerify === false
+                        }
                         onClick={(): Promise<void> =>
                             handlePunchAction(PunchAction.VERIFY, () => {
                                 history.push(
@@ -200,6 +218,7 @@ const VerifyPunch = ({ punchItem }: VerifyPunchProps): JSX.Element => {
                 setSnackbarText={setSnackbarText}
             />
             <ButtonGroup>{determineButtonsToRender()}</ButtonGroup>
+            {snackbar}
         </VerifyPunchWrapper>
     );
 };
