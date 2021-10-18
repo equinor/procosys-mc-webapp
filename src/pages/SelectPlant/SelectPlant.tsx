@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import EdsIcon from '../../components/icons/EdsIcon';
 import CommAppContext from '../../contexts/McAppContext';
 import { COLORS } from '../../style/GlobalStyles';
-import PageHeader from '../../components/PageHeader';
+import { PageHeader } from '@equinor/procosys-webapp-components';
 import useCommonHooks from '../../utils/useCommonHooks';
 import { Button } from '@equinor/eds-core-react';
 import {

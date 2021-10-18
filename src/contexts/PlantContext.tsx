@@ -11,14 +11,8 @@ import {
     Navbar,
     ProcosysButton,
     ReloadButton,
+    StorageKey,
 } from '@equinor/procosys-webapp-components';
-
-export enum StorageKey {
-    PLANT = 'currentPlant',
-    PROJECT = 'currentProject',
-    BOOKMARK = 'Procosys Bookmark',
-    REDIRECTPATH = 'ProCoSys-MCWA-redirectPath',
-}
 
 export type PlantContextProps = {
     fetchProjectsAndPermissionsStatus: AsyncStatus;
@@ -50,11 +44,11 @@ export const PlantContextProvider: React.FC<{ children: ReactNode }> = ({
             StorageKey.PROJECT
         );
         const redirectPath = window.localStorage.getItem(
-            StorageKey.REDIRECTPATH
+            StorageKey.MC_REDIRECTPATH
         );
         if (redirectPath && redirectPath.length > 1) {
             history.push(redirectPath);
-            window.localStorage.removeItem(StorageKey.REDIRECTPATH);
+            window.localStorage.removeItem(StorageKey.MC_REDIRECTPATH);
         }
 
         if (params.plant || !plantInStorage || !projectInStorage) return;
