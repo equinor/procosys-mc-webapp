@@ -18,11 +18,11 @@ import {
     FooterButton,
     removeSubdirectories,
 } from '@equinor/procosys-webapp-components';
-import { DetailsWrapper } from '../Entity/EntityPage';
 import { DotProgress } from '@equinor/eds-core-react';
 import AsyncPage from '../../components/AsyncPage';
 import TagInfo from '../../components/TagInfo';
 import PlantContext from '../../contexts/PlantContext';
+import { DetailsWrapper } from '../Entity/EntityPageDetailsCard';
 
 const PunchPage = (): JSX.Element => {
     const { api, params, path, history, url } = useCommonHooks();

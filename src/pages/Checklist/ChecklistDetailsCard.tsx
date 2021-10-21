@@ -3,7 +3,7 @@ import { InfoItem } from '@equinor/procosys-webapp-components';
 import React from 'react';
 import { AsyncStatus } from '../../contexts/McAppContext';
 import { ChecklistResponse } from '../../services/apiTypes';
-import { DetailsWrapper } from '../Entity/EntityPage';
+import { DetailsWrapper } from '../Entity/EntityPageDetailsCard';
 
 type ChecklistDetailsCardProps = {
     fetchDetailsStatus: AsyncStatus;

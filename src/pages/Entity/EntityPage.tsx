@@ -11,17 +11,11 @@ import {
     Tag,
     PoPreview,
 } from '../../services/apiTypes';
-import { DotProgress } from '@equinor/eds-core-react';
 import withAccessControl from '../../services/withAccessControl';
 import Axios from 'axios';
 import EdsIcon from '../../components/icons/EdsIcon';
 import { COLORS } from '../../style/GlobalStyles';
-import McDetails from '../../components/detailCards/McDetails';
 import { SearchType } from '../Search/Search';
-import { URLError } from '../../utils/matchPlantInURL';
-import { isOfType } from '../../services/apiTypeGuards';
-import EntityDetails from '../../components/detailCards/EntityDetails';
-import TextIcon from '../../components/detailCards/TextIcon';
 import WorkOrderInfo from './WorkOrderInfo';
 import {
     BackButton,
@@ -32,13 +26,9 @@ import {
     removeSubdirectories,
     Scope,
 } from '@equinor/procosys-webapp-components';
+import EntityPageDetailsCard from './EntityPageDetailsCard';
 
 const EntityPageWrapper = styled.main``;
-
-export const DetailsWrapper = styled.p`
-    text-align: center;
-    padding: 12px;
-`;
 
 const ContentWrapper = styled.div`
     padding-bottom: 66px;
@@ -126,133 +116,6 @@ const EntityPage = (): JSX.Element => {
         })();
     }, [api, params]);
 
-    const determineDetailsToRender = (): JSX.Element => {
-        if (
-            fetchDetailsStatus === AsyncStatus.SUCCESS &&
-            details != undefined
-        ) {
-            if (
-                params.searchType === SearchType.MC &&
-                isOfType<McPkgPreview>(details, 'mcPkgNo')
-            ) {
-                return (
-                    <McDetails
-                        key={details.id}
-                        mcPkgDetails={details}
-                        clickable={false}
-                    />
-                );
-            } else if (
-                params.searchType === SearchType.WO &&
-                isOfType<WoPreview>(details, 'workOrderNo')
-            ) {
-                return (
-                    <EntityDetails
-                        isDetailsCard
-                        icon={
-                            <TextIcon color={COLORS.workOrderIcon} text="WO" />
-                        }
-                        headerText={details.workOrderNo}
-                        description={details.title}
-                        details={
-                            details.disciplineCode
-                                ? [
-                                      `${details.disciplineCode}, ${details.disciplineDescription}`,
-                                  ]
-                                : undefined
-                        }
-                    />
-                );
-            } else if (
-                params.searchType === SearchType.Tag &&
-                isOfType<Tag>(details, 'tag')
-            ) {
-                return (
-                    <EntityDetails
-                        isDetailsCard
-                        icon={<TextIcon color={COLORS.tagIcon} text="Tag" />}
-                        headerText={details.tag.tagNo}
-                        description={details.tag.description}
-                    />
-                );
-            } else if (
-                params.searchType === SearchType.PO &&
-                isOfType<PoPreview>(details, 'callOffId')
-            ) {
-                return (
-                    <EntityDetails
-                        isDetailsCard
-                        icon={
-                            <TextIcon
-                                color={COLORS.purchaseOrderIcon}
-                                text="PO"
-                            />
-                        }
-                        headerText={details.title}
-                        description={details.description}
-                        details={[details.responsibleCode]}
-                    />
-                );
-            } else return <></>;
-        } else if (fetchDetailsStatus === AsyncStatus.ERROR) {
-            return (
-                <DetailsWrapper>
-                    Unable to load details. Please reload
-                </DetailsWrapper>
-            );
-        } else {
-            return (
-                <DetailsWrapper>
-                    <DotProgress color="primary" />
-                </DetailsWrapper>
-            );
-        }
-    };
-
-    const determineFooterToRender = (): JSX.Element => {
-        return (
-            <NavigationFooter footerStatus={fetchFooterStatus}>
-                <FooterButton
-                    active={
-                        !history.location.pathname.includes('/punch-list') &&
-                        !history.location.pathname.includes('/WO-info')
-                    }
-                    goTo={(): void => history.push(url)}
-                    icon={<EdsIcon name="list" color={COLORS.mossGreen} />}
-                    label="Scope"
-                    numberOfItems={scope?.length}
-                />
-                {params.searchType === SearchType.WO ? (
-                    <FooterButton
-                        active={history.location.pathname.includes('/WO-info')}
-                        goTo={(): void => history.push(`${url}/WO-info`)}
-                        icon={
-                            <EdsIcon
-                                name="info_circle"
-                                color={COLORS.mossGreen}
-                            />
-                        }
-                        label="WO info"
-                    />
-                ) : (
-                    <></>
-                )}
-                <FooterButton
-                    active={history.location.pathname.includes('/punch-list')}
-                    goTo={(): void => history.push(`${url}/punch-list`)}
-                    icon={
-                        <EdsIcon
-                            name="warning_outlined"
-                            color={COLORS.mossGreen}
-                        />
-                    }
-                    label="Punch list"
-                    numberOfItems={punchList?.length}
-                />
-            </NavigationFooter>
-        );
-    };
-
     return (
         <EntityPageWrapper>
             <Navbar
@@ -266,7 +129,10 @@ const EntityPage = (): JSX.Element => {
                         : params.searchType
                 }
             />
-            {determineDetailsToRender()}
+            <EntityPageDetailsCard
+                fetchDetailsStatus={fetchDetailsStatus}
+                details={details}
+            />
             <ContentWrapper>
                 <Switch>
                     <Route
@@ -319,7 +185,45 @@ const EntityPage = (): JSX.Element => {
                     />
                 </Switch>
             </ContentWrapper>
-            {determineFooterToRender()}
+            <NavigationFooter footerStatus={fetchFooterStatus}>
+                <FooterButton
+                    active={
+                        !history.location.pathname.includes('/punch-list') &&
+                        !history.location.pathname.includes('/WO-info')
+                    }
+                    goTo={(): void => history.push(url)}
+                    icon={<EdsIcon name="list" color={COLORS.mossGreen} />}
+                    label="Scope"
+                    numberOfItems={scope?.length}
+                />
+                {params.searchType === SearchType.WO ? (
+                    <FooterButton
+                        active={history.location.pathname.includes('/WO-info')}
+                        goTo={(): void => history.push(`${url}/WO-info`)}
+                        icon={
+                            <EdsIcon
+                                name="info_circle"
+                                color={COLORS.mossGreen}
+                            />
+                        }
+                        label="WO info"
+                    />
+                ) : (
+                    <></>
+                )}
+                <FooterButton
+                    active={history.location.pathname.includes('/punch-list')}
+                    goTo={(): void => history.push(`${url}/punch-list`)}
+                    icon={
+                        <EdsIcon
+                            name="warning_outlined"
+                            color={COLORS.mossGreen}
+                        />
+                    }
+                    label="Punch list"
+                    numberOfItems={punchList?.length}
+                />
+            </NavigationFooter>
         </EntityPageWrapper>
     );
 };
