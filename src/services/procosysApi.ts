@@ -92,7 +92,7 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
         callOffQuery: string,
         projectId: number,
         plantId: string,
-        searchType: SearchType,
+        searchType: string,
         cancelToken: CancelToken
     ): Promise<SearchResults> => {
         let url = '';

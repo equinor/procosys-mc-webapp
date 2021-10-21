@@ -1,7 +1,6 @@
 import { Button } from '@equinor/eds-core-react';
 import React from 'react';
 import styled from 'styled-components';
-import { IconWrapper } from '../../../components/detailCards/EntityDetails';
 import EdsIcon from '../../../components/icons/EdsIcon';
 import { AsyncStatus } from '../../../contexts/McAppContext';
 import { SavedSearch, ApiSavedSearchType } from '../../../services/apiTypes';
@@ -37,6 +36,11 @@ const DeleteButton = styled(Button)`
     margin: 0 0 0 16px;
     width: 24px;
     height: 24px;
+`;
+
+const IconWrapper = styled.div`
+    padding-top: 3px;
+    margin-right: 16px;
 `;
 
 export enum SavedSearchType {
