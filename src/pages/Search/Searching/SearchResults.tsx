@@ -11,11 +11,13 @@ import { SearchType } from '../Search';
 import McDetails from '../../../components/detailCards/McDetails';
 import styled from 'styled-components';
 import { isArrayOfType } from '../../../services/apiTypeGuards';
-import EntityDetails from '../../../components/detailCards/EntityDetails';
-import TextIcon from '../../../components/detailCards/TextIcon';
 import useCommonHooks from '../../../utils/useCommonHooks';
 import { COLORS } from '../../../style/GlobalStyles';
-import { SkeletonLoadingPage } from '@equinor/procosys-webapp-components';
+import {
+    EntityDetails,
+    SkeletonLoadingPage,
+    TextIcon,
+} from '@equinor/procosys-webapp-components';
 
 const SearchResultAmountWrapper = styled.h6`
     margin: 10px 0px;
@@ -24,7 +26,7 @@ const SearchResultAmountWrapper = styled.h6`
 type SearchResultsProps = {
     searchStatus: SearchStatus;
     searchResults: SearchResultsType;
-    searchType: SearchType;
+    searchType: string;
 };
 
 const SearchResults = ({
@@ -169,7 +171,19 @@ const SearchResults = ({
         return <></>;
     };
 
-    if (
+    if (searchType in SearchType === false) {
+        return (
+            <div>
+                <p>
+                    <i>
+                        The chosen search type is not supported. Please choose a
+                        supported search type by clicking one of the buttons
+                        above.
+                    </i>
+                </p>
+            </div>
+        );
+    } else if (
         searchStatus === SearchStatus.SUCCESS &&
         searchResults.items.length > 0
     ) {

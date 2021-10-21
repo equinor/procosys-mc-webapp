@@ -17,7 +17,7 @@ const SearchAreaWrapper = styled.div`
 `;
 
 type SearchAreaProps = {
-    searchType: SearchType;
+    searchType: string;
 };
 
 const SearchArea = ({ searchType }: SearchAreaProps): JSX.Element => {
