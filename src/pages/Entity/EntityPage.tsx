@@ -93,7 +93,7 @@ const EntityPage = (): JSX.Element => {
                 setFetchFooterStatus(AsyncStatus.SUCCESS);
             } catch {
                 setFetchPunchListStatus(AsyncStatus.ERROR);
-                setFetchPunchListStatus(AsyncStatus.ERROR);
+                setFetchScopeStatus(AsyncStatus.ERROR);
                 setFetchFooterStatus(AsyncStatus.ERROR);
             }
         })();

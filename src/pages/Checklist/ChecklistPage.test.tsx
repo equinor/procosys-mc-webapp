@@ -308,7 +308,7 @@ describe('<ChecklistPage> Punch list', () => {
         renderChecklistPage('punch-list');
         expect(
             await screen.findByText(
-                'Unable to get punch list. Please try again.'
+                'Error: Unable to get punch list. Please try again.'
             )
         );
     });
