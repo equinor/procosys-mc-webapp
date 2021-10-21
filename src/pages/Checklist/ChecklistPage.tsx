@@ -8,18 +8,17 @@ import ChecklistWrapper from './ChecklistWrapper';
 import NewPunch from './NewPunch/NewPunch';
 import { AsyncStatus } from '../../contexts/McAppContext';
 import { ChecklistResponse, PunchPreview } from '../../services/apiTypes';
-import { Button, DotProgress } from '@equinor/eds-core-react';
-import { DetailsWrapper } from '../Entity/EntityPage';
+import { Button } from '@equinor/eds-core-react';
 import TagInfo from '../../components/TagInfo';
 import {
     BackButton,
     FooterButton,
-    InfoItem,
     Navbar,
     NavigationFooter,
     PunchList,
     removeSubdirectories,
 } from '@equinor/procosys-webapp-components';
+import ChecklistDetailsCard from './ChecklistDetailsCard';
 
 const ChecklistPage = (): JSX.Element => {
     const { history, url, path, api, params } = useCommonHooks();
@@ -76,73 +75,6 @@ const ChecklistPage = (): JSX.Element => {
         })();
     }, [api, params]);
 
-    const determineDetailsToRender = (): JSX.Element => {
-        if (
-            fetchDetailsStatus === AsyncStatus.SUCCESS &&
-            details != undefined
-        ) {
-            return (
-                <InfoItem
-                    isDetailsCard
-                    isScope
-                    status={details.checkList.status}
-                    statusLetters={[
-                        details.checkList.signedByUser ? 'S' : null,
-                        details.checkList.verifiedByUser ? 'V' : null,
-                    ]}
-                    headerText={details.checkList.tagNo}
-                    description={details.checkList.tagDescription}
-                    chips={[
-                        details.checkList.mcPkgNo,
-                        details.checkList.formularType,
-                    ].filter((x) => x != null)}
-                    attachments={details.checkList.attachmentCount}
-                />
-            );
-        }
-        if (fetchDetailsStatus === AsyncStatus.ERROR) {
-            return (
-                <DetailsWrapper>
-                    Unable to load details. Please reload
-                </DetailsWrapper>
-            );
-        }
-        return (
-            <DetailsWrapper>
-                <DotProgress color="primary" />
-            </DetailsWrapper>
-        );
-    };
-
-    const determineFooterToRender = (): JSX.Element => {
-        return (
-            <NavigationFooter footerStatus={fetchPunchListStatus}>
-                <FooterButton
-                    active={
-                        !history.location.pathname.includes('/punch-list') &&
-                        !history.location.pathname.includes('/tag-info')
-                    }
-                    goTo={(): void => history.push(`${url}`)}
-                    icon={<EdsIcon name="playlist_added" />}
-                    label={'Checklist'}
-                />
-                <FooterButton
-                    active={history.location.pathname.includes('/tag-info')}
-                    goTo={(): void => history.push(`${url}/tag-info`)}
-                    icon={<EdsIcon name="tag" />}
-                    label={'Tag info'}
-                />
-                <FooterButton
-                    active={history.location.pathname.includes('/punch-list')}
-                    goTo={(): void => history.push(`${url}/punch-list`)}
-                    icon={<EdsIcon name="warning_outlined" />}
-                    label={'Punch list'}
-                    numberOfItems={punchList?.length}
-                />
-            </NavigationFooter>
-        );
-    };
-
     return (
         <main>
             <Navbar
@@ -173,7 +105,10 @@ const ChecklistPage = (): JSX.Element => {
                     )
                 }
             />
-            {determineDetailsToRender()}
+            <ChecklistDetailsCard
+                fetchDetailsStatus={fetchDetailsStatus}
+                details={details}
+            />
             <Switch>
                 <Route
                     exact
@@ -215,7 +150,30 @@ const ChecklistPage = (): JSX.Element => {
                     component={NewPunch}
                 />
             </Switch>
-            {determineFooterToRender()}
+            <NavigationFooter footerStatus={fetchPunchListStatus}>
+                <FooterButton
+                    active={
+                        !history.location.pathname.includes('/punch-list') &&
+                        !history.location.pathname.includes('/tag-info')
+                    }
+                    goTo={(): void => history.push(`${url}`)}
+                    icon={<EdsIcon name="playlist_added" />}
+                    label={'Checklist'}
+                />
+                <FooterButton
+                    active={history.location.pathname.includes('/tag-info')}
+                    goTo={(): void => history.push(`${url}/tag-info`)}
+                    icon={<EdsIcon name="tag" />}
+                    label={'Tag info'}
+                />
+                <FooterButton
+                    active={history.location.pathname.includes('/punch-list')}
+                    goTo={(): void => history.push(`${url}/punch-list`)}
+                    icon={<EdsIcon name="warning_outlined" />}
+                    label={'Punch list'}
+                    numberOfItems={punchList?.length}
+                />
+            </NavigationFooter>
         </main>
     );
 };
