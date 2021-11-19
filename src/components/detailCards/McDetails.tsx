@@ -6,7 +6,7 @@ import useCommonHooks from '../../utils/useCommonHooks';
 import { McPackageStatusIcon } from '../icons/McPackageStatusIcon';
 
 const McDetailsWrapper = styled.article<{ clickable: boolean }>`
-    cursor: pointer;
+    cursor: ${(props): string => (props.clickable ? 'pointer' : 'default')};
     display: flex;
     border-top: 1px solid ${COLORS.lightGrey};
     padding: 16px 4%;

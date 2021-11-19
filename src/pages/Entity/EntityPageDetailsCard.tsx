@@ -51,7 +51,7 @@ const EntityPageDetailsCard = ({
         ) {
             return (
                 <EntityDetails
-                    isDetailsCard
+                    isDetailsCard={true}
                     icon={<TextIcon color={COLORS.workOrderIcon} text="WO" />}
                     headerText={details.workOrderNo}
                     description={details.title}
