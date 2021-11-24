@@ -2,11 +2,8 @@ import React, { useContext, useEffect, useState } from 'react';
 import { Route, Switch } from 'react-router-dom';
 import Axios from 'axios';
 import EdsIcon from '../../components/icons/EdsIcon';
-import FooterButton from '../../components/navigation/FooterButton';
-import NavigationFooter from '../../components/navigation/NavigationFooter';
 import withAccessControl from '../../services/withAccessControl';
 import { COLORS } from '../../style/GlobalStyles';
-import removeSubdirectories from '../../utils/removeSubdirectories';
 import useCommonHooks from '../../utils/useCommonHooks';
 import ClearPunch from './ClearPunch/ClearPunch';
 import { PunchItem } from '../../services/apiTypes';
@@ -17,12 +14,15 @@ import {
     BackButton,
     InfoItem,
     Navbar,
+    NavigationFooter,
+    FooterButton,
+    removeSubdirectories,
 } from '@equinor/procosys-webapp-components';
-import { DetailsWrapper } from '../Entity/EntityPage';
 import { DotProgress } from '@equinor/eds-core-react';
 import AsyncPage from '../../components/AsyncPage';
 import TagInfo from '../../components/TagInfo';
 import PlantContext from '../../contexts/PlantContext';
+import { DetailsWrapper } from '../Entity/EntityPageDetailsCard';
 
 const PunchPage = (): JSX.Element => {
     const { api, params, path, history, url } = useCommonHooks();

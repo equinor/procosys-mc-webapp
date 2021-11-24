@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Axios from 'axios';
 import EdsIcon from '../../components/icons/EdsIcon';
-import FooterButton from '../../components/navigation/FooterButton';
-import NavigationFooter from '../../components/navigation/NavigationFooter';
 import withAccessControl from '../../services/withAccessControl';
 import useCommonHooks from '../../utils/useCommonHooks';
 import { Route, Switch } from 'react-router-dom';
@@ -10,17 +8,17 @@ import ChecklistWrapper from './ChecklistWrapper';
 import NewPunch from './NewPunch/NewPunch';
 import { AsyncStatus } from '../../contexts/McAppContext';
 import { ChecklistResponse, PunchPreview } from '../../services/apiTypes';
-import NavigationFooterShell from '../../components/navigation/NavigationFooterShell';
-import { Button, DotProgress } from '@equinor/eds-core-react';
-import { DetailsWrapper } from '../Entity/EntityPage';
+import { Button } from '@equinor/eds-core-react';
 import TagInfo from '../../components/TagInfo';
 import {
     BackButton,
-    InfoItem,
+    FooterButton,
     Navbar,
+    NavigationFooter,
+    PunchList,
+    removeSubdirectories,
 } from '@equinor/procosys-webapp-components';
-import ChecklistPunchList from './ChecklistPunchList';
-import removeSubdirectories from '../../utils/removeSubdirectories';
+import ChecklistDetailsCard from './ChecklistDetailsCard';
 
 const ChecklistPage = (): JSX.Element => {
     const { history, url, path, api, params } = useCommonHooks();
@@ -34,6 +32,13 @@ const ChecklistPage = (): JSX.Element => {
     );
     const [refreshChecklistStatus, setRefreshChecklistStatus] = useState(false);
     const source = Axios.CancelToken.source();
+    const isOnNewPunchPage = history.location.pathname.includes('/new-punch');
+    const isOnPunchListPage = history.location.pathname.includes('/punch-list');
+    const isOnTagInfoPage = history.location.pathname.includes('/tag-info');
+    const goBackToPunchListPage = removeSubdirectories(
+        history.location.pathname
+    );
+    const goBackToEntityPage = removeSubdirectories(url, 2);
 
     useEffect(() => {
         return (): void => {
@@ -77,107 +82,15 @@ const ChecklistPage = (): JSX.Element => {
         })();
     }, [api, params]);
 
-    const determineDetailsToRender = (): JSX.Element => {
-        if (
-            fetchDetailsStatus === AsyncStatus.SUCCESS &&
-            details != undefined
-        ) {
-            return (
-                <InfoItem
-                    isDetailsCard
-                    isScope
-                    status={details.checkList.status}
-                    statusLetters={[
-                        details.checkList.signedByUser ? 'S' : null,
-                        details.checkList.verifiedByUser ? 'V' : null,
-                    ]}
-                    headerText={details.checkList.tagNo}
-                    description={details.checkList.tagDescription}
-                    chips={[
-                        details.checkList.mcPkgNo,
-                        details.checkList.formularType,
-                    ].filter((x) => x != null)}
-                    attachments={details.checkList.attachmentCount}
-                />
-            );
-        }
-        if (fetchDetailsStatus === AsyncStatus.ERROR) {
-            return (
-                <DetailsWrapper>
-                    Unable to load details. Please reload
-                </DetailsWrapper>
-            );
-        }
-        return (
-            <DetailsWrapper>
-                <DotProgress color="primary" />
-            </DetailsWrapper>
-        );
-    };
-
-    const determineFooterToRender = (): JSX.Element => {
-        if (
-            (fetchPunchListStatus === AsyncStatus.SUCCESS ||
-                fetchPunchListStatus === AsyncStatus.EMPTY_RESPONSE) &&
-            punchList != undefined
-        ) {
-            return (
-                <NavigationFooter>
-                    <FooterButton
-                        active={
-                            !history.location.pathname.includes(
-                                '/punch-list'
-                            ) &&
-                            !history.location.pathname.includes('/tag-info')
-                        }
-                        goTo={(): void => history.push(`${url}`)}
-                        icon={<EdsIcon name="playlist_added" />}
-                        label={'Checklist'}
-                    />
-                    <FooterButton
-                        active={history.location.pathname.includes('/tag-info')}
-                        goTo={(): void => history.push(`${url}/tag-info`)}
-                        icon={<EdsIcon name="tag" />}
-                        label={'Tag info'}
-                    />
-                    <FooterButton
-                        active={history.location.pathname.includes(
-                            '/punch-list'
-                        )}
-                        goTo={(): void => history.push(`${url}/punch-list`)}
-                        icon={<EdsIcon name="warning_outlined" />}
-                        label={'Punch list'}
-                        numberOfItems={punchList.length}
-                    />
-                </NavigationFooter>
-            );
-        }
-        if (fetchPunchListStatus === AsyncStatus.ERROR) {
-            return (
-                <NavigationFooterShell>
-                    <p>Unable to load footer. Please reload</p>
-                </NavigationFooterShell>
-            );
-        }
-        return (
-            <NavigationFooterShell>
-                <DotProgress color="primary" />
-            </NavigationFooterShell>
-        );
-    };
-
     return (
-        <>
+        <main>
             <Navbar
                 leftContent={
                     <BackButton
                         to={
-                            history.location.pathname.includes('/new-punch')
-                                ? `${removeSubdirectories(
-                                      history.location.pathname,
-                                      1
-                                  )}`
-                                : `${removeSubdirectories(url, 2)}`
+                            isOnNewPunchPage
+                                ? goBackToPunchListPage
+                                : goBackToEntityPage
                         }
                     />
                 }
@@ -197,7 +110,10 @@ const ChecklistPage = (): JSX.Element => {
                     )
                 }
             />
-            {determineDetailsToRender()}
+            <ChecklistDetailsCard
+                fetchDetailsStatus={fetchDetailsStatus}
+                details={details}
+            />
             <Switch>
                 <Route
                     exact
@@ -219,9 +135,17 @@ const ChecklistPage = (): JSX.Element => {
                     exact
                     path={`${path}/punch-list`}
                     render={(): JSX.Element => (
-                        <ChecklistPunchList
-                            punchList={punchList}
+                        <PunchList
                             fetchPunchListStatus={fetchPunchListStatus}
+                            onPunchClick={(punchId: number): void =>
+                                history.push(
+                                    `${removeSubdirectories(
+                                        history.location.pathname
+                                    )}/punch-item/${punchId}`
+                                )
+                            }
+                            punchList={punchList}
+                            isChecklistPunchList
                         />
                     )}
                 />
@@ -231,8 +155,28 @@ const ChecklistPage = (): JSX.Element => {
                     component={NewPunch}
                 />
             </Switch>
-            {determineFooterToRender()}
-        </>
+            <NavigationFooter footerStatus={fetchPunchListStatus}>
+                <FooterButton
+                    active={!(isOnPunchListPage || isOnTagInfoPage)}
+                    goTo={(): void => history.push(`${url}`)}
+                    icon={<EdsIcon name="playlist_added" />}
+                    label={'Checklist'}
+                />
+                <FooterButton
+                    active={isOnTagInfoPage}
+                    goTo={(): void => history.push(`${url}/tag-info`)}
+                    icon={<EdsIcon name="tag" />}
+                    label={'Tag info'}
+                />
+                <FooterButton
+                    active={isOnPunchListPage}
+                    goTo={(): void => history.push(`${url}/punch-list`)}
+                    icon={<EdsIcon name="warning_outlined" />}
+                    label={'Punch list'}
+                    numberOfItems={punchList?.length}
+                />
+            </NavigationFooter>
+        </main>
     );
 };
 
