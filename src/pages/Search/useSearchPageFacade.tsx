@@ -60,7 +60,7 @@ const fetchHits = async (
     projectId: number,
     cancelToken: CancelToken,
     api: ProcosysApiService,
-    searchType: SearchType
+    searchType: string
 ): Promise<void> => {
     dispatch({ type: 'FETCH_START' });
     try {
@@ -82,7 +82,7 @@ const fetchHits = async (
 };
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-const useSearchPageFacade = (searchType: SearchType) => {
+const useSearchPageFacade = (searchType: string) => {
     const { api } = useCommonHooks();
     const [{ hits, searchStatus }, dispatch] = useReducer(fetchReducer, {
         hits: { maxAvailable: 0, items: [] },

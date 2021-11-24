@@ -50,7 +50,7 @@ const SavedSearchPage = (): JSX.Element => {
     );
     const [fetchMoreResultsStatus, setFetchMoreResultsStatus] =
         useState<AsyncStatus>(AsyncStatus.INACTIVE);
-    const [nextPageNumber, setNextPageNumber] = useState<number>(2);
+    const [nextPageNumber, setNextPageNumber] = useState<number>(1);
     const source = Axios.CancelToken.source();
 
     useEffect(() => {

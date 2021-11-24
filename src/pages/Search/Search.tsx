@@ -2,10 +2,13 @@ import React, { useState } from 'react';
 import withAccessControl from '../../services/withAccessControl';
 import styled from 'styled-components';
 import SearchArea from './Searching/SearchArea';
-import SearchTypeButton from './SearchTypeButton';
 import SavedSearches from './SavedSearches/SavedSearches';
 import useSnackbar from '../../utils/useSnackbar';
-import { Navbar, ProcosysButton } from '@equinor/procosys-webapp-components';
+import {
+    Navbar,
+    ProcosysButton,
+    SearchTypeButton,
+} from '@equinor/procosys-webapp-components';
 import SideMenu from '../../components/navigation/SideMenu';
 
 const SearchPageWrapper = styled.main`
@@ -33,11 +36,11 @@ export enum SearchType {
 }
 
 const Search = (): JSX.Element => {
-    const [searchType, setSearchType] = useState<SearchType | null>(null);
+    const [searchType, setSearchType] = useState<string>();
     const { snackbar, setSnackbarText } = useSnackbar();
 
     const determineComponent = (): JSX.Element => {
-        if (searchType === null) {
+        if (searchType === undefined) {
             return <SavedSearches setSnackbarText={setSnackbarText} />;
         }
         return <SearchArea searchType={searchType} />;
