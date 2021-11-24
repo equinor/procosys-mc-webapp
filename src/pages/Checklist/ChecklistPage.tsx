@@ -32,6 +32,13 @@ const ChecklistPage = (): JSX.Element => {
     );
     const [refreshChecklistStatus, setRefreshChecklistStatus] = useState(false);
     const source = Axios.CancelToken.source();
+    const isOnNewPunchPage = history.location.pathname.includes('/new-punch');
+    const isOnPunchListPage = history.location.pathname.includes('/punch-list');
+    const isOnTagInfoPage = history.location.pathname.includes('/tag-info');
+    const goBackToPunchListPage = removeSubdirectories(
+        history.location.pathname
+    );
+    const goBackToEntityPage = removeSubdirectories(url, 2);
 
     useEffect(() => {
         return (): void => {
@@ -81,11 +88,9 @@ const ChecklistPage = (): JSX.Element => {
                 leftContent={
                     <BackButton
                         to={
-                            history.location.pathname.includes('/new-punch')
-                                ? `${removeSubdirectories(
-                                      history.location.pathname
-                                  )}`
-                                : `${removeSubdirectories(url, 2)}`
+                            isOnNewPunchPage
+                                ? goBackToPunchListPage
+                                : goBackToEntityPage
                         }
                     />
                 }
@@ -152,22 +157,19 @@ const ChecklistPage = (): JSX.Element => {
             </Switch>
             <NavigationFooter footerStatus={fetchPunchListStatus}>
                 <FooterButton
-                    active={
-                        !history.location.pathname.includes('/punch-list') &&
-                        !history.location.pathname.includes('/tag-info')
-                    }
+                    active={!(isOnPunchListPage || isOnTagInfoPage)}
                     goTo={(): void => history.push(`${url}`)}
                     icon={<EdsIcon name="playlist_added" />}
                     label={'Checklist'}
                 />
                 <FooterButton
-                    active={history.location.pathname.includes('/tag-info')}
+                    active={isOnTagInfoPage}
                     goTo={(): void => history.push(`${url}/tag-info`)}
                     icon={<EdsIcon name="tag" />}
                     label={'Tag info'}
                 />
                 <FooterButton
-                    active={history.location.pathname.includes('/punch-list')}
+                    active={isOnPunchListPage}
                     goTo={(): void => history.push(`${url}/punch-list`)}
                     icon={<EdsIcon name="warning_outlined" />}
                     label={'Punch list'}

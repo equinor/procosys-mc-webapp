@@ -54,6 +54,8 @@ const EntityPage = (): JSX.Element => {
         AsyncStatus.LOADING
     );
     const source = Axios.CancelToken.source();
+    const isOnPunchListPage = history.location.pathname.includes('/punch-list');
+    const isOnWoInfoPage = history.location.pathname.includes('/wo-info');
 
     useEffect(() => {
         return (): void => {
@@ -187,10 +189,7 @@ const EntityPage = (): JSX.Element => {
             </ContentWrapper>
             <NavigationFooter footerStatus={fetchFooterStatus}>
                 <FooterButton
-                    active={
-                        !history.location.pathname.includes('/punch-list') &&
-                        !history.location.pathname.includes('/WO-info')
-                    }
+                    active={!(isOnPunchListPage || isOnWoInfoPage)}
                     goTo={(): void => history.push(url)}
                     icon={<EdsIcon name="list" color={COLORS.mossGreen} />}
                     label="Scope"
@@ -198,7 +197,7 @@ const EntityPage = (): JSX.Element => {
                 />
                 {params.searchType === SearchType.WO ? (
                     <FooterButton
-                        active={history.location.pathname.includes('/WO-info')}
+                        active={isOnWoInfoPage}
                         goTo={(): void => history.push(`${url}/WO-info`)}
                         icon={
                             <EdsIcon
@@ -212,7 +211,7 @@ const EntityPage = (): JSX.Element => {
                     <></>
                 )}
                 <FooterButton
-                    active={history.location.pathname.includes('/punch-list')}
+                    active={isOnPunchListPage}
                     goTo={(): void => history.push(`${url}/punch-list`)}
                     icon={
                         <EdsIcon
