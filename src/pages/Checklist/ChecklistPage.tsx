@@ -9,7 +9,7 @@ import NewPunch from './NewPunch/NewPunch';
 import { AsyncStatus } from '../../contexts/McAppContext';
 import { ChecklistResponse, PunchPreview } from '../../services/apiTypes';
 import { Button } from '@equinor/eds-core-react';
-import TagInfo from '../../components/TagInfo';
+import TagInfoPage from '../../components/TagInfoPage';
 import {
     BackButton,
     FooterButton,
@@ -128,7 +128,7 @@ const ChecklistPage = (): JSX.Element => {
                     exact
                     path={`${path}/tag-info`}
                     render={(): JSX.Element => (
-                        <TagInfo tagId={details?.checkList.tagId} />
+                        <TagInfoPage tagId={details?.checkList.tagId} />
                     )}
                 />
                 <Route
