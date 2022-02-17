@@ -6,11 +6,11 @@ import { AsyncStatus } from '../contexts/McAppContext';
 import { AdditionalTagField, TagDetails } from '../services/apiTypes';
 import useCommonHooks from '../utils/useCommonHooks';
 
-type TagInfoPageProps = {
+type TagInfoWrapperProps = {
     tagId?: number;
 };
 
-const TagInfoWrapper = ({ tagId }: TagInfoPageProps): JSX.Element => {
+const TagInfoWrapper = ({ tagId }: TagInfoWrapperProps): JSX.Element => {
     const { api, params } = useCommonHooks();
     const [fetchTagStatus, setFetchTagStatus] = useState(AsyncStatus.LOADING);
     const [tagInfo, setTagInfo] = useState<TagDetails>();
