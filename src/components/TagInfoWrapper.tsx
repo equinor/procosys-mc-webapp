@@ -10,7 +10,7 @@ type TagInfoPageProps = {
     tagId?: number;
 };
 
-const TagInfoPage = ({ tagId }: TagInfoPageProps): JSX.Element => {
+const TagInfoWrapper = ({ tagId }: TagInfoPageProps): JSX.Element => {
     const { api, params } = useCommonHooks();
     const [fetchTagStatus, setFetchTagStatus] = useState(AsyncStatus.LOADING);
     const [tagInfo, setTagInfo] = useState<TagDetails>();
@@ -51,4 +51,4 @@ const TagInfoPage = ({ tagId }: TagInfoPageProps): JSX.Element => {
     );
 };
 
-export default TagInfoPage;
+export default TagInfoWrapper;
