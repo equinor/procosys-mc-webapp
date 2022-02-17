@@ -20,7 +20,7 @@ import {
 } from '@equinor/procosys-webapp-components';
 import { DotProgress } from '@equinor/eds-core-react';
 import AsyncPage from '../../components/AsyncPage';
-import TagInfo from '../../components/TagInfo';
+import TagInfoWrapper from '../../components/TagInfoWrapper';
 import PlantContext from '../../contexts/PlantContext';
 import { DetailsWrapper } from '../Entity/EntityPageDetailsCard';
 
@@ -130,7 +130,7 @@ const PunchPage = (): JSX.Element => {
                         exact
                         path={`${path}/tag-info`}
                         render={(): JSX.Element => (
-                            <TagInfo tagId={punch?.tagId} />
+                            <TagInfoWrapper tagId={punch?.tagId} />
                         )}
                     />
                     <Route
