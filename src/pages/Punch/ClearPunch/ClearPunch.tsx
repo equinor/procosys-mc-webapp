@@ -70,6 +70,7 @@ const ClearPunch = ({
         handleEstimateChange,
         showPersonsSearch,
         setShowPersonsSearch,
+        getDefaultOrganization,
     } = useClearPunchFacade(setPunchItem);
     const { api, params } = useCommonHooks();
 
@@ -151,16 +152,13 @@ const ClearPunch = ({
                                 clearPunchStatus === AsyncStatus.LOADING ||
                                 canEdit === false
                             }
-                            defaultValue={
-                                ensure(
-                                    organizations.find(
-                                        (org) =>
-                                            org.code === punchItem.raisedByCode
-                                    )
-                                ).id
-                            }
+                            defaultValue={getDefaultOrganization(
+                                punchItem.raisedByCode
+                            )}
                             onChange={handleRaisedByChange}
                         >
+                            <option hidden disabled value={-1} />
+
                             {organizations.map((organization) => (
                                 <option
                                     key={organization.id}
@@ -178,17 +176,13 @@ const ClearPunch = ({
                                 clearPunchStatus === AsyncStatus.LOADING ||
                                 canEdit === false
                             }
-                            defaultValue={
-                                ensure(
-                                    organizations.find(
-                                        (org) =>
-                                            org.code ===
-                                            punchItem.clearingByCode
-                                    )
-                                ).id
-                            }
+                            defaultValue={getDefaultOrganization(
+                                punchItem.clearingByCode
+                            )}
                             onChange={handleClearingByChange}
                         >
+                            <option hidden disabled value={-1}></option>
+
                             {organizations.map((organization) => (
                                 <option
                                     key={organization.id}
