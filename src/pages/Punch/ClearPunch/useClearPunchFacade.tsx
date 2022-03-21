@@ -142,6 +142,11 @@ const useClearPunchFacade = (
         });
     };
 
+    const getDefaultOrganization = (code: string): number => {
+        const defaultId = organizations?.find((org) => org.code === code)?.id;
+        return defaultId ? defaultId : -1;
+    };
+
     const handleActionByPersonChange = (
         id: number | null,
         firstName: string,
@@ -292,6 +297,7 @@ const useClearPunchFacade = (
         handleEstimateChange,
         showPersonsSearch,
         setShowPersonsSearch,
+        getDefaultOrganization,
     };
 };
 
