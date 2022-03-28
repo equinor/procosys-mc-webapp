@@ -5,7 +5,7 @@ import EdsIcon from '../../components/icons/EdsIcon';
 import withAccessControl from '../../services/withAccessControl';
 import { COLORS } from '../../style/GlobalStyles';
 import useCommonHooks from '../../utils/useCommonHooks';
-import ClearPunch from './ClearPunch/ClearPunch';
+import ClearPunch from './ClearPunch/ClearPunchPage';
 import { PunchItem } from '../../services/apiTypes';
 import { AsyncStatus } from '../../contexts/McAppContext';
 import VerifyPunch from './VerifyPunch/VerifyPunch';

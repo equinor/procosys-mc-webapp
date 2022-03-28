@@ -5,10 +5,10 @@ import styled from 'styled-components';
 import { AsyncStatus } from '../../../contexts/McAppContext';
 import { Attachment, PunchItem } from '../../../services/apiTypes';
 import useCommonHooks from '../../../utils/useCommonHooks';
-import { PunchAction } from '../ClearPunch/useClearPunchFacade';
 import useSnackbar from '../../../utils/useSnackbar';
 import removeSubdirectories from '../../../utils/removeSubdirectories';
 import { Attachments } from '@equinor/procosys-webapp-components';
+import { PunchAction } from '../ClearPunch/useClearPunchFacade';
 
 const VerifyPunchWrapper = styled.div`
     padding: 16px 4% 78px 4%;
@@ -200,7 +200,7 @@ const VerifyPunch = ({
                 ): Promise<Attachment[]> =>
                     api.getPunchAttachments(
                         params.plant,
-                        punchItem.id.toString(),
+                        punchItem.id,
                         cancelToken
                     )
                 }
@@ -211,7 +211,7 @@ const VerifyPunch = ({
                     api.getPunchAttachment(
                         cancelToken,
                         params.plant,
-                        params.punchItemId,
+                        parseInt(params.punchItemId),
                         attachmentId
                     )
                 }

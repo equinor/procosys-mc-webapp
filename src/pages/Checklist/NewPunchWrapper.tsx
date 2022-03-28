@@ -17,6 +17,7 @@ import { ChosenPerson, NewPunch } from '@equinor/procosys-webapp-components';
 import removeSubdirectories from '../../utils/removeSubdirectories';
 import styled from 'styled-components';
 import { COLORS } from '../../style/GlobalStyles';
+import { Person } from '@equinor/procosys-webapp-components/dist/typings/apiTypes';
 
 // TODO: remove once all punch pages are moved
 export const AttachmentsWrapper = styled.div`
@@ -127,6 +128,11 @@ const NewPunchWrapper = (): JSX.Element => {
         }
     };
 
+    // TODO: fix, where to put??
+    const getPersonsByName = async (query: string): Promise<Person[]> => {
+        return [];
+    };
+
     return (
         <>
             <AsyncPage
@@ -147,7 +153,7 @@ const NewPunchWrapper = (): JSX.Element => {
                     handleSubmit={handleSubmit}
                     submitPunchStatus={submitPunchStatus}
                     plantId={params.plant}
-                    getPersonsByName={api.getPersonsByName}
+                    getPersonsByName={getPersonsByName}
                     chosenPerson={chosenPerson}
                     setChosenPerson={setChosenPerson}
                     fetchNewPunchStatus={fetchNewPunchStatus}
