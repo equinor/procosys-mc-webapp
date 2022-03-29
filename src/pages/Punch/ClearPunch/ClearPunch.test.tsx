@@ -3,7 +3,7 @@ import React from 'react';
 import { withPlantContext } from '../../../test/contexts';
 import { testPunchItemUncleared } from '../../../test/dummyData';
 import { causeApiError, ENDPOINTS } from '../../../test/setupServer';
-import ClearPunch from './ClearPunchPage';
+import ClearPunch from './ClearPunchWrapper';
 
 describe('<ClearPunch/>', () => {
     it('Shows an error message if one of the options api calls fail', async () => {

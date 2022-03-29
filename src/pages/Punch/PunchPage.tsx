@@ -5,10 +5,10 @@ import EdsIcon from '../../components/icons/EdsIcon';
 import withAccessControl from '../../services/withAccessControl';
 import { COLORS } from '../../style/GlobalStyles';
 import useCommonHooks from '../../utils/useCommonHooks';
-import ClearPunch from './ClearPunch/ClearPunchPage';
+import ClearPunchWrapper from './ClearPunch/ClearPunchWrapper';
 import { PunchItem } from '../../services/apiTypes';
 import { AsyncStatus } from '../../contexts/McAppContext';
-import VerifyPunch from './VerifyPunch/VerifyPunch';
+import VerifyPunchWrapper from './VerifyPunch/VerifyPunchWrapper';
 import {
     SkeletonLoadingPage,
     BackButton,
@@ -56,7 +56,7 @@ const PunchPage = (): JSX.Element => {
         if (punch === undefined) return <SkeletonLoadingPage />;
         if (punch.clearedAt != null) {
             return (
-                <VerifyPunch
+                <VerifyPunchWrapper
                     punchItem={punch}
                     canUnclear={permissions.includes('PUNCHLISTITEM/CLEAR')}
                     canVerify={permissions.includes('PUNCHLISTITEM/VERIFY')}
@@ -64,7 +64,7 @@ const PunchPage = (): JSX.Element => {
             );
         } else {
             return (
-                <ClearPunch
+                <ClearPunchWrapper
                     punchItem={punch}
                     setPunchItem={
                         setPunch as React.Dispatch<

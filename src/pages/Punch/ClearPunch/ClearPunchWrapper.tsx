@@ -40,19 +40,19 @@ const punchEndpints: PunchEndpoints = {
     updateEstimate: 'setEstimate',
 };
 
-type ClearPunchProps = {
+type ClearPunchWrapperProps = {
     punchItem: PunchItem;
     setPunchItem: React.Dispatch<React.SetStateAction<PunchItem>>;
     canEdit: boolean;
     canClear: boolean;
 };
 
-const ClearPunchPage = ({
+const ClearPunchWrapper = ({
     punchItem,
     setPunchItem,
     canEdit,
     canClear,
-}: ClearPunchProps): JSX.Element => {
+}: ClearPunchWrapperProps): JSX.Element => {
     const { api, params } = useCommonHooks();
     const { snackbar, setSnackbarText } = useSnackbar();
     const [categories, setCategories] = useState<PunchCategory[]>([]);
@@ -174,4 +174,4 @@ const ClearPunchPage = ({
     );
 };
 
-export default ClearPunchPage;
+export default ClearPunchWrapper;
