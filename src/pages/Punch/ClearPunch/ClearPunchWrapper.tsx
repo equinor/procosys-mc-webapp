@@ -25,7 +25,7 @@ import {
     useSnackbar,
 } from '@equinor/procosys-webapp-components';
 import { Person } from '@equinor/procosys-webapp-components/dist/typings/apiTypes';
-import axios, { Axios } from 'axios';
+import Axios from 'axios';
 
 const punchEndpints: PunchEndpoints = {
     updateCategory: 'SetCategory',
@@ -69,7 +69,7 @@ const ClearPunchWrapper = ({
     const [clearPunchStatus, setClearPunchStatus] = useState(
         AsyncStatus.INACTIVE
     );
-    const source = axios.CancelToken.source();
+    const source = Axios.CancelToken.source();
 
     useEffect(() => {
         (async (): Promise<void> => {
@@ -170,6 +170,7 @@ const ClearPunchWrapper = ({
             deletePunchAttachment={api.deletePunchAttachment}
             snackbar={snackbar}
             setSnackbarText={setSnackbarText}
+            source={source}
         />
     );
 };

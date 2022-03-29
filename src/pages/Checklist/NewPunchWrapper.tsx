@@ -62,9 +62,9 @@ const NewPunchWrapper = (): JSX.Element => {
     );
     const { snackbar, setSnackbarText } = useSnackbar();
     const [tempIds, setTempIds] = useState<string[]>([]);
+    const source = Axios.CancelToken.source();
 
     useEffect(() => {
-        const source = Axios.CancelToken.source();
         (async (): Promise<void> => {
             try {
                 const [
@@ -159,6 +159,7 @@ const NewPunchWrapper = (): JSX.Element => {
                     fetchNewPunchStatus={fetchNewPunchStatus}
                     setTempIds={setTempIds}
                     postTempAttachment={api.postTempPunchAttachment}
+                    source={source}
                 />
             </AsyncPage>
             {snackbar}
