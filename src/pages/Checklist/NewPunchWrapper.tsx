@@ -17,8 +17,8 @@ import {
     useSnackbar,
 } from '@equinor/procosys-webapp-components';
 import removeSubdirectories from '../../utils/removeSubdirectories';
-import usePersonsSearchFacade from '../../components/PersonsSearch/usePersonsSearchFacade';
 import AsyncPage from '../../components/AsyncPage';
+import usePersonsSearchFacade from '../../utils/usePersonsSearchFacade';
 
 const newPunchInitialValues = {
     category: '',

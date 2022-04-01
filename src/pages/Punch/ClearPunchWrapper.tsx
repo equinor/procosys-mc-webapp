@@ -12,7 +12,6 @@ import {
     PunchSort,
     PunchType,
 } from '../../services/apiTypes';
-import PersonsSearch from '../../components/PersonsSearch/PersonsSearch';
 import { COLORS } from '../../style/GlobalStyles';
 import {
     Attachments,
@@ -23,11 +22,11 @@ import {
     SkeletonLoadingPage,
     UpdatePunchData,
     useSnackbar,
+    PunchAction,
 } from '@equinor/procosys-webapp-components';
 import { Person } from '@equinor/procosys-webapp-components/dist/typings/apiTypes';
 import Axios from 'axios';
-import usePersonsSearchFacade from '../../components/PersonsSearch/usePersonsSearchFacade';
-import { PunchAction } from '@equinor/procosys-webapp-components/dist/typings/enums';
+import usePersonsSearchFacade from '../../utils/usePersonsSearchFacade';
 
 const punchEndpints: PunchEndpoints = {
     updateCategory: 'SetCategory',
