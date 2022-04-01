@@ -130,18 +130,6 @@ const ClearPunchWrapper = ({
     const redirect = (): void => {
         console.log('redirect');
     };
-    const getPersonsByName = async (query: string): Promise<Person[]> => {
-        try {
-            const persons = await api.getPersonsByName(
-                params.plant,
-                query,
-                source.token
-            );
-            return persons;
-        } catch {
-            throw new Error();
-        }
-    };
 
     return (
         <ClearPunch
@@ -161,7 +149,7 @@ const ClearPunchWrapper = ({
             setClearPunchStatus={setClearPunchStatus}
             clearPunch={clearPunch}
             redirectAfterClearing={redirect}
-            getPersonsByName={getPersonsByName}
+            getPersonsByName={api.getPersonsByName}
             fetchOptionsStatus={fetchOptionsStatus}
             updatePunchStatus={updatePunchStatus}
             getPunchAttachments={api.getPunchAttachments}
