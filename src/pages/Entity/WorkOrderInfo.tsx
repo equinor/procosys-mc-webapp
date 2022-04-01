@@ -4,6 +4,8 @@ import {
     CollapsibleCard,
     ErrorPage,
     HomeButton,
+    removeSubdirectories,
+    useSnackbar,
 } from '@equinor/procosys-webapp-components';
 import Axios, { CancelToken } from 'axios';
 import React from 'react';
@@ -19,9 +21,7 @@ import {
     WoPreview,
 } from '../../services/apiTypes';
 import { removeHtmlFromText } from '../../utils/removeHtmlFromText';
-import removeSubdirectories from '../../utils/removeSubdirectories';
 import useCommonHooks from '../../utils/useCommonHooks';
-import useSnackbar from '../../utils/useSnackbar';
 
 const TagInfoWrapper = styled.main`
     min-height: 0px;

@@ -5,10 +5,13 @@ import styled from 'styled-components';
 import { AsyncStatus } from '../../contexts/McAppContext';
 import { Attachment, PunchItem } from '../../services/apiTypes';
 import useCommonHooks from '../../utils/useCommonHooks';
-import useSnackbar from '../../utils/useSnackbar';
-import removeSubdirectories from '../../utils/removeSubdirectories';
-import { Attachments, VerifyPunch } from '@equinor/procosys-webapp-components';
-import { PunchAction } from '@equinor/procosys-webapp-components/dist/typings/enums';
+import {
+    Attachments,
+    removeSubdirectories,
+    useSnackbar,
+    VerifyPunch,
+    PunchAction,
+} from '@equinor/procosys-webapp-components';
 
 type VerifyPunchProps = {
     punchItem: PunchItem;

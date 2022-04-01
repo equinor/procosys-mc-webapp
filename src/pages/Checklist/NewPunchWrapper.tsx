@@ -13,10 +13,10 @@ import useCommonHooks from '../../utils/useCommonHooks';
 import {
     ChosenPerson,
     NewPunch,
+    removeSubdirectories,
     useFormFields,
     useSnackbar,
 } from '@equinor/procosys-webapp-components';
-import removeSubdirectories from '../../utils/removeSubdirectories';
 import AsyncPage from '../../components/AsyncPage';
 import usePersonsSearchFacade from '../../utils/usePersonsSearchFacade';
 
@@ -55,8 +55,8 @@ const NewPunchWrapper = (): JSX.Element => {
     );
     const { snackbar, setSnackbarText } = useSnackbar();
     const [tempIds, setTempIds] = useState<string[]>([]);
-    const { hits, searchStatus, query, setQuery } = usePersonsSearchFacade();
     const source = Axios.CancelToken.source();
+    const { hits, searchStatus, query, setQuery } = usePersonsSearchFacade();
 
     useEffect(() => {
         (async (): Promise<void> => {

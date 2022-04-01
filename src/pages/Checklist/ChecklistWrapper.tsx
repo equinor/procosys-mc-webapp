@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
-import { Checklist } from '@equinor/procosys-webapp-components';
+import { Checklist, useSnackbar } from '@equinor/procosys-webapp-components';
 import useCommonHooks from '../../utils/useCommonHooks';
 import styled from 'styled-components';
-import useSnackbar from '../../utils/useSnackbar';
 
 export const BottomSpacer = styled.div`
     height: 70px;

@@ -1,9 +1,9 @@
 import {
+    PunchAction,
     PunchEndpoints,
     UpdatePunchData,
 } from '@equinor/procosys-webapp-components';
 import { AxiosInstance, CancelToken } from 'axios';
-import { PunchAction } from '../pages/Punch/ClearPunch/useClearPunchFacade';
 import { SavedSearchType } from '../pages/Search/SavedSearches/SavedSearchResult';
 import { SearchType } from '../pages/Search/Search';
 import {

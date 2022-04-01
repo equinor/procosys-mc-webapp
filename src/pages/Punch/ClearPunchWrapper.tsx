@@ -24,7 +24,6 @@ import {
     useSnackbar,
     PunchAction,
 } from '@equinor/procosys-webapp-components';
-import { Person } from '@equinor/procosys-webapp-components/dist/typings/apiTypes';
 import Axios from 'axios';
 import usePersonsSearchFacade from '../../utils/usePersonsSearchFacade';
 
@@ -70,8 +69,8 @@ const ClearPunchWrapper = ({
     const [clearPunchStatus, setClearPunchStatus] = useState(
         AsyncStatus.INACTIVE
     );
-    const { hits, searchStatus, query, setQuery } = usePersonsSearchFacade();
     const source = Axios.CancelToken.source();
+    const { hits, searchStatus, query, setQuery } = usePersonsSearchFacade();
 
     useEffect(() => {
         (async (): Promise<void> => {
