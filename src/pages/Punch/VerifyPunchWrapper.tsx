@@ -1,12 +1,9 @@
-import { Button } from '@equinor/eds-core-react';
-import axios, { CancelToken } from 'axios';
 import React, { useState } from 'react';
-import styled from 'styled-components';
+import axios from 'axios';
 import { AsyncStatus } from '../../contexts/McAppContext';
-import { Attachment, PunchItem } from '../../services/apiTypes';
+import { PunchItem } from '../../services/apiTypes';
 import useCommonHooks from '../../utils/useCommonHooks';
 import {
-    Attachments,
     removeSubdirectories,
     useSnackbar,
     VerifyPunch,

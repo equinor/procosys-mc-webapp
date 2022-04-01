@@ -1,10 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { AsyncStatus } from '../../contexts/McAppContext';
 import useCommonHooks from '../../utils/useCommonHooks';
-import EdsIcon from '../../components/icons/EdsIcon';
-import ensure from '../../utils/ensure';
 import {
-    Attachment,
     PunchCategory,
     PunchItem,
     PunchOrganization,
@@ -12,14 +9,9 @@ import {
     PunchSort,
     PunchType,
 } from '../../services/apiTypes';
-import { COLORS } from '../../style/GlobalStyles';
 import {
-    Attachments,
     ClearPunch,
-    ErrorPage,
     PunchEndpoints,
-    ReloadButton,
-    SkeletonLoadingPage,
     UpdatePunchData,
     useSnackbar,
     PunchAction,

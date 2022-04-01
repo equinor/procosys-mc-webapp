@@ -1,3 +1,4 @@
+import React from 'react';
 import { Button } from '@equinor/eds-core-react';
 import {
     Attachments,
@@ -7,8 +8,7 @@ import {
     removeSubdirectories,
     useSnackbar,
 } from '@equinor/procosys-webapp-components';
-import Axios, { CancelToken } from 'axios';
-import React from 'react';
+import Axios from 'axios';
 import styled from 'styled-components';
 import AsyncPage from '../../components/AsyncPage';
 import { AsyncStatus } from '../../contexts/McAppContext';
