@@ -2,13 +2,13 @@ import { Button } from '@equinor/eds-core-react';
 import axios, { CancelToken } from 'axios';
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { AsyncStatus } from '../../../contexts/McAppContext';
-import { Attachment, PunchItem } from '../../../services/apiTypes';
-import useCommonHooks from '../../../utils/useCommonHooks';
-import useSnackbar from '../../../utils/useSnackbar';
-import removeSubdirectories from '../../../utils/removeSubdirectories';
+import { AsyncStatus } from '../../contexts/McAppContext';
+import { Attachment, PunchItem } from '../../services/apiTypes';
+import useCommonHooks from '../../utils/useCommonHooks';
+import useSnackbar from '../../utils/useSnackbar';
+import removeSubdirectories from '../../utils/removeSubdirectories';
 import { Attachments, VerifyPunch } from '@equinor/procosys-webapp-components';
-import { PunchAction } from '../ClearPunch/useClearPunchFacade';
+import { PunchAction } from '@equinor/procosys-webapp-components/dist/typings/enums';
 
 type VerifyPunchProps = {
     punchItem: PunchItem;

@@ -5,10 +5,10 @@ import EdsIcon from '../../components/icons/EdsIcon';
 import withAccessControl from '../../services/withAccessControl';
 import { COLORS } from '../../style/GlobalStyles';
 import useCommonHooks from '../../utils/useCommonHooks';
-import ClearPunchWrapper from './ClearPunch/ClearPunchWrapper';
+import ClearPunchWrapper from './ClearPunchWrapper';
 import { PunchItem } from '../../services/apiTypes';
 import { AsyncStatus } from '../../contexts/McAppContext';
-import VerifyPunchWrapper from './VerifyPunch/VerifyPunchWrapper';
+import VerifyPunchWrapper from './VerifyPunchWrapper';
 import {
     SkeletonLoadingPage,
     BackButton,

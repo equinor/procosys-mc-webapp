@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { AsyncStatus } from '../../../contexts/McAppContext';
-import useCommonHooks from '../../../utils/useCommonHooks';
-import EdsIcon from '../../../components/icons/EdsIcon';
-import ensure from '../../../utils/ensure';
+import { AsyncStatus } from '../../contexts/McAppContext';
+import useCommonHooks from '../../utils/useCommonHooks';
+import EdsIcon from '../../components/icons/EdsIcon';
+import ensure from '../../utils/ensure';
 import {
     Attachment,
     PunchCategory,
@@ -11,9 +11,9 @@ import {
     PunchPriority,
     PunchSort,
     PunchType,
-} from '../../../services/apiTypes';
-import PersonsSearch from '../../../components/PersonsSearch/PersonsSearch';
-import { COLORS } from '../../../style/GlobalStyles';
+} from '../../services/apiTypes';
+import PersonsSearch from '../../components/PersonsSearch/PersonsSearch';
+import { COLORS } from '../../style/GlobalStyles';
 import {
     Attachments,
     ClearPunch,
@@ -26,6 +26,8 @@ import {
 } from '@equinor/procosys-webapp-components';
 import { Person } from '@equinor/procosys-webapp-components/dist/typings/apiTypes';
 import Axios from 'axios';
+import usePersonsSearchFacade from '../../components/PersonsSearch/usePersonsSearchFacade';
+import { PunchAction } from '@equinor/procosys-webapp-components/dist/typings/enums';
 
 const punchEndpints: PunchEndpoints = {
     updateCategory: 'SetCategory',
@@ -53,7 +55,7 @@ const ClearPunchWrapper = ({
     canEdit,
     canClear,
 }: ClearPunchWrapperProps): JSX.Element => {
-    const { api, params } = useCommonHooks();
+    const { api, params, history, url } = useCommonHooks();
     const { snackbar, setSnackbarText } = useSnackbar();
     const [categories, setCategories] = useState<PunchCategory[]>([]);
     const [types, setTypes] = useState<PunchType[]>([]);
@@ -69,6 +71,7 @@ const ClearPunchWrapper = ({
     const [clearPunchStatus, setClearPunchStatus] = useState(
         AsyncStatus.INACTIVE
     );
+    const { hits, searchStatus, query, setQuery } = usePersonsSearchFacade();
     const source = Axios.CancelToken.source();
 
     useEffect(() => {
@@ -125,10 +128,17 @@ const ClearPunchWrapper = ({
     };
 
     const clearPunch = async (): Promise<void> => {
-        console.log('clear punch');
-    };
-    const redirect = (): void => {
-        console.log('redirect');
+        setClearPunchStatus(AsyncStatus.LOADING);
+        try {
+            await api.postPunchAction(
+                params.plant,
+                params.punchItemId,
+                PunchAction.CLEAR
+            );
+            setClearPunchStatus(AsyncStatus.SUCCESS);
+        } catch (error) {
+            setClearPunchStatus(AsyncStatus.ERROR);
+        }
     };
 
     return (
@@ -148,8 +158,9 @@ const ClearPunchWrapper = ({
             clearPunchStatus={clearPunchStatus}
             setClearPunchStatus={setClearPunchStatus}
             clearPunch={clearPunch}
-            redirectAfterClearing={redirect}
-            getPersonsByName={api.getPersonsByName}
+            redirectAfterClearing={(): void => {
+                history.push(url);
+            }}
             fetchOptionsStatus={fetchOptionsStatus}
             updatePunchStatus={updatePunchStatus}
             getPunchAttachments={api.getPunchAttachments}
@@ -158,6 +169,10 @@ const ClearPunchWrapper = ({
             deletePunchAttachment={api.deletePunchAttachment}
             snackbar={snackbar}
             setSnackbarText={setSnackbarText}
+            hits={hits}
+            searchStatus={searchStatus}
+            query={query}
+            setQuery={setQuery}
             source={source}
         />
     );
