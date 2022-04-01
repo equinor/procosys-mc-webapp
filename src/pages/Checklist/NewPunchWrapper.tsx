@@ -8,24 +8,17 @@ import {
     PunchType,
 } from '../../services/apiTypes';
 import { AsyncStatus } from '../../contexts/McAppContext';
-import useFormFields from '../../utils/useFormFields';
 import { NewPunch as NewPunchType } from '../../services/apiTypes';
 import useCommonHooks from '../../utils/useCommonHooks';
-import useSnackbar from '../../utils/useSnackbar';
-import AsyncPage from '../../components/AsyncPage';
-import { ChosenPerson, NewPunch } from '@equinor/procosys-webapp-components';
+import {
+    ChosenPerson,
+    NewPunch,
+    useFormFields,
+    useSnackbar,
+} from '@equinor/procosys-webapp-components';
 import removeSubdirectories from '../../utils/removeSubdirectories';
-import styled from 'styled-components';
-import { COLORS } from '../../style/GlobalStyles';
-import { Person } from '@equinor/procosys-webapp-components/dist/typings/apiTypes';
-
-// TODO: remove once all punch pages are moved
-export const AttachmentsWrapper = styled.div`
-    margin: 0 -4% 16px -4%;
-    padding: 16px 4%;
-    background-color: ${COLORS.fadedBlue};
-    height: 100px;
-`;
+import usePersonsSearchFacade from '../../components/PersonsSearch/usePersonsSearchFacade';
+import AsyncPage from '../../components/AsyncPage';
 
 const newPunchInitialValues = {
     category: '',
@@ -62,6 +55,7 @@ const NewPunchWrapper = (): JSX.Element => {
     );
     const { snackbar, setSnackbarText } = useSnackbar();
     const [tempIds, setTempIds] = useState<string[]>([]);
+    const { hits, searchStatus, query, setQuery } = usePersonsSearchFacade();
     const source = Axios.CancelToken.source();
 
     useEffect(() => {
@@ -128,11 +122,6 @@ const NewPunchWrapper = (): JSX.Element => {
         }
     };
 
-    // TODO: fix, where to put??
-    const getPersonsByName = async (query: string): Promise<Person[]> => {
-        return [];
-    };
-
     return (
         <>
             <AsyncPage
@@ -153,13 +142,15 @@ const NewPunchWrapper = (): JSX.Element => {
                     handleSubmit={handleSubmit}
                     submitPunchStatus={submitPunchStatus}
                     plantId={params.plant}
-                    getPersonsByName={getPersonsByName}
                     chosenPerson={chosenPerson}
                     setChosenPerson={setChosenPerson}
                     fetchNewPunchStatus={fetchNewPunchStatus}
                     setTempIds={setTempIds}
                     postTempAttachment={api.postTempPunchAttachment}
-                    source={source}
+                    hits={hits}
+                    searchStatus={searchStatus}
+                    query={query}
+                    setQuery={setQuery}
                 />
             </AsyncPage>
             {snackbar}
