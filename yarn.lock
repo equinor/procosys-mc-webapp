@@ -1168,10 +1168,10 @@
   resolved "https://registry.yarnpkg.com/@equinor/eds-tokens/-/eds-tokens-0.7.0.tgz#e6fe587e414c7470183b8778bf826aaf909766ba"
   integrity sha512-QdlX1Ndz6CmgdLMVHAZi+4GBEfU5OOnNGtXX1m7aTQbzWDTdxB6e7c5XxT/UnJHue1i5vT3RKMBDAhE2YjiXYA==
 
-"@equinor/procosys-webapp-components@^1.13.3":
-  version "1.13.4"
-  resolved "https://registry.yarnpkg.com/@equinor/procosys-webapp-components/-/procosys-webapp-components-1.13.4.tgz#047421a996ee6e551121e15c8c87d4947145426b"
-  integrity sha512-/4bAQCwlKeGTta7yu8AMEIN3wxlINrK+JKBvPc0Agdl8N1XCTgVXxpn7wBTuXQ0IUyQSEPQj7qrj1tt9vghP/A==
+"@equinor/procosys-webapp-components@^1.14.0":
+  version "1.14.0"
+  resolved "https://registry.yarnpkg.com/@equinor/procosys-webapp-components/-/procosys-webapp-components-1.14.0.tgz#1582f4bc7f0ca6a94b812f60d01ab95e3040a6d5"
+  integrity sha512-hz8XFX+PGE7Iu3GJxhblexLrv+tSp5bAqIFDBrMJ4pjOhdn8b1tfRZOwvnOt1JLkSq8wzfrJmYbQ2jSk+Hf/fg==
 
 "@eslint/eslintrc@^0.4.3":
   version "0.4.3"
