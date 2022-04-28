@@ -13,6 +13,9 @@ import {
     ReloadButton,
     LoadingPage,
 } from '@equinor/procosys-webapp-components';
+import * as serviceWorkerRegistration from './serviceWorkerRegistration';
+
+serviceWorkerRegistration.register();
 
 const render = (content: JSX.Element): void => {
     ReactDOM.render(
