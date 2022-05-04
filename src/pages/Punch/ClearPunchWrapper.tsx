@@ -19,7 +19,7 @@ import {
 import Axios from 'axios';
 import usePersonsSearchFacade from '../../utils/usePersonsSearchFacade';
 
-const punchEndpints: PunchEndpoints = {
+const punchEndpoints: PunchEndpoints = {
     updateCategory: 'SetCategory',
     updateDescription: 'SetDescription',
     updateRaisedBy: 'SetRaisedBy',
@@ -138,7 +138,7 @@ const ClearPunchWrapper = ({
             setPunchItem={setPunchItem}
             canEdit={canEdit}
             canClear={canClear}
-            punchEndpoints={punchEndpints}
+            punchEndpoints={punchEndpoints}
             updateDatabase={updateDatabase}
             organizations={organizations}
             categories={categories}
