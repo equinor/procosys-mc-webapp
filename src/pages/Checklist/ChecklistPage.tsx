@@ -5,7 +5,7 @@ import withAccessControl from '../../services/withAccessControl';
 import useCommonHooks from '../../utils/useCommonHooks';
 import { Route, Switch } from 'react-router-dom';
 import ChecklistWrapper from './ChecklistWrapper';
-import NewPunch from './NewPunch/NewPunch';
+import NewPunchWrapper from './NewPunchWrapper';
 import { AsyncStatus } from '../../contexts/McAppContext';
 import { ChecklistResponse, PunchPreview } from '../../services/apiTypes';
 import { Button } from '@equinor/eds-core-react';
@@ -137,11 +137,11 @@ const ChecklistPage = (): JSX.Element => {
                     render={(): JSX.Element => (
                         <PunchList
                             fetchPunchListStatus={fetchPunchListStatus}
-                            onPunchClick={(punchId: number): void =>
+                            onPunchClick={(punch: PunchPreview): void =>
                                 history.push(
                                     `${removeSubdirectories(
                                         history.location.pathname
-                                    )}/punch-item/${punchId}`
+                                    )}/punch-item/${punch.id}`
                                 )
                             }
                             punchList={punchList}
@@ -152,7 +152,7 @@ const ChecklistPage = (): JSX.Element => {
                 <Route
                     exact
                     path={`${path}/punch-list/new-punch`}
-                    component={NewPunch}
+                    component={NewPunchWrapper}
                 />
             </Switch>
             <NavigationFooter footerStatus={fetchPunchListStatus}>

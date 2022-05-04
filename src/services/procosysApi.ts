@@ -1,9 +1,9 @@
-import { AxiosInstance, CancelToken } from 'axios';
 import {
     PunchAction,
+    PunchEndpoints,
     UpdatePunchData,
-    UpdatePunchEndpoint,
-} from '../pages/Punch/ClearPunch/useClearPunchFacade';
+} from '@equinor/procosys-webapp-components';
+import { AxiosInstance, CancelToken } from 'axios';
 import { SavedSearchType } from '../pages/Search/SavedSearches/SavedSearchResult';
 import { SearchType } from '../pages/Search/Search';
 import {
@@ -190,7 +190,7 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
 
     const getPunchAttachments = async (
         plantId: string,
-        punchItemId: string,
+        punchItemId: number,
         cancelToken: CancelToken
     ): Promise<Attachment[]> => {
         const { data } = await axios.get(
@@ -386,7 +386,7 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
         plantId: string,
         punchItemId: string,
         updateData: UpdatePunchData,
-        endpoint: UpdatePunchEndpoint
+        endpoint: string
     ): Promise<void> => {
         const dto = { PunchItemId: punchItemId, ...updateData };
         await axios.put(
@@ -411,7 +411,7 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
     const getPunchAttachment = async (
         cancelToken: CancelToken,
         plantId: string,
-        punchItemId: string,
+        punchItemId: number,
         attachmentId: number
     ): Promise<Blob> => {
         const { data } = await axios.get(
@@ -430,11 +430,11 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
 
     const deletePunchAttachment = async (
         plantId: string,
-        punchItemId: string,
+        punchItemId: number,
         attachmentId: number
     ): Promise<void> => {
         const dto = {
-            PunchItemId: parseInt(punchItemId),
+            PunchItemId: punchItemId,
             AttachmentId: attachmentId,
         };
         await axios.delete(
