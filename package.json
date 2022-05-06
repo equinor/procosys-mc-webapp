@@ -5,7 +5,7 @@
   "private": true,
   "dependencies": {
     "@azure/msal-browser": "2.24.0",
-    "@equinor/eds-core-react": "^0.14.0",
+    "@equinor/eds-core-react": "^0.19.0",
     "@equinor/eds-icons": "^0.7.0",
     "@equinor/procosys-webapp-components": "^1.14.1",
     "@microsoft/applicationinsights-react-js": "^3.2.2",
