@@ -9,7 +9,7 @@
     "@equinor/eds-icons": "^0.7.0",
     "@equinor/procosys-webapp-components": "^1.14.1",
     "@microsoft/applicationinsights-react-js": "^3.2.2",
-    "@microsoft/applicationinsights-web": "^2.8.3",
+    "@microsoft/applicationinsights-web": "^2.7.2",
     "axios": "^0.24.0",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
