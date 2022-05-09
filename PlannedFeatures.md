@@ -144,6 +144,7 @@ gantt
     Section Export Data
     Get change data by modified date                    :gcd, after api-persist-offline, 1d
     Publish data to Main API                            :publish, after gcd, 1d
-    Cleanup offline data                                :cleanup, after publish, 1d    
+    Cleanup offline data                                :cleanup, after publish, 1d
+
 
 ```
