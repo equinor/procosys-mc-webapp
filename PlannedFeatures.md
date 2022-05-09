@@ -16,14 +16,10 @@ gantt
     dateFormat  DD-MM-YYYY
 
     Section Web App
-      
-      
       Add ServiceWorker template                          :a1, 1d
-      
+      Service worker need to persist state in local storage :
       Add Custom Paths and Matches functions              :after a1, 7d
-
-      Create concept of Response Entities                 :after a1, 3d
-
+      Create concept of response Entities                 :after a1, 3d
       Generate Offline Data Process                       :after a1, 7d
       
       Create TagEntities with Indexes                     :cte, after a1, 2d
@@ -115,36 +111,34 @@ gantt
       Setup Equinor PC for working with selfsigned certificates       :after a1, 1d
     
       Modification (Post or Put operation) on a Punch should be following with a update of one or more Database Entities : after a1, 5d
-      Note: Any more to come..... :)  
+      
 
       UI for selection offline scope:a3,  5d
       Load offline data from Main API:a5, 10d
 
-    section Main API
-    Create offline scope : a1, 4d
-    Add API for GET offline scope  :a1, 1d    
-    another task                        :after a1, 1d
+    Section Main API
+      Create offline scope                                                        : a1, 4d
+      Add API for GET offline scope                                               :a1, 1d    
+      another task                                                                :after a1, 1d
     
     Section PCS MAIN
-    UI offline scope (Select MCPkg with disciplineCode)      :pcs1, 12d
-    Select offline scope : pcs-create-scope, after pcs1, 3d
-    
+      UI offline scope (Select MCPkg with disciplineCode)                         :pcs1, 12d
+      Select offline scope                                                        :pcs-create-scope, after pcs1, 3d
+      
     Section Main API
-    API for persisting offline work      :api-persist-offline, pcs1, 4d
-    API for getting offline work         :api-get-offline, pcs1, 4d
+      API for persisting offline work                                             :api-persist-offline, pcs1, 4d
+      API for getting offline work                                                :api-get-offline, pcs1, 4d
 
     Section React Components
-    Create Broadcast React Component                                 :cbrc, after a1, 1d                    
-    Create React Component for loading and handling ServiceWorker modifications :after cpe1, 3d
-    (Prototypes and Code ref. article ref:<Dan>)
-    React Offline toggle button                         :tooglebutton, after a1, 2d
+      Create Broadcast React Component                                            :cbrc, after a1, 1d                    
+      Create React Component for loading and handling ServiceWorker modifications :after cpe1, 3d
+      React Offline toggle button                                                 :tooglebutton, after a1, 2d
+    
     Section Security
-    Dixie decryption/encryption   :dixiesec, after a1, 3d
+      Dixie decryption/encryption                                                 :dixiesec, after a1, 3d
 
     Section Export Data
-    Get change data by modified date                    :gcd, after api-persist-offline, 1d
-    Publish data to Main API                            :publish, after gcd, 1d
-    Cleanup offline data                                :cleanup, after publish, 1d
-
-
+      Get change data by modified date                                            :gcd, after api-persist-offline, 1d
+      Publish data to Main API                                                    :publish, after gcd, 1d
+      Cleanup offline data                                                        :cleanup, after publish, 1d
 ```
