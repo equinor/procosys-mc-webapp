@@ -1,5 +1,5 @@
 
-# Gnat diagram 
+# Gantt diagram 
 A Gantt chart is a type of bar chart that illustrates a project schedule, named after its popularizer, Henry Gantt, who designed such a chart around the years 1910–1915. Modern Gantt charts also show the dependency relationships between activities and the current schedule status. 
 <br>[Ref](https://en.wikipedia.org/wiki/Gantt_chart)
 
@@ -17,7 +17,6 @@ gantt
 
     Section Web App
       Add ServiceWorker template                          :a1, 1d
-      Service worker need to persist state in local storage :
       Add Custom Paths and Matches functions              :after a1, 7d
       Create concept of response Entities                 :after a1, 3d
       Generate Offline Data Process                       :after a1, 7d
