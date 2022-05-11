@@ -62,7 +62,6 @@ gantt
       Integration tests ChecklistRepository               :testcler, after cler, 1d   
       Generate Checklists Data                            :gcld, after testcler, 1d
 
-
       Create ChecklistItemEntity and indexes              :clie, after a1,  1d
       Create ChecklistItemRepository                      :clir, after clie, 1d
       Integration test ChecklistItemRepository            :testclir, after clir, 1d
@@ -103,14 +102,38 @@ gantt
       Integration Tests CellsEntityRepository             :ctretest, after ctre, 1d
       Generate Cells Data                                 :after ctretest, 1d
 
-      
-      MoreToCome (Vilde) [Det er flere Eniteter som skal genereres]   :after cpe1, 3d
+      Create AdditionalTagFieldsEntity and indexes        :atfi, after a1, 1d
+      Create AdditionalTagFieldsRepository                :atfr, after atfi, 1d
+      Integration Tests AdditionalTagFieldsRepository     :atfrtest, after atfr, 1d
+      Generate AdditionalTagFields Data                   :after atfrtest, 1d
+
+      Create McPkgPreviewEntity and indexes               :mcpp, after a1, 1d
+      Create McPkgPreviewRepository                       :mcpr, after mcpp, 1d
+      Integration Tests McPkgPreviewRepository            :mcprtest, after mcpr, 1d
+      Generate McPkgPreview Data                          :after mcprtest, 1d
+
+      Create WoPreviewEntity and indexes                  :wope, after a1, 1d
+      Create WoPreviewRepository                          :wopr, after wope, 1d
+      Integration Tests WoPreviewRepository               :woprtest, after wopr, 1d
+      Generate WoPreview Data                             :after woprtest, 1d
+
+      Create PoPreviewEntity and indexes                  :pope, after a1, 1d
+      Create PoPreviewRepository                          :popr, after pope, 1d
+      Integration Tests PoPreviewRepository               :poprtest, after popr, 1d
+      Generate PoPreview Data                             :after poprtest, 1d
+
+      Create PersonsEntity and indexes                    :pere, after a1, 1d
+      Create PersonsRepository                            :perr, after pere, 1d
+      Integration Tests PersonsRepository                 :perrtest, after perr, 1d
+      Generate Persons Data                               :after perrtest, 1d
+
        
-      Generate Person Data                                            :after cpe1, 3d
+      Generate Person Data (why is this here?)                               :after cpe1, 3d
 
       Setup Equinor PC for working with selfsigned certificates       :after a1, 1d
     
-      Modification (Post or Put operation) on a Punch should be following with a update of one or more Database Entities : after a1, 5d
+      Modification (Post or Put operation) on a Punch should be followed with an update of checklist and MC pkg : after a1, 5d
+      Modification (Post or Put operation) on a Checklist should be followed with an update of MC pkg : after a1, 5d
       
 
       UI for selection offline scope:a3,  5d
