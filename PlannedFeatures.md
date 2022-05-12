@@ -17,7 +17,7 @@ gantt
 
     Section Web App
       Add ServiceWorker template                          :a1, 1d
-      Service worker need to persist state in local storage :
+      Service worker need to persist state in local storage : 
       Add Custom Paths and Matches functions              :after a1, 7d
       Create concept of response Entities                 :after a1, 3d
       Generate Offline Data Process                       :after a1, 7d
@@ -104,11 +104,14 @@ gantt
       Generate Cells Data                                 :after ctretest, 1d
 
       
-      MoreToCome (Vilde) [Det er flere Eniteter som skal genereres]   :after cpe1, 3d
+      MoreToCome (Vilde) [Det er flere Eniteter som skal genereres]   :name1, after cpe1, 3d
+      MoreToCome (Vilde) [Det er flere Eniteter som skal genereres]   :name2, after name1, 3d
+      MoreToCome (Vilde) [Det er flere Eniteter som skal genereres]   :name3, after cpe1, 3d
+
        
       Generate Person Data                                            :after cpe1, 3d
 
-      Setup Equinor PC for working with selfsigned certificates       :after a1, 1d
+      Setup Equinor PC for working with self-signed certificates       :after a1, 1d
     
       Modification (Post or Put operation) on a Punch should be following with a update of one or more Database Entities : after a1, 5d
       
