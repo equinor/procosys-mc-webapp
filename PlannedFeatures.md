@@ -1,5 +1,5 @@
 
-# Gnat diagram 
+# Gantt diagram 
 A Gantt chart is a type of bar chart that illustrates a project schedule, named after its popularizer, Henry Gantt, who designed such a chart around the years 1910–1915. Modern Gantt charts also show the dependency relationships between activities and the current schedule status. 
 <br>[Ref](https://en.wikipedia.org/wiki/Gantt_chart)
 
@@ -62,7 +62,6 @@ gantt
       Integration tests ChecklistRepository               :testcler, after cler, 1d   
       Generate Checklists Data                            :gcld, after testcler, 1d
 
-
       Create ChecklistItemEntity and indexes              :clie, after a1,  1d
       Create ChecklistItemRepository                      :clir, after clie, 1d
       Integration test ChecklistItemRepository            :testclir, after clir, 1d
@@ -113,7 +112,8 @@ gantt
 
       Setup Equinor PC for working with self-signed certificates       :after a1, 1d
     
-      Modification (Post or Put operation) on a Punch should be following with a update of one or more Database Entities : after a1, 5d
+      Modification (Post or Put operation) on a Punch should be followed with an update of checklist and MC pkg : after a1, 5d
+      Modification (Post or Put operation) on a Checklist should be followed with an update of MC pkg : after a1, 5d
       
 
       UI for selection offline scope:a3,  5d
