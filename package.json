@@ -16,12 +16,14 @@
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.3",
     "react-spring": "^9.4.2",
-    "styled-components": "^5.3.3"
+    "styled-components": "^5.3.3",
+    "workbox-core": "^5.1.4",
+    "workbox-routing": "^5.1.4"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "jest",
+    "test": "jest httpRequestMessage.test.ts",
     "test:debug": "react-scripts --inspect-brk test --runInBand --no-cache",
     "eject": "react-scripts eject",
     "lint-all": "./node_modules/.bin/eslint --ext .ts,.tsx src/"
@@ -60,6 +62,7 @@
     "eslint-config-prettier": "^8.1.0",
     "eslint-plugin-prettier": "^3.3.1",
     "eslint-plugin-react": "^7.28.0",
+    "jest-mock-axios": "^4.6.1",
     "msw": "^0.35.0",
     "prettier": "^2.5.1",
     "ts-jest": "^26.5.4",
