@@ -13,47 +13,49 @@ export class Tag {
     }
 }
 
-describe('HttpReqestMessage', () => {
+describe('HttpReqestMessage should generate a hash by the HttpRequest parameters and URL path', () => {
+
+    const parameterBuilder = new URLSearchParams();
+    parameterBuilder.set('test1', 'value1');
+    parameterBuilder.set('test2', 'value2');
+    parameterBuilder.set('test3', 'value3');
+
+    const content = new ArrayBuffer(0);
+    const headers: Record<string, string> = {
+        miffy1: '12',
+        miffy2: '22',
+        miffy3: '36',
+    };
+
+    const config: AxiosRequestConfig<Person> = {
+        url: '/person/100',
+        baseURL: 'http://localhost:8080/api/',
+        headers: headers,
+        method: 'get',
+        params: parameterBuilder,
+        responseType: 'json'
+    };
+
+    beforeEach(() => {
+       
+    });
+
+    it('Should get releative path', () => {
+        const copyPropertiesFromAxios = new MapAxiosRequestToHttpRequestMessage<Person>();
+        copyPropertiesFromAxios.map<Person>(config);
+        expect(copyPropertiesFromAxios.url).toBe('/person/100');
+        const httpRequestMessage = new HttpRequestMessage<Person>(copyPropertiesFromAxios, new PropertyAccSortingStrategy<Person>());
+        expect(httpRequestMessage.url).toBe('/person/100');
+
+    });
+
     it('Should get all arguments from http request ', () => {
-        const content = new ArrayBuffer(0);
-        const headers: Record<string, string> = {
-            miffy1: '12',
-            miffy2: '22',
-            miffy3: '36',
-        };
+        const copyPropertiesFromAxios = new MapAxiosRequestToHttpRequestMessage<Person>();
+        copyPropertiesFromAxios.map<Person>(config);
+        expect(copyPropertiesFromAxios.url).toBe('/person/100');
+        const httpRequestMessage = new HttpRequestMessage<Person>(copyPropertiesFromAxios, new PropertyAccSortingStrategy<Person>());
+        const hashcode = httpRequestMessage.GetHashCode<Person>(httpRequestMessage);
 
-        const parameterBuilder = new URLSearchParams();
-        parameterBuilder.set('test1', 'value1');
-        parameterBuilder.set('test2', 'value2');
-        parameterBuilder.set('test3', 'value3');
-
-        const parametersIterator = parameterBuilder;
-
-        const config: AxiosRequestConfig<Person> = {
-            url: 'http://localhost:8080/api/person',
-            baseURL: 'www.vg.no',
-            headers: {},
-            data: {
-                id: 12,
-                azureOid: '',
-                username: '',
-                firstName: '',
-                lastName: '',
-                email: '',
-            },
-            method: 'get',
-            params: parameterBuilder,
-            responseType: 'json'    
-            };
-            
-        
-
-        const mapperFromAxiosToHttpMessagePropertiesAndValues = new MapAxiosRequestToHttpRequestMessage<Person>();
-        mapperFromAxiosToHttpMessagePropertiesAndValues.map<Person>(config);
-
-        const httpRequestMessage = new HttpRequestMessage<Person>(mapperFromAxiosToHttpMessagePropertiesAndValues, new PropertyAccSortingStrategy<Person>() );
-        const hashcode =
-            httpRequestMessage.GetHashCode<Person>(httpRequestMessage);
         expect(hashcode).toBeDefined();
         expect(hashcode).toBeGreaterThan(5);
     });

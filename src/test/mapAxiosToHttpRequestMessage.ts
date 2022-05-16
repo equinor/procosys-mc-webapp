@@ -63,7 +63,7 @@ export class MapAxiosRequestToHttpRequestMessage<T> implements IMapAxiosToHttpRe
     xsrfCookieName?: string | undefined;
     xsrfHeaderName?: string | undefined;
     // `url` is the server URL that will be used for the request
-    url?: string | undefined;
+    url?: string;
 
     //method: 'get', // default
     method?: string | undefined;
@@ -98,7 +98,12 @@ export class MapAxiosRequestToHttpRequestMessage<T> implements IMapAxiosToHttpRe
 
     map<T>(axiosRequestConfig: AxiosRequestConfig<any>): void{
 
+        if(axiosRequestConfig.url === undefined)
+            throw new Error("missing required parameter: + 'url");
+
+
         //this.status = axiosRequestConfig.isVerified
+        this.url = axiosRequestConfig.url;
         this.baseURL = axiosRequestConfig.baseURL;
         this.method = axiosRequestConfig.method;
         this.baseURL = axiosRequestConfig.baseURL;
