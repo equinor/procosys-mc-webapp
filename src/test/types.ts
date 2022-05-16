@@ -1,3 +1,4 @@
+import { AxiosRequestConfig } from "axios";
 
 export interface ProxyConfig {
     host: string;
@@ -40,10 +41,15 @@ export type Method =
     | 'LINK'
     | 'unlink'
     | 'UNLINK';
+/**
+ * @Summmary: Meta-data programming for transforming a type heavily depending axios type to pure TS
+ */
+export function getProperty<T, K extends keyof T>(obj: T, key: K): T[K] {
+    return obj[key];
+}
 
-// export type httpRequestConfig = Pick<AxiosRequestConfig, "url" | "method" | "baseURL" | "headers" | "params">;
 export type MyPick<T, K extends keyof T> = { [P in K]: T[P]; };
-
-
-
- 
+export type HttpServiceMessageRawConfig<T> = MyPick<AxiosRequestConfig<T>,
+    'method' | 'url' | 'baseURL' | 'data' | 'params' | 'headers' | 'responseType'>;
+export type ReplaceAxisHeaders<T> = Omit<T, 'headers'> & { headers: Record<string,string> | undefined };
+export type ReplaceAxiosParams<T> = Omit<T, 'params'> & { params: URLSearchParams | undefined };

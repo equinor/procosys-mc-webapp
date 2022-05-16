@@ -11,6 +11,7 @@
     "@microsoft/applicationinsights-react-js": "^3.2.2",
     "@microsoft/applicationinsights-web": "^2.7.2",
     "axios": "^0.24.0",
+    "lodash": "^4.17.21",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-router-dom": "^5.2.0",
@@ -23,7 +24,7 @@
   "scripts": {
     "start": "react-scripts --openssl-legacy-provider start",
     "build": "react-scripts --openssl-legacy-provider build",
-    "test": "jest types.another.approach.test.ts",
+    "test": "jest types.map.replace.types.test.ts",
     "test:debug": "react-scripts --inspect-brk test --runInBand --no-cache",
     "eject": "react-scripts eject",
     "lint-all": "./node_modules/.bin/eslint --ext .ts,.tsx src/"
