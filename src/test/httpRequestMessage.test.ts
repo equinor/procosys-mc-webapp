@@ -1,21 +1,11 @@
-import { baseURL } from './setupServer';
+
 import { describe, it } from '@jest/globals';
-import axios, { AxiosRequestConfig } from 'axios';
 import { Person } from '../services/apiTypes';
-import { MapAxiosRequestToHttpRequestMessage } from './mapAxiosToHttpRequestMessage';
+import { HttpRequestMessageConfig } from './HttpRequestMessageConfig';
 import { HttpRequestMessage } from './httpRequestResponseMessage';
 import { PropertyAccSortingStrategy } from './IPropertyStrategy';
-
-export class Tag {
-    id: string;
-    constructor(id: string) {
-        this.id = id;
-    }
-}
-
-
-describe('Reconstruct an AxiosRequestConfig<T> object from ')
-
+import { AxiosRequestConfig } from 'axios';
+ 
 describe('HttpReqestMessage should generate a hash by the HttpRequest parameters and URL path', () => {
 
     const parameterBuilder = new URLSearchParams();
@@ -44,18 +34,18 @@ describe('HttpReqestMessage should generate a hash by the HttpRequest parameters
     });
 
     it('Should get relative path', () => {
-        const copyPropertiesFromAxios = new MapAxiosRequestToHttpRequestMessage<Person>();
-        copyPropertiesFromAxios.map<Person>(config);
-        expect(copyPropertiesFromAxios.url).toBe('/person/100');
+        const copyPropertiesFromAxios = new HttpRequestMessageConfig<Person>(config);
+        // // copyPropertiesFromAxios.map<Person>(config);
+        // expect(copyPropertiesFromAxios.z.url).toBe('/person/100');
         const httpRequestMessage = new HttpRequestMessage<Person>(copyPropertiesFromAxios, new PropertyAccSortingStrategy<Person>());
-        expect(httpRequestMessage.url).toBe('/person/100');
+        expect(httpRequestMessage?.config?.url).toBe('/person/100');
 
     });
 
     it('Should get all arguments from http request ', () => {
-        const copyPropertiesFromAxios = new MapAxiosRequestToHttpRequestMessage<Person>();
-        copyPropertiesFromAxios.map<Person>(config);
-        expect(copyPropertiesFromAxios.url).toBe('/person/100');
+        const copyPropertiesFromAxios = new HttpRequestMessageConfig<Person>(config);
+        // copyPropertiesFromAxios.map<Person>(config);
+        // expect(copyPropertiesFromAxios.url).toBe('/person/100');
         const httpRequestMessage = new HttpRequestMessage<Person>(copyPropertiesFromAxios, new PropertyAccSortingStrategy<Person>());
         const hashcode = httpRequestMessage.GetHashCode<Person>(httpRequestMessage);
 

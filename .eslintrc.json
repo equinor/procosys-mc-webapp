@@ -68,7 +68,7 @@
             }
         ],
         "linebreak-style": [
-            "auto"
+            3
         ],
         "quotes": [
             "error",

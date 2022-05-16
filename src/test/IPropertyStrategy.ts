@@ -1,4 +1,3 @@
-import { IHttpRequestMessage } from './httpRequestResponseMessage';
 import { MapAccedingSort as AccedingSortingOnMap } from '../routing/sort';
 
 export interface IPropertyStrategy<T> {

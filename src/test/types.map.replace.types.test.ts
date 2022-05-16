@@ -1,6 +1,6 @@
 import { AxiosRequestConfig } from "axios";
 import { Person } from "../services/apiTypes";
-import { getProperty, HttpServiceMessageRawConfig, ReplaceAxiosParams, ReplaceAxisHeaders } from "./types";
+import { getProperty, HttpRequestMessageConfig, ReplaceAxiosParams, ReplaceAxisHeaders } from "./types";
 
 describe("Transform a type's properties with other types", () => {
     const parameterBuilder = new URLSearchParams();
@@ -29,14 +29,14 @@ describe("Transform a type's properties with other types", () => {
         headers: headers
     };
     it("should discover that headers have change type", () => {
-        let transformed: ReplaceAxisHeaders<HttpServiceMessageRawConfig<Person>> = {
+        let transformed: ReplaceAxisHeaders<HttpRequestMessageConfig<Person>> = {
             headers: getProperty(config, 'headers'),
         };
         expect(transformed.headers).toBe(headers);
     });
 
     it("should discover that param have change type", () => {
-        let transformed: ReplaceAxiosParams<HttpServiceMessageRawConfig<Person>> = {
+        let transformed: ReplaceAxiosParams<HttpRequestMessageConfig<Person>> = {
             params: getProperty(config, 'params'),
         };    
         expect(transformed.params).toBe(parameterBuilder);

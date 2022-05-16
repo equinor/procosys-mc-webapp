@@ -24,7 +24,7 @@
   "scripts": {
     "start": "react-scripts --openssl-legacy-provider start",
     "build": "react-scripts --openssl-legacy-provider build",
-    "test": "jest types.map.replace.types.test.ts",
+    "test": "jest --watchAll",
     "test:debug": "react-scripts --inspect-brk test --runInBand --no-cache",
     "eject": "react-scripts eject",
     "lint-all": "./node_modules/.bin/eslint --ext .ts,.tsx src/"

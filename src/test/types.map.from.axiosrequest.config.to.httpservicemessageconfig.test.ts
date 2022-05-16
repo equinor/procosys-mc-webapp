@@ -1,6 +1,7 @@
 import { AxiosRequestConfig } from "axios";
 import { Person } from "../services/apiTypes";
-import { getProperty, HttpServiceMessageRawConfig } from "./types";
+import { getProperty, HttpRequestMessageConfig } from "./types";
+
 describe("Property and Value copy with Pick<> feature", () => {
     const parameterBuilder = new URLSearchParams();
     parameterBuilder.set('test1', 'value1');
@@ -28,7 +29,7 @@ describe("Property and Value copy with Pick<> feature", () => {
         headers: headers
     };
 
-    const clone: HttpServiceMessageRawConfig<Person> = {
+    const clone: HttpRequestMessageConfig<Person> = {
         method: getProperty(config, 'method'),
         url: getProperty(config, 'url'),
         baseURL: getProperty(config, 'baseURL'),

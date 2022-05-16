@@ -3,69 +3,58 @@
 import { AxiosResponse } from 'axios';
 import { HashGenerator, HashHttpRequest } from '../routing/hash';
 import { IPropertyStrategy } from './IPropertyStrategy';
-import { IMapAxiosToHttpRequestMessage } from './mapAxiosToHttpRequestMessage';
+import { HttpRequestMessageConfig } from './HttpRequestMessageConfig';
 import { ResponseType, HttpHeaders } from './types';
 
 /**
  * Common interface from both IHttpRequestMessage and IHttpResponseMessage
  */
-interface IHttpCommon<T> {
+// interface IHttpCommon<T> {
 
-    data?: T;
-    headers: HttpHeaders,
-    httpAgent?: any;
-    httpsAgent?: any;
-    xsrfCookieName?: string;
-    xsrfHeaderName?: string;
-}
+//     data?: T;
+//     headers: HttpHeaders,
+//     httpAgent?: any;
+//     httpsAgent?: any;
+//     xsrfCookieName?: string;
+//     xsrfHeaderName?: string;
+// }
 
-export class HttpCommon<T> implements IHttpCommon<T> {
-    data?: T;
-    headers: HttpHeaders;
-    httpAgent?: any;
-    httpsAgent?: any;
-    xsrfCookieName?: string | undefined;
-    xsrfHeaderName?: string | undefined;
+// export class HttpCommon<T> implements IHttpCommon<T> {
+//     data?: T;
+//     headers: HttpHeaders;
+//     httpAgent?: any;
+//     httpsAgent?: any;
+//     xsrfCookieName?: string | undefined;
+//     xsrfHeaderName?: string | undefined;
 
-    constructor(config: IMapAxiosToHttpRequestMessage<T>) {
-        this.data = config.data;
-        this.headers = config.headers;
-        this.httpAgent = config.httpAgent;
-        this.httpsAgent = config.httpsAgent;
-        this.xsrfCookieName = config.xsrfCookieName;
-        this.xsrfHeaderName = config.xsrfHeaderName;
-    }
-}
+//     constructor(config: AxiosToHttpRequestMessageConfig<T>) {
+//         this.data = config.data;
+//         this.headers = config.headers;
+//         this.httpAgent = config.httpAgent;
+//         this.httpsAgent = config.httpsAgent;
+//         this.xsrfCookieName = config.xsrfCookieName;
+//         this.xsrfHeaderName = config.xsrfHeaderName;
+//     }
+// }
 
 
 /**
  * IHttpRequestMessage interface
  */
-export interface IHttpRequestMessage<T> extends HttpCommon<T> {
-    url?: string | undefined;
+//export interface IHttpRequestMessage<T> extends HttpCommon<T> {
+export interface IHttpRequestMessage<T> {
+    //url?: string | undefined;
     GetHashCode(request: IHttpRequestMessage<T>): number;
     GetPath(): string;
     GetHttpRequestParameters<T>(): Map<string, string>;
     GetStrategy<T>(): IPropertyStrategy<T>;
-
 }
 
 export class HttpRequestMessage<T> implements IHttpRequestMessage<T> {
-    url?: string;
-    requestUrl?: string;
-    data?: T | undefined;
-    headers!: Record<string, string>;
-    httpAgent?: any;
-    httpsAgent?: any;
-    xsrfCookieName?: string | undefined;
-    xsrfHeaderName?: string | undefined;
     strategy: IPropertyStrategy<T> | undefined
+    config: HttpRequestMessageConfig<T> | undefined;
 
-    // 
-    config : IMapAxiosToHttpRequestMessage<T> | undefined;
-
-    constructor(config: IMapAxiosToHttpRequestMessage<T>, strategy: IPropertyStrategy<T>) {
-        this.url = config.url;
+    constructor(config: HttpRequestMessageConfig<T>, strategy: IPropertyStrategy<T>) {
         this.config = config;
         this.strategy = strategy;
     }
@@ -77,12 +66,14 @@ export class HttpRequestMessage<T> implements IHttpRequestMessage<T> {
     }
 
     GetPath(): string {
-        return this.url !== undefined ? this.url : "";
+        if(this.config === undefined || this.config.url === undefined ) 
+            throw Error("config is undefined");
+        return this.config.url;
     }
 
     GetHttpRequestParameters<T>(): Map<string, string> {
         if (this.strategy === undefined) throw Error("strategy is undefined");
-        if(this.config === undefined) throw Error("Configuration object is missing. Should be set in constructor");
+        if (this.config === undefined) throw Error("Configuration object is missing. Should be set in constructor");
         const parameters = this.strategy.DoSomethingWithTheParameters(this.config.params);
         return parameters;
     }
@@ -96,27 +87,20 @@ export class HttpRequestMessage<T> implements IHttpRequestMessage<T> {
 /**
  * IHttpResponseMessage interface
  */
-export interface IHttpResponseMessage<T, S> extends IHttpCommon<T> {
-    request: IHttpRequestMessage<T> | undefined;
-    responseType: ResponseType;
+// export interface IHttpResponseMessage<T, S> extends IHttpCommon<T> {
+//     request: IHttpRequestMessage<T> | undefined;
+//     responseType: ResponseType;
 
-}
+// }
 
-export class HttpResponseMessage<T, S> implements IHttpResponseMessage<T, S> {
+export class HttpResponseMessage<T, S> {
     status: number;
     content: ArrayBuffer;
     request: IHttpRequestMessage<T> | undefined;
     headers: Record<string, string>;
     responseType: ResponseType;
     data?: T | undefined;
-    httpAgent?: any;
-    httpsAgent?: any;
-    xsrfCookieName?: string | undefined;
-    xsrfHeaderName?: string | undefined;
 
-    /**
-     *
-     */
     constructor(axiosResponse: AxiosResponse<T, S>) {
         this.content = new ArrayBuffer(0);
         this.status = axiosResponse.status;

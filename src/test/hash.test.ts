@@ -1,48 +1,44 @@
-import * as jestMockAxios from 'jest-mock-axios';
 import { HashGenerator } from '../routing/hash';
 import { describe, expect, it } from '@jest/globals';
-import { mockedResponse, requestMockContent } from './axios.requests';
-import { HttpRequestMessage, HttpResponseMessage } from './httpRequestResponseMessage';
-import { Person } from '../services/apiTypes';
-import { Any } from '@react-spring/types';
-import { AxiosRequestConfig } from 'axios';
 
-describe('hashGenerator2 testing', () => {
+describe('Testing the hash generator', () => {
     it('should return a hash', () => {
-        const hash = hashGenerator2('/test', ['n', 'm']);
-        expect(hash).toBe(-2114169182);
+        const hash = HashGenerator('/test'+ ['n', 'm']);
+        expect(hash).toBe(-1114736178);
     });
 
     it('should return a hash when args contains string of digits and values', () => {
-        const hash = hashGenerator2('/test', ['n', '10', 'm', '20']);
-        expect(hash).toBe(2132228991);
+        const hash = HashGenerator('/test' + ['n', '10', 'm', '20']);
+        expect(hash).toBe(753165291);
     });
+
+    it('should generate the same hash when content is the same', () => {
+        const hash1 = HashGenerator('/test'+ ['n', 'm']);
+        expect(hash1).toBe(-1114736178);
+
+        const hash2 = HashGenerator('/test'+ ['n', 'm']);
+        expect(hash2).toBe(-1114736178);
+
+        expect(hash1).toBe(hash2);
+    });
+
+    it('should return a diffenert hash when paramters is swapped', () => {
+        const hash1 = HashGenerator('/test'+ ['n', 'm']);
+        const hash2 = HashGenerator('/test'+ ['m', 'n']);
+        expect(hash1).not.toBe(hash2);
+    });
+
+
 });
 
 describe('Performance testing', () => {
     it('should measure the time generating a number of hashes', () => {
         const startTime = performance.now();
         for (let i = 0; i < 1000; i++) {
-            HashGenerator('/api/test', ['n', '10', 'm', '20']);
+            HashGenerator('/api/test' + ['n', '10', 'm', '20']);
         }
         const endTime = performance.now();
         const consumedTime = endTime - startTime;
         expect(consumedTime).toBeLessThan(1000);
-    });
-});
-
-describe('Hashgenerator3 - With propery name and values', () => {
-    it('should have a map of properties with name and value', () => {
-        const request = jestMockAxios.mockAxios.get.mockResolvedValueOnce(requestMockContent);
-        const response = jestMockAxios.mockAxios.mockResponseFor(
-            { url: '/api/person' },
-            { data: '{test: 12, id = 12}'}
-        );
-        const config = (): AxiosRequestConfig<Person> => {
-
-        };
-        const httpRequestMessage = new HttpRequestMessage() {
-            
-        };
     });
 });
