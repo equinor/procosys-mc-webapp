@@ -13,18 +13,21 @@ export class Tag {
     }
 }
 
+
+describe('Reconstruct an AxiosRequestConfig<T> object from ')
+
 describe('HttpReqestMessage should generate a hash by the HttpRequest parameters and URL path', () => {
 
     const parameterBuilder = new URLSearchParams();
-    parameterBuilder.set('test1', 'value1');
-    parameterBuilder.set('test2', 'value2');
-    parameterBuilder.set('test3', 'value3');
+    parameterBuilder.set('parameter1', 'value1');
+    parameterBuilder.set('parameter2', 'value2');
+    parameterBuilder.set('parameter3', 'value3');
 
     const content = new ArrayBuffer(0);
     const headers: Record<string, string> = {
-        miffy1: '12',
-        miffy2: '22',
-        miffy3: '36',
+        headers1: '12',
+        headers2: '22',
+        headers3: '36',
     };
 
     const config: AxiosRequestConfig<Person> = {
