@@ -18,7 +18,14 @@ export function sort(args: string[]): string[] {
     return sortedArgs;
 }
 
-export function sortMap(map: Map<string, string>) : Map<string, string> {
-    const sortedMap = new Map([...map].sort());
+
+
+export function MapAccedingSort(map: Map<string, string>) : Map<string, string> {
+
+    let newman = new Map<string, string>();
+    newman.set("name1", "asc");
+    newman.set("name2", "asc");
+
+    const sortedMap : Map<string, string> = new Map([...newman.entries()].sort());   
     return sortedMap;
 };

@@ -67,8 +67,7 @@
             }
         ],
         "linebreak-style": [
-            "error",
-            "unix"
+            "auto"
         ],
         "quotes": [
             "error",

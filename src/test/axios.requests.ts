@@ -4,11 +4,20 @@ import mockAxios from "jest-mock-axios";
 
 jest.mock("axios");
 
-const data = {
-    arguments: {},
-    data: {},
+export const httpRequest = {
+    arguments: { "Foo": 12, "Bla": 'Test' },
+    data: '[1,2,3]',
     status: 200,
 };
-export const mockedResponse = mockAxios.mockResponseFor({url: '/get'}, {data: "test"});
-//export const mockedResponse = mockAxios.get.mockResponseFor({url: '/get'}, {data: "test"});
+
+export const requestMockContent = {  
+    arguments: { "Foo": 12, "Bla": 'Test' },
+    data: '[1,2,3]', 
+    status: 200 };
+
+
+
+export const mockedResponse 
+= mockAxios.mockResponseFor({ url: '/api/person' }, { data: "test" });
+
 
