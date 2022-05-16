@@ -40,7 +40,7 @@ describe('HttpReqestMessage should generate a hash by the HttpRequest parameters
        
     });
 
-    it('Should get releative path', () => {
+    it('Should get relative path', () => {
         const copyPropertiesFromAxios = new MapAxiosRequestToHttpRequestMessage<Person>();
         copyPropertiesFromAxios.map<Person>(config);
         expect(copyPropertiesFromAxios.url).toBe('/person/100');
