@@ -23,7 +23,7 @@
   "scripts": {
     "start": "react-scripts --openssl-legacy-provider start",
     "build": "react-scripts --openssl-legacy-provider build",
-    "test": "jest httpRequestMessage.test.ts",
+    "test": "jest types.another.approach.test.ts",
     "test:debug": "react-scripts --inspect-brk test --runInBand --no-cache",
     "eject": "react-scripts eject",
     "lint-all": "./node_modules/.bin/eslint --ext .ts,.tsx src/"
@@ -51,6 +51,7 @@
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^13.5.0",
     "@types/jest": "^27.4.0",
+    "@types/lodash": "^4.14.182",
     "@types/node": "^16.11.9",
     "@types/react": "^17.0.38",
     "@types/react-dom": "^17.0.11",

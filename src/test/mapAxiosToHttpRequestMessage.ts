@@ -42,7 +42,7 @@ export interface IMapAxiosToHttpRequestMessage<T> {
     //insecureHTTPParser?: boolean;
     
     headers: HttpHeaders;
-    httpAgent?: any;
+    httpAgent?: any; 
     httpsAgent?: any;
     xsrfCookieName?: string | undefined;
     xsrfHeaderName?: string | undefined;
