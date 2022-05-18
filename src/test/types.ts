@@ -74,16 +74,16 @@ export function getProperty<T, K extends keyof T>(obj: T, key: K): T[K] {
 
 export type MyPick<T, K extends keyof T> = { [P in K]: T[P] };
 /** @Summary: Less dependency on axios */
-export type HttpRequestMessageConfig<T> = MyPick<
-    AxiosRequestConfig<T>,
-    | 'method'
-    | 'url'
-    | 'baseURL'
-    | 'data'
-    | 'params'
-    | 'headers'
-    | 'responseType'
->;
+// export type HttpRequestMessageConfig<T> = MyPick<
+//     AxiosRequestConfig<T>,
+//     | 'method'
+//     | 'url'
+//     | 'baseURL'
+//     | 'data'
+//     | 'params'
+//     | 'headers'
+//     | 'responseType'
+// >;
 
 /** @Summary: Reverse back to Axios types */
 export type HttpResponseMessageConfigRaw<T> = MyPick<

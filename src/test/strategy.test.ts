@@ -4,7 +4,7 @@ import { Person } from '../services/apiTypes';
 
 describe('ProcessBodyStrategy is depended in a string that can be serialized', () => {
     it('should fail if the configuration is not valid', () => {
-        const strategy = new ProcessBodyStrategy<Person>();
+        const processBodyStrategy = new ProcessBodyStrategy<Person>();
         const config = new HttpRequestMessageConfig<Person>({
             method: 'post',
             url: 'http://localhost:3000/api/v1/users',
@@ -23,7 +23,7 @@ describe('ProcessBodyStrategy is depended in a string that can be serialized', (
             },
             responseType: 'json',
         });
-        const result = strategy.process<Person>(config);
+        const result = processBodyStrategy.process<Person>(config);
         expect(result).toBeDefined();
         // expect(result).toBe('{"name":"test","age":"test"}');
     });

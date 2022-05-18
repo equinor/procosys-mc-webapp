@@ -1,4 +1,4 @@
-import { HttpRequestMessageConfig, TypeCandidates } from '../../../test/types';
+import { HttpRequestMessageConfig } from '../HttpRequestMessageConfig';
 import BaseStrategy from './BaseStrategy';
 import { IStrategy } from './IStrategy';
 
@@ -12,7 +12,7 @@ export default class ProcessBodyStrategy<T> implements IStrategy<T> {
         const base = new BaseStrategy();
         if (base.isString(config.data)) {
             const result = JSON.parse(config.data);
-            console.log('Then serialisation process produced this: ', result);
+            console.log('Then serialization process produced this: ', result);
             return JSON.parse(result);
         }
         throw Error('InvalidSomething is wrong with the data');

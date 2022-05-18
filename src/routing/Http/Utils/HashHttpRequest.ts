@@ -14,8 +14,8 @@ import { HttpRequestMessageConfig } from '../HttpRequestMessageConfig';
 export function HashHttpRequest<T>(
     request: IHttpRequestMessage<T>,
     hashGenerator: IHashGenerator,
-    strategy: IStrategy<T>,
-    config?: HttpRequestMessageConfig<T> | undefined
+    queryParamsToOneSingleLineStrategy: QueryParamsToOneSingleLineStrategy<T>,
+    config: HttpRequestMessageConfig<T>
 ): number {
     const parameters = request.GetHttpRequestParameters();
     if (parameters === undefined) {
@@ -23,10 +23,8 @@ export function HashHttpRequest<T>(
     }
     const resultMapSort = MapAccedingSort(parameters);
     if (resultMapSort !== undefined) {
-        const result = (
-            strategy as QueryParamsToOneSingleLineStrategy<T>
-        ).process<T>(config?.params);
-        const hash = hashGenerator(request.GetPath() + (result as string));
+        const result = queryParamsToOneSingleLineStrategy.process(config);
+        const hash = hashGenerator(request.GetPath() + result);
 
         return hash;
     }

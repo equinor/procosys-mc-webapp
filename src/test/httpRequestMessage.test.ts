@@ -1,20 +1,29 @@
-import { describe, it } from '@jest/globals';
-import { Person } from '../services/apiTypes';
-import { HttpRequestMessageConfig } from '../routing/Http/HttpRequestMessageConfig';
 import { HttpRequestMessage } from '../routing/Http/HttpRequestMessage';
 import { QueryParamsStrategyWitAscendingSorting } from '../routing/Http/Strategies/QueryParamsStrategyWitAscendingSorting';
 import { config, httpPostRequestWithbody } from './httpRequestMessage.testdata';
 import ProcessBodyStrategy from '../routing/Http/Strategies/ProcessBodyStrategy';
+import { QueryParamsStrategy } from '../routing/Http/Strategies/QueryParamsStrategy';
+import { Person } from '../services/apiTypes';
+import { HttpRequestMessageConfig } from '../routing/Http/HttpRequestMessageConfig';
+import { QueryParamsToOneSingleLineStrategy } from '../routing/Http/Strategies/QueryParamsToOneSingleLineStrategy';
 
 describe('HttpRequestMessage should generate a hash by the HttpRequest parameters and URL path', () => {
+    const queryParamsStrategyWitAscendingSorting =
+        new QueryParamsStrategyWitAscendingSorting<Person>();
+    const queryParamsStrategy = new QueryParamsStrategy<Person>();
+    const processBodyStrategy = new ProcessBodyStrategy<Person>();
+    const queryParamsToOneSingleLineStrategy =
+        new QueryParamsToOneSingleLineStrategy<Person>();
+
     it('Should get relative path', () => {
         const httpRequestMessageConfig = new HttpRequestMessageConfig<Person>(
             config
         );
-        const strategy = new QueryParamsStrategyWitAscendingSorting<Person>();
         const httpRequestMessage = new HttpRequestMessage<Person>(
             httpRequestMessageConfig,
-            strategy
+            processBodyStrategy,
+            queryParamsStrategyWitAscendingSorting,
+            queryParamsToOneSingleLineStrategy
         );
         expect(httpRequestMessage?.config?.url).toBe('/person/100');
     });
@@ -23,13 +32,14 @@ describe('HttpRequestMessage should generate a hash by the HttpRequest parameter
         const httpRequestMessageConfig = new HttpRequestMessageConfig<Person>(
             config
         );
-        const strategy = new QueryParamsStrategyWitAscendingSorting<Person>();
         const httpRequestMessage = new HttpRequestMessage<Person>(
             httpRequestMessageConfig,
-            strategy
+            processBodyStrategy,
+            queryParamsStrategyWitAscendingSorting,
+            queryParamsToOneSingleLineStrategy
         );
 
-        const hash = httpRequestMessage.GetHashCode(httpRequestMessage);
+        const hash = httpRequestMessage.GetHashCode<Person>(httpRequestMessage);
 
         expect(hash).toBeDefined();
         expect(hash).toBeGreaterThan(5);
@@ -42,10 +52,11 @@ describe('HttpRequestMessage should generate a hash by the HttpRequest parameter
         const httpRequestMessageConfig = new HttpRequestMessageConfig<Person>(
             httpPostRequestWithbody
         );
-        const strategy = new ProcessBodyStrategy<Person>();
         const httpRequestMessage = new HttpRequestMessage<Person>(
             httpRequestMessageConfig,
-            strategy
+            queryParamsStrategy,
+            processBodyStrategy,
+            queryParamsToOneSingleLineStrategy
         );
         const hashcode =
             httpRequestMessage.GetHashCode<Person>(httpRequestMessage);

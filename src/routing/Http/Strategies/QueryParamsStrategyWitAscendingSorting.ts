@@ -1,4 +1,4 @@
-import { HttpRequestMessageConfig, TypeCandidates } from '../../../test/types';
+import { HttpRequestMessageConfig } from '../HttpRequestMessageConfig';
 import { IStrategy } from './IStrategy';
 
 /**
@@ -8,13 +8,6 @@ import { IStrategy } from './IStrategy';
  */
 export class QueryParamsStrategyWitAscendingSorting<T> implements IStrategy<T> {
     process<T>(config: HttpRequestMessageConfig<T>): T {
-        // if (this.isString(data)) { }
-        //if (this.isRecord(data)) { }
-        // const base = new BaseStrategy();
-        // if (base.isMap(data)) {
-        //     return MapAccedingSort(data);
-        // }
-
-        throw Error();
+        throw new Error('Method not implemented.');
     }
 }

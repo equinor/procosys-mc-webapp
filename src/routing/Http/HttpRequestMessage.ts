@@ -1,52 +1,51 @@
 import { TypeCandidates } from '../../test/types';
 import { HashGenerator } from '../hash';
-import { HashHttpRequest } from './Utils/HashHttpRequest';
 import { HttpRequestMessageConfig } from './HttpRequestMessageConfig';
-import { IStrategy } from './Strategies/IStrategy';
 import ProcessBodyStrategy from './Strategies/ProcessBodyStrategy';
 import { QueryParamsStrategy } from './Strategies/QueryParamsStrategy';
+import { QueryParamsToOneSingleLineStrategy } from './Strategies/QueryParamsToOneSingleLineStrategy';
+import { HashHttpRequest } from './Utils/HashHttpRequest';
 
 export interface IHttpRequestMessage<T> {
     GetHashCode(request: IHttpRequestMessage<T>): number;
-    GetPath(): string | undefined;
+    GetPath(): string;
     GetHttpRequestParameters(): Map<string, string> | undefined;
-    GetStrategy<T>(): IStrategy<T>;
     GetBodyData(): TypeCandidates | undefined;
 }
 
 export class HttpRequestMessage<T> implements IHttpRequestMessage<T> {
-    strategy?: IStrategy<T> | undefined;
+    config?: HttpRequestMessageConfig<T>;
     processBodyStrategy: ProcessBodyStrategy<T>;
     queryParamsStrategy: QueryParamsStrategy<T>;
-    config?: HttpRequestMessageConfig<T> | undefined;
+    queryParamsToOneSingleLineStrategy: QueryParamsToOneSingleLineStrategy<T>;
 
     constructor(
         config: HttpRequestMessageConfig<T>,
-        processBodyStrategy: IStrategy<T>,
-        queryParamsStrategy: IStrategy<T>
+        processBodyStrategy: ProcessBodyStrategy<T>,
+        queryParamsStrategy: QueryParamsStrategy<T>,
+        queryParamsToOneSingleLineStrategy: QueryParamsToOneSingleLineStrategy<T>
     ) {
         this.config = config;
         this.processBodyStrategy = processBodyStrategy;
         this.queryParamsStrategy = queryParamsStrategy;
+        this.queryParamsToOneSingleLineStrategy =
+            queryParamsToOneSingleLineStrategy;
     }
 
-    GetBodyData<T>(): TypeCandidates | undefined {
-        if (this.config?.method == 'post') {    //Move safety into strategy
-            const result = this.processBodyStrategy.process(
-                this?.config?.params
-            );
-            return result;
-        }
+    GetBodyData<T>(): TypeCandidates {
+        throw Error('Not implemented');
     }
 
     GetHashCode<T>(request: IHttpRequestMessage<T>): number {
-        if (this.strategy === undefined) throw Error('strategy is undefined');
-        const hash = HashHttpRequest<T>(
-            request,
-            HashGenerator,
-            this.strategy,
-            this?.config?.params
-        );
+        if (this.config !== undefined) {
+            const hash = HashHttpRequest<T>(
+                request,
+                HashGenerator,
+                new QueryParamsToOneSingleLineStrategy<T>(),
+                this.config
+            );
+        }
+
         return hash;
     }
 
@@ -54,18 +53,7 @@ export class HttpRequestMessage<T> implements IHttpRequestMessage<T> {
         return this.config?.url;
     }
 
-    GetHttpRequestParameters<T>(): Map<string, string> | undefined {
-        if (this.strategy !== undefined) {
-            const result = (this.strategy as QueryParamsStrategy<T>).process(
-                this.config.params
-            );
-
-            return result;
-        }
-    }
-
-    GetStrategy<T>(): IStrategy<T> {
-        if (this.strategy === undefined) throw Error('strategy is undefined');
-        return this.strategy;
+    GetHttpRequestParameters<T>(): Map<string, string> {
+        throw Error('Not implemented');
     }
 }

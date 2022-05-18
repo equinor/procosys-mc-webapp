@@ -1,9 +1,8 @@
 import { HashGenerator } from '../routing/hash';
-import { describe, expect, it } from '@jest/globals';
 
 describe('Testing the hash generator', () => {
     it('should return a hash', () => {
-        const hash = HashGenerator('/test'+ ['n', 'm']);
+        const hash = HashGenerator('/test' + ['n', 'm']);
         expect(hash).toBe(-1114736178);
     });
 
@@ -13,22 +12,20 @@ describe('Testing the hash generator', () => {
     });
 
     it('should generate the same hash when content is the same', () => {
-        const hash1 = HashGenerator('/test'+ ['n', 'm']);
+        const hash1 = HashGenerator('/test' + ['n', 'm']);
         expect(hash1).toBe(-1114736178);
 
-        const hash2 = HashGenerator('/test'+ ['n', 'm']);
+        const hash2 = HashGenerator('/test' + ['n', 'm']);
         expect(hash2).toBe(-1114736178);
 
         expect(hash1).toBe(hash2);
     });
 
     it('should return a diffenert hash when paramters is swapped', () => {
-        const hash1 = HashGenerator('/test'+ ['n', 'm']);
-        const hash2 = HashGenerator('/test'+ ['m', 'n']);
+        const hash1 = HashGenerator('/test' + ['n', 'm']);
+        const hash2 = HashGenerator('/test' + ['m', 'n']);
         expect(hash1).not.toBe(hash2);
     });
-
-
 });
 
 describe('Performance testing', () => {

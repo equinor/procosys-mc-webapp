@@ -22,8 +22,8 @@
     "workbox-routing": "^5.1.4"
   },
   "scripts": {
-    "start": "react-scripts --openssl-legacy-provider start",
-    "build": "react-scripts --openssl-legacy-provider build",
+    "start": "react-scripts start  --openssl-legacy-provider",
+    "build": "react-scripts build --openssl-legacy-provider",
     "test": "jest httpRequestMessage.test.ts --watchAll",
     "test:debug": "react-scripts --inspect-brk test --runInBand --no-cache",
     "eject": "react-scripts eject",
@@ -48,6 +48,7 @@
     ]
   },
   "devDependencies": {
+    "@jest/globals": "^28.1.0",
     "@testing-library/jest-dom": "^5.16.1",
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^13.5.0",
