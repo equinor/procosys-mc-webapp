@@ -17,11 +17,17 @@ gantt
 
     Section Web App
       Add ServiceWorker template                          :a1, 1d
-      Service worker need to persist state in local storage : 
+      Handling HttpRequest and HttpResponse objects       :req-res-objects, after a1, 4d
+      Service worker persist state                        :sw-persist, after a1, 1d
       Add Custom Paths and Matches functions              :after a1, 7d
       Create concept of response Entities                 :after a1, 3d
       Generate Offline Data Process                       :after a1, 7d
       
+
+      Create SWStateEntity with Indexes                   :sws, after sw-persist, 2d
+      Create SWStateRepository                            :swsr, after sws, 1d
+      Integration tests for SWStateRepository             :testsws, after swsr, 1d
+
       Create TagEntities with Indexes                     :cte, after a1, 2d
       Create TagRepository                                :ctr, after cte, 2d
       Integration tests for TagRepository                 :testtr, after ctr, 3d
