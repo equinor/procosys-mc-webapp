@@ -1,9 +1,7 @@
 import { describe, it } from '@jest/globals';
 import { Person } from '../services/apiTypes';
 import { HttpRequestMessageConfig } from '../routing/Http/HttpRequestMessageConfig';
-import {
-    HttpRequestMessage,
-} from '../routing/Http/HttpRequestMessage';
+import { HttpRequestMessage } from '../routing/Http/HttpRequestMessage';
 import { QueryParamsStrategyWitAscendingSorting } from '../routing/Http/Strategies/QueryParamsStrategyWitAscendingSorting';
 import { config, httpPostRequestWithbody } from './httpRequestMessage.testdata';
 import ProcessBodyStrategy from '../routing/Http/Strategies/ProcessBodyStrategy';

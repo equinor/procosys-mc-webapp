@@ -1,4 +1,4 @@
-import { TypeCandidates } from '../../../test/types';
+import { HttpRequestMessageConfig, TypeCandidates } from '../../../test/types';
 import BaseStrategy from './BaseStrategy';
 
 /**
@@ -7,14 +7,14 @@ import BaseStrategy from './BaseStrategy';
  * The strategy is to get the the parameters form the HttpRequestMessage object and then sort all the items in ascending order
  */
 export class QueryParamsStrategy<T> extends BaseStrategy<T> {
-    process<T = any>(data: TypeCandidates): Map<string, string> {
-        // if (this.isString(data)) { }
-        // if (this.isRecord(data)) {
+    process<T>(config: HttpRequestMessageConfig<T>): T {
+        const base = new BaseStrategy();
+        // if (base.isString(data)) { }
+        // if (base.isRecord(data)) {
         //     return data;
         //  }
-        if (this.isMap(data)) {
-            return data;
-        }
+        // if (base.isMap(config.data)) {
+        //     return T;
 
         throw Error('Error processing the data');
     }

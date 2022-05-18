@@ -1,5 +1,5 @@
-import { TypeCandidates } from '../../../test/types';
+import { HttpRequestMessageConfig, TypeCandidates } from '../../../test/types';
 
-export interface IStrategy<T = any> {
-    process<T = any>(data: TypeCandidates): TypeCandidates;
+export interface IStrategy<T> {
+    process<T>(config: HttpRequestMessageConfig<T>): T;
 }

@@ -23,7 +23,7 @@ describe('ProcessBodyStrategy is depended in a string that can be serialized', (
             },
             responseType: 'json',
         });
-        const result = strategy.process<Person>(config?.data);
+        const result = strategy.process<Person>(config);
         expect(result).toBeDefined();
         // expect(result).toBe('{"name":"test","age":"test"}');
     });

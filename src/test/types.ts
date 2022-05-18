@@ -58,7 +58,8 @@ export interface IMyString {
 export type TypeCandidates =
     | Map<string, string>
     | Record<string, string>
-    | string;
+    | string
+    | undefined;
 
 export type MAP = Map<string, string>;
 export type MapKVString = Map<string, string> | undefined;

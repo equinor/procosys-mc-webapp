@@ -16,15 +16,23 @@ export interface IHttpRequestMessage<T> {
 
 export class HttpRequestMessage<T> implements IHttpRequestMessage<T> {
     strategy?: IStrategy<T> | undefined;
+    processBodyStrategy: ProcessBodyStrategy<T>;
+    queryParamsStrategy: QueryParamsStrategy<T>;
     config?: HttpRequestMessageConfig<T> | undefined;
 
-    constructor(config: HttpRequestMessageConfig<T>, strategy: IStrategy<T>) {
+    constructor(
+        config: HttpRequestMessageConfig<T>,
+        processBodyStrategy: IStrategy<T>,
+        queryParamsStrategy: IStrategy<T>
+    ) {
         this.config = config;
-        this.strategy = strategy;
+        this.processBodyStrategy = processBodyStrategy;
+        this.queryParamsStrategy = queryParamsStrategy;
     }
+
     GetBodyData<T>(): TypeCandidates | undefined {
-        if (this.config?.method == 'post') {
-            const result = (this.strategy as ProcessBodyStrategy<T>).process(
+        if (this.config?.method == 'post') {    //Move safety into strategy
+            const result = this.processBodyStrategy.process(
                 this?.config?.params
             );
             return result;
@@ -49,7 +57,7 @@ export class HttpRequestMessage<T> implements IHttpRequestMessage<T> {
     GetHttpRequestParameters<T>(): Map<string, string> | undefined {
         if (this.strategy !== undefined) {
             const result = (this.strategy as QueryParamsStrategy<T>).process(
-                this?.config?.params
+                this.config.params
             );
 
             return result;
