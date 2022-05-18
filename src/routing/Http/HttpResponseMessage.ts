@@ -1,11 +1,11 @@
 import { AxiosResponse } from 'axios';
-import { ResponseType } from '../../test/types';
 import { IHttpRequestMessage } from './HttpRequestMessage';
+import { HttpRequestMessageConfig } from './HttpRequestMessageConfig';
 
 export class HttpResponseMessage<T, S> {
     status: number;
     content: ArrayBuffer;
-    request: IHttpRequestMessage<T> | undefined;
+    request: HttpRequestMessageConfig<T> | undefined;
     headers: Record<string, string>;
     responseType: ResponseType;
     data?: T | undefined;
