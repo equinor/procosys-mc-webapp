@@ -1,34 +1,9 @@
-import { AxiosRequestConfig } from "axios";
 import { Person } from "../services/apiTypes";
+import { configWithTypePerson as ConfigWithTypePerson, headers, parameterBuilder } from "./httpRequestMessage.testdata";
 import { getProperty, HttpRequestMessageConfig } from "./types";
 
 describe("Property and Value copy with Pick<> feature", () => {
-    const parameterBuilder = new URLSearchParams();
-    parameterBuilder.set('test1', 'value1');
-    parameterBuilder.set('test2', 'value2');
-    parameterBuilder.set('test3', 'value3');
-
-    const headers: Record<string, string> = {
-        miffy1: '12',
-        miffy2: '22',
-        miffy3: '36',
-    }
-    const config: AxiosRequestConfig = {
-        url: "/person/100",
-        method: "GET",
-        baseURL: "http://localhost",
-        data: {
-            id: 100,
-            azureOid: '',
-            username: '',
-            firstName: '',
-            lastName: '',
-            email: '',
-        },
-        params: parameterBuilder,
-        headers: headers
-    };
-
+    const config = ConfigWithTypePerson;
     const clone: HttpRequestMessageConfig<Person> = {
         method: getProperty(config, 'method'),
         url: getProperty(config, 'url'),
@@ -44,7 +19,7 @@ describe("Property and Value copy with Pick<> feature", () => {
     });
 
     it("should copy the method", () => {
-        expect(clone.method).toBe('GET');
+        expect(clone.method).toBe('get');
     });
 
     it("should copy the baseURL", () => {

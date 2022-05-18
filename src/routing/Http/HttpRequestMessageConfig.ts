@@ -1,14 +1,13 @@
 import { AxiosRequestConfig, Method } from 'axios';
 
-export class HttpRequestMessageConfig<T>
-{
-    method?: Method;
-    url?: string;
-    baseURL?: string;
-    data?: T;
-    params?: any;
-    headers : Record<string,string> | undefined;
-    responseType?: string;
+export class HttpRequestMessageConfig<T> {
+    method?: Method | undefined;
+    url?: string | undefined;
+    baseURL?: string | undefined;
+    data?: T | undefined;
+    params?: Map<string, string> | undefined;
+    headers: Record<string, string> | undefined;
+    responseType?: string | undefined;
 
     constructor(axiosConfig: AxiosRequestConfig<T>) {
         this.method = axiosConfig.method;
@@ -17,5 +16,5 @@ export class HttpRequestMessageConfig<T>
         this.data = axiosConfig.data;
         this.headers = axiosConfig.headers;
         this.responseType = axiosConfig.responseType;
-    };
-};
+    }
+}
