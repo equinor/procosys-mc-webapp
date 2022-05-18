@@ -1,5 +1,7 @@
 /* eslint-disable prettier/prettier */
 
+import { MapKVString, TypeCandidates } from "../test/types";
+
 /**
  * 
  * @param args - List of values as string 
@@ -20,12 +22,16 @@ export function sort(args: string[]): string[] {
 
 
 
-export function MapAccedingSort(map: Map<string, string>) : Map<string, string> {
+export function MapAccedingSort(map: Map<string, string> ): Map<string, string>  {
 
+
+    console.log(map);
+    console.log(map);
+    console.log(map);console.log(map);
     let newman = new Map<string, string>();
     newman.set("name1", "asc");
     newman.set("name2", "asc");
 
-    const sortedMap : Map<string, string> = new Map([...newman.entries()].sort());   
+    const sortedMap : Map<string, string> = new Map([...newman].sort());   
     return sortedMap;
 };
