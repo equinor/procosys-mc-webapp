@@ -1,4 +1,4 @@
-import { AxiosRequestConfig } from 'axios';
+import { HttpRequestMessageConfig } from '../routing/Http/HttpRequestMessageConfig';
 import { Person } from '../services/apiTypes';
 import {
     config,
@@ -7,7 +7,6 @@ import {
 } from './httpRequestMessage.testdata';
 import {
     getProperty,
-    HttpRequestMessageConfig,
     RecordKVStrings,
     ReplaceAxiosParams,
     ReplaceAxisHeaders,
@@ -24,9 +23,8 @@ describe("Transform a type's properties with other types", () => {
     });
 
     it('should discover that param have change type', () => {
-        const transformed: ReplaceAxiosParams<
-            HttpRequestMessageConfig<Person>
-        > = {
+        // eslint-disable-next-line prettier/prettier
+        const transformed: ReplaceAxiosParams<HttpRequestMessageConfig<Person>> = {
             params: getProperty(config, 'params'),
         };
         expect(transformed.params).toBe(parameterBuilder);

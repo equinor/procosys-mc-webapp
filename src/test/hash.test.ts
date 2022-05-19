@@ -21,7 +21,7 @@ describe('Testing the hash generator', () => {
         expect(hash1).toBe(hash2);
     });
 
-    it('should return a diffenert hash when paramters is swapped', () => {
+    it('should return a different hash when paramters is swapped', () => {
         const hash1 = HashGenerator('/test' + ['n', 'm']);
         const hash2 = HashGenerator('/test' + ['m', 'n']);
         expect(hash1).not.toBe(hash2);

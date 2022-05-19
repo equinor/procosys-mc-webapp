@@ -13,3 +13,47 @@ export const HashGenerator: IHashGenerator = (source: string): number => {
     }
     return hash;
 };
+
+export const HashConfigByPayload = <T>(object: T): string => {
+    const data = JSON.stringify(object);
+    return data;
+};
+
+export const HashConfigurationByPath = (
+    urlString: string | undefined
+): string => {
+    const path = urlString === undefined ? '' : urlString;
+    return path;
+};
+
+export const HashParameterConfiguration = (
+    parameters: Map<string, string> | undefined
+): string => {
+    let parameterString = '';
+    parameterString += parameters?.forEach((params) => {
+        parameterString += callback;
+    });
+    return parameterString;
+    function callback(k: string, v: string, map: Map<string, string>): string {
+        return k + v;
+    }
+};
+
+export const HashCodeByHashConfiguration = (
+    url: string,
+    parameters: Map<string, string>
+): number => {
+    return HashGenerator(
+        HashConfigurationByPath(url) + HashParameterConfiguration(parameters)
+    );
+};
+
+export const HashCodeByHashHashConfigByUsingHttpRequestPayload = <T>(
+    url: string,
+    parameters: Map<string, string>,
+    object: T
+): number => {
+    return HashGenerator(
+        HashConfigurationByPath(url) + HashConfigByPayload<T>(object)
+    );
+};

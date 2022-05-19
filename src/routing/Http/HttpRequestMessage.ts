@@ -4,14 +4,14 @@ import { HttpRequestMessageConfig } from './HttpRequestMessageConfig';
 import ProcessBodyStrategy from './Strategies/ProcessBodyStrategy';
 import { QueryParamsStrategy } from './Strategies/QueryParamsStrategy';
 import { QueryParamsToOneSingleLineStrategy } from './Strategies/QueryParamsToOneSingleLineStrategy';
-import { HashHttpRequest } from './Utils/HashHttpRequest';
 
 export interface IHttpRequestMessage<T> {
-    GetHashCode(request: IHttpRequestMessage<T>): number;
+    GetHashCode(): number;
     GetPath(): string;
-    GetHttpRequestParameters(): Map<string, string> | undefined;
-    GetBodyData(): TypeCandidates | undefined;
+    GetHttpRequestParameters(): Map<string, string>;
+    GetBodyData(): T;
 }
+
 
 export class HttpRequestMessage<T> implements IHttpRequestMessage<T> {
     config?: HttpRequestMessageConfig<T>;
@@ -20,11 +20,12 @@ export class HttpRequestMessage<T> implements IHttpRequestMessage<T> {
     queryParamsToOneSingleLineStrategy: QueryParamsToOneSingleLineStrategy<T>;
 
     constructor(
-        config: HttpRequestMessageConfig<T>,
+        config: HttpRequestMessageConfig<T> | undefined,
         processBodyStrategy: ProcessBodyStrategy<T>,
         queryParamsStrategy: QueryParamsStrategy<T>,
         queryParamsToOneSingleLineStrategy: QueryParamsToOneSingleLineStrategy<T>
     ) {
+        if (config === undefined) throw Error();
         this.config = config;
         this.processBodyStrategy = processBodyStrategy;
         this.queryParamsStrategy = queryParamsStrategy;
@@ -32,25 +33,21 @@ export class HttpRequestMessage<T> implements IHttpRequestMessage<T> {
             queryParamsToOneSingleLineStrategy;
     }
 
-    GetBodyData<T>(): TypeCandidates {
+    GetConfigObject(): HttpRequestMessageConfig<T> {
+        if (this.config === undefined) throw Error();
+        return this.config;
+    }
+
+    GetBodyData<T>(): T {
         throw Error('Not implemented');
     }
 
-    GetHashCode<T>(request: IHttpRequestMessage<T>): number {
-        if (this.config !== undefined) {
-            const hash = HashHttpRequest<T>(
-                request,
-                HashGenerator,
-                new QueryParamsToOneSingleLineStrategy<T>(),
-                this.config
-            );
-        }
-
-        return hash;
+    GetHashCode<T>(): number {
+        return 1;
     }
 
-    GetPath(): string | undefined {
-        return this.config?.url;
+    GetPath(): string {
+        throw Error('Not implemented');
     }
 
     GetHttpRequestParameters<T>(): Map<string, string> {
