@@ -76,6 +76,12 @@ export const ToString = (sortedList: Array<KeyValue>): string => {
     return result;
 };
 
+/**
+ * @summary Make a hash from the configuration object url and parameters
+ * @param url
+ * @param parameters
+ * @returns
+ */
 export const HashCodeByHashConfiguration = (
     url: string,
     parameters: Map<string, string>
@@ -85,6 +91,13 @@ export const HashCodeByHashConfiguration = (
     );
 };
 
+/**
+ * @summary Make a hash from the configuration object based on url and the payload
+ * @param url
+ * @param parameters
+ * @param object
+ * @returns
+ */
 export const HashCodeByHashHashConfigByUsingHttpRequestPayload = <T>(
     url: string,
     parameters: Map<string, string>,
