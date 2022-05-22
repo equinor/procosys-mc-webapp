@@ -1,3 +1,5 @@
+import { KeyValue } from './Http/HttpRequestMessageConfig';
+
 export interface IHashGenerator {
     (source: string): number;
 }
@@ -14,6 +16,18 @@ export const HashGenerator: IHashGenerator = (source: string): number => {
     return hash;
 };
 
+/**
+ * Get all properties of an object.
+ * Very useful when we doing hashing a the order of properties counts.
+ */
+class Describer {
+    describeClass(typeOfClass: any) {
+        const a = new typeOfClass();
+        const array = Object.getOwnPropertyNames(a);
+        return array;
+    }
+}
+
 export const HashConfigByPayload = <T>(object: T): string => {
     const data = JSON.stringify(object);
     return data;
@@ -29,14 +43,37 @@ export const HashConfigurationByPath = (
 export const HashParameterConfiguration = (
     parameters: Map<string, string> | undefined
 ): string => {
-    let parameterString = '';
-    parameterString += parameters?.forEach((params) => {
-        parameterString += callback;
-    });
-    return parameterString;
-    function callback(k: string, v: string, map: Map<string, string>): string {
-        return k + v;
+    if (parameters !== undefined) {
+        const result = SortedMapAscending(parameters);
+        return ToString(result);
     }
+    throw new Error('parameters is undefined');
+};
+
+/**
+ * Sort to map and return a sorted list over parameters with values as KeyValues
+ * @param map
+ * @returns
+ */
+export const SortedMapAscending = (
+    map: Map<string, string> | undefined
+): Array<KeyValue> => {
+    const result = new Array<KeyValue>();
+    if (map !== undefined) {
+        for (const [key, value] of map) {
+            result.push({ key, value });
+        }
+        result.sort((a, b) => a.key.localeCompare(b.key));
+    }
+    return result;
+};
+
+export const ToString = (sortedList: Array<KeyValue>): string => {
+    let result = '';
+    for (const item of sortedList) {
+        result += `${item.key}=${item.value}&`;
+    }
+    return result;
 };
 
 export const HashCodeByHashConfiguration = (
