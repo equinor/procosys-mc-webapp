@@ -91,6 +91,24 @@ export const HashCodeByHashConfiguration = (
     );
 };
 
+export const URLSearchParamsToMap = (
+    searchParams: URLSearchParams
+): Map<string, string> => {
+    const map = new Map<string, string>();
+    const list = new Array<KeyValue>();
+    //Convert to list of key value pairs
+    for (const [key, value] of searchParams.entries()) {
+        list.push({ key, value });
+    }
+    //Sort the list by key
+    list.sort((a, b) => a.key.localeCompare(b.key));
+    //Copy the sorted list to Map
+    for (const item of list) {
+        map.set(item.key, item.value);
+    }
+    return map;
+};
+
 /**
  * @summary Make a hash from the configuration object based on url and the payload
  * @param url
@@ -98,11 +116,7 @@ export const HashCodeByHashConfiguration = (
  * @param object
  * @returns
  */
-export const HashCodeByHashHashConfigByUsingHttpRequestPayload = <T>(
-    url: string,
-    parameters: Map<string, string>,
-    object: T
-): number => {
+export const HashCodeByUrlAndPayload = <T>(url: string, object: T): number => {
     return HashGenerator(
         HashConfigurationByPath(url) + HashConfigByPayload<T>(object)
     );
