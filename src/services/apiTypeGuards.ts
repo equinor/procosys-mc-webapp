@@ -1,7 +1,7 @@
+import { CheckItem } from '@equinor/procosys-webapp-components/dist/typings/apiTypes';
 import { SavedSearchType } from '../pages/Search/SavedSearches/SavedSearchResult';
 import { SearchType } from '../pages/Search/Search';
 import {
-    CheckItem,
     ChecklistDetails,
     ChecklistResponse,
     ChecklistSavedSearchResult,
