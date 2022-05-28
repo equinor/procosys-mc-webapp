@@ -12,6 +12,7 @@
     "@microsoft/applicationinsights-web": "^2.7.2",
     "axios": "^0.24.0",
     "lodash": "^4.17.21",
+    "dexie": "^3.2.2",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-router-dom": "^5.2.0",
