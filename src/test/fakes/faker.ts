@@ -1,7 +1,38 @@
-import { McPkgPreview } from './../../services/apiTypes';
+import {
+    CommPkg,
+    McPkgPreview,
+    Person,
+    PunchItemSavedSearchResult,
+    SavedSearch,
+    ChecklistPreview,
+    PunchPreview,
+    CheckItem,
+    LoopTag,
+    CustomCheckItem,
+    PunchPriority,
+    NewPunch,
+    PunchItem,
+    Attachment,
+    ChecklistDetails,
+    TagDetails,
+    AdditionalTagField,
+    Tag,
+    ChecklistResponse,
+    PunchCategory,
+    PunchType,
+    PunchOrganization,
+    PunchSort,
+    Plant,
+    Project,
+} from './../../services/apiTypes';
 import { faker } from '@faker-js/faker';
 import * as apiTypes from '../../services/apiTypes';
-import { ChecklistSavedSearchResult, PoPreview, TagPreview, WoPreview } from '../../services/apiTypes';
+import {
+    ChecklistSavedSearchResult,
+    PoPreview,
+    TagPreview,
+    WoPreview,
+} from '../../services/apiTypes';
 import * as FakerDataLists from './fakerDataLists';
 import FakerRandomEnum from './fakerRandomEnum';
 import { FakerSyntax } from './fakerSyntax';
@@ -255,9 +286,7 @@ export const FakePunchPreview = (): PunchPreview => {
     };
 };
 
-export const FakePunchPreviewList = (
-    count: number
-): Array<PunchPreview> => {
+export const FakePunchPreviewList = (count: number): Array<PunchPreview> => {
     const options = new Array<PunchPreview>();
     for (let i = 0; i < count; i++) options.push(FakePunchPreview());
 
@@ -319,15 +348,15 @@ export const FakerCheckItem = (): CheckItem => {
     };
 };
 
-export const FakerLoopTag = (): apiTypes.LoopTag => {
+export const FakerLoopTag = (): LoopTag => {
     return {
         tagId: FakerTagId(),
         tagNo: FakerTagNo(5),
     };
 };
 
-function LoopTags(count: number): Array<apiTypes.LoopTag> {
-    const options = new Array<apiTypes.LoopTag>();
+function LoopTags(count: number): Array<LoopTag> {
+    const options = new Array<LoopTag>();
     for (let i = 0; i < count; i++) {
         options.push(FakerLoopTag());
     }
@@ -351,9 +380,7 @@ function CustomCheckItems(count: number): Array<CustomCheckItem> {
     return options;
 }
 
-export const FakerChecklistResponse = (
-    id: number
-): ChecklistResponse => {
+export const FakerChecklistResponse = (id: number): ChecklistResponse => {
     return {
         loopTags: LoopTags(5),
         checkList: FakeChecklistDetails(id),
@@ -440,8 +467,7 @@ export const FakerClearingByCode = () => {
 };
 
 const MAX_PRIORITY_LIMIT = 10;
-export const FakerPriorityId = () =>
-    faker.datatype.number({ min: 1, max: MAX_PRIORITY_LIMIT });
+export const FakerPriorityId = () => faker.datatype.number({ min: 1, max: MAX_PRIORITY_LIMIT });
 
 const PriorityCodes = (): Array<string> => {
     const options = new Array<string>();
@@ -519,9 +545,7 @@ export const FakerAttachment = (): Attachment => {
     };
 };
 
-export const FakeChecklistDetails = (
-    id: number
-): ChecklistDetails => {
+export const FakeChecklistDetails = (id: number): ChecklistDetails => {
     return {
         id: id,
         tagNo: FakerTagNo(5),
@@ -570,7 +594,7 @@ export const FakerPlant = (count: number): Plant => {
     };
 };
 
-export const FakerProject = (): apiTypes.Project => {
+export const FakerProject = (): Project => {
     return {
         description: FakerDescription(),
         id: FakerId(),
@@ -591,9 +615,7 @@ export const PickRandomFromList = <T>(list: Array<T>): T => {
     return list[index];
 };
 
-export const FakerTagDetailsWithIdCheck = (
-    fn: ReservedIds
-): TagDetails => {
+export const FakerTagDetailsWithIdCheck = (fn: ReservedIds): TagDetails => {
     return {
         id: FakerIdWithIdCheck(fn),
         tagNo: FakerSyntax(TagSyntax),
@@ -684,9 +706,7 @@ export const FakerAdditionalTagField = (): AdditionalTagField => {
     };
 };
 
-function AdditionalTagFields(
-    count: number
-): Array<AdditionalTagField> {
+function AdditionalTagFields(count: number): Array<AdditionalTagField> {
     const options = new Array<AdditionalTagField>();
     for (let i = 0; i < count; i++) options.push(FakerAdditionalTagField());
     return options;

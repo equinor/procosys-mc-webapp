@@ -1,8 +1,6 @@
-export const FindSubPatterns = (data: string) => {
+export const FindSubPatterns = (data: string): Array<string> => {
     const subPatterns = new Array<string>();
     let buffer = '';
-    //console.log("codes:", data.length);
-
     for (let i = 0; i <= data.length - 1; i++) {
         if (i === 0) {
             buffer += data[i];

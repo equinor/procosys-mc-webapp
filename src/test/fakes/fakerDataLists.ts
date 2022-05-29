@@ -1,4 +1,4 @@
-import { ColumnLabel, ICheckItem, Row } from './api.types';
+import { ColumnLabel, CheckItem, Row } from '../../services/apiTypes';
 import { FakerCheckItem, FakerColumnLabel, FakeRow } from './faker';
 
 function Rows(): Array<Row> {
@@ -72,8 +72,8 @@ export const CompletionStatus = (): Array<string> => {
     ]);
 };
 
-export function CheckItems(count: number): Array<ICheckItem> {
-    const options = new Array<ICheckItem>();
+export function CheckItems(count: number): Array<CheckItem> {
+    const options = new Array<CheckItem>();
     for (let i = 0; i < count; i++) options.push(FakerCheckItem());
     return options;
 }

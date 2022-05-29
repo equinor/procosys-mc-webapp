@@ -1,4 +1,4 @@
-import { ISearchResults, ITagPreview } from './api.types';
+import { SearchResults, TagPreview } from '../../services/apiTypes';
 import { FakerTagPreview } from './faker';
 
 export const FakeSearchResults = (
@@ -6,8 +6,8 @@ export const FakeSearchResults = (
     projectId: string | null,
     plantId: string | null,
     maxAvailable: number
-): ISearchResults => {
-    const fakeResults = new Array<ITagPreview>();
+): SearchResults => {
+    const fakeResults = new Array<TagPreview>();
     for (let i = 0; i < maxAvailable; i++) {
         fakeResults.push(FakerTagPreview()); //ToDo: Improve the tag name syntax to be alined with the search params
     }
