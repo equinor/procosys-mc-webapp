@@ -25,3 +25,6 @@ yarn-error.log*
 .env
 settings.template.json
 settings.json
+
+#Visual Studio Garbage (files etc.)
+.vs
