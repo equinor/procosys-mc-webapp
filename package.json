@@ -20,8 +20,8 @@
     "styled-components": "^5.3.3"
   },
   "scripts": {
-    "start": "react-scripts   --openssl-legacy-provider start",
-    "build": "react-scripts --openssl-legacy-provider build ",
+    "start": "react-scripts start",
+    "build": "react-scripts build ",
     "test": "jest",
     "test:debug": "react-scripts --inspect-brk test --runInBand --no-cache",
     "eject": "react-scripts eject",
