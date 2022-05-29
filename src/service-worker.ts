@@ -13,8 +13,9 @@ import { ExpirationPlugin } from 'workbox-expiration';
 import { precacheAndRoute, createHandlerBoundToURL } from 'workbox-precaching';
 import { registerRoute } from 'workbox-routing';
 import { StaleWhileRevalidate } from 'workbox-strategies';
-import { matchGetUrlCb as matchMainAPICb, matchPostPutPatchUrlCb } from './routing/matches';
-import { handlerPOSTCb, handlerPOSTCb as mainAPIHandler } from './routing/routing';
+import { matchGetUrlCb, matchPostPutPatchUrlCb } from './routing/matches';
+import { handlerGETCb, handlerPOSTCb } from './routing/routing';
+ 
 
 declare const self: ServiceWorkerGlobalScope;
 
@@ -73,7 +74,7 @@ registerRoute(
 );
 
 registerRoute(matchPostPutPatchUrlCb, handlerPOSTCb);
-registerRoute(matchGetUrlCb, handlerGetUrl);
+registerRoute(matchGetUrlCb, handlerGETCb);
 
 // This allows the web app to trigger skipWaiting via
 // registration.waiting.postMessage({type: 'SKIP_WAITING'})

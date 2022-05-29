@@ -3,6 +3,7 @@
     "target": "es2017",
     "lib": [
       "dom",
+      "webworker",
       "dom.iterable",
       "esnext"
     ],

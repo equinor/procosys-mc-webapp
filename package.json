@@ -24,7 +24,7 @@
   },
   "scripts": {
     "start": "react-scripts start  --openssl-legacy-provider",
-    "build": "react-scripts build --openssl-legacy-provider",
+    "build": "react-scripts --openssl-legacy-provider build ",
     "test": "jest httpRequestMessage.test.ts --watchAll",
     "test:debug": "react-scripts --inspect-brk test --runInBand --no-cache",
     "eject": "react-scripts eject",
