@@ -4,9 +4,9 @@ export const matchGetUrlCb = ({
     url,
     request,
     event,
-}: RouteMatchCallbackOptions) => {
+}: RouteMatchCallbackOptions): boolean => {
     if (event === undefined) {
-        return new Error(`event is undefined`);
+        throw new Error(`event is undefined`);
     }
     return request.method === 'GET' && url.pathname.includes('api/person');
 };
@@ -15,9 +15,9 @@ export const matchPostPutPatchUrlCb = ({
     url,
     request,
     event,
-}: RouteMatchCallbackOptions) => {
+}: RouteMatchCallbackOptions): boolean => {
     if (event === undefined) {
-        return new Error(`event is undefined`);
+        throw new Error(`event is undefined`);
     }
     return (
         (request.method === 'POST' ||

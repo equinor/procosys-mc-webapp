@@ -1,7 +1,6 @@
 import { IHttpRequestMessage } from '../HttpRequestMessage';
 import { MapAccedingSort } from '../../sort';
 import { IHashGenerator } from '../../hash';
-import { IStrategy } from '../Strategies/IStrategy';
 import { QueryParamsToOneSingleLineStrategy } from '../Strategies/QueryParamsToOneSingleLineStrategy';
 import { HttpRequestMessageConfig } from '../HttpRequestMessageConfig';
 

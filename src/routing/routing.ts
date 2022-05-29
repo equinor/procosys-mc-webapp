@@ -16,7 +16,7 @@ export const handlerPOSTCb = async <T>({
     request,
     event,
     params,
-}: RouteHandlerCallbackOptions) => {
+}: RouteHandlerCallbackOptions): Promise<Response> => {
     const response = await fetch(request);
     const responseBody = await response.json();
     console.log("custom routing: match on route 'api/person'");
@@ -33,7 +33,7 @@ export const handlerGETCb = async <T>({
     request,
     event,
     params,
-}: RouteHandlerCallbackOptions) => {
+}: RouteHandlerCallbackOptions): Promise<Response> => {
     const response = await fetch(request);
     const responseBody = await response.json();
     const parameters = url !== undefined ? url.searchParams : '';
