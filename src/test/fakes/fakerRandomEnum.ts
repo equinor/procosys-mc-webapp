@@ -1,5 +1,5 @@
 //https://www.angularfix.com/2022/03/how-to-get-random-enum-in-typescript.html
-export default function RandomEnum<T>(anEnum: T): T[keyof T] {
+export default function FakerRandomEnum<T>(anEnum: T): T[keyof T] {
     const enumValues = Object.keys(anEnum)
         .map((n) => n)
         .filter((n) => !Number.isNaN(n)) as unknown as T[keyof T][];

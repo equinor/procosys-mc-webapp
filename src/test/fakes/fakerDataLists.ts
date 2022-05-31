@@ -1,5 +1,6 @@
-import { ColumnLabel, CheckItem, Row } from '../../services/apiTypes';
-import { FakerCheckItem, FakerColumnLabel, FakeRow } from './faker';
+import { CheckItem, ColumnLabel, Row } from '../../services/apiTypes';
+import { FakerCheckItem } from './FakerCheckListTypes';
+import { FakerColumnLabel, FakeRow } from './fakerMCappTypes';
 
 function Rows(): Array<Row> {
     const options = new Array<Row>();

@@ -1,5 +1,5 @@
 // import { faker } from '@faker-js/faker';
-import { FakerAlphaCode } from './faker';
+import { FakerAlphaCode } from './fakerSimpleTypes';
 import { FindSubPatterns } from './findSubPatterns';
 
 /* Custom made syntax faker: 
@@ -12,7 +12,7 @@ A will be replaced with an alpha char like [A..Z]
 AA  will be replaced with a sequence of alpha chars like [A..Z][A..Z]
 AAA will be replaced with a sequence of alpha chars like [A..Z][A..Z][A..Z]
 */
-export const FakerSyntax = (syntax = 'XX-AAA-XXA-XXXXX') => {
+export const FakerSyntax = (syntax = 'XX-AAA-XXA-XXXXX'): string => {
     const subPatterns: Array<string> = syntax.split('-');
     const results: Array<string> = [];
 

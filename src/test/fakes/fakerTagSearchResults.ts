@@ -1,5 +1,5 @@
 import { SearchResults, TagPreview } from '../../services/apiTypes';
-import { FakerTagPreview } from './faker';
+import { FakerTagPreview } from './fakerMCappTypes';
 
 export const FakeSearchResults = (
     startsWithTagNo: string | null,
