@@ -21,7 +21,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build": "react-scripts build ",
     "test": "jest",
     "test:debug": "react-scripts --inspect-brk test --runInBand --no-cache",
     "eject": "react-scripts eject",
@@ -47,6 +47,7 @@
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^5.16.1",
+    "@faker-js/faker": "^6.0.0",
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^13.5.0",
     "@types/jest": "^27.4.0",
