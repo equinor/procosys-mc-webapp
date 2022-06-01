@@ -88,8 +88,8 @@ export interface ChecklistSavedSearchResult {
     responsibleCode: string;
     status: CompletionStatus;
     projectDescription: string;
-    formularType: string;
-    formularGroup: string;
+    formulaType: string;
+    formulaGroup: string;
     hasElectronicForm: boolean;
     attachmentCount: number;
     isSigned: boolean;
@@ -106,7 +106,7 @@ export interface PunchItemSavedSearchResult {
     description: string;
     tagNo: string;
     tagId: number;
-    formularType: string;
+    formulaType: string;
     responsibleCode: string;
     isCleared: boolean;
     isVerified: boolean;
@@ -156,7 +156,7 @@ export interface PunchPreview {
     tagDescription: string;
     tagId: number;
     tagNo: string;
-    formularType: string;
+    formulaType: string;
     responsibleCode: string;
     isRestrictedForUser: boolean;
     cleared: boolean;
@@ -305,7 +305,7 @@ export interface NewPunch {
 export interface PunchItem {
     id: number;
     checklistId: number;
-    formularType: string;
+    formulaType: string;
     status: CompletionStatus;
     description: string;
     typeCode: string;

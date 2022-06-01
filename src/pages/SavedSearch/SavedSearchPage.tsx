@@ -165,7 +165,7 @@ const SavedSearchPage = (): JSX.Element => {
                             headerText={checklist.tagNo}
                             description={checklist.tagDescription}
                             chips={[
-                                checklist.formularType,
+                                checklist.formulaType,
                                 checklist.responsibleCode,
                             ]}
                             onClick={(): void =>
@@ -192,7 +192,7 @@ const SavedSearchPage = (): JSX.Element => {
                             attachments={punch.attachmentCount}
                             headerText={punch.id.toString()}
                             description={punch.description}
-                            chips={[punch.formularType, punch.responsibleCode]}
+                            chips={[punch.formulaType, punch.responsibleCode]}
                             tag={punch.tagNo}
                             onClick={(): void =>
                                 history.push(`${url}/punch-item/${punch.id}`)

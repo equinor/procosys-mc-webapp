@@ -91,7 +91,7 @@ const PunchPage = (): JSX.Element => {
                     headerText={punch.tagNo}
                     description={punch.tagDescription}
                     attachments={punch.attachmentCount}
-                    chips={[punch.id.toString(), punch.formularType]}
+                    chips={[punch.id.toString(), punch.formulaType]}
                 />
             );
         } else if (fetchPunchStatus === AsyncStatus.LOADING) {
