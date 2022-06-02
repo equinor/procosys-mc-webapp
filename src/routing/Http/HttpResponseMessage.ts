@@ -10,7 +10,24 @@ export class HttpResponseMessage<T, S> {
     responseType: ResponseType;
     data?: T | undefined;
 
-    constructor(axiosResponse: AxiosResponse<T, S>) {
+    constructor() {
+        this.status = 0;
+        this.content = new ArrayBuffer(0);
+        this.request = undefined;
+        this.headers = {};
+        this.responseType = 'basic';
+    }
+
+    buildResponse(): Response {
+        return new Response(this.content, {
+            status: this.status,
+            statusText: '',
+            headers: this.headers,
+        });
+    }
+
+
+    fromAxios(axiosResponse: AxiosResponse<T, S>): void {
         this.content = new ArrayBuffer(0);
         this.status = axiosResponse.status;
         const stringData = JSON.stringify(axiosResponse.data);

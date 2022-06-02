@@ -121,3 +121,12 @@ export const HashCodeByUrlAndPayload = <T>(url: string, object: T): number => {
         HashConfigurationByPath(url) + HashConfigByPayload<T>(object)
     );
 };
+
+export const hashCodeByUrlAndPayload = (
+    url: string,
+    object: string
+): number => {
+    return HashGenerator(
+        HashConfigurationByPath(url) + HashConfigByPayload(object)
+    );
+};
