@@ -29,16 +29,13 @@ export class HttpRequestMessage<T> implements IHttpRequestMessage<T> {
         const option: RequestOptions = {
             host: 'http://www.api.no',
             path: '/api/v1/test',
-            method: 'GET',   
+            method: 'GET',
             port: 80,
-            path: '/type?id=100',
             headers: {
                 'Content-Type': 'application/json',
                 'Content-Length': Buffer.byteLength(postData),
             },
         };
-        
- 
 
         if (config === undefined) throw Error();
         this.config = config;

@@ -74,7 +74,7 @@ registerRoute(
 );
 
 registerRoute(matchPostPutPatchUrlCb, handlerPOSTCb);
-registerRoute(matchGetUrlCb, handlerGETCb);
+registerRoute(matchGetUrlCb, handlerGetCb);
 
 // This allows the web app to trigger skipWaiting via
 // registration.waiting.postMessage({type: 'SKIP_WAITING'})
