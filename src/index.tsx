@@ -14,6 +14,8 @@ import {
     LoadingPage,
 } from '@equinor/procosys-webapp-components';
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
+import { offline } from '@equinor/eds-icons';
+import { StatusRepository } from './database/StatusRepository';
 
 serviceWorkerRegistration.register();
 
@@ -68,11 +70,19 @@ const initialize = async () => {
     const { appInsightsReactPlugin } = initializeAppInsights(
         appConfig.appInsights.instrumentationKey
     );
+
+    const statusRepository = new StatusRepository();
+
+    const offlineState = (await statusRepository.getStatus()).status;
+
+    // TODO: Handle if offline state does not return anything
+
     return {
         authInstance,
         procosysApiInstance,
         appInsightsReactPlugin,
         appConfig,
+        offlineState,
         featureFlags,
     };
 };
@@ -85,6 +95,7 @@ const initialize = async () => {
             procosysApiInstance,
             appInsightsReactPlugin,
             appConfig,
+            offlineState,
             featureFlags,
         } = await initialize();
         render(
@@ -93,6 +104,7 @@ const initialize = async () => {
                 procosysApiInstance={procosysApiInstance}
                 appInsightsReactPlugin={appInsightsReactPlugin}
                 appConfig={appConfig}
+                offlineState={offlineState}
                 featureFlags={featureFlags}
             />
         );

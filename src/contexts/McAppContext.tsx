@@ -16,6 +16,7 @@ type McAppContextProps = {
     api: ProcosysApiService;
     auth: IAuthService;
     appConfig: AppConfig;
+    offlineState: boolean;
     featureFlags: FeatureFlags;
 };
 
@@ -34,6 +35,7 @@ type McAppContextProviderProps = {
     auth: IAuthService;
     api: ProcosysApiService;
     appConfig: AppConfig;
+    offlineState: boolean;
     featureFlags: FeatureFlags;
 };
 
@@ -42,6 +44,7 @@ export const McAppContextProvider: React.FC<McAppContextProviderProps> = ({
     auth,
     api,
     appConfig,
+    offlineState,
     featureFlags,
 }: McAppContextProviderProps) => {
     const [availablePlants, setAvailablePlants] = useState<Plant[]>([]);
@@ -89,6 +92,7 @@ export const McAppContextProvider: React.FC<McAppContextProviderProps> = ({
                 api,
                 auth,
                 appConfig,
+                offlineState,
                 featureFlags,
             }}
         >

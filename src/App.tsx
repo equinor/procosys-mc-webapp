@@ -29,6 +29,7 @@ type AppProps = {
     procosysApiInstance: ProcosysApiService;
     appInsightsReactPlugin: ReactPlugin;
     appConfig: AppConfig;
+    offlineState: boolean;
     featureFlags: FeatureFlags;
 };
 
@@ -37,6 +38,7 @@ const App = ({
     authInstance,
     appConfig,
     appInsightsReactPlugin: reactPlugin,
+    offlineState,
     featureFlags,
 }: AppProps): JSX.Element => {
     return (
@@ -45,6 +47,7 @@ const App = ({
                 api={procosysApiInstance}
                 auth={authInstance}
                 appConfig={appConfig}
+                offlineState={offlineState}
                 featureFlags={featureFlags}
             >
                 <Router basename={'/mc'}>
