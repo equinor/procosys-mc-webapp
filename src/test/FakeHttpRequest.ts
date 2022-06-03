@@ -1,7 +1,11 @@
 import { faker } from '@faker-js/faker';
 import { AxiosRequestConfig } from 'axios';
 import { FakerAlphaCode, FakerPlant } from './fakes/faker';
-import { HttpRequestMessageConfig, KeyValue } from './HttpRequest';
+import {
+    HttpRequestMessage,
+    HttpRequestMessageConfig,
+    KeyValue,
+} from './HttpRequest';
 
 export const FakerParams = (): Map<string, string> => {
     // TODO: improve by using IDs that actually exists
@@ -72,5 +76,24 @@ export const FakerPlantHttpRequestMessageConfigWithAxiosConfig = (
         headers: FakerHeaders(),
         headersArray: FakerHeadersArray(),
         responseType: FakerAlphaCode(4),
+    };
+};
+
+// REQUEST MESSAGE
+
+// returns an empty body data, if body data is not in config, then one FakerHttpRequestMessage must
+// be made for each possible/needed request type
+export const FakerHttpRequestMessage = (
+    config: HttpRequestMessageConfig
+): HttpRequestMessage<any> => {
+    return {
+        config: config,
+        GetConfigObject: (): HttpRequestMessageConfig => config,
+        GetBodyData: (): any => {
+            return {};
+        },
+        GetHashCode: (): number => parseInt(faker.random.alphaNumeric(10)),
+        GetPath: (): string => faker.internet.url(),
+        GetHttpRequestParameters: (): Map<string, string> => FakerParams(),
     };
 };
