@@ -1,11 +1,11 @@
 import { faker } from '@faker-js/faker';
 import { AxiosRequestConfig } from 'axios';
-import { FakerAlphaCode, FakerPlant } from './fakes/faker';
+import { FakerAlphaCode, FakerPlant } from './faker';
 import {
     HttpRequestMessage,
     HttpRequestMessageConfig,
     KeyValue,
-} from './HttpRequest';
+} from '../HttpRequest';
 
 export const FakerParams = (): Map<string, string> => {
     // TODO: improve by using IDs that actually exists
@@ -53,7 +53,7 @@ export const FakerPlantHttpRequestMessageConfig =
             method: FakerAlphaCode(4),
             url: faker.internet.url(),
             baseURL: faker.internet.url(),
-            data: FakerPlant(1),
+            data: {}, // TODO: is data needed for plant request?
             params: FakerParams(),
             paramsArray: FakerParamsArray(),
             headers: FakerHeaders(),
@@ -70,7 +70,7 @@ export const FakerPlantHttpRequestMessageConfigWithAxiosConfig = (
         method: axiosConfig.method,
         url: axiosConfig.url,
         baseURL: axiosConfig.baseURL,
-        data: FakerPlant(1),
+        data: {}, // TODO: is data needed for plant request?
         params: FakerParams(),
         paramsArray: FakerParamsArray(),
         headers: FakerHeaders(),
@@ -82,7 +82,7 @@ export const FakerPlantHttpRequestMessageConfigWithAxiosConfig = (
 // REQUEST MESSAGE
 
 // returns an empty body data, if body data is not in config, then one FakerHttpRequestMessage must
-// be made for each possible/needed request type
+// be made for each possible/needed request type with body data
 export const FakerHttpRequestMessage = (
     config: HttpRequestMessageConfig
 ): HttpRequestMessage<any> => {
@@ -92,7 +92,7 @@ export const FakerHttpRequestMessage = (
         GetBodyData: (): any => {
             return {};
         },
-        GetHashCode: (): number => parseInt(faker.random.alphaNumeric(10)),
+        GetHashCode: (): number => parseInt(faker.random.numeric(2)),
         GetPath: (): string => faker.internet.url(),
         GetHttpRequestParameters: (): Map<string, string> => FakerParams(),
     };
