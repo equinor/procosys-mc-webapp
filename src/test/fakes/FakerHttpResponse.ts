@@ -24,7 +24,6 @@ export const FakerHttpResponseMessageConfig =
         };
     };
 
-// Some of these props might be from a passed in response message config?
 export const FakerHttpResponseMessage = (
     request: HttpRequestMessageConfig
 ): HttpResponseMessage<any, any> => {
@@ -43,6 +42,33 @@ export const FakerHttpResponseMessage = (
                 status: status,
                 statusText: '',
                 headers: headers,
+            }),
+        fromAxios: (axiosResponse: AxiosResponse): void => {
+            // doesn't return anything
+        },
+        str2ab: (str: string): void => {
+            // doesn't return anything
+        },
+    };
+};
+
+export const FakerHttpResponseMessageWithAxiosInput = (
+    axiosResponse: AxiosResponse,
+    request: HttpRequestMessageConfig
+): HttpResponseMessage<any, any> => {
+    const content = new ArrayBuffer(8);
+    return {
+        status: axiosResponse.status,
+        content: content,
+        request: request,
+        headers: axiosResponse.headers,
+        responseType: axiosResponse.request.responseType,
+        data: {}, // if data is not from a passed in response message config, then one FakerHttpResponseMessage is needed for eact response type
+        buildResponse: (): Response =>
+            new Response(content, {
+                status: axiosResponse.status,
+                statusText: '',
+                headers: axiosResponse.headers,
             }),
         fromAxios: (axiosResponse: AxiosResponse): void => {
             // doesn't return anything
