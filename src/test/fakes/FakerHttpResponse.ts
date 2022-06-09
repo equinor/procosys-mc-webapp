@@ -1,7 +1,3 @@
-import {
-    HttpResponseMessage,
-    HttpResponseMessageConfig,
-} from '../HttpResponse';
 import { faker } from '@faker-js/faker';
 import {
     FakerHeaders,
@@ -9,7 +5,6 @@ import {
 } from './FakerHttpRequest';
 import { FakerAlphaCode } from './faker';
 import { AxiosResponse } from 'axios';
-import { HttpRequestMessageConfig } from '../HttpRequest';
 
 // Generic version of this does not work. Will need one faker for each response type
 export const FakerHttpResponseMessageConfig =

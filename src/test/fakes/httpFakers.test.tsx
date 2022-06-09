@@ -1,5 +1,4 @@
 import React from 'react';
-import { HttpRequestMessageConfig } from '../HttpRequest';
 import {
     FakerHttpRequestMessage,
     FakerHttpRequestMessageConfig,

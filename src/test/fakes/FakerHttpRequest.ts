@@ -1,11 +1,6 @@
 import { faker } from '@faker-js/faker';
 import { AxiosRequestConfig } from 'axios';
 import { FakerAlphaCode, FakerPlant } from './faker';
-import {
-    HttpRequestMessage,
-    HttpRequestMessageConfig,
-    KeyValue,
-} from '../HttpRequest';
 
 export const FakerParams = (): Map<string, string> => {
     // TODO: improve by using IDs that actually exists
