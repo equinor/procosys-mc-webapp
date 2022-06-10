@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Dispatch, SetStateAction } from 'react';
 import { MemoryRouter } from 'react-router-dom';
 import PlantContext from '../contexts/PlantContext';
 import McAppContext, { AsyncStatus } from '../contexts/McAppContext';
@@ -55,6 +55,8 @@ type WithMcAppContextProps = {
     plants?: Plant[];
     auth?: IAuthService;
     api?: ProcosysApiService;
+    offlineState?: boolean;
+    setOfflineState?: Dispatch<SetStateAction<boolean>>;
 };
 
 export const withMcAppContext = ({
@@ -63,6 +65,8 @@ export const withMcAppContext = ({
     plants = testPlants,
     auth = authInstance,
     api = procosysApiInstance,
+    offlineState = false,
+    setOfflineState,
 }: WithMcAppContextProps): JSX.Element => {
     return (
         <MemoryRouter initialEntries={['/test/sub/directory']}>
@@ -74,6 +78,9 @@ export const withMcAppContext = ({
                     api: api,
                     appConfig: dummyAppConfig,
                     featureFlags: dummyFeatureFlags,
+                    offlineState: offlineState,
+                    setOfflineState: (): Dispatch<SetStateAction<boolean>> =>
+                        setOfflineState,
                 }}
             >
                 {Component}

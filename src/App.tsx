@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Dispatch, SetStateAction } from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { McAppContextProvider } from './contexts/McAppContext';
 import GeneralRouter from './GeneralRouter';
@@ -30,6 +30,7 @@ type AppProps = {
     appInsightsReactPlugin: ReactPlugin;
     appConfig: AppConfig;
     offlineState: boolean;
+    setOfflineState: Dispatch<SetStateAction<boolean>>;
     featureFlags: FeatureFlags;
 };
 
@@ -40,6 +41,7 @@ const App = ({
     appInsightsReactPlugin: reactPlugin,
     offlineState,
     featureFlags,
+    setOfflineState,
 }: AppProps): JSX.Element => {
     return (
         <AppInsightsContext.Provider value={reactPlugin}>
@@ -49,6 +51,9 @@ const App = ({
                 appConfig={appConfig}
                 offlineState={offlineState}
                 featureFlags={featureFlags}
+                setOfflineState={(): Dispatch<SetStateAction<boolean>> =>
+                    setOfflineState
+                }
             >
                 <Router basename={'/mc'}>
                     <ErrorBoundary>

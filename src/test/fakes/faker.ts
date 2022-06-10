@@ -6,7 +6,6 @@ import {
     SavedSearch,
     ChecklistPreview,
     PunchPreview,
-    CheckItem,
     LoopTag,
     CustomCheckItem,
     PunchPriority,
@@ -36,6 +35,12 @@ import {
 import * as FakerDataLists from './fakerDataLists';
 import FakerRandomEnum from './fakerRandomEnum';
 import { FakerSyntax } from './fakerSyntax';
+import {
+    Cell,
+    CheckItem,
+    MetaTable,
+    Row,
+} from '@equinor/procosys-webapp-components/dist/typings/apiTypes';
 
 export const TagSyntax = 'XXX-AA-XXXX-A-A-XX';
 /**
@@ -300,23 +305,25 @@ export const FakerColumnLabel = (): apiTypes.ColumnLabel => {
     };
 };
 
-export const FakerCell = (): apiTypes.Cell => {
+export const FakerCell = (): Cell => {
     return {
         value: FakerTitle(),
         unit: 'unit',
         columnId: faker.datatype.number({ min: 5, max: 1000 }),
+        valueDate: '10.06.2022',
+        isValueDate: true,
     };
 };
 
-function CreateCells(): Array<apiTypes.Cell> {
-    const options = new Array<apiTypes.Cell>();
+function CreateCells(): Array<Cell> {
+    const options = new Array<Cell>();
     options.push(FakerCell());
     options.push(FakerCell());
     options.push(FakerCell());
     return options;
 }
 
-export const FakeRow = (): apiTypes.Row => {
+export const FakeRow = (): Row => {
     return {
         id: FakerId(),
         label: FakerTitle(),
@@ -324,7 +331,7 @@ export const FakeRow = (): apiTypes.Row => {
     };
 };
 
-export const FakeMetaTable = (): apiTypes.MetaTable => {
+export const FakeMetaTable = (): MetaTable => {
     return {
         info: FakerTitle(),
         columnLabels: ColumnLabels(),
@@ -467,7 +474,8 @@ export const FakerClearingByCode = () => {
 };
 
 const MAX_PRIORITY_LIMIT = 10;
-export const FakerPriorityId = () => faker.datatype.number({ min: 1, max: MAX_PRIORITY_LIMIT });
+export const FakerPriorityId = () =>
+    faker.datatype.number({ min: 1, max: MAX_PRIORITY_LIMIT });
 
 const PriorityCodes = (): Array<string> => {
     const options = new Array<string>();
@@ -745,6 +753,6 @@ function ColumnLabels(): apiTypes.ColumnLabel[] {
     throw new Error('Function not implemented.');
 }
 
-function Rows(): apiTypes.Row[] {
+function Rows(): Row[] {
     throw new Error('Function not implemented.');
 }

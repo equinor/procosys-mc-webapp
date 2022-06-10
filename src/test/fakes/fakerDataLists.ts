@@ -1,4 +1,5 @@
-import { ColumnLabel, CheckItem, Row } from '../../services/apiTypes';
+import { CheckItem } from '@equinor/procosys-webapp-components/dist/typings/apiTypes';
+import { ColumnLabel, Row } from '../../services/apiTypes';
 import { FakerCheckItem, FakerColumnLabel, FakeRow } from './faker';
 
 function Rows(): Array<Row> {

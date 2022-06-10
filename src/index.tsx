@@ -1,5 +1,5 @@
 import GlobalStyles from './style/GlobalStyles';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
 import authService from './services/authService';
@@ -14,7 +14,6 @@ import {
     LoadingPage,
 } from '@equinor/procosys-webapp-components';
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
-import { offline } from '@equinor/eds-icons';
 import { StatusRepository } from './database/StatusRepository';
 
 serviceWorkerRegistration.register();
@@ -71,18 +70,11 @@ const initialize = async () => {
         appConfig.appInsights.instrumentationKey
     );
 
-    const statusRepository = new StatusRepository();
-
-    const offlineState = (await statusRepository.getStatus()).status;
-
-    // TODO: Handle if offline state does not return anything
-
     return {
         authInstance,
         procosysApiInstance,
         appInsightsReactPlugin,
         appConfig,
-        offlineState,
         featureFlags,
     };
 };
@@ -95,9 +87,25 @@ const initialize = async () => {
             procosysApiInstance,
             appInsightsReactPlugin,
             appConfig,
-            offlineState,
             featureFlags,
         } = await initialize();
+        const [offlineState, setOfflineState] = useState(false);
+        const statusRepository = new StatusRepository();
+
+        setOfflineState(
+            (await statusRepository.getStatus())
+                ? (await statusRepository.getStatus()).status
+                : (): boolean => {
+                      statusRepository.addOfflineStatus(false);
+                      return false;
+                  }
+        );
+
+        // UseEffect
+        useEffect(() => {
+            statusRepository.updateStatus(offlineState);
+        }, [offlineState]);
+
         render(
             <App
                 authInstance={authInstance}
@@ -105,6 +113,7 @@ const initialize = async () => {
                 appInsightsReactPlugin={appInsightsReactPlugin}
                 appConfig={appConfig}
                 offlineState={offlineState}
+                setOfflineState={setOfflineState}
                 featureFlags={featureFlags}
             />
         );

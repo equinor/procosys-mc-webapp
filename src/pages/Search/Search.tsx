@@ -11,6 +11,7 @@ import {
 } from '@equinor/procosys-webapp-components';
 import SideMenu from '../../components/navigation/SideMenu';
 import { Switch } from '@equinor/eds-core-react';
+import useCommonHooks from '../../utils/useCommonHooks';
 
 const SearchPageWrapper = styled.main`
     padding: 0 4%;
@@ -41,6 +42,7 @@ const Search = (): JSX.Element => {
     const { snackbar, setSnackbarText } = useSnackbar();
     const [toggleOffline, setToggleOffline] = useState<boolean>(false);
     const [offlineBanner, setOfflineBanner] = useState<boolean>(false);
+    const { offlineState, setOfflineState } = useCommonHooks();
 
     const determineComponent = (): JSX.Element => {
         if (searchType === undefined) {
@@ -100,6 +102,7 @@ const Search = (): JSX.Element => {
                     onClick={(): void => {
                         setToggleOffline(!toggleOffline);
                         setOfflineBanner(!offlineBanner);
+                        setOfflineState();
                     }}
                 />
                 {snackbar}
