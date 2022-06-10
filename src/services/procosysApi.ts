@@ -97,13 +97,21 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
     ): Promise<SearchResults> => {
         let url = '';
         if (searchType === SearchType.MC) {
-            url = `McPkg/Search?plantId=${plantId}&startsWithMcPkgNo=${query}&includeClosedProjects=false&projectId=${projectId}${apiVersion}`;
+            url = `McPkg/Search?plantId=${plantId}&startsWithMcPkgNo=${encodeURIComponent(
+                query
+            )}&includeClosedProjects=false&projectId=${projectId}${apiVersion}`;
         } else if (searchType === SearchType.WO) {
-            url = `WorkOrder/Search?plantId=${plantId}&startsWithWorkOrderNo=${query}&includeClosedProjects=false&projectId=${projectId}${apiVersion}`;
+            url = `WorkOrder/Search?plantId=${plantId}&startsWithWorkOrderNo=${encodeURIComponent(
+                query
+            )}&includeClosedProjects=false&projectId=${projectId}${apiVersion}`;
         } else if (searchType === SearchType.Tag) {
-            url = `Tag/Search?plantId=${plantId}&startsWithTagNo=${query}&projectId=${projectId}${apiVersion}`;
+            url = `Tag/Search?plantId=${plantId}&startsWithTagNo=${encodeURIComponent(
+                query
+            )}&projectId=${projectId}${apiVersion}`;
         } else if (searchType === SearchType.PO) {
-            url = `PurchaseOrder/Search?plantId=${plantId}&startsWithPurchaseOrderNo=${query}&startsWithCallOffNo=${callOffQuery}&projectId=${projectId}${apiVersion}`;
+            url = `PurchaseOrder/Search?plantId=${plantId}&startsWithPurchaseOrderNo=${encodeURIComponent(
+                query
+            )}&startsWithCallOffNo=${callOffQuery}&projectId=${projectId}${apiVersion}`;
         } else {
             throw new Error('An error occurred, please try again.');
         }
