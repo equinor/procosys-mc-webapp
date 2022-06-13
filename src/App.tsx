@@ -29,8 +29,6 @@ type AppProps = {
     procosysApiInstance: ProcosysApiService;
     appInsightsReactPlugin: ReactPlugin;
     appConfig: AppConfig;
-    offlineState: boolean;
-    setOfflineState: Dispatch<SetStateAction<boolean>>;
     featureFlags: FeatureFlags;
 };
 
@@ -39,9 +37,8 @@ const App = ({
     authInstance,
     appConfig,
     appInsightsReactPlugin: reactPlugin,
-    offlineState,
+
     featureFlags,
-    setOfflineState,
 }: AppProps): JSX.Element => {
     return (
         <AppInsightsContext.Provider value={reactPlugin}>
@@ -49,11 +46,7 @@ const App = ({
                 api={procosysApiInstance}
                 auth={authInstance}
                 appConfig={appConfig}
-                offlineState={offlineState}
                 featureFlags={featureFlags}
-                setOfflineState={(): Dispatch<SetStateAction<boolean>> =>
-                    setOfflineState
-                }
             >
                 <Router basename={'/mc'}>
                     <ErrorBoundary>

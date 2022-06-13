@@ -22,12 +22,22 @@ const SearchPageWrapper = styled.main`
     }
 `;
 
-const ButtonsWrapper = styled.div`
+const ButtonsWrapper = styled.div<{
+    isDetailsCard?: boolean;
+    isScope?: boolean;
+}>`
     display: flex;
     height: 60px;
     & > button:not(:last-child) {
         margin-right: 10px;
     }
+`;
+
+const OfflineWrapper = styled.div`
+    background: #e63535;
+    color: white;
+    text-align: center;
+    font-weight: bold;
 `;
 
 export enum SearchType {
@@ -53,16 +63,9 @@ const Search = (): JSX.Element => {
 
     return (
         <>
-            <div
-                style={{
-                    backgroundColor: `${offlineBanner ? '#e63535' : undefined}`,
-                    color: 'white',
-                    textAlign: 'center',
-                    fontWeight: 'bold',
-                }}
-            >
+            <OfflineWrapper>
                 {toggleOffline ? 'Offline mode active' : undefined}
-            </div>
+            </OfflineWrapper>
 
             <SearchPageWrapper>
                 <Navbar
@@ -102,7 +105,7 @@ const Search = (): JSX.Element => {
                     onClick={(): void => {
                         setToggleOffline(!toggleOffline);
                         setOfflineBanner(!offlineBanner);
-                        setOfflineState();
+                        setOfflineState((prev) => !prev);
                     }}
                 />
                 {snackbar}

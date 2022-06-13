@@ -1,5 +1,11 @@
 import { Button } from '@equinor/eds-core-react';
-import React, { ReactNode, useEffect, useState } from 'react';
+import React, {
+    Dispatch,
+    ReactNode,
+    SetStateAction,
+    useEffect,
+    useState,
+} from 'react';
 import {
     ErrorPage,
     ReloadButton,
@@ -9,6 +15,7 @@ import { Plant } from '../services/apiTypes';
 import { AppConfig, FeatureFlags } from '../services/appConfiguration';
 import { IAuthService } from '../services/authService';
 import { ProcosysApiService } from '../services/procosysApi';
+import { StatusRepository } from '../database/StatusRepository';
 
 type McAppContextProps = {
     availablePlants: Plant[];
@@ -17,7 +24,7 @@ type McAppContextProps = {
     auth: IAuthService;
     appConfig: AppConfig;
     offlineState: boolean;
-    setOfflineState: () => void;
+    setOfflineState: Dispatch<SetStateAction<boolean>>;
     featureFlags: FeatureFlags;
 };
 
@@ -36,8 +43,6 @@ type McAppContextProviderProps = {
     auth: IAuthService;
     api: ProcosysApiService;
     appConfig: AppConfig;
-    offlineState: boolean;
-    setOfflineState: () => void;
     featureFlags: FeatureFlags;
 };
 
@@ -46,14 +51,33 @@ export const McAppContextProvider: React.FC<McAppContextProviderProps> = ({
     auth,
     api,
     appConfig,
-    offlineState,
-    setOfflineState,
     featureFlags,
 }: McAppContextProviderProps) => {
     const [availablePlants, setAvailablePlants] = useState<Plant[]>([]);
     const [fetchPlantsStatus, setFetchPlantsStatus] = useState<AsyncStatus>(
         AsyncStatus.LOADING
     );
+
+    const [offlineState, setOfflineState] = useState(false);
+    const statusRepository = new StatusRepository();
+
+    useEffect(() => {
+        const asyncFunction = async (): Promise<void> => {
+            setOfflineState(
+                (await statusRepository.getStatus())
+                    ? (await statusRepository.getStatus()).status
+                    : (): boolean => {
+                          statusRepository.addOfflineStatus(false);
+                          return false;
+                      }
+            );
+        };
+        asyncFunction();
+    }, []);
+
+    useEffect(() => {
+        statusRepository.updateStatus(offlineState);
+    }, [offlineState]);
 
     useEffect(() => {
         (async (): Promise<void> => {

@@ -89,22 +89,6 @@ const initialize = async () => {
             appConfig,
             featureFlags,
         } = await initialize();
-        const [offlineState, setOfflineState] = useState(false);
-        const statusRepository = new StatusRepository();
-
-        setOfflineState(
-            (await statusRepository.getStatus())
-                ? (await statusRepository.getStatus()).status
-                : (): boolean => {
-                      statusRepository.addOfflineStatus(false);
-                      return false;
-                  }
-        );
-
-        // UseEffect
-        useEffect(() => {
-            statusRepository.updateStatus(offlineState);
-        }, [offlineState]);
 
         render(
             <App
@@ -112,8 +96,6 @@ const initialize = async () => {
                 procosysApiInstance={procosysApiInstance}
                 appInsightsReactPlugin={appInsightsReactPlugin}
                 appConfig={appConfig}
-                offlineState={offlineState}
-                setOfflineState={setOfflineState}
                 featureFlags={featureFlags}
             />
         );
