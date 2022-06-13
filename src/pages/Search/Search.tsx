@@ -33,7 +33,7 @@ const ButtonsWrapper = styled.div<{
     }
 `;
 
-const OfflineWrapper = styled.div`
+const OfflineBanner = styled.div`
     background: #e63535;
     color: white;
     text-align: center;
@@ -51,8 +51,7 @@ const Search = (): JSX.Element => {
     const [searchType, setSearchType] = useState<string>();
     const { snackbar, setSnackbarText } = useSnackbar();
     const [toggleOffline, setToggleOffline] = useState<boolean>(false);
-    const [offlineBanner, setOfflineBanner] = useState<boolean>(false);
-    const { offlineState, setOfflineState } = useCommonHooks();
+    const { setOfflineState } = useCommonHooks();
 
     const determineComponent = (): JSX.Element => {
         if (searchType === undefined) {
@@ -63,9 +62,9 @@ const Search = (): JSX.Element => {
 
     return (
         <>
-            <OfflineWrapper>
+            <OfflineBanner>
                 {toggleOffline ? 'Offline mode active' : undefined}
-            </OfflineWrapper>
+            </OfflineBanner>
 
             <SearchPageWrapper>
                 <Navbar
@@ -104,7 +103,6 @@ const Search = (): JSX.Element => {
                     }
                     onClick={(): void => {
                         setToggleOffline(!toggleOffline);
-                        setOfflineBanner(!offlineBanner);
                         setOfflineState((prev) => !prev);
                     }}
                 />
