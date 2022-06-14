@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import withAccessControl from '../../services/withAccessControl';
-import styled, { withTheme } from 'styled-components';
+import styled from 'styled-components';
 import SearchArea from './Searching/SearchArea';
 import SavedSearches from './SavedSearches/SavedSearches';
 import {
@@ -22,10 +22,7 @@ const SearchPageWrapper = styled.main`
     }
 `;
 
-const ButtonsWrapper = styled.div<{
-    isDetailsCard?: boolean;
-    isScope?: boolean;
-}>`
+const ButtonsWrapper = styled.div`
     display: flex;
     height: 60px;
     & > button:not(:last-child) {

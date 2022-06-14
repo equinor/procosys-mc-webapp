@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction, useState } from 'react';
+import React, { Dispatch, SetStateAction } from 'react';
 import { MemoryRouter } from 'react-router-dom';
 import PlantContext from '../contexts/PlantContext';
 import McAppContext, { AsyncStatus } from '../contexts/McAppContext';
@@ -12,11 +12,7 @@ import authService from '../services/__mocks__/authService';
 import { testProjects, testPlants, dummyPermissions } from './dummyData';
 import { IAuthService } from '../services/authService';
 import { baseURL } from './setupServer';
-import {
-    AppConfig,
-    FeatureFlags,
-    ProcosysApiSettings,
-} from '../services/appConfiguration';
+import { AppConfig, FeatureFlags } from '../services/appConfiguration';
 
 const client = new Msal.PublicClientApplication({
     auth: { clientId: 'testId', authority: 'testAuthority' },

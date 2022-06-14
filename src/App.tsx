@@ -37,7 +37,6 @@ const App = ({
     authInstance,
     appConfig,
     appInsightsReactPlugin: reactPlugin,
-
     featureFlags,
 }: AppProps): JSX.Element => {
     return (
