@@ -56,6 +56,7 @@ type WithMcAppContextProps = {
     auth?: IAuthService;
     api?: ProcosysApiService;
     offlineState?: boolean;
+    setOfflineState: Dispatch<SetStateAction<boolean>>;
 };
 
 export const withMcAppContext = ({
@@ -65,10 +66,8 @@ export const withMcAppContext = ({
     auth = authInstance,
     api = procosysApiInstance,
     offlineState = false,
+    setOfflineState,
 }: WithMcAppContextProps): JSX.Element => {
-    const [dummyOfflineState, setDummyOfflineState] =
-        useState<boolean>(offlineState);
-
     return (
         <MemoryRouter initialEntries={['/test/sub/directory']}>
             <McAppContext.Provider
@@ -79,8 +78,8 @@ export const withMcAppContext = ({
                     api: api,
                     appConfig: dummyAppConfig,
                     featureFlags: dummyFeatureFlags,
-                    offlineState: dummyOfflineState,
-                    setOfflineState: setDummyOfflineState,
+                    offlineState: offlineState,
+                    setOfflineState: setOfflineState,
                 }}
             >
                 {Component}
@@ -97,6 +96,8 @@ type WithPlantContextProps = {
     availableProjects?: Project[] | null;
     currentProject?: Project | undefined;
     setCurrentProject?: (project: Project) => void;
+    offlineState?: boolean;
+    setOfflineState: Dispatch<SetStateAction<boolean>>;
 };
 
 export const withPlantContext = ({
@@ -106,6 +107,8 @@ export const withPlantContext = ({
     currentProject = testProjects[1],
     permissions = dummyPermissions,
     Component,
+    offlineState = false,
+    setOfflineState,
 }: WithPlantContextProps): JSX.Element => {
     return withMcAppContext({
         Component: (
@@ -122,5 +125,7 @@ export const withPlantContext = ({
                 {Component}
             </PlantContext.Provider>
         ),
+        offlineState: offlineState,
+        setOfflineState: setOfflineState,
     });
 };
