@@ -11,6 +11,10 @@ describe('<SelectPlant />', () => {
             withMcAppContext({
                 Component: <SelectPlant />,
                 asyncStatus: AsyncStatus.SUCCESS,
+                offlineState: false,
+                setOfflineState: jest.fn(() => {
+                    // Should be empty
+                }),
             })
         );
         expect(getByText(testPlants[0].title)).toBeInTheDocument();
@@ -21,6 +25,10 @@ describe('<SelectPlant />', () => {
                 Component: <SelectPlant />,
                 asyncStatus: AsyncStatus.SUCCESS,
                 plants: [],
+                offlineState: false,
+                setOfflineState: jest.fn(() => {
+                    // Should be empty
+                }),
             })
         );
         expect(getByText('No plants to show')).toBeInTheDocument();
