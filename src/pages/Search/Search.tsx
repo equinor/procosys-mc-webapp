@@ -100,6 +100,7 @@ const Search = (): JSX.Element => {
                     onClick={(): void => {
                         setOfflineState((prev) => !prev);
                     }}
+                    checked={offlineState ? true : false}
                 />
                 {snackbar}
             </SearchPageWrapper>
