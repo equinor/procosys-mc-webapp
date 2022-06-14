@@ -30,6 +30,10 @@ const renderPunchPage = (): void => {
                     </Route>
                 </MemoryRouter>
             ),
+            offlineState: false,
+            setOfflineState: jest.fn(() => {
+                // Should be empty
+            }),
         })
     );
 };

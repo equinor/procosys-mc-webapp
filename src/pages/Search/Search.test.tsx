@@ -35,6 +35,10 @@ describe('<Search/> successes', () => {
         render(
             withPlantContext({
                 Component: <Search />,
+                offlineState: false,
+                setOfflineState: jest.fn(() => {
+                    // Should be empty
+                }),
             })
         );
     });
@@ -142,6 +146,10 @@ const renderSearch = (): void => {
     render(
         withPlantContext({
             Component: <Search />,
+            offlineState: false,
+            setOfflineState: jest.fn(() => {
+                // Should be empty
+            }),
         })
     );
 };

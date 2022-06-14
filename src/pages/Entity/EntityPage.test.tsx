@@ -34,6 +34,10 @@ const renderEntityPage = (
                     </Route>
                 </MemoryRouter>
             ),
+            offlineState: false,
+            setOfflineState: jest.fn(() => {
+                // Should be empty
+            }),
         })
     );
 };
