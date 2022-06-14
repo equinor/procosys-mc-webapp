@@ -50,8 +50,7 @@ export enum SearchType {
 const Search = (): JSX.Element => {
     const [searchType, setSearchType] = useState<string>();
     const { snackbar, setSnackbarText } = useSnackbar();
-    const [toggleOffline, setToggleOffline] = useState<boolean>(false);
-    const { setOfflineState } = useCommonHooks();
+    const { offlineState, setOfflineState } = useCommonHooks();
 
     const determineComponent = (): JSX.Element => {
         if (searchType === undefined) {
@@ -63,7 +62,7 @@ const Search = (): JSX.Element => {
     return (
         <>
             <OfflineBanner>
-                {toggleOffline ? 'Offline mode active' : undefined}
+                {offlineState ? 'Offline mode active' : undefined}
             </OfflineBanner>
 
             <SearchPageWrapper>
@@ -97,12 +96,11 @@ const Search = (): JSX.Element => {
                 {determineComponent()}
                 <Switch
                     label={
-                        toggleOffline
+                        offlineState
                             ? 'Deactivate offline mode'
                             : 'Activate offline mode'
                     }
                     onClick={(): void => {
-                        setToggleOffline(!toggleOffline);
                         setOfflineState((prev) => !prev);
                     }}
                 />
