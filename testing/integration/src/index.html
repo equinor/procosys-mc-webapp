@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8" />
+
+<head>
+  <title>IndexedDB note store</title>
+  <link rel="stylesheet" href="https://unpkg.com/mocha/mocha.css" />
+</head>
+
+<body>
+
+  <div class="split left">
+    <div class="centered">
+      <div id="app">
+        <h1>Functional Testing Coming Soon!</h1>
+      </div>
+    </div>
+  </div>
+
+  <div class="split right">
+    <div class="centered">
+      <div id="mocha">
+      <script src="https://unpkg.com/chai/chai.js"></script>
+      <script src="https://unpkg.com/mocha/mocha.js"></script>
+
+      <script src="../dist/source.bundle.js"></script>
+      <script class="mocha-init">
+        mocha.setup('bdd');
+        mocha.checkLeaks();
+      </script>
+      <script src="../dist/tests.bundle.js"></script>
+      <script class="mocha-exec">
+        mocha.run();
+      </script>
+      </div>
+    </div>
+
+  </div>
+
+
+</body>
+
+</html>
