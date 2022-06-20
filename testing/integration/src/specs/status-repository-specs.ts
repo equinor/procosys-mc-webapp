@@ -8,11 +8,6 @@ import { IStatus } from '../../../../src/database/status';
 import { off } from 'process';
 
 describe('Given a StatusRepository', () => {
-    const statusRepository = new StatusRepository();
-    const setOfflineMode = async (status: boolean) => {
-        await statusRepository.addOfflineStatus(status);
-    };
-
     before(function () {
         // runs once before the first test in this block
     });
@@ -21,9 +16,7 @@ describe('Given a StatusRepository', () => {
         // runs once after the last test in this block
     });
 
-    beforeEach(function () {
-        // runs before each test in this block
-    });
+    beforeEach(function () {});
 
     afterEach(function () {
         // runs after each test in this block
@@ -32,6 +25,7 @@ describe('Given a StatusRepository', () => {
     const offlineMode: boolean | undefined = undefined;
 
     it('should be possible to set offline mode', async () => {
+        const statusRepository = new StatusRepository();
         await statusRepository.addOfflineStatus(true);
         statusRepository
             .getStatus()
@@ -42,25 +36,14 @@ describe('Given a StatusRepository', () => {
     });
 
     it('should be possible to go back from offline mode', async () => {
+        const statusRepository = new StatusRepository();
         await statusRepository.addOfflineStatus(true);
-        const offlineMode1: IStatus | undefined =
-            await statusRepository.getStatus();
-        const offlineMode2: IStatus | undefined =
-            await statusRepository.getStatus();
 
-        offlineMode1.status.should.be.equal(offlineMode2.status);
+        const status1 = (await statusRepository.getStatus()) as IStatus;
+        const status2 = await statusRepository.addOfflineStatus(false);
 
-        await statusRepository.addOfflineStatus(false);
+        const status3 = (await statusRepository.getStatus()) as IStatus;
 
-        statusRepository
-            .getStatus()
-            .then((status) => {
-                const offlineMode2 = status;
-                offlineMode2.status.should.be.false;
-                offlineMode2.status.should.be.equal(offlineMode1.status);
-            })
-            .catch((error) => {
-                console.log(error);
-            });
+        status3.status.should.be.equal(status1.status);
     });
 });

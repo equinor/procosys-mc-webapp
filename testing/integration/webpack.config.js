@@ -4,7 +4,8 @@ module.exports = {
     entry: {
         source: './src/index.ts', 
         tests: [
-            './src/specs/hello-integration-specs.ts', './src/specs/status-repository-specs.ts']
+            './src/specs/hello-integration-specs.ts', 
+            './src/specs/status-repository-specs.ts']
     },
     output: {
         filename: '[name].bundle.js',
