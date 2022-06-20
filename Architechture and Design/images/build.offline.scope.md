@@ -74,6 +74,11 @@ interface Visitor
     accept(visitor: IVisitor): void;
 }
 
+interface IWorker 
+{
+    void doWork(strategies : Array<IStrategy>)
+}
+
 interface IEntityWithWork extends IVisitor {
     accept(visitor: IVisitor): void;
     IStrategy<T> workStrategy;
