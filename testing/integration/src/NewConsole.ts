@@ -25,7 +25,7 @@ export class NewConsole {
 
         const cardBody = document.createElement('div');
         cardBody.setAttribute('class', 'card');
-        const databaseStatus = document.createElement('p');
+        const offlineModeStatus = document.createElement('p');
         const info = `Application is in: ${
             (await (
                 await this.getApplicationMode()
@@ -33,9 +33,18 @@ export class NewConsole {
                 ? 'offline'
                 : 'normal'
         } mode`;
-        databaseStatus.innerText = info;
+        offlineModeStatus.innerText = info;
+        cardBody.appendChild(offlineModeStatus);
+        
+        const dbStatus = document.createElement('p');
+        const dbInfo = `Database is in: ${await ((await db.isOpen())
+            ? 'open'
+            : 'closed')}`;
 
-        cardBody.appendChild(databaseStatus);
+        dbStatus.innerText = dbInfo;
+        cardBody.appendChild(dbStatus);
+
+        
 
         cardContainer.appendChild(cardBody);
         card.appendChild(cardContainer);

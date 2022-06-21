@@ -6,6 +6,7 @@ import { db } from '../../../../src/database/db';
 import { stat } from 'fs/promises';
 import { IStatus } from '../../../../src/database/status';
 import { off } from 'process';
+import { NewConsole } from './../NewConsole';
 
 describe('Given a StatusRepository', () => {
     before(function () {
@@ -16,7 +17,7 @@ describe('Given a StatusRepository', () => {
         // runs once after the last test in this block
     });
 
-    beforeEach(function () {});
+    beforeEach(async function () {});
 
     afterEach(function () {
         // runs after each test in this block
@@ -25,6 +26,8 @@ describe('Given a StatusRepository', () => {
     const offlineMode: boolean | undefined = undefined;
 
     it('should be possible to set offline mode', async () => {
+        const newConsole = new NewConsole();
+        await newConsole.log('Hi!');
         const statusRepository = new StatusRepository();
         await statusRepository.addOfflineStatus(true);
         statusRepository
