@@ -70,11 +70,10 @@ export const FakerDescription = (): string => faker.lorem.paragraph(3);
 export const FakerRandomBoolean = (): boolean => {
     return Math.random() > 0.5 ? true : false;
 };
-export const FakerCommPkgNo = (count: number) => FakerAlphaCode(count);
-export const FakerPurchaseOrderNo = (count: number) =>
-    FakerSyntax(PurchaseOrderNo);
-export const FakerMcPkgNo = (count: number) => FakerAlphaCode(count);
-export const FakerCallOffNo = (count: number) => FakerAlphaCode(count);
+export const FakerCommPkgNo = (count: number): string => FakerAlphaCode(count);
+export const FakerPurchaseOrderNo = (): string => FakerSyntax(PurchaseOrderNo);
+export const FakerMcPkgNo = (count: number): string => FakerAlphaCode(count);
+export const FakerCallOffNo = (count: number): string => FakerAlphaCode(count);
 export const FakerDisciplineCode = (count: number) => FakerAlphaCode(count);
 export const FakerAreaCode = (count: number) => FakerAlphaCode(count);
 export const FakerEngineeringCodeCode = (count: number) =>
@@ -467,7 +466,8 @@ export const FakerClearingByCode = () => {
 };
 
 const MAX_PRIORITY_LIMIT = 10;
-export const FakerPriorityId = () => faker.datatype.number({ min: 1, max: MAX_PRIORITY_LIMIT });
+export const FakerPriorityId = () =>
+    faker.datatype.number({ min: 1, max: MAX_PRIORITY_LIMIT });
 
 const PriorityCodes = (): Array<string> => {
     const options = new Array<string>();
@@ -602,10 +602,10 @@ export const FakerProject = (): Project => {
     };
 };
 
-export const FakerRegisterCode = () => {
+export const FakerRegisterCode = (): string => {
     return faker.random.alphaNumeric(10);
 };
-export const FakerAlphaCode = (count: number) => {
+export const FakerAlphaCode = (count: number): string => {
     return faker.random.alpha(count);
 };
 
@@ -628,7 +628,7 @@ export const FakerTagDetailsWithIdCheck = (fn: ReservedIds): TagDetails => {
         tagFunctionDescription: FakerDescription(),
         commPkgNo: FakerCommPkgNo(5),
         mcPkgNo: FakerMcPkgNo(5),
-        purchaseOrderNo: FakerPurchaseOrderNo(5),
+        purchaseOrderNo: FakerPurchaseOrderNo(),
         callOffNo: FakerCallOffNo(5),
         purchaseOrderTitle: FakerTitle(),
         projectDescription: FakerDescription(),
@@ -663,7 +663,7 @@ export const FakerTagDetails = (): TagDetails => {
         tagFunctionDescription: FakerDescription(),
         commPkgNo: FakerCommPkgNo(5),
         mcPkgNo: FakerMcPkgNo(5),
-        purchaseOrderNo: FakerPurchaseOrderNo(5),
+        purchaseOrderNo: FakerPurchaseOrderNo(),
         callOffNo: FakerCallOffNo(5),
         purchaseOrderTitle: FakerTitle(),
         projectDescription: FakerDescription(),
