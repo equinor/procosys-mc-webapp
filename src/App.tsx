@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction } from 'react';
+import React from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { McAppContextProvider } from './contexts/McAppContext';
 import GeneralRouter from './GeneralRouter';

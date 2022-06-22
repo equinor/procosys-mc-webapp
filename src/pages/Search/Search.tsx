@@ -97,7 +97,7 @@ const Search = (): JSX.Element => {
                             ? 'Deactivate offline mode'
                             : 'Activate offline mode'
                     }
-                    onClick={(): void => {
+                    onChange={(): void => {
                         setOfflineState((prev) => !prev);
                     }}
                     checked={offlineState ? true : false}

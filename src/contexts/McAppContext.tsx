@@ -65,7 +65,7 @@ export const McAppContextProvider: React.FC<McAppContextProviderProps> = ({
         const asyncFunction = async (): Promise<void> => {
             const status = await statusRepository.getStatus();
             setOfflineState(
-                status.status
+                status
                     ? status.status
                     : (): boolean => {
                           statusRepository.addOfflineStatus(false);
