@@ -1,5 +1,5 @@
 import GlobalStyles from './style/GlobalStyles';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
 import authService from './services/authService';
@@ -14,6 +14,7 @@ import {
     LoadingPage,
 } from '@equinor/procosys-webapp-components';
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
+import { StatusRepository } from './database/StatusRepository';
 
 serviceWorkerRegistration.register();
 
@@ -68,6 +69,7 @@ const initialize = async () => {
     const { appInsightsReactPlugin } = initializeAppInsights(
         appConfig.appInsights.instrumentationKey
     );
+
     return {
         authInstance,
         procosysApiInstance,
@@ -87,6 +89,7 @@ const initialize = async () => {
             appConfig,
             featureFlags,
         } = await initialize();
+
         render(
             <App
                 authInstance={authInstance}

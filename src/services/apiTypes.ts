@@ -1,3 +1,5 @@
+import { CheckItem } from '@equinor/procosys-webapp-components/dist/typings/apiTypes';
+
 export enum CompletionStatus {
     OS = 'OS',
     PA = 'PA',
@@ -219,20 +221,6 @@ export interface MetaTable {
     info: string;
     columnLabels: ColumnLabel[];
     rows: Row[];
-}
-
-export interface CheckItem {
-    id: number;
-    sequenceNumber: string;
-    text: string;
-    detailText: string;
-    isHeading: boolean;
-    hasImage: boolean;
-    imageFileId: number;
-    hasMetaTable: boolean;
-    metaTable: MetaTable;
-    isOk: boolean;
-    isNotApplicable: boolean;
 }
 
 export interface LoopTag {

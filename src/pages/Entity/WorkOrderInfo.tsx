@@ -1,12 +1,14 @@
+import React from 'react';
 import { Button } from '@equinor/eds-core-react';
 import {
     Attachments,
     CollapsibleCard,
     ErrorPage,
     HomeButton,
+    removeSubdirectories,
+    useSnackbar,
 } from '@equinor/procosys-webapp-components';
-import { CancelToken } from 'axios';
-import React from 'react';
+import Axios from 'axios';
 import styled from 'styled-components';
 import AsyncPage from '../../components/AsyncPage';
 import { AsyncStatus } from '../../contexts/McAppContext';
@@ -19,9 +21,7 @@ import {
     WoPreview,
 } from '../../services/apiTypes';
 import { removeHtmlFromText } from '../../utils/removeHtmlFromText';
-import removeSubdirectories from '../../utils/removeSubdirectories';
 import useCommonHooks from '../../utils/useCommonHooks';
-import useSnackbar from '../../utils/useSnackbar';
 
 const TagInfoWrapper = styled.main`
     min-height: 0px;
@@ -47,6 +47,7 @@ const WorkOrderInfo = ({
 }: WorkOrderInfoProps): JSX.Element => {
     const { history, url, api, params } = useCommonHooks();
     const { snackbar, setSnackbarText } = useSnackbar();
+    const source = Axios.CancelToken.source();
     if (
         workOrder === undefined ||
         isOfType<WoPreview>(workOrder, 'workOrderNo')
@@ -69,24 +70,19 @@ const WorkOrderInfo = ({
 
                     <h5>Attachments</h5>
                     <Attachments
-                        getAttachments={(
-                            cancelToken: CancelToken
-                        ): Promise<Attachment[]> =>
+                        getAttachments={(): Promise<Attachment[]> =>
                             api.getWorkOrderAttachments(
                                 params.plant,
                                 params.entityId,
-                                cancelToken
+                                source.token
                             )
                         }
-                        getAttachment={(
-                            cancelToken: CancelToken,
-                            attachmentId: number
-                        ): Promise<Blob> =>
+                        getAttachment={(attachmentId: number): Promise<Blob> =>
                             api.getWorkOrderAttachment(
                                 params.plant,
                                 params.entityId,
                                 attachmentId,
-                                cancelToken
+                                source.token
                             )
                         }
                         postAttachment={(
@@ -111,6 +107,7 @@ const WorkOrderInfo = ({
                         }
                         setSnackbarText={setSnackbarText}
                         readOnly={false}
+                        source={source}
                     />
                     {snackbar}
                 </TagInfoWrapper>

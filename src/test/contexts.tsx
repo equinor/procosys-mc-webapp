@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Dispatch, SetStateAction } from 'react';
 import { MemoryRouter } from 'react-router-dom';
 import PlantContext from '../contexts/PlantContext';
 import McAppContext, { AsyncStatus } from '../contexts/McAppContext';
@@ -12,11 +12,7 @@ import authService from '../services/__mocks__/authService';
 import { testProjects, testPlants, dummyPermissions } from './dummyData';
 import { IAuthService } from '../services/authService';
 import { baseURL } from './setupServer';
-import {
-    AppConfig,
-    FeatureFlags,
-    ProcosysApiSettings,
-} from '../services/appConfiguration';
+import { AppConfig, FeatureFlags } from '../services/appConfiguration';
 
 const client = new Msal.PublicClientApplication({
     auth: { clientId: 'testId', authority: 'testAuthority' },
@@ -55,6 +51,8 @@ type WithMcAppContextProps = {
     plants?: Plant[];
     auth?: IAuthService;
     api?: ProcosysApiService;
+    offlineState?: boolean;
+    setOfflineState: Dispatch<SetStateAction<boolean>>;
 };
 
 export const withMcAppContext = ({
@@ -63,6 +61,8 @@ export const withMcAppContext = ({
     plants = testPlants,
     auth = authInstance,
     api = procosysApiInstance,
+    offlineState = false,
+    setOfflineState,
 }: WithMcAppContextProps): JSX.Element => {
     return (
         <MemoryRouter initialEntries={['/test/sub/directory']}>
@@ -74,6 +74,8 @@ export const withMcAppContext = ({
                     api: api,
                     appConfig: dummyAppConfig,
                     featureFlags: dummyFeatureFlags,
+                    offlineState: offlineState,
+                    setOfflineState: setOfflineState,
                 }}
             >
                 {Component}
@@ -90,6 +92,8 @@ type WithPlantContextProps = {
     availableProjects?: Project[] | null;
     currentProject?: Project | undefined;
     setCurrentProject?: (project: Project) => void;
+    offlineState?: boolean;
+    setOfflineState: Dispatch<SetStateAction<boolean>>;
 };
 
 export const withPlantContext = ({
@@ -99,6 +103,8 @@ export const withPlantContext = ({
     currentProject = testProjects[1],
     permissions = dummyPermissions,
     Component,
+    offlineState = false,
+    setOfflineState,
 }: WithPlantContextProps): JSX.Element => {
     return withMcAppContext({
         Component: (
@@ -115,5 +121,7 @@ export const withPlantContext = ({
                 {Component}
             </PlantContext.Provider>
         ),
+        offlineState: offlineState,
+        setOfflineState: setOfflineState,
     });
 };

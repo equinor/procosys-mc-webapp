@@ -14,10 +14,10 @@ import {
     BackButton,
     InfoItem,
     Navbar,
+    removeSubdirectories,
 } from '@equinor/procosys-webapp-components';
 import styled from 'styled-components';
 import { Button, DotProgress } from '@equinor/eds-core-react';
-import removeSubdirectories from '../../utils/removeSubdirectories';
 import { PageHeader } from '@equinor/procosys-webapp-components';
 
 const DetailsWrapper = styled.div`
