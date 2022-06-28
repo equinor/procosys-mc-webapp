@@ -35,7 +35,7 @@ export class NewConsole {
         } mode`;
         offlineModeStatus.innerText = info;
         cardBody.appendChild(offlineModeStatus);
-        
+
         const dbStatus = document.createElement('p');
         const dbInfo = `Database is in: ${await ((await db.isOpen())
             ? 'open'
@@ -43,8 +43,6 @@ export class NewConsole {
 
         dbStatus.innerText = dbInfo;
         cardBody.appendChild(dbStatus);
-
-        
 
         cardContainer.appendChild(cardBody);
         card.appendChild(cardContainer);
