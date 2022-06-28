@@ -17,17 +17,17 @@ export interface IHttpResponseMessage {
     content: string;
 }
 
-export interface IHttpMessage<StrategyTypes> {
-    readonly client: IHttpClient<StrategyTypes>;
+export interface IHttpMessage<ApiType> {
+    readonly client: IHttpClient<ApiType>;
     request: IHttpRequestMessage;
     response: IHttpResponseMessage;
-    data: Array<StrategyTypes>;
+    data: Array<ApiType>;
     executedDate: Date;
     executedBy: Person;
 
-    executeRequestMessage(): Promise<IHttpMessage<StrategyTypes>>;
+    executeRequestMessage(): Promise<IHttpMessage<ApiType>>;
     getHash(): string;
-    getData(): Array<StrategyTypes>;
+    getData(): Array<ApiType>;
 }
 
 export interface IHttpClient<T> {

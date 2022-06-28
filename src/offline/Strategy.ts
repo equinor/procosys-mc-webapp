@@ -1,26 +1,28 @@
+import { Attachment } from './../services/apiTypes';
 import { CheckListSubTypes, PunchSubTypes, SubTypesAttachment } from './Entity';
 import { Data } from '@microsoft/applicationinsights-common';
+import { IHttpMessage, IHttpRequestMessage } from './Http';
 import { Person } from '../services/apiTypes';
-import { IHttpMessage } from './Http';
 
 export type StrategyTypes =
     | CheckListSubTypes
     | PunchSubTypes
     | SubTypesAttachment;
 
-export interface IStrategy<StrategyTypes> {
-    httpMessage: IHttpMessage<StrategyTypes>;
+export type ApiType = Attachment;
+export interface IStrategy<ApiType> {
+    httpMessage: IHttpMessage<ApiType>;
     execute(): void;
     getExecutedDate(): Date | undefined;
     getExecutedBy(): Person | undefined;
 }
 
-class Strategy<StrategyTypes> implements IStrategy<StrategyTypes> {
-    readonly httpMessage: IHttpMessage<StrategyTypes>;
+class Strategy<StrategyTypes> implements IStrategy<ApiType> {
+    readonly httpMessage: IHttpMessage<ApiType>;
     executedDate: Date | undefined;
     executedBy: Person | undefined;
 
-    constructor(httpMessage: IHttpMessage<StrategyTypes>) {
+    constructor(httpMessage: IHttpMessage<ApiType>) {
         this.httpMessage = httpMessage;
     }
     getExecutedDate(): Date | undefined {
@@ -30,11 +32,15 @@ class Strategy<StrategyTypes> implements IStrategy<StrategyTypes> {
         return this.executedBy;
     }
 
-    async execute(): Promise<IHttpMessage<StrategyTypes>> {
+    async execute(): Promise<IHttpMessage<ApiType>> {
         return await this.httpMessage.executeRequestMessage();
     }
 
     getHash(): string {
         return this.httpMessage.getHash();
     }
+}
+
+export class AttachmentStrategy extends Strategy<Attachment> {
+    constructor() {}
 }

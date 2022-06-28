@@ -11,7 +11,7 @@ import {
     PunchSort,
     PunchType,
 } from './../services/apiTypes';
-import { Checklist } from '@equinor/procosys-webapp-components';
+import { Attachments, Checklist } from '@equinor/procosys-webapp-components';
 import { PkceCodes } from '@azure/msal-common';
 import {
     ChecklistPreview,
@@ -30,7 +30,8 @@ export type CheckListSubTypes =
     | CheckItem
     | CustomCheckItem
     | ChecklistPreview
-    | ChecklistDetails;
+    | ChecklistDetails
+    | Attachment;
 export type PunchSubTypes =
     | PunchCategory
     | PunchType

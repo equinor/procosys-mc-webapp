@@ -35,11 +35,7 @@ export abstract class Component implements IComponent {
     public abstract operation(): string;
 }
 
-export class Leaf extends Component {
-    public operation(): string {
-        return 'Leaf';
-    }
-}
+export type LeafOperationType = { type: string };
 
 export class Composite extends Component {
     protected children: Component[] = [];
