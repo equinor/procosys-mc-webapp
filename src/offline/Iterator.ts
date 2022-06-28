@@ -1,8 +1,10 @@
-export interface Iterator<T> {
+import { StrategyTypes } from './Strategy';
+
+export interface Iterator<StrategyTypes> {
     // Return the current element.
-    current(): T;
+    current(): StrategyTypes;
     // Return the current element and move forward to next element.
-    next(): T;
+    next(): StrategyTypes;
     // Return the key of the current element.
     key(): number;
     // Checks if current position is valid.
@@ -16,11 +18,12 @@ interface Aggregator {
     getIterator(): Iterator<string>;
 }
 
-class BottomTopItegrator implements Iterator<string> {
-    current(): string {
+class BottomTopItegrator implements Iterator<StrategyTypes> {
+    private strategies: Array<StrategyTypes> = [];
+    current(): StrategyTypes {
         throw new Error('Method not implemented.');
     }
-    next(): string {
+    next(): StrategyTypes {
         throw new Error('Method not implemented.');
     }
     key(): number {
@@ -32,5 +35,4 @@ class BottomTopItegrator implements Iterator<string> {
     rewind(): void {
         throw new Error('Method not implemented.');
     }
-    private collection: WordsCollection;
 }

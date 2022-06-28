@@ -25,114 +25,30 @@ The following lists the benefits of using the Visitor pattern:
 When to Use:
 You should use the Visitor pattern when:
 
- 1. An object structure contains many classes of objects with differing interfaces and you want to perform operations on these objects that depend on their concrete classes.
+1. An object structure contains many classes of objects with differing interfaces and you want to perform operations on these objects that depend on their concrete classes.
 2. Classes defining the object structure rarely change but you often want to define new operations over the structure.
 
-
-
-
-``` Typescript
-interface IHttpMessage<T> {
-    request: IHttpRequestMessage;
-    response IHttpResponseMessage;
-    data: Array<T>;
-    executedDate : Date
-    executedBy: Person
-
-    executeRequestMessage(): IHttpResponseMessage;
-    getHash(): string;
-    getData(): Array<T>;
-}
-
-interface IStrategy<T> {
-    httpMessage : IHttpMessage
-    execute(): void
-    getExecutedDate(): Date;
-    getExecutedBy(): Person;
-}
-
-public class GetEntityStrategy<T> : IStrategy<T> {
-    httpMessage: IHttpMessage;
-
-    constructor(httpClient client,
-        httpMessage: IHttpMessage) {
-        this.httpMessage = httpMessage;
+## Offline
+```mermaid
+classDiagram
+    Entity <|-- Duck
+    Animal <|-- Fish
+    Animal <|-- Zebra
+    Animal : +int age
+    Animal : +String gender
+    Animal: +isMammal()
+    Animal: +mate()
+    class Duck{
+        +String beakColor
+        +swim()
+        +quack()
     }
-
-    IHttpMessage execute() {
-        this.httpMessage.executeRequestMessage();
+    class Fish{
+        -int sizeInFeet
+        -canEat()
     }
-
-    getHash(): string {
-        return this.httpMessage.getHash();
+    class Zebra{
+        +bool is_wild
+        +run()
     }
-}
-
-
-interface Visitor
-{
-    accept(visitor: IVisitor): void;
-}
-
-interface IWorker 
-{
-    void doWork(strategies : Array<IStrategy>)
-}
-
-interface IEntityWithWork extends IVisitor {
-    accept(visitor: IVisitor): void;
-    IStrategy<T> workStrategy;
-    void doWork();
-}
-
-    
-interface ICheckList extends IEntityWithWork {
-    accept(visitor: IVisitor): void;
-    doWork();
-}
-
-interface ICheckListItem<IPunch> {
-  accept(visitor: IVisitor): void;  
-  doWork();
-}
-
-interface IPunch<IPunchItem> {
-  accept(visitor: IVisitor): void;  
-  doWork();
-}
-
-interface IPunchItem {
-    accept(visitor: IPunchItemVisitor);
-    doWork();
-}
-
-// GET /api/CommPkg/CheckLists 
-class CheckList extends ICheckList {
-    constructor(
-        IStrategy<ChecklistDetails> ChecklistDetailsStrategy, 
-        IStrategy<ChecklistPreview> ChecklistPreviewStrategy,
-        IStrategy<Attachments> getAttachmentsInCheckListStrategy) 
-        {}
-    
-    accept(visitor: ICheckList) {
-        visitor.visit(this);
-    }
-
-    doWork(): void { 
-        ChecklistDetailsStrategy.execute();
-        ChecklistPreviewStrategy.execute(); 
-        getAttachmentsInCheckListStrategy.execute();
-        }
-    
-    
-
-} 
-
-class CheckItem extends ICheckItem {
-
-}
-
 ```
-# Usage 
-class McPkt extends IEntity 
-{}

@@ -1,3 +1,17 @@
+import {
+    Attachment,
+    CheckItem,
+    ChecklistDetails,
+    CustomCheckItem,
+    NewPunch,
+    PunchCategory,
+    PunchItem,
+    PunchOrganization,
+    PunchPriority,
+    PunchSort,
+    PunchType,
+} from './../services/apiTypes';
+import { Checklist } from '@equinor/procosys-webapp-components';
 import { PkceCodes } from '@azure/msal-common';
 import {
     ChecklistPreview,
@@ -6,20 +20,34 @@ import {
     TagPreview,
     WoPreview,
 } from '../services/apiTypes';
-import { IStrategy } from './Strategy';
+import { IStrategy, StrategyTypes } from './Strategy';
+import { IWorker } from './Worker';
+import { IVisitor } from './Visitor';
 
-export interface IVisitor {
-    visit(visitor: IVisitor): void;
-}
+export type EntityTypes = McPkgPreview | TagPreview | WoPreview | PoPreview;
 
+export type CheckListSubTypes =
+    | CheckItem
+    | CustomCheckItem
+    | ChecklistPreview
+    | ChecklistDetails;
+export type PunchSubTypes =
+    | PunchCategory
+    | PunchType
+    | PunchOrganization
+    | PunchSort
+    | PunchPriority
+    | NewPunch
+    | PunchItem;
 
+export type SubTypesAttachment = Attachment;
 
+export class Entity<EntityTypes, CheckListSubTypes>
+    implements IWorker<StrategyTypes>, IVisitor
+{
+    strategies: Array<IStrategy<StrategyTypes>> | undefined;
 
-export type EntityType = McPkgPreview | TagPreview | WoPreview | PoPreview;
-export class Entity<T, EntityType> implements IWorker<T>, IVisitor {
-    strategies: Array<IStrategy<EntityType>> | undefined;
-
-    constructor(strategies: Array<IStrategy<EntityType>>) {
+    constructor(strategies: Array<IStrategy<StrategyTypes>>) {
         this.strategies = strategies;
     }
 
@@ -31,12 +59,12 @@ export class Entity<T, EntityType> implements IWorker<T>, IVisitor {
     }
     addWork<S>(strategy: IStrategy<S>): void {
         throw new Error('Method not implemented.');
-    }
+    }   
 }
 
 export abstract class McPkg<McPkgPreview> extends Entity<
-    McPkgPreview,
-    ChecklistPreview
+    EntityTypes,
+    CheckListSubTypes
 > {
     constructor(strategies: Array<IStrategy<ChecklistPreview>>) {
         super(strategies);

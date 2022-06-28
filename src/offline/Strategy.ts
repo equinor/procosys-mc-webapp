@@ -1,20 +1,26 @@
+import { CheckListSubTypes, PunchSubTypes, SubTypesAttachment } from './Entity';
 import { Data } from '@microsoft/applicationinsights-common';
 import { Person } from '../services/apiTypes';
 import { IHttpMessage } from './Http';
 
-export interface IStrategy<T> {
-    httpMessage: IHttpMessage<T>;
+export type StrategyTypes =
+    | CheckListSubTypes
+    | PunchSubTypes
+    | SubTypesAttachment;
+
+export interface IStrategy<StrategyTypes> {
+    httpMessage: IHttpMessage<StrategyTypes>;
     execute(): void;
     getExecutedDate(): Date | undefined;
     getExecutedBy(): Person | undefined;
 }
 
-class GetEntityStrategy<T> implements IStrategy<T> {
-    readonly httpMessage: IHttpMessage<T>;
+class Strategy<StrategyTypes> implements IStrategy<StrategyTypes> {
+    readonly httpMessage: IHttpMessage<StrategyTypes>;
     executedDate: Date | undefined;
     executedBy: Person | undefined;
 
-    constructor(httpMessage: IHttpMessage<T>) {
+    constructor(httpMessage: IHttpMessage<StrategyTypes>) {
         this.httpMessage = httpMessage;
     }
     getExecutedDate(): Date | undefined {
@@ -24,7 +30,7 @@ class GetEntityStrategy<T> implements IStrategy<T> {
         return this.executedBy;
     }
 
-    async execute(): Promise<IHttpMessage<T>> {
+    async execute(): Promise<IHttpMessage<StrategyTypes>> {
         return await this.httpMessage.executeRequestMessage();
     }
 

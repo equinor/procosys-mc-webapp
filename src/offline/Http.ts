@@ -1,4 +1,5 @@
 import { Person } from '../services/apiTypes';
+import { StrategyTypes } from './Strategy';
 
 export interface IHttpRequestMessage {
     baseUrl: string;
@@ -6,26 +7,27 @@ export interface IHttpRequestMessage {
     headers: ['Content-Type', 'application/json'];
     method: string;
     body: string;
+    urlsearchparams: URLSearchParams;
 }
 export interface IHttpResponseMessage {
     baseUrl: string;
     path: string;
-    headers: string[];
+    headers: Record<string, string>;
     contentType: string;
     content: string;
 }
 
-export interface IHttpMessage<T> {
-    readonly client: IHttpClient<T>;
+export interface IHttpMessage<StrategyTypes> {
+    readonly client: IHttpClient<StrategyTypes>;
     request: IHttpRequestMessage;
     response: IHttpResponseMessage;
-    data: Array<T>;
+    data: Array<StrategyTypes>;
     executedDate: Date;
     executedBy: Person;
 
-    executeRequestMessage(): Promise<IHttpMessage<T>>;
+    executeRequestMessage(): Promise<IHttpMessage<StrategyTypes>>;
     getHash(): string;
-    getData(): Array<T>;
+    getData(): Array<StrategyTypes>;
 }
 
 export interface IHttpClient<T> {

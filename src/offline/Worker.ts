@@ -1,6 +1,6 @@
 import { IStrategy } from './Strategy';
 
-export interface IWorker<T> {
+export interface IWorker<StrategyTypes> {
     doWork(): void;
-    addWork(strategy: IStrategy<T>): void;
+    addWork(strategy: IStrategy<StrategyTypes>): void;
 }
