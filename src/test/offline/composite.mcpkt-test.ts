@@ -17,4 +17,13 @@ describe('Composite and leaf testing', () => {
             'Branch(Leaf:op-type+Leaf:op-type+Leaf:op-type)'
         );
     });
+    test('Add leaf to component', () => {
+        const operationType: LeafOperationType = { type: 'op-type' };
+        const mcPkt = new Composite();
+        mcPkt.add(new Leaf(operationType));
+        
+        expect(mcPkt.operation()).toBe(
+            'Branch(Leaf:op-type+Leaf:op-type+Leaf:op-type)'
+        );
+    });
 });
