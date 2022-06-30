@@ -1,8 +1,9 @@
 import { Attachment } from './../services/apiTypes';
 import { CheckListSubTypes, PunchSubTypes, SubTypesAttachment } from './Entity';
 import { Data } from '@microsoft/applicationinsights-common';
-import { IHttpMessage, IHttpRequestMessage } from './Http';
+import { HttpMessage, IHttpMessage, IHttpRequestMessage } from './Http';
 import { Person } from '../services/apiTypes';
+import { ProcosysApiService } from '../services/procosysApi';
 
 export type StrategyTypes =
     | CheckListSubTypes
@@ -11,6 +12,7 @@ export type StrategyTypes =
 
 export type ApiType = Attachment;
 export interface IStrategy<ApiType> {
+    service: ProcosysApiService;
     httpMessage: IHttpMessage<ApiType>;
     execute(): void;
     getExecutedDate(): Date | undefined;
@@ -19,11 +21,13 @@ export interface IStrategy<ApiType> {
 
 class Strategy<StrategyTypes> implements IStrategy<ApiType> {
     readonly httpMessage: IHttpMessage<ApiType>;
+    service: ProcosysApiService;
     executedDate: Date | undefined;
     executedBy: Person | undefined;
 
-    constructor(httpMessage: IHttpMessage<ApiType>) {
-        this.httpMessage = httpMessage;
+    constructor(service: ProcosysApiService) {
+        this.httpMessage = new HttpMessage<Attachment>();
+        this.service = service;
     }
     getExecutedDate(): Date | undefined {
         return this.executedDate;

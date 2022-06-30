@@ -41,6 +41,7 @@ export type PunchSubTypes =
     | NewPunch
     | PunchItem;
 
+export type ApiType = Attachment;
 export type SubTypesAttachment = Attachment;
 
 export class Entity<EntityTypes, CheckListSubTypes>
@@ -60,7 +61,7 @@ export class Entity<EntityTypes, CheckListSubTypes>
     }
     addWork<S>(strategy: IStrategy<S>): void {
         throw new Error('Method not implemented.');
-    }   
+    }
 }
 
 export abstract class McPkg<McPkgPreview> extends Entity<

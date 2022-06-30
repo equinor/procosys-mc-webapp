@@ -1,0 +1,34 @@
+Work Item Type, Title, Description, Effort
+PRODUCT BACKLOG ITEM, Backend-Punch-NotBeInAClosedProject, Forslag A: filtrere bort slike når man går offline -> ingen arbeid i app. Forslag B: utvide DTO med info -> app må disable redigering av slike, 12.8
+PRODUCT BACKLOG ITEM, Backend-Punch-NotBeAPunchListItemWithStatusControlledBySwcr, Forslag A: filtrere bort slike når man går offline -> ingen arbeid i app. Forslag B: utvide DTO med info -> app må disable redigering av slike, 12.8
+PRODUCT BACKLOG ITEM, Backend-Checklist-NotBeInAClosedProject, Forslag A: filtrere bort slike når man går offline -> ingen arbeid i app. Forslag B: utvide DTO med info -> app må disable redigering av slike, 12.8
+PRODUCT BACKLOG ITEM, Backend-Checklist-NotBeForVoidedTag, Forslag A: filtrere bort slike når man går offline -> ingen arbeid i app. Forslag B: utvide DTO med info -> app må disable redigering av slike, 12.8
+PRODUCT BACKLOG ITEM, Backend-Checklist-NotBePartOfCertificateSentToCommissioning, Forslag A: filtrere bort slike når man går offline -> ingen arbeid i app. Forslag B: utvide DTO med info -> app må disable redigering av slike, 12.8
+PRODUCT BACKLOG ITEM, Frontend-LoadSaveScope-ReactComponents, Vi trenger 2 stk komponenter for å 1. Lagre 2. Hente/Slette et offline scope, 48
+PRODUCT BACKLOG ITEM, Backend-LoadSaveScope-Storage-Storage, Database for å lagre scopes (Evt. Blob), 48
+PRODUCT BACKLOG ITEM, Backend-LoadSaveScope-Storage-Delete, Main API for sletting av et offline scope, 13
+PRODUCT BACKLOG ITEM, Backend-LoadSaveScope-Storage_Load, Main API for henting av offline scope, 13
+PRODUCT BACKLOG ITEM, Backend-LoadSaveScope-Storage-Save, Main API for lagring av offline scope, 13
+PRODUCT BACKLOG ITEM, Frontend-Loading offline scope skjer ved a trykke på offline mode, 13
+PRODUCT BACKLOG ITEM, Backend-GetMcPkt, Faktisk hente ned McPkt (Persistere til database produsere indekser Lage en child of index), 48
+PRODUCT BACKLOG ITEM, Backend-GetWorkOrder, Hente ned Workorder  (Persistere til database produsere indekser Lage en child of index), 48
+PRODUCT BACKLOG ITEM, Backend-GetTag, Hente ned Tag (Persistere til database produsere indekser Lage en child of index), 48
+PRODUCT BACKLOG ITEM, Backend-GetTag, Hente ned Tag (Persistere til database produsere indekser Lage en child of index), 48
+PRODUCT BACKLOG ITEM, Frontend-ReactComponent-LoadingProgressIndicator, Hente ned Data - Komponent for Visualisering av nedlasting progresjon, 13
+PRODUCT BACKLOG ITEM, Frontend-Play-Overføring av alle PUT|POST (Data som er endret) til Main API, Empty, 25.6
+PRODUCT BACKLOG ITEM, Frontend-Play-Responsen fra Main API lagres som en kvittering i database, Empty, 12.8
+PRODUCT BACKLOG ITEM, Frontend-Play-Ved evt. feil. Stopper øvring overføring av alle tilsvarende endringer på gitt Entitet, Empty, 25.6
+PRODUCT BACKLOG ITEM, Frontend-Play-Ved evt. feil. Lager feilinnformasjon i Kvittering (Validaringsfeil m.f), Empty, 12.8
+PRODUCT BACKLOG ITEM, Frontend-Play-UI-Progressbar for overføring av offline scope, Empty, 12.8
+PRODUCT BACKLOG ITEM, Frontend-Play-Slette offline scope - Slette innhold i local database og slette offline scope, Empty, 32
+PRODUCT BACKLOG ITEM, Frontend-Play-Slette offline scope - UI - Slette innhold i local database og slette offline scope, Empty, 25.6
+PRODUCT BACKLOG ITEM, Frontend-Play-Prøve igjen funksjon - Spille av det som feilet sist gang (HttpStatusCode er avgjørende for nytt forsøk), Empty, 32
+PRODUCT BACKLOG ITEM, Frontend-Play-Prøve igjen funksjon - UI - Spille av det som feilet sist gang (HttpStatusCode er avgjørende for nytt forsøk), Empty, 12.8
+PRODUCT BACKLOG ITEM, Backend-House keeping Changes i offline modus, Når en endring finner sted må databasen oppdateres med endrinen. Dvs. en CheckList endring. fører til at tabellen med `Data` må oppdateres med endrigen. slik at brukeren `ser` at faktisk ser endringen (I offline modus), 48
+PRODUCT BACKLOG ITEM, Frontend-Play-Ferdigstilles - Feil rapport publiseres til et nytt endepkt. på Main API (dvs. kvittering), Empty, 13
+PRODUCT BACKLOG ITEM, Frontend-Play-Ferdigstilles - UI - Feil rapport publiseres til et nytt endepkt. på Main API (dvs. kvittering), Empty, 32
+PRODUCT BACKLOG ITEM, Frontend-Hente ned CommPkt [Ny funksjonalitet i MC App] (Persistere til database. produsere indekser. Lage en child of index), Empty, 48
+PRODUCT BACKLOG ITEM, Frontend-Søk etter CommPkt nummer med en egen syntaks  (!CommPkt-XXXX), Empty, 26
+PRODUCT BACKLOG ITEM, Backend-API - For å hente ut alle TAGs av en CommPkt, Empty, 26
+PRODUCT BACKLOG ITEM, Backend-API - For å hente ut alle POs av en CommPkt, Empty, 26
+PRODUCT BACKLOG ITEM, Backend-API - For å hente ut alle WOs av en CommPkt, Empty, 26
