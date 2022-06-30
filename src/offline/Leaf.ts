@@ -6,11 +6,9 @@ import { ProcosysApiService } from '../services/procosysApi';
 
 export class Leaf extends Component {
     readonly operationType: LeafOperationType;
-    readonly procosysApiService: ProcosysApiService;
-    constructor(operationType: LeafOperationType, service: ProcosysApiService) {
+    constructor(operationType: LeafOperationType) {
         super();
         this.operationType = operationType;
-        this.procosysApiService = service;
     }
 
     public operation(): string {
@@ -19,15 +17,15 @@ export class Leaf extends Component {
     }
 }
 
-export class GetCheckListAttachmentsLeaf extends Leaf {
+export class AttachmentLeaf extends Leaf {
     strategy: IStrategy<Attachment>;
-    constructor(service: ProcosysApiService) {
-        super({ type: 'CheckListOperationType' }, service);
+    constructor() {
+        super({ type: 'CheckListOperationType' });
         this.strategy = new AttachmentStrategy();
     }
 
     public operation(): string {
-        // return 'Leaf';
+        const strategyResult = this.strategy.execute();
         return `Leaf:${this.operationType.type}`;
     }
 }

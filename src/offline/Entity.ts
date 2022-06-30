@@ -10,6 +10,7 @@ import {
     PunchPriority,
     PunchSort,
     PunchType,
+    Tag,
 } from './../services/apiTypes';
 import { Attachments, Checklist } from '@equinor/procosys-webapp-components';
 import { PkceCodes } from '@azure/msal-common';
@@ -41,7 +42,7 @@ export type PunchSubTypes =
     | NewPunch
     | PunchItem;
 
-export type ApiType = Attachment;
+export type ApiType = Attachment | Tag | ChecklistPreview | ChecklistDetails;
 export type SubTypesAttachment = Attachment;
 
 export class Entity<EntityTypes, CheckListSubTypes>

@@ -1,7 +1,6 @@
-// import { IHttpResponseMessage } from './Http';
 import { Person } from '../services/apiTypes';
-import { StrategyTypes } from './Strategy';
-import { useCommonHooks } from '../../src/utils/useCommonHooks';
+import useCommonHooks from '../utils/useCommonHooks';
+import axios from 'axios';
 
 export interface IHttpRequestMessage {
     baseUrl: string | undefined;
@@ -54,16 +53,22 @@ export class HttpMessage<ApiType> implements IHttpMessage<ApiType> {
     data: ApiType[];
     executedDate: Date | undefined;
     executedBy: Person | undefined;
-    
-    
 
-    constructor() {    
+    constructor() {
         this.data = new Array<ApiType>();
+        this.request = new HttpRequestMessage();
+        this.response = new HttpResponseMessage();
     }
 
-    executeRequestMessage(): Promise<IHttpMessage<ApiType>> {
-        
-        
+    async executeRequestMessage(): Promise<IHttpMessage<ApiType>> {
+        const user = await this.getUser();
+        const accessToken = await this.getAccessToken();
+
+        /* HERE WE NEED TO EITHER CHANGE THE API OR MAKE A NEW CONCEPTS Due to no access to AxiosConfiguration (Or request and response data)
+        1. Suggestion, we can reuse and add more functionality to the existing one 
+        2. New super clever way of doing an api class definition (Will break scope))
+        */
+
         throw new Error('Method not implemented.');
     }
     getHash(): string {
@@ -76,15 +81,17 @@ export class HttpMessage<ApiType> implements IHttpMessage<ApiType> {
         throw new Error('Method not implemented.');
     }
 
-    async getAccessToken(): Promise<string> {
-        const { auth, api, offlineState, setOfflineState } = useCommonHooks();
-        const authConfiguration = await this.auth.getAuthConfig();
-        const accessToken = await auth.getAccessToken(
-            authConfiguration.configurationScope
-        );
+    async getUser(): Promise<string | undefined> {
+        const { auth, api, procosysApiSettings, params } = useCommonHooks();
+        return await auth.getUserName();
+    }
 
-        const tags = await api.getTag();
-
+    async getAccessToken(): Promise<string | null> {
+        const { auth, api, procosysApiSettings, params } = useCommonHooks();
+        const scope = procosysApiSettings.scope;
+        const accessToken = await auth.getAccessToken(scope);
+        const { token, cancel } = axios.CancelToken.source();
+        const tagResponse = await api.getTag(params.plant, 12, token);
         return accessToken ? accessToken : null;
     }
 }

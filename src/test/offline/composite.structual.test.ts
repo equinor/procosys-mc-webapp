@@ -1,6 +1,6 @@
 import { LeafOperationType } from './../../offline/Composite';
 import { Component, Composite } from '../../offline/Composite';
-import { Leaf } from '../../offline/Leaf';
+import { AttachmentLeaf, Leaf } from '../../offline/Leaf';
 
 describe('Composite and leaf testing', () => {
     beforeAll(() => {});
@@ -23,7 +23,7 @@ describe('Composite and leaf testing', () => {
         const operationGetType: LeafOperationType = { type: 'op-type2' };
 
         const composite1 = new Composite();
-        composite1.add(new Leaf(operationType));
+        composite1.add(new AttachmentLeaf(operationType));
 
         const composite2 = new Composite();
         composite2.add(new Leaf(operationGetType));
