@@ -1,4 +1,4 @@
-import { AxiosInstance, CancelToken } from 'axios';
+import { AxiosInstance, AxiosResponse, CancelToken } from 'axios';
 import {
     PunchAction,
     UpdatePunchData,
@@ -42,6 +42,7 @@ import {
 type ProcosysApiServiceProps = {
     axios: AxiosInstance;
     apiVersion: string;
+    cb?: (res: AxiosResponse<any, any>) => AxiosResponse<any, any>;
 };
 
 const typeGuardErrorMessage = (expectedType: string): string => {
@@ -49,15 +50,22 @@ const typeGuardErrorMessage = (expectedType: string): string => {
 };
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
+const procosysApiService = ({
+    axios,
+    apiVersion,
+    cb = (res: AxiosResponse<any, any>): AxiosResponse<any, any> => res,
+}: ProcosysApiServiceProps) => {
     // General
     const getVersion = (): string => {
         return apiVersion;
     };
     const getPlants = async (): Promise<Plant[]> => {
-        const { data } = await axios.get(
-            `Plants?includePlantsWithoutAccess=false${apiVersion}`
+        const { data } = cb(
+            await axios.get(
+                `Plants?includePlantsWithoutAccess=false${apiVersion}`
+            )
         );
+
         if (!isArrayOfType<Plant>(data, 'title')) {
             throw new Error(typeGuardErrorMessage('plants'));
         }

@@ -55,6 +55,8 @@ const initialize = async () => {
         configurationEndpoint,
         configurationAccessToken
     );
+
+    
     const baseApiInstance = baseApiService({
         authInstance,
         baseURL: appConfig.procosysWebApi.baseUrl,
