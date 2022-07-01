@@ -27,6 +27,7 @@ const baseApiService = ({
             throw new Error(pcsError.message);
         }
     });
+    
     axiosInstance.interceptors.response.use(
         (response) => {
             if (
@@ -34,8 +35,9 @@ const baseApiService = ({
                 !(response.data instanceof Blob)
             ) {
                 response.data = objectToCamelCase(response.data);
+                
             }
-            return response;
+            return cb(response);
         },
         (error) => {
             if (axios.isCancel(error)) {
