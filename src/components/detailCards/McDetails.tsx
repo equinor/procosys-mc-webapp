@@ -4,6 +4,7 @@ import { Caption, COLORS } from '../../style/GlobalStyles';
 import { McPkgPreview } from '../../services/apiTypes';
 import useCommonHooks from '../../utils/useCommonHooks';
 import { McPackageStatusIcon } from '../icons/McPackageStatusIcon';
+import { Checkbox } from '@equinor/eds-core-react';
 
 const McDetailsWrapper = styled.article<{ clickable: boolean }>`
     cursor: ${(props): string => (props.clickable ? 'pointer' : 'default')};
@@ -66,6 +67,11 @@ const HeaderWrapper = styled.div<{ clickable: boolean }>`
     }
 `;
 
+export const CheckboxWrapper = styled.div`
+    margin-left: 80px;
+    margin-top: -15px;
+`;
+
 type McDetailsProps = {
     mcPkgDetails: McPkgPreview;
     clickable?: boolean;
@@ -122,6 +128,15 @@ const McDetails = ({
                 <Caption>{mcPkgDetails.description}</Caption>
                 <Caption>{mcPkgDetails.phaseCode}</Caption>
             </DetailsWrapper>
+            {clickable && (
+                <CheckboxWrapper>
+                    <Checkbox
+                        onClick={(e): void => {
+                            e.stopPropagation();
+                        }}
+                    />
+                </CheckboxWrapper>
+            )}
         </McDetailsWrapper>
     );
 };
