@@ -12,6 +12,7 @@ import {
 import SideMenu from '../../components/navigation/SideMenu';
 import { Switch } from '@equinor/eds-core-react';
 import useCommonHooks from '../../utils/useCommonHooks';
+import { COLORS } from '../../style/GlobalStyles';
 
 const SearchPageWrapper = styled.main`
     padding: 0 4%;
@@ -31,7 +32,7 @@ const ButtonsWrapper = styled.div`
 `;
 
 const OfflineBanner = styled.div`
-    background: #e63535;
+    background: ${COLORS.mossGreen};
     color: white;
     text-align: center;
     font-weight: bold;
@@ -102,6 +103,7 @@ const Search = (): JSX.Element => {
                     }}
                     checked={offlineState ? true : false}
                 />
+
                 {snackbar}
             </SearchPageWrapper>
         </>
