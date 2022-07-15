@@ -8,10 +8,14 @@ import {
     ProcosysButton,
     SearchTypeButton,
     useSnackbar,
+    NavigationFooter,
+    FooterButton,
 } from '@equinor/procosys-webapp-components';
 import SideMenu from '../../components/navigation/SideMenu';
 import { Switch } from '@equinor/eds-core-react';
 import useCommonHooks from '../../utils/useCommonHooks';
+import { COLORS } from '../../style/GlobalStyles';
+import EdsIcon from '../../components/icons/EdsIcon';
 
 const SearchPageWrapper = styled.main`
     padding: 0 4%;
@@ -31,7 +35,7 @@ const ButtonsWrapper = styled.div`
 `;
 
 const OfflineBanner = styled.div`
-    background: #e63535;
+    background: ${COLORS.mossGreen};
     color: white;
     text-align: center;
     font-weight: bold;
@@ -47,7 +51,7 @@ export enum SearchType {
 const Search = (): JSX.Element => {
     const [searchType, setSearchType] = useState<string>();
     const { snackbar, setSnackbarText } = useSnackbar();
-    const { offlineState, setOfflineState } = useCommonHooks();
+    const { offlineState, setOfflineState, history, url } = useCommonHooks();
 
     const determineComponent = (): JSX.Element => {
         if (searchType === undefined) {
@@ -102,8 +106,29 @@ const Search = (): JSX.Element => {
                     }}
                     checked={offlineState ? true : false}
                 />
+
                 {snackbar}
             </SearchPageWrapper>
+            <NavigationFooter>
+                <FooterButton
+                    active={!history.location.pathname.includes('/bookmark')}
+                    goTo={(): void => history.push(url)}
+                    icon={<EdsIcon name="search" color={COLORS.mossGreen} />}
+                    label="Search"
+                />
+                <FooterButton
+                    active={history.location.pathname.includes('/bookmark')}
+                    goTo={(): void => history.push(`${url}/bookmark`)}
+                    icon={
+                        <EdsIcon
+                            name="bookmark_outlined"
+                            color={COLORS.mossGreen}
+                        />
+                    }
+                    label={'Offline bookmarks'}
+                    numberOfItems={1}
+                />
+            </NavigationFooter>
         </>
     );
 };

@@ -196,6 +196,31 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
         return data;
     };
 
+    const postEntityDetails = async (
+        plantId: string,
+        searchType: string,
+        entityId: string,
+        cancelToken: CancelToken
+    ): Promise<McPkgPreview | WoPreview | Tag | PoPreview> => {
+        let url = '';
+        if (searchType === SearchType.MC) {
+            url = `McPkg?plantId=PCS$${plantId}&mcPkgId=${entityId}${apiVersion}`;
+        } else if (searchType === SearchType.WO) {
+            url = `WorkOrder?plantId=PCS$${plantId}&WorkOrderId=${entityId}${apiVersion}`;
+        } else if (searchType === SearchType.Tag) {
+            url = `Tag?plantId=PCS$${plantId}&tagId=${entityId}${apiVersion}`;
+        } else if (searchType === SearchType.PO) {
+            url = `PurchaseOrder?plantId=PCS$${plantId}&callOffId=${entityId}${apiVersion}`;
+        } else {
+            throw new Error('The chosen scope type is not supported.');
+        }
+        const { data } = await axios.post(url, { cancelToken });
+        if (!isCorrectDetails(data, searchType)) {
+            throw new Error(typeGuardErrorMessage('details'));
+        }
+        return data;
+    };
+
     const getPunchAttachments = async (
         plantId: string,
         punchItemId: number,
@@ -611,6 +636,7 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
         putUpdatePunch,
         getSearchResults,
         getEntityDetails,
+        postEntityDetails,
         getPersonsByName,
         getSavedSearches,
         deleteSavedSearch,
