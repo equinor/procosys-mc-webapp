@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import withAccessControl from '../../services/withAccessControl';
 import styled from 'styled-components';
 import { Banner } from '@equinor/eds-core-react';
@@ -14,6 +14,16 @@ import SideMenu from '../../components/navigation/SideMenu';
 import useCommonHooks from '../../utils/useCommonHooks';
 import { COLORS } from '../../style/GlobalStyles';
 import EdsIcon from '../../components/icons/EdsIcon';
+import PlantContext from '../../contexts/PlantContext';
+import { getCurrentBookmarks } from '../../utils/useBookmarks';
+import EntityPageDetailsCard from '../Entity/EntityPageDetailsCard';
+import {
+    McPkgPreview,
+    WoPreview,
+    Tag,
+    PoPreview,
+} from '../../services/apiTypes';
+import { AsyncStatus } from '../../contexts/McAppContext';
 
 const OfflineBookmarkPageWrapper = styled.main`
     padding: 0 4%;
@@ -31,6 +41,10 @@ const OfflineBanner = styled.div`
     font-weight: bold;
 `;
 
+const BookmarksWrapper = styled.div`
+    margin: 16px 0;
+`;
+
 export enum SearchType {
     PO = 'PO',
     MC = 'MC',
@@ -41,6 +55,16 @@ export enum SearchType {
 const OfflineBookmark = (): JSX.Element => {
     const { snackbar, setSnackbarText } = useSnackbar();
     const { offlineState, history, url } = useCommonHooks();
+    const { currentProject } = useContext(PlantContext);
+    const bookmarks = currentProject
+        ? getCurrentBookmarks(currentProject.id.toString())
+        : [];
+    const [details, setDetails] = useState<
+        McPkgPreview | WoPreview | Tag | PoPreview
+    >();
+    const [fetchDetailsStatus, setFetchDetailsStatus] = useState(
+        AsyncStatus.LOADING
+    );
 
     return (
         <>
@@ -52,27 +76,31 @@ const OfflineBookmark = (): JSX.Element => {
                     leftContent={<ProcosysButton />}
                     rightContent={<SideMenu />}
                 />
-
-                <Banner>
-                    <Banner.Icon>
-                        <EdsIcon
-                            name={'info_circle'}
-                            color={COLORS.mossGreen}
-                        />
-                    </Banner.Icon>
-                    <Banner.Message role={'paragraph'}>
-                        The bookmark list is empty
-                    </Banner.Message>
-                </Banner>
-
-                <p>PO</p>
-
-                <p>MC</p>
-
-                <p>WO</p>
-
-                <p>Tag</p>
-
+                <BookmarksWrapper>
+                    {bookmarks.length < 1 ? (
+                        <Banner>
+                            <Banner.Icon>
+                                <EdsIcon
+                                    name={'info_circle'}
+                                    color={COLORS.mossGreen}
+                                />
+                            </Banner.Icon>
+                            <Banner.Message role={'paragraph'}>
+                                The bookmark list is empty
+                            </Banner.Message>
+                        </Banner>
+                    ) : (
+                        <>
+                            {bookmarks.map((bookmark) => (
+                                <EntityPageDetailsCard
+                                    key={bookmark}
+                                    fetchDetailsStatus={fetchDetailsStatus}
+                                    details={details}
+                                />
+                            ))}
+                        </>
+                    )}
+                </BookmarksWrapper>
                 {snackbar}
             </OfflineBookmarkPageWrapper>
             <NavigationFooter>
@@ -93,8 +121,8 @@ const OfflineBookmark = (): JSX.Element => {
                             color={COLORS.mossGreen}
                         />
                     }
-                    label={'Offline bookmarks'}
-                    numberOfItems={2}
+                    label={'Bookmarks'}
+                    numberOfItems={bookmarks.length}
                 />
             </NavigationFooter>
         </>

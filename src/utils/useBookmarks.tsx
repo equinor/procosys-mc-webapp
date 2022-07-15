@@ -3,10 +3,10 @@ import { useContext, useEffect, useState } from 'react';
 import PlantContext from '../contexts/PlantContext';
 
 const cleanUpBookmarks = (bookmarks: any): string[] => {
-    const commPkgIds: string[] = bookmarks.filter(
+    const mcPkgIds: string[] = bookmarks.filter(
         (bookmark: unknown) => typeof bookmark === 'string'
     );
-    return Array.from(new Set(commPkgIds));
+    return Array.from(new Set(mcPkgIds));
 };
 
 export const getCurrentBookmarks = (projectId: string): string[] => {
@@ -20,7 +20,7 @@ export const getCurrentBookmarks = (projectId: string): string[] => {
 };
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-const useBookmarks = (commPkgId: string) => {
+const useBookmarks = (mcPkgId: string) => {
     const { currentProject } = useContext(PlantContext);
     const projectId = currentProject?.id.toString() as string;
     const [currentBookmarks, setCurrentBookmarks] = useState<string[]>();
@@ -36,22 +36,22 @@ const useBookmarks = (commPkgId: string) => {
         if (!currentBookmarks) return;
         setIsBookmarked(
             currentBookmarks.some(
-                (commPkgIdFromCache) => commPkgIdFromCache === commPkgId
+                (mcPkgIdFromCache) => mcPkgIdFromCache === mcPkgId
             )
         );
-    }, [currentBookmarks, commPkgId]);
+    }, [currentBookmarks, mcPkgId]);
 
     // Update currentbookmarks whenever user bookmarks/unbookmarks a pkg
     useEffect(() => {
         if (!currentBookmarks) return;
         if (isBookmarked) {
-            if (!commPkgId) return;
-            setCurrentBookmarks([...currentBookmarks, commPkgId]);
+            if (!mcPkgId) return;
+            setCurrentBookmarks([...currentBookmarks, mcPkgId]);
         } else {
             if (currentBookmarks.length < 1) return;
             setCurrentBookmarks(
                 currentBookmarks.filter(
-                    (existingCommPkgId) => existingCommPkgId !== commPkgId
+                    (existingmcPkgId) => existingmcPkgId !== mcPkgId
                 )
             );
         }

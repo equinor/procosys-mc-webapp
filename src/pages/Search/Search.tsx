@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import withAccessControl from '../../services/withAccessControl';
 import styled from 'styled-components';
 import SearchArea from './Searching/SearchArea';
@@ -16,6 +16,8 @@ import { Switch } from '@equinor/eds-core-react';
 import useCommonHooks from '../../utils/useCommonHooks';
 import { COLORS } from '../../style/GlobalStyles';
 import EdsIcon from '../../components/icons/EdsIcon';
+import { getCurrentBookmarks } from '../../utils/useBookmarks';
+import PlantContext from '../../contexts/PlantContext';
 
 const SearchPageWrapper = styled.main`
     padding: 0 4%;
@@ -52,6 +54,14 @@ const Search = (): JSX.Element => {
     const [searchType, setSearchType] = useState<string>();
     const { snackbar, setSnackbarText } = useSnackbar();
     const { offlineState, setOfflineState, history, url } = useCommonHooks();
+    const { currentProject } = useContext(PlantContext);
+    const bookmarks = currentProject
+        ? getCurrentBookmarks(currentProject.id.toString())
+        : [];
+
+    useEffect(() => {
+        if (bookmarks) return;
+    }, [bookmarks]);
 
     const determineComponent = (): JSX.Element => {
         if (searchType === undefined) {
@@ -126,7 +136,7 @@ const Search = (): JSX.Element => {
                         />
                     }
                     label={'Offline bookmarks'}
-                    numberOfItems={1}
+                    numberOfItems={bookmarks.length}
                 />
             </NavigationFooter>
         </>

@@ -7,7 +7,7 @@ import SelectPlant from './pages/SelectPlant/SelectPlant';
 import EntityPage from './pages/Entity/EntityPage';
 import ChecklistPage from './pages/Checklist/ChecklistPage';
 import PunchPage from './pages/Punch/PunchPage';
-import OfflineBookmark from './pages/OfflineBookmark/OfflineBookmark';
+import OfflineBookmark from './pages/Bookmarks/Bookmarks';
 import SavedSearchRouter from './SavedSearchRouter';
 
 const McRouter = (): JSX.Element => {
