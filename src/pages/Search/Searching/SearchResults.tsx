@@ -7,7 +7,6 @@ import {
     TagPreview,
     WoPreview,
 } from '../../../services/apiTypes';
-import { SearchType } from '../Search';
 import McDetails from '../../../components/detailCards/McDetails';
 import styled from 'styled-components';
 import { isArrayOfType } from '../../../services/apiTypeGuards';
@@ -18,6 +17,7 @@ import {
     SkeletonLoadingPage,
     TextIcon,
 } from '@equinor/procosys-webapp-components';
+import { SearchType } from '../../../typings/enums';
 
 const SearchResultAmountWrapper = styled.h6`
     margin: 10px 0px;

@@ -10,6 +10,7 @@ import {
     SearchTypeButton,
 } from '@equinor/procosys-webapp-components';
 import SideMenu from '../../components/navigation/SideMenu';
+import { SearchType } from '../../typings/enums';
 
 const SearchPageWrapper = styled.main`
     padding: 0 4%;
@@ -27,13 +28,6 @@ const ButtonsWrapper = styled.div`
         margin-right: 10px;
     }
 `;
-
-export enum SearchType {
-    PO = 'PO',
-    MC = 'MC',
-    WO = 'WO',
-    Tag = 'Tag',
-}
 
 const Search = (): JSX.Element => {
     const [searchType, setSearchType] = useState<string>();

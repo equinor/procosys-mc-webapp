@@ -11,9 +11,7 @@ import {
     FormButtonWrapper,
     NewPunchFormWrapper,
 } from '../../Checklist/NewPunch/NewPunchForm';
-import useClearPunchFacade, {
-    UpdatePunchEndpoint,
-} from './useClearPunchFacade';
+import useClearPunchFacade from './useClearPunchFacade';
 import styled from 'styled-components';
 import useCommonHooks from '../../../utils/useCommonHooks';
 import EdsIcon from '../../../components/icons/EdsIcon';
@@ -29,6 +27,7 @@ import {
     SkeletonLoadingPage,
 } from '@equinor/procosys-webapp-components';
 import { AttachmentsWrapper } from '../../Checklist/NewPunch/NewPunch';
+import { UpdatePunchEndpoint } from '../../../typings/enums';
 
 export const PunchWrapper = styled.main``;
 

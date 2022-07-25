@@ -7,7 +7,6 @@ import {
     SavedSearch,
 } from '../../services/apiTypes';
 import useCommonHooks from '../../utils/useCommonHooks';
-import { SavedSearchType } from '../Search/SavedSearches/SavedSearchResult';
 import AsyncPage from '../../components/AsyncPage';
 import { isArrayOfType } from '../../services/apiTypeGuards';
 import {
@@ -19,6 +18,7 @@ import styled from 'styled-components';
 import { Button, DotProgress } from '@equinor/eds-core-react';
 import removeSubdirectories from '../../utils/removeSubdirectories';
 import { PageHeader } from '@equinor/procosys-webapp-components';
+import { SavedSearchType } from '../../typings/enums';
 
 const DetailsWrapper = styled.div`
     padding: 0 4%;

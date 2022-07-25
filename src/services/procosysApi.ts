@@ -1,11 +1,13 @@
-import { AxiosInstance, AxiosResponse, CancelToken } from 'axios';
 import {
     PunchAction,
     UpdatePunchData,
+} from '@equinor/procosys-webapp-components';
+import { AxiosInstance, AxiosResponse, CancelToken } from 'axios';
+import {
+    SavedSearchType,
+    SearchType,
     UpdatePunchEndpoint,
-} from '../pages/Punch/ClearPunch/useClearPunchFacade';
-import { SavedSearchType } from '../pages/Search/SavedSearches/SavedSearchResult';
-import { SearchType } from '../pages/Search/Search';
+} from '../typings/enums';
 import {
     isArrayofPerson,
     isArrayOfType,

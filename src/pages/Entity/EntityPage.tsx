@@ -15,7 +15,6 @@ import withAccessControl from '../../services/withAccessControl';
 import Axios from 'axios';
 import EdsIcon from '../../components/icons/EdsIcon';
 import { COLORS } from '../../style/GlobalStyles';
-import { SearchType } from '../Search/Search';
 import WorkOrderInfo from './WorkOrderInfo';
 import {
     BackButton,
@@ -27,6 +26,7 @@ import {
     Scope,
 } from '@equinor/procosys-webapp-components';
 import EntityPageDetailsCard from './EntityPageDetailsCard';
+import { SearchType } from '../../typings/enums';
 
 const EntityPageWrapper = styled.main``;
 

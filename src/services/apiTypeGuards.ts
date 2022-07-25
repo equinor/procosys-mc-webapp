@@ -1,5 +1,4 @@
-import { SavedSearchType } from '../pages/Search/SavedSearches/SavedSearchResult';
-import { SearchType } from '../pages/Search/Search';
+import { SavedSearchType, SearchType } from '../typings/enums';
 import {
     CheckItem,
     ChecklistDetails,

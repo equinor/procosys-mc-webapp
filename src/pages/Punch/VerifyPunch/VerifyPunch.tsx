@@ -5,10 +5,9 @@ import styled from 'styled-components';
 import { AsyncStatus } from '../../../contexts/McAppContext';
 import { Attachment, PunchItem } from '../../../services/apiTypes';
 import useCommonHooks from '../../../utils/useCommonHooks';
-import { PunchAction } from '../ClearPunch/useClearPunchFacade';
 import useSnackbar from '../../../utils/useSnackbar';
 import removeSubdirectories from '../../../utils/removeSubdirectories';
-import { Attachments } from '@equinor/procosys-webapp-components';
+import { Attachments, PunchAction } from '@equinor/procosys-webapp-components';
 
 const VerifyPunchWrapper = styled.div`
     padding: 16px 4% 78px 4%;

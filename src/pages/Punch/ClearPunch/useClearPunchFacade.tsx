@@ -12,39 +12,11 @@ import {
 import ensure from '../../../utils/ensure';
 import useCommonHooks from '../../../utils/useCommonHooks';
 import useSnackbar from '../../../utils/useSnackbar';
-
-export enum UpdatePunchEndpoint {
-    Category = 'SetCategory',
-    Description = 'SetDescription',
-    RaisedBy = 'SetRaisedBy',
-    ClearingBy = 'SetClearingBy',
-    ActionByPerson = 'SetActionByPerson',
-    DueDate = 'setDueDate',
-    Type = 'SetType',
-    Sorting = 'SetSorting',
-    Priority = 'SetPriority',
-    Estimate = 'setEstimate',
-}
-
-export enum PunchAction {
-    CLEAR = 'Clear',
-    UNCLEAR = 'Unclear',
-    REJECT = 'Reject',
-    VERIFY = 'Verify',
-    UNVERIFY = 'Unverify',
-}
-
-export type UpdatePunchData =
-    | { CategoryId: number }
-    | { Description: string }
-    | { RaisedByOrganizationId: number }
-    | { ClearingByOrganizationId: number }
-    | { PersonId: number | null }
-    | { DueDate: string | null }
-    | { TypeId: number }
-    | { SortingId: number }
-    | { PriorityId: number }
-    | { Estimate: number | null };
+import {
+    PunchAction,
+    UpdatePunchData,
+} from '@equinor/procosys-webapp-components';
+import { UpdatePunchEndpoint } from '../../../typings/enums';
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const useClearPunchFacade = (
