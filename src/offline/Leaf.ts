@@ -26,6 +26,6 @@ export class AttachmentLeaf extends Leaf {
 
     public operation(): string {
         const strategyResult = this.strategy.execute();
-        return `Leaf:${this.operationType.type}`;
+        return `AttachmentLeaf:${this.operationType.type}`;
     }
 }

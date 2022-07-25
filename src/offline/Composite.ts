@@ -27,9 +27,15 @@ export abstract class Component implements IComponent {
     }
 
     save(): void {
+        //Only root can be saved
+        if (this.parent == null) {
+        }
         throw new Error('Method not implemented.');
     }
     load(): void {
+        //Only root can be saved
+        if (this.parent == null) {
+        }
         throw new Error('Method not implemented.');
     }
     public abstract operation(): string;
