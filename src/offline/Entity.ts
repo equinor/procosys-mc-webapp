@@ -1,6 +1,5 @@
 import {
     Attachment,
-    CheckItem,
     ChecklistDetails,
     CustomCheckItem,
     NewPunch,
@@ -24,6 +23,7 @@ import {
 import { IStrategy, StrategyTypes } from './Strategy';
 import { IWorker } from './Worker';
 import { IVisitor } from './Visitor';
+import { CheckItem } from '@equinor/procosys-webapp-components/dist/typings/apiTypes';
 
 export type EntityTypes = McPkgPreview | TagPreview | WoPreview | PoPreview;
 
