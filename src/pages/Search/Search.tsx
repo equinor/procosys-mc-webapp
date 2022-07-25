@@ -3,11 +3,11 @@ import withAccessControl from '../../services/withAccessControl';
 import styled from 'styled-components';
 import SearchArea from './Searching/SearchArea';
 import SavedSearches from './SavedSearches/SavedSearches';
-import useSnackbar from '../../utils/useSnackbar';
 import {
     Navbar,
     ProcosysButton,
     SearchTypeButton,
+    useSnackbar,
 } from '@equinor/procosys-webapp-components';
 import SideMenu from '../../components/navigation/SideMenu';
 import { SearchType } from '../../typings/enums';

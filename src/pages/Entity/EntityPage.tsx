@@ -161,11 +161,11 @@ const EntityPage = (): JSX.Element => {
                         render={(): JSX.Element => (
                             <PunchList
                                 fetchPunchListStatus={fetchPunchListStatus}
-                                onPunchClick={(punchId: number): void =>
+                                onPunchClick={(punch: PunchPreview): void =>
                                     history.push(
                                         `${removeSubdirectories(
                                             history.location.pathname
-                                        )}/punch-item/${punchId}`
+                                        )}/punch-item/${punch.id}`
                                     )
                                 }
                                 punchList={punchList}
