@@ -1,12 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Caption, COLORS } from '../../style/GlobalStyles';
 import { McPkgPreview } from '../../services/apiTypes';
 import useCommonHooks from '../../utils/useCommonHooks';
 import { McPackageStatusIcon } from '../icons/McPackageStatusIcon';
-import { Checkbox, Button } from '@equinor/eds-core-react';
+import { Button } from '@equinor/eds-core-react';
 import EdsIcon from '../icons/EdsIcon';
-import useBookmarks from '../../utils/useBookmarks';
+import { AsyncStatus } from '../../contexts/McAppContext';
 
 const McDetailsWrapper = styled.article<{ clickable: boolean }>`
     cursor: ${(props): string => (props.clickable ? 'pointer' : 'default')};
@@ -83,10 +83,42 @@ const McDetails = ({
     mcPkgDetails,
     clickable = true,
 }: McDetailsProps): JSX.Element => {
-    const { history, url } = useCommonHooks();
-    const { isBookmarked, setIsBookmarked } = useBookmarks(
-        mcPkgDetails.mcPkgNo
+    const { history, url, api, params } = useCommonHooks();
+    const [isBookmarked, setIsBookmarked] = useState(false);
+    const [postBookmarkStatus, setPostBookmarkStatus] = useState(
+        AsyncStatus.INACTIVE
     );
+
+    const handleSetBookmark = async (): Promise<void> => {
+        setPostBookmarkStatus(AsyncStatus.LOADING);
+        try {
+            await api.postSetBookmark(
+                params.plant,
+                params.searchType,
+                params.entityId
+            );
+            setPostBookmarkStatus(AsyncStatus.SUCCESS);
+        } catch (error) {
+            if (!(error instanceof Error)) return;
+            setPostBookmarkStatus(AsyncStatus.ERROR);
+        }
+    };
+
+    const handleDeleteBookmark = async (): Promise<void> => {
+        setPostBookmarkStatus(AsyncStatus.LOADING);
+        try {
+            await api.deleteBookmark(
+                params.plant,
+                params.searchType,
+                params.entityId
+            );
+            setPostBookmarkStatus(AsyncStatus.SUCCESS);
+        } catch (error) {
+            if (!(error instanceof Error)) return;
+            setPostBookmarkStatus(AsyncStatus.ERROR);
+        }
+    };
+
     return (
         <McDetailsWrapper
             onClick={(): void => {
@@ -140,6 +172,7 @@ const McDetails = ({
                         onClick={(e: React.MouseEvent<HTMLElement>): void => {
                             e.stopPropagation();
                             setIsBookmarked((prev) => !prev);
+                            handleSetBookmark();
                         }}
                     >
                         <EdsIcon

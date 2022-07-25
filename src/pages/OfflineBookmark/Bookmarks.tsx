@@ -5,7 +5,6 @@ import { Banner } from '@equinor/eds-core-react';
 import {
     Navbar,
     ProcosysButton,
-    useSnackbar,
     NavigationFooter,
     FooterButton,
     removeSubdirectories,
@@ -14,6 +13,7 @@ import SideMenu from '../../components/navigation/SideMenu';
 import useCommonHooks from '../../utils/useCommonHooks';
 import { COLORS } from '../../style/GlobalStyles';
 import EdsIcon from '../../components/icons/EdsIcon';
+import { AsyncStatus } from '../../contexts/McAppContext';
 
 const OfflineBookmarkPageWrapper = styled.main`
     padding: 0 4%;
@@ -38,9 +38,41 @@ export enum SearchType {
     Tag = 'Tag',
 }
 
-const OfflineBookmark = (): JSX.Element => {
-    const { snackbar, setSnackbarText } = useSnackbar();
-    const { offlineState, history, url } = useCommonHooks();
+const Bookmarks = (): JSX.Element => {
+    const { offlineState, history, url, api, params } = useCommonHooks();
+    const [postBookmarkStatus, setPostBookmarkStatus] = useState(
+        AsyncStatus.INACTIVE
+    );
+
+    const handleGetBookmarks = async (): Promise<void> => {
+        setPostBookmarkStatus(AsyncStatus.LOADING);
+        try {
+            await api.getBookmarks(
+                params.plant,
+                params.searchType,
+                params.entityId
+            );
+            setPostBookmarkStatus(AsyncStatus.SUCCESS);
+        } catch (error) {
+            if (!(error instanceof Error)) return;
+            setPostBookmarkStatus(AsyncStatus.ERROR);
+        }
+    };
+
+    const handleDeleteAllBookmarks = async (): Promise<void> => {
+        setPostBookmarkStatus(AsyncStatus.LOADING);
+        try {
+            await api.deleteAllBookmarks(
+                params.plant,
+                params.searchType,
+                params.entityId
+            );
+            setPostBookmarkStatus(AsyncStatus.SUCCESS);
+        } catch (error) {
+            if (!(error instanceof Error)) return;
+            setPostBookmarkStatus(AsyncStatus.ERROR);
+        }
+    };
 
     return (
         <>
@@ -72,8 +104,6 @@ const OfflineBookmark = (): JSX.Element => {
                 <p>WO</p>
 
                 <p>Tag</p>
-
-                {snackbar}
             </OfflineBookmarkPageWrapper>
             <NavigationFooter>
                 <FooterButton
@@ -101,7 +131,7 @@ const OfflineBookmark = (): JSX.Element => {
     );
 };
 
-export default withAccessControl(OfflineBookmark, [
+export default withAccessControl(Bookmarks, [
     'MCPKG/READ',
     'WO/READ',
     'TAG/READ',

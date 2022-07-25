@@ -196,43 +196,60 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
         return data;
     };
 
-    const postEntityDetails = async (
+    const postSetBookmark = async (
         plantId: string,
         searchType: string,
-        entityId: string,
-        cancelToken: CancelToken
-    ): Promise<McPkgPreview | WoPreview | Tag | PoPreview> => {
-        let url = '';
-        if (searchType === SearchType.MC) {
-            url = `McPkg?plantId=PCS$${plantId}&mcPkgId=${entityId}${apiVersion}`;
-        } else if (searchType === SearchType.WO) {
-            url = `WorkOrder?plantId=PCS$${plantId}&WorkOrderId=${entityId}${apiVersion}`;
-        } else if (searchType === SearchType.Tag) {
-            url = `Tag?plantId=PCS$${plantId}&tagId=${entityId}${apiVersion}`;
-        } else if (searchType === SearchType.PO) {
-            url = `PurchaseOrder?plantId=PCS$${plantId}&callOffId=${entityId}${apiVersion}`;
-        } else {
-            throw new Error('The chosen scope type is not supported.');
-        }
-        const { data } = await axios.post(url, { cancelToken });
-        if (!isCorrectDetails(data, searchType)) {
-            throw new Error(typeGuardErrorMessage('details'));
-        }
-        return data;
+        entityId: string
+    ): Promise<void> => {
+        console.log('postSetBookmark');
+        // await axios.post(
+        //     `McPkg?plantId=PCS$${plantId}&mcPkgId=${entityId}${apiVersion}`,
+        //     {
+        //         EntityId: entityId,
+        //     }
+        // );
     };
 
-    const getPunchAttachments = async (
+    const getBookmarks = async (
         plantId: string,
-        punchItemId: number,
-        cancelToken: CancelToken
-    ): Promise<Attachment[]> => {
-        const { data } = await axios.get(
-            `PunchListItem/Attachments?plantId=PCS$${plantId}&punchItemId=${punchItemId}&thumbnailSize=128${apiVersion}`,
-            {
-                cancelToken: cancelToken,
-            }
-        );
-        return data as Attachment[];
+        searchType: string,
+        entityId: string
+    ): Promise<void> => {
+        console.log('getBookmarks');
+        // await axios.get(
+        //     `McPkg?plantId=PCS$${plantId}&mcPkgId=${entityId}${apiVersion}`,
+        //     {
+        //         EntityId: entityId,
+        //     }
+        // );
+    };
+
+    const deleteBookmark = async (
+        plantId: string,
+        searchType: string,
+        entityId: string
+    ): Promise<void> => {
+        console.log('deleteBookmark');
+        // await axios.delete(
+        //     `McPkg?plantId=PCS$${plantId}&mcPkgId=${entityId}${apiVersion}`,
+        //     {
+        //         EntityId: entityId,
+        //     }
+        // );
+    };
+
+    const deleteAllBookmarks = async (
+        plantId: string,
+        searchType: string,
+        entityId: string
+    ): Promise<void> => {
+        console.log('deleteAllBookmarks');
+        // await axios.delete(
+        //     `McPkg?plantId=PCS$${plantId}&mcPkgId=${entityId}${apiVersion}`,
+        //     {
+        //         EntityId: entityId,
+        //     }
+        // );
     };
 
     //------------
@@ -296,6 +313,7 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
     //------------
     // PUNCH ITEMS
     // -----------
+
     const getPunchList = async (
         plantId: string,
         searchType: SearchType,
@@ -439,6 +457,20 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
             punchItemId,
             { headers: { 'Content-Type': 'application/json' } }
         );
+    };
+
+    const getPunchAttachments = async (
+        plantId: string,
+        punchItemId: number,
+        cancelToken: CancelToken
+    ): Promise<Attachment[]> => {
+        const { data } = await axios.get(
+            `PunchListItem/Attachments?plantId=PCS$${plantId}&punchItemId=${punchItemId}&thumbnailSize=128${apiVersion}`,
+            {
+                cancelToken: cancelToken,
+            }
+        );
+        return data as Attachment[];
     };
 
     const getPunchAttachment = async (
@@ -636,7 +668,10 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
         putUpdatePunch,
         getSearchResults,
         getEntityDetails,
-        postEntityDetails,
+        postSetBookmark,
+        getBookmarks,
+        deleteBookmark,
+        deleteAllBookmarks,
         getPersonsByName,
         getSavedSearches,
         deleteSavedSearch,
