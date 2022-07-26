@@ -11,6 +11,7 @@
     "@microsoft/applicationinsights-react-js": "^3.2.2",
     "@microsoft/applicationinsights-web": "^2.7.2",
     "axios": "^0.24.0",
+    "comlink": "^4.3.1",
     "dexie": "^3.2.2",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
