@@ -47,7 +47,7 @@ const App = ({
                 featureFlags={featureFlags}
             >
                 <Router basename={'/mc'}>
-                    <ErrorBoundary>
+                    {/* <ErrorBoundary>
                         <Switch>
                             <Route
                                 path="/:plant?/:project?"
@@ -55,7 +55,7 @@ const App = ({
                             />
                             <Route render={(): JSX.Element => <h1>404</h1>} />
                         </Switch>
-                    </ErrorBoundary>
+                    </ErrorBoundary> */}
                 </Router>
             </McAppContextProvider>
         </AppInsightsContext.Provider>
