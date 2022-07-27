@@ -131,7 +131,7 @@ const ChecklistPage = (): JSX.Element => {
                         <TagInfoWrapper tagId={details?.checkList.tagId} />
                     )}
                 />
-                <Route
+                {/* <Route
                     exact
                     path={`${path}/punch-list`}
                     render={(): JSX.Element => (
@@ -148,7 +148,7 @@ const ChecklistPage = (): JSX.Element => {
                             isChecklistPunchList
                         />
                     )}
-                />
+                /> */}
                 <Route
                     exact
                     path={`${path}/punch-list/new-punch`}

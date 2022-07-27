@@ -11,6 +11,7 @@ import {
 } from '@microsoft/applicationinsights-react-js';
 import { AppConfig, FeatureFlags } from './services/appConfiguration';
 import { SavedSearchType, SearchType } from './typings/enums';
+import { GetOfflineScope } from './OfflineScope';
 
 export type McParams = {
     plant: string;
@@ -39,26 +40,28 @@ const App = ({
     featureFlags,
 }: AppProps): JSX.Element => {
     return (
-        <AppInsightsContext.Provider value={reactPlugin}>
-            <McAppContextProvider
-                api={procosysApiInstance}
-                auth={authInstance}
-                appConfig={appConfig}
-                featureFlags={featureFlags}
-            >
-                <Router basename={'/mc'}>
-                    <ErrorBoundary>
-                        <Switch>
-                            <Route
-                                path="/:plant?/:project?"
-                                component={GeneralRouter}
-                            />
-                            <Route render={(): JSX.Element => <h1>404</h1>} />
-                        </Switch>
-                    </ErrorBoundary>
-                </Router>
-            </McAppContextProvider>
-        </AppInsightsContext.Provider>
+        <GetOfflineScope></GetOfflineScope>
+        // <AppInsightsContext.Provider value={reactPlugin}>
+        //     <McAppContextProvider
+        //         api={procosysApiInstance}
+        //         auth={authInstance}
+        //         appConfig={appConfig}
+        //         featureFlags={featureFlags}
+        //     >
+        //         <Router basename={'/mc'}>
+        //             {/* <ErrorBoundary>
+        //                 <Switch>
+        //                     <Route
+        //                         path="/:plant?/:project?"
+        //                         component={GeneralRouter}
+        //                     />
+        //                     <Route render={(): JSX.Element => <h1>404</h1>} />
+        //                 </Switch>
+        //             </ErrorBoundary> */}
+        //         </Router>
+        //     </McAppContextProvider>
+        //     <GetOfflineScope></GetOfflineScope>
+        // </AppInsightsContext.Provider>
     );
 };
 

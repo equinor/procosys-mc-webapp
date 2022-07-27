@@ -14,6 +14,7 @@ import {
     LoadingPage,
 } from '@equinor/procosys-webapp-components';
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
+import { GetOfflineScope } from './OfflineScope';
 
 serviceWorkerRegistration.register();
 
@@ -80,6 +81,8 @@ const initialize = async () => {
 
 (async (): Promise<void> => {
     render(<LoadingPage loadingText={'Initializing...'} />);
+    // eslint-disable-next-line react/jsx-no-undef
+
     try {
         const {
             authInstance,
@@ -103,11 +106,14 @@ const initialize = async () => {
             render(<LoadingPage loadingText={'Redirecting to login...'} />);
         } else {
             render(
-                <ErrorPage
-                    title="Unable to initialize app"
-                    description="Check your connection or reload this page and try again. If problem persists, contact customer support"
-                    actions={[<ReloadButton key={'reload'} />]}
-                />
+                <>
+                    <GetOfflineScope></GetOfflineScope>
+                    <ErrorPage
+                        title="Unable to initialize app"
+                        description="Check your connection or reload this page and try again. If problem persists, contact customer support"
+                        actions={[<ReloadButton key={'reload'} />]}
+                    />
+                </>
             );
         }
     }
