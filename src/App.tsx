@@ -11,7 +11,7 @@ import {
 } from '@microsoft/applicationinsights-react-js';
 import { AppConfig, FeatureFlags } from './services/appConfiguration';
 import { SavedSearchType, SearchType } from './typings/enums';
-import { GetOfflineScope } from './OfflineScope';
+import { GetOfflineScope, MakeHttpCall } from './OfflineScope';
 
 export type McParams = {
     plant: string;
@@ -42,6 +42,7 @@ const App = ({
     return (
         <>
             <GetOfflineScope></GetOfflineScope>
+            <MakeHttpCall></MakeHttpCall>
             <AppInsightsContext.Provider value={reactPlugin}>
                 <McAppContextProvider
                     api={procosysApiInstance}
