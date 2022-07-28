@@ -15,7 +15,6 @@ import {
 } from '@equinor/procosys-webapp-components';
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 import { GetOfflineScope, MakeHttpCall } from './OfflineScope';
-import { fetchInterceptors } from './services/fetchInterceptors';
 
 serviceWorkerRegistration.register();
 
@@ -63,13 +62,6 @@ const initialize = async () => {
         baseURL: appConfig.procosysWebApi.baseUrl,
         scope: appConfig.procosysWebApi.scope,
     });
-
-    const fetchBaseApi = fetchInterceptors();
-    //     {
-    //     authInstance,
-    //     baseURL: appConfig.procosysWebApi.baseUrl,
-    //     scope: appConfig.procosysWebApi.scope,
-    // }
 
     const procosysApiInstance = procosysApiService({
         axios: baseApiInstance,

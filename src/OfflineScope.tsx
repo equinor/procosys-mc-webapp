@@ -2,8 +2,6 @@ import React from 'react';
 import { useWorker, WORKER_STATUS } from '@koale/useworker';
 import bubbleSort from './bubbleSort';
 import axios from 'axios';
-import fetchAdapter from '@vespaiach/axios-fetch-adapter'; //TODO: remove THIS
-import { fetchInterceptors } from './services/fetchInterceptors';
 
 const numbers = [...Array<number>(5000000)].map(
     (e) => ~~(Math.random() * 1000000)
@@ -18,7 +16,6 @@ const makeHttpCall = async (): Promise<string> => {
     const jsonUrl =
         'https://www.7timer.info/bin/astro.php?lon=113.2&lat=23.1&ac=0&unit=metric&output=json&tzshift=0';
 
-    const fetchBaseApi = fetchInterceptors();
     const response = await fetch(jsonUrl, {
         headers: {
             //'Content-Type': 'application/json',
@@ -38,7 +35,7 @@ const makeHttpCall = async (): Promise<string> => {
     }
 };
 
-export function MakeHttpCall() {
+export const MakeHttpCall = (): JSX.Element => {
     const [callStatus, setcallStatus] = React.useState(false);
     const [HttpWorker, { status: WorkerStatus, kill: killWorker }] = useWorker(
         makeHttpCall,
@@ -79,7 +76,7 @@ export function MakeHttpCall() {
             </button>
         </div>
     );
-}
+};
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function GetOfflineScope() {

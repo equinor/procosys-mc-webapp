@@ -37,13 +37,14 @@ import {
     ChecklistSavedSearchResult,
 } from './apiTypes';
 
-type ProcosysApiServiceProps = {
+export type ProcosysApiServiceProps = {
     axios: AxiosInstance;
     apiVersion: string;
     cb?: (res: AxiosResponse<any, any>) => AxiosResponse<any, any>;
+    cb2?: (res: Response) => Response;
 };
 
-const typeGuardErrorMessage = (expectedType: string): string => {
+export const typeGuardErrorMessage = (expectedType: string): string => {
     return `Unable to retrieve ${expectedType}. Please try again.`;
 };
 
@@ -52,6 +53,7 @@ const procosysApiService = ({
     axios,
     apiVersion,
     cb = (res: AxiosResponse<any, any>): AxiosResponse<any, any> => res,
+    cb2 = (res: Response): Response => res,
 }: ProcosysApiServiceProps) => {
     // General
     const getVersion = (): string => {
