@@ -2,10 +2,13 @@ import React from 'react';
 import { useWorker, WORKER_STATUS } from '@koale/useworker';
 import bubbleSort from './bubbleSort';
 import axios from 'axios';
-import fetchAdapter from '@vespaiach/axios-fetch-adapter';
+import fetchAdapter from '@vespaiach/axios-fetch-adapter'; //TODO: remove THIS
+import { fetchInterceptors } from './services/fetchInterceptors';
+
 const numbers = [...Array<number>(5000000)].map(
     (e) => ~~(Math.random() * 1000000)
 );
+
 const sortNumbers = async (numbers: Array<number>): Promise<Array<number>> =>
     numbers.sort();
 
@@ -15,19 +18,15 @@ const makeHttpCall = async (): Promise<string> => {
     const jsonUrl =
         'https://www.7timer.info/bin/astro.php?lon=113.2&lat=23.1&ac=0&unit=metric&output=json&tzshift=0';
 
-    const instance = axios.create({
-        baseURL: 'https://some-domain.com/api/',
-
-        timeout: 1000,
-        adapter: fetchAdapter,
-    });
-
-    const data = await instance.get('/whatever-url');
-
+    const fetchBaseApi = fetchInterceptors();
     const response = await fetch(jsonUrl, {
-        headers: { 'Access-Control-Allow-Origin': '*' },
+        headers: {
+            //'Content-Type': 'application/json',
+            // 'Access-Control-Allow-Headers': '*',
+        },
         method: 'GET',
     });
+
     if (response.ok) {
         // if HTTP-status is 200-299
         // get the response body (the method explained below)
@@ -44,10 +43,12 @@ export function MakeHttpCall() {
     const [HttpWorker, { status: WorkerStatus, kill: killWorker }] = useWorker(
         makeHttpCall,
         {
-            timeout: 5000,
+            timeout: 50000,
             remoteDependencies: [
-                'https://cdnjs.cloudflare.com/ajax/libs/axios/0.24.0/axios.js',
-                'https://unpkg.com/axios-fetch-adapter@1.0.0/lib/index.js',
+                'https://cdn.jsdelivr.net/npm/fetch-intercept@2.4.0/lib/browser.js',
+                // 'https://cdn.jsdelivr.net/npm/camelcase-keys@8.0.1/index.js',
+                //'https://cdnjs.cloudflare.com/ajax/libs/axios/0.24.0/axios.js',
+                // 'https://unpkg.com/axios-fetch-adapter@1.0.0/lib/index.js',
             ],
         }
     );

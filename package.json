@@ -16,6 +16,7 @@
     "comlink": "^4.3.1",
     "date-fns": "^2.29.1",
     "dexie": "^3.2.2",
+    "fetch-intercept": "^2.4.0",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-router-dom": "^5.2.0",
@@ -23,12 +24,13 @@
     "react-spring": "^9.4.5",
     "react-toast-notifications": "^2.5.1",
     "styled-components": "^5.3.3",
+    "whatwg-fetch": "^3.6.2",
     "worker-loader": "^3.0.8",
     "workerize-loader": "^2.0.2"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build ",
+    "start": "react-scripts --openssl-legacy-provider start",
+    "build": "react-scripts --openssl-legacy-provider build ",
     "test": "jest",
     "test:debug": "react-scripts --inspect-brk test --runInBand --no-cache",
     "eject": "react-scripts eject",

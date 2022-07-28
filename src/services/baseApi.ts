@@ -8,6 +8,8 @@ type baseApiProps = {
     scope: string[];
 };
 
+export type { baseApiProps };
+
 const baseApiService = ({
     authInstance,
     baseURL,
