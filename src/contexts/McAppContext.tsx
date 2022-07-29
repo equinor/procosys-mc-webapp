@@ -9,11 +9,13 @@ import { Plant } from '../services/apiTypes';
 import { AppConfig, FeatureFlags } from '../services/appConfiguration';
 import { IAuthService } from '../services/authService';
 import { ProcosysApiService } from '../services/procosysApi';
+import { ProcosysApiByFetchService } from '../services/procosysApiByFetch';
 
 type McAppContextProps = {
     availablePlants: Plant[];
     fetchPlantsStatus: AsyncStatus;
     api: ProcosysApiService;
+    apiByFetch: ProcosysApiByFetchService;
     auth: IAuthService;
     appConfig: AppConfig;
     featureFlags: FeatureFlags;
@@ -33,6 +35,7 @@ type McAppContextProviderProps = {
     children: ReactNode;
     auth: IAuthService;
     api: ProcosysApiService;
+    apiByFetch: ProcosysApiByFetchService;
     appConfig: AppConfig;
     featureFlags: FeatureFlags;
 };
@@ -41,6 +44,7 @@ export const McAppContextProvider: React.FC<McAppContextProviderProps> = ({
     children,
     auth,
     api,
+    apiByFetch,
     appConfig,
     featureFlags,
 }: McAppContextProviderProps) => {
@@ -87,6 +91,7 @@ export const McAppContextProvider: React.FC<McAppContextProviderProps> = ({
                 fetchPlantsStatus,
                 availablePlants,
                 api,
+                apiByFetch,
                 auth,
                 appConfig,
                 featureFlags,

@@ -14,7 +14,8 @@ import {
     LoadingPage,
 } from '@equinor/procosys-webapp-components';
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
-import { GetOfflineScope, MakeHttpCall } from './OfflineScope';
+import { GetOfflineScope, MakeHttpCallComponent } from './OfflineScope';
+import procosysApiByFetchService from './services/procosysApiByFetch';
 
 serviceWorkerRegistration.register();
 
@@ -67,12 +68,19 @@ const initialize = async () => {
         axios: baseApiInstance,
         apiVersion: appConfig.procosysWebApi.apiVersion,
     });
+
+    const procosysApiByFetchInstance = procosysApiByFetchService(
+        { apiVersion: appConfig.procosysWebApi.apiVersion },
+        await authInstance.getAccessToken(appConfig.procosysWebApi.scope)
+    );
+
     const { appInsightsReactPlugin } = initializeAppInsights(
         appConfig.appInsights.instrumentationKey
     );
     return {
         authInstance,
         procosysApiInstance,
+        procosysApiByFetchInstance,
         appInsightsReactPlugin,
         appConfig,
         featureFlags,
@@ -87,6 +95,7 @@ const initialize = async () => {
         const {
             authInstance,
             procosysApiInstance,
+            procosysApiByFetchInstance,
             appInsightsReactPlugin,
             appConfig,
             featureFlags,
@@ -95,6 +104,7 @@ const initialize = async () => {
             <App
                 authInstance={authInstance}
                 procosysApiInstance={procosysApiInstance}
+                procosysApiByFetchInstance={procosysApiByFetchInstance}
                 appInsightsReactPlugin={appInsightsReactPlugin}
                 appConfig={appConfig}
                 featureFlags={featureFlags}
@@ -108,7 +118,7 @@ const initialize = async () => {
             render(
                 <>
                     <GetOfflineScope></GetOfflineScope>
-                    <MakeHttpCall></MakeHttpCall>
+                    <MakeHttpCallComponent></MakeHttpCallComponent>
                     <ErrorPage
                         title="Unable to initialize app"
                         description="Check your connection or reload this page and try again. If problem persists, contact customer support"

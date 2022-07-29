@@ -17,6 +17,9 @@ import {
     FeatureFlags,
     ProcosysApiSettings,
 } from '../services/appConfiguration';
+import procosysApiByFetchService, {
+    ProcosysApiByFetchService,
+} from '../services/procosysApiByFetch';
 
 const client = new Msal.PublicClientApplication({
     auth: { clientId: 'testId', authority: 'testAuthority' },
@@ -49,12 +52,20 @@ const procosysApiInstance = procosysApiService({
     apiVersion: 'dummy-version',
 });
 
+const procosysApiByFetchInstance = procosysApiByFetchService(
+    {
+        apiVersion: 'dummy-version',
+    },
+    'dummy-token'
+);
+
 type WithMcAppContextProps = {
     Component: JSX.Element;
     asyncStatus?: AsyncStatus;
     plants?: Plant[];
     auth?: IAuthService;
     api?: ProcosysApiService;
+    apiByFetch?: ProcosysApiByFetchService;
 };
 
 export const withMcAppContext = ({
@@ -63,6 +74,7 @@ export const withMcAppContext = ({
     plants = testPlants,
     auth = authInstance,
     api = procosysApiInstance,
+    apiByFetch = procosysApiByFetchInstance,
 }: WithMcAppContextProps): JSX.Element => {
     return (
         <MemoryRouter initialEntries={['/test/sub/directory']}>
@@ -72,6 +84,7 @@ export const withMcAppContext = ({
                     fetchPlantsStatus: asyncStatus,
                     auth: auth,
                     api: api,
+                    apiByFetch: apiByFetch,
                     appConfig: dummyAppConfig,
                     featureFlags: dummyFeatureFlags,
                 }}

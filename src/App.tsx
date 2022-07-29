@@ -11,7 +11,10 @@ import {
 } from '@microsoft/applicationinsights-react-js';
 import { AppConfig, FeatureFlags } from './services/appConfiguration';
 import { SavedSearchType, SearchType } from './typings/enums';
-import { GetOfflineScope, MakeHttpCall } from './OfflineScope';
+import { GetOfflineScope, MakeHttpCallComponent } from './OfflineScope';
+import procosysApiByFetchService, {
+    ProcosysApiByFetchService,
+} from './services/procosysApiByFetch';
 
 export type McParams = {
     plant: string;
@@ -27,6 +30,7 @@ export type McParams = {
 type AppProps = {
     authInstance: IAuthService;
     procosysApiInstance: ProcosysApiService;
+    procosysApiByFetchInstance: ProcosysApiByFetchService;
     appInsightsReactPlugin: ReactPlugin;
     appConfig: AppConfig;
     featureFlags: FeatureFlags;
@@ -34,6 +38,7 @@ type AppProps = {
 
 const App = ({
     procosysApiInstance,
+    procosysApiByFetchInstance,
     authInstance,
     appConfig,
     appInsightsReactPlugin: reactPlugin,
@@ -44,6 +49,7 @@ const App = ({
             <AppInsightsContext.Provider value={reactPlugin}>
                 <McAppContextProvider
                     api={procosysApiInstance}
+                    apiByFetch={procosysApiByFetchInstance}
                     auth={authInstance}
                     appConfig={appConfig}
                     featureFlags={featureFlags}
@@ -60,7 +66,9 @@ const App = ({
                     </ErrorBoundary> */}
                     </Router>
                 </McAppContextProvider>
-                <MakeHttpCall></MakeHttpCall>
+                <>
+                    <MakeHttpCallComponent></MakeHttpCallComponent>
+                </>
             </AppInsightsContext.Provider>
         </>
     );

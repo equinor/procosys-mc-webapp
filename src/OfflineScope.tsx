@@ -1,39 +1,48 @@
 import React from 'react';
 import { useWorker, WORKER_STATUS } from '@koale/useworker';
 import bubbleSort from './bubbleSort';
+import useCommonHooks from './utils/useCommonHooks';
+import { McPkgPreview, PoPreview, Tag, WoPreview } from './services/apiTypes';
+import { ProcosysApiByFetchService } from './services/procosysApiByFetch';
 
-const makeHttpCall = async (): Promise<string> => {
+const makeHttpCall2 = (apiByFetchService: ProcosysApiByFetchService) => {
+    return async (): Promise<any> => {};
+};
+
+console.log('Making http call');
+const makeHttpCall = async (): Promise<any> => {
     console.log('Making http call');
 
     const jsonUrl =
         'https://www.7timer.info/bin/astro.php?lon=113.2&lat=23.1&ac=0&unit=metric&output=json&tzshift=0';
 
-    const response = await fetch(jsonUrl, {
-        headers: {
-            //'Content-Type': 'application/json',
-            // 'Access-Control-Allow-Headers': '*',
-        },
-        method: 'GET',
-    });
+    // const response = await fetch(jsonUrl, {
+    //     headers: {
+    //         //'Content-Type': 'application/json',
+    //         // 'Access-Control-Allow-Headers': '*',
+    //     },
+    //     method: 'GET',
+    // });
 
-    if (response.ok) {
-        // if HTTP-status is 200-299
-        // get the response body (the method explained below)
-        const json = await response.json();
-        return json;
-    } else {
-        alert('HTTP-Error: ' + response.status);
-        return '{}';
-    }
+    // if (response.ok) {
+    //     // if HTTP-status is 200-299
+    //     // get the response body (the method explained below)
+    //     const json = await response.json();
+    //     return json;
+    // } else {
+    //     alert('HTTP-Error: ' + response.status);
+    //     return '{}';
+    // }
 };
 
-export const MakeHttpCall = (): JSX.Element => {
+export const MakeHttpCallComponent = (): JSX.Element => {
+    const { params, apiByFetch } = useCommonHooks();
     const [id, setId] = React.useState('1000');
     const [type, setType] = React.useState('McPkt');
 
     const [callStatus, setcallStatus] = React.useState(false);
     const [HttpWorker, { status: WorkerStatus, kill: killWorker }] = useWorker(
-        makeHttpCall,
+        makeHttpCall2(apiByFetch),
         {
             timeout: 50000,
             remoteDependencies: [
