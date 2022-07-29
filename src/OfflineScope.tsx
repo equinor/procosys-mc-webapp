@@ -1,14 +1,6 @@
 import React from 'react';
 import { useWorker, WORKER_STATUS } from '@koale/useworker';
 import bubbleSort from './bubbleSort';
-import axios from 'axios';
-
-const numbers = [...Array<number>(5000000)].map(
-    (e) => ~~(Math.random() * 1000000)
-);
-
-const sortNumbers = async (numbers: Array<number>): Promise<Array<number>> =>
-    numbers.sort();
 
 const makeHttpCall = async (): Promise<string> => {
     console.log('Making http call');
@@ -36,13 +28,16 @@ const makeHttpCall = async (): Promise<string> => {
 };
 
 export const MakeHttpCall = (): JSX.Element => {
+    const [id, setId] = React.useState('1000');
+    const [type, setType] = React.useState('McPkt');
+
     const [callStatus, setcallStatus] = React.useState(false);
     const [HttpWorker, { status: WorkerStatus, kill: killWorker }] = useWorker(
         makeHttpCall,
         {
             timeout: 50000,
             remoteDependencies: [
-                'https://cdn.jsdelivr.net/npm/fetch-intercept@2.4.0/lib/browser.js',
+                // 'https://cdn.jsdelivr.net/npm/fetch-intercept@2.4.0/lib/browser.js',
                 // 'https://cdn.jsdelivr.net/npm/camelcase-keys@8.0.1/index.js',
                 //'https://cdnjs.cloudflare.com/ajax/libs/axios/0.24.0/axios.js',
                 // 'https://unpkg.com/axios-fetch-adapter@1.0.0/lib/index.js',
@@ -74,9 +69,32 @@ export const MakeHttpCall = (): JSX.Element => {
                     ? `Loading...`
                     : `Make Http Call useWorker()`}
             </button>
+            <label>Entity Id:</label>
+            <input
+                type="text"
+                value={id}
+                onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+                    setId(event.target.value)
+                }
+            />
+            <label>Entity Type:</label>
+            <input
+                type="text"
+                value={type}
+                onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+                    setType(event.target.value)
+                }
+            />
         </div>
     );
 };
+
+const numbers = [...Array<number>(5000000)].map(
+    (e) => ~~(Math.random() * 1000000)
+);
+
+const sortNumbers = async (numbers: Array<number>): Promise<Array<number>> =>
+    numbers.sort();
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function GetOfflineScope() {

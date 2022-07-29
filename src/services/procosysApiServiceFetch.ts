@@ -1,5 +1,5 @@
-import { isArrayOfType } from '@equinor/procosys-webapp-components';
-import { AxiosInstance, AxiosResponse, CancelToken } from 'axios';
+//import { isArrayOfType } from '@equinor/procosys-webapp-components';
+import { AxiosResponse } from 'axios';
 import { isChecklistResponse } from './apiTypeGuards';
 
 import { ChecklistResponse, Plant } from './apiTypes';
@@ -7,11 +7,11 @@ import { ProcosysApiServiceProps } from './procosysApi';
 
 type httpClientTechnique = 'fetch' | 'axios';
 
-const procosysApiServiceFetch = (
+export const procosysApiServiceFetch = (
     {
         axios,
         apiVersion,
-        cb = (res: AxiosResponse<any, any>): AxiosResponse<any, any> => res,
+        // cb = (res: AxiosResponse<any, any>): AxiosResponse<any, any> => res,
         cb2 = (res: Response): Response => res,
     }: ProcosysApiServiceProps,
     accessToken: string
@@ -41,5 +41,3 @@ const procosysApiServiceFetch = (
         return res;
     };
 };
-
-const insertBearerToken = () => {};

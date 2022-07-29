@@ -41,8 +41,6 @@ const App = ({
 }: AppProps): JSX.Element => {
     return (
         <>
-            <GetOfflineScope></GetOfflineScope>
-            <MakeHttpCall></MakeHttpCall>
             <AppInsightsContext.Provider value={reactPlugin}>
                 <McAppContextProvider
                     api={procosysApiInstance}
@@ -62,7 +60,7 @@ const App = ({
                     </ErrorBoundary> */}
                     </Router>
                 </McAppContextProvider>
-                <GetOfflineScope></GetOfflineScope>
+                <MakeHttpCall></MakeHttpCall>
             </AppInsightsContext.Provider>
         </>
     );
