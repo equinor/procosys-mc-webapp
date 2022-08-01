@@ -7,8 +7,8 @@
       "esnext"
     ],
     "sourceRoot": "",
-    //"outDir": "./dist/",
-    //"sourceMap": true,
+    "outDir": "./build",
+
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,

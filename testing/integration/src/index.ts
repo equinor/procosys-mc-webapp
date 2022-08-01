@@ -8,14 +8,14 @@ import fetchMock from 'fetch-mock';
 ;
 
 
-// describe('Typescript usage suite', () => {
-//     it('should be able to execute a test', () => {
-//         return;
-//     });
-//     it('should return expected string', () => {
-//         return;
-//     });
-// });
+describe('Typescript usage suite', () => {
+    it('should be able to execute a test', () => {
+        return;
+    });
+    it('should return expected string', () => {
+        return;
+    });
+});
 
 
 //https://sinonjs.org/

@@ -4,9 +4,11 @@
   "description": "integration testing repositories against indexedDb",
   "main": "index.js",
   "dependencies": {
+    "clean-webpack-plugin": "^4.0.0",
     "eslint-config-prettier": "^8.5.0",
     "fetch-mock": "^9.11.0",
     "glob": "^8.0.3",
+    "html-webpack-plugin": "^5.5.0",
     "mocha-cli": "^1.0.1",
     "sinon": "^14.0.0",
     "styled-components": "^5.3.3"
