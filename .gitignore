@@ -28,3 +28,11 @@ settings.json
 
 #Visual Studio Garbage (files etc.)
 .vs
+dist
+node_modules
+**/src/**/*.json
+
+/testing/integration/node_modules/**
+/testing/**/*.js
+/testing/integration/src/**/*.js
+!testing/integration/src/webpack.config.development.js
