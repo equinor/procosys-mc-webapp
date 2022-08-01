@@ -3,9 +3,9 @@ import { Component, Composite } from '../../offline/Composite';
 import { AttachmentLeaf, Leaf } from '../../offline/Leaf';
 
 describe('Composite and leaf testing', () => {
-    beforeAll(() => {});
+    beforeAll(() => { });
 
-    afterAll(() => {});
+    afterAll(() => { });
 
     test('Add leaf to component', () => {
         const operationType: LeafOperationType = { type: 'op-type' };

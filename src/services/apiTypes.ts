@@ -1,11 +1,13 @@
-import { CheckItem } from '@equinor/procosys-webapp-components/dist/typings/apiTypes';
-
 export enum CompletionStatus {
     OS = 'OS',
     PA = 'PA',
     PB = 'PB',
     OK = 'OK',
 }
+
+import { CheckItem } from '@equinor/procosys-webapp-components/dist/typings/apiTypes';
+import * as tg from 'generic-type-guard';
+//https://www.npmjs.com/package/generic-type-guard
 
 export type Project = {
     description: string;
@@ -19,6 +21,30 @@ export interface Plant {
     slug: string;
     projects?: Project[];
 }
+
+export const isProject: tg.TypeGuard<Project> = new tg.IsInterface()
+    .withProperties({
+        description: tg.isString,
+        id: tg.isNumber,
+        title: tg.isString,
+    })
+    .get();
+
+export const isProjects = (project: unknown) => tg.isArray(isProject);
+
+export const isPlant: tg.TypeGuard<Plant> = new tg.IsInterface()
+    .withProperties({
+        id: tg.isString,
+        title: tg.isString,
+        slug: tg.isString,
+        projects: tg.isArray<Project>(isProject),
+    })
+    .get();
+
+export const isPlants = (plant: unknown) => tg.isArray(isPlant);
+
+// export type Plant = tg.GuardedType<typeof isPlant>;
+// export type Project = tg.GuardedType<typeof isProject>;
 
 //SEARCH
 

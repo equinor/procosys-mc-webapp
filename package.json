@@ -17,6 +17,7 @@
     "date-fns": "^2.29.1",
     "dexie": "^3.2.2",
     "fetch-intercept": "^2.4.0",
+    "generic-type-guard": "^3.7.0",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-router-dom": "^5.2.0",
@@ -30,7 +31,7 @@
   },
   "scripts": {
     "start": "react-scripts --openssl-legacy-provider start",
-    "build": "react-scripts build ",
+    "build": "react-scripts --openssl-legacy-provider build ",
     "test": "jest",
     "test:debug": "react-scripts --inspect-brk test --runInBand --no-cache",
     "eject": "react-scripts eject",
