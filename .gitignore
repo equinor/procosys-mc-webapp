@@ -31,8 +31,12 @@ settings.json
 dist
 node_modules
 **/src/**/*.json
-
 /testing/integration/node_modules/**
 /testing/**/*.js
 /testing/integration/src/**/*.js
+#Exclude
+/testing/integration/src/!webpack.bundle.cfg.development.js
+/testing/integration/!webpack.config.js
+
+
 
