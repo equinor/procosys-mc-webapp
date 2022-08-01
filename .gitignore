@@ -35,4 +35,4 @@ node_modules
 /testing/integration/node_modules/**
 /testing/**/*.js
 /testing/integration/src/**/*.js
-!testing/integration/src/webpack.config.development.js
+
