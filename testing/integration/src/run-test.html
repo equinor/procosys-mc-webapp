@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8" />
+<head>
+  <title>IndexedDB note store</title>
+  <link rel="stylesheet" href="https://unpkg.com/mocha/mocha.css" />
+  <link rel="stylesheet" href="https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/chai" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div id="mocha">
+    <script src="https://unpkg.com/chai/chai.js"></script>
+    <script src="./node_modules/sinon/pkg/sinon.js"></script>
+    <script src="https://unpkg.com/mocha/mocha.js"></script>
+    <script src="../dist/source.bundle.js"></script>
+    <script class="mocha-init">
+      mocha.setup('bdd');
+      mocha.checkLeaks();
+    </script>
+    <script src="../dist/bundle.js"></script>
+    <script class="mocha-exec">
+      mocha.run();
+    </script>
+  </div>
+</body>
+
+</html>
