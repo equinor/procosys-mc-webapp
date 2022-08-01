@@ -6,20 +6,23 @@ type baseApiProps = {
     authInstance: IAuthService;
     baseURL: string;
     scope: string[];
+    accessToken: string;
 };
 
 export type { baseApiProps };
 
 const baseApiService = ({
     authInstance,
-    baseURL,
+    baseURL = 'https://pcs-main-api-test.azurewebsites.net/api/',
     scope,
+    accessToken,
 }: baseApiProps): AxiosInstance => {
     const axiosInstance = axios.create();
     axiosInstance.defaults.baseURL = baseURL;
     axiosInstance.interceptors.request.use(async (request) => {
         try {
-            const token = await authInstance.getAccessToken(scope);
+            //const token = await authInstance.getAccessToken(scope);
+            const token = accessToken;
             if (request.headers) {
                 request.headers['Authorization'] = `Bearer ${token}`;
             }

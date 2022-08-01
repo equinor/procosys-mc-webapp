@@ -1,4 +1,3 @@
-//import { isArrayOfType } from '@equinor/procosys-webapp-components';
 import { SearchType } from '../typings/enums';
 import {
     isArrayOfType,
@@ -21,12 +20,14 @@ import { typeGuardErrorMessage } from './procosysApi';
 type httpClientTechnique = 'fetch' | 'axios';
 
 export type procosysApiByFetchProps = {
+    baseURL: string;
     apiVersion: string;
     cb2?: (res: Response) => Response;
 };
 
 const procosysApiByFetchService = (
     {
+        baseURL,
         apiVersion,
         cb2 = (res: Response): Response => res,
     }: procosysApiByFetchProps,
@@ -97,6 +98,8 @@ const procosysApiByFetchService = (
     };
 
     return {
+        getPlants,
+        getProjects,
         getVersion,
         getChecklist,
         getChecklistPunchList,

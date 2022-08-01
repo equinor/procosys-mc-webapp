@@ -46,6 +46,7 @@ const baseApiInstance = baseApiService({
     authInstance,
     baseURL: baseURL,
     scope: ['testscope'],
+    accessToken: 'dummy-token',
 });
 const procosysApiInstance = procosysApiService({
     axios: baseApiInstance,
@@ -54,6 +55,7 @@ const procosysApiInstance = procosysApiService({
 
 const procosysApiByFetchInstance = procosysApiByFetchService(
     {
+        baseURL: baseURL,
         apiVersion: 'dummy-version',
     },
     'dummy-token'

@@ -11,7 +11,10 @@ import {
 } from '@microsoft/applicationinsights-react-js';
 import { AppConfig, FeatureFlags } from './services/appConfiguration';
 import { SavedSearchType, SearchType } from './typings/enums';
-import { GetOfflineScope, MakeHttpCallComponent } from './OfflineScope';
+import {
+    GetOfflineScope,
+    MakeHttpCallComponent,
+} from './MakeHttpCallComponent';
 import procosysApiByFetchService, {
     ProcosysApiByFetchService,
 } from './services/procosysApiByFetch';
@@ -31,7 +34,7 @@ type AppProps = {
     authInstance: IAuthService;
     procosysApiInstance: ProcosysApiService;
     procosysApiByFetchInstance: ProcosysApiByFetchService;
-    appInsightsReactPlugin: ReactPlugin;
+    // appInsightsReactPlugin: ReactPlugin;
     appConfig: AppConfig;
     featureFlags: FeatureFlags;
 };
@@ -41,35 +44,37 @@ const App = ({
     procosysApiByFetchInstance,
     authInstance,
     appConfig,
-    appInsightsReactPlugin: reactPlugin,
+    // appInsightsReactPlugin: reactPlugin,
     featureFlags,
 }: AppProps): JSX.Element => {
     return (
         <>
-            <AppInsightsContext.Provider value={reactPlugin}>
-                <McAppContextProvider
-                    api={procosysApiInstance}
-                    apiByFetch={procosysApiByFetchInstance}
-                    auth={authInstance}
-                    appConfig={appConfig}
-                    featureFlags={featureFlags}
-                >
-                    <Router basename={'/mc'}>
-                        {/* <ErrorBoundary>
-                        <Switch>
-                            <Route
-                                path="/:plant?/:project?"
-                                component={GeneralRouter}
-                            />
-                            <Route render={(): JSX.Element => <h1>404</h1>} />
-                        </Switch>
-                    </ErrorBoundary> */}
-                    </Router>
-                </McAppContextProvider>
-                <>
-                    <MakeHttpCallComponent></MakeHttpCallComponent>
-                </>
-            </AppInsightsContext.Provider>
+            {/* <AppInsightsContext.Provider value={reactPlugin}> */}
+            <McAppContextProvider
+                api={procosysApiInstance}
+                apiByFetch={procosysApiByFetchInstance}
+                auth={authInstance}
+                appConfig={appConfig}
+                featureFlags={featureFlags}
+            >
+                <MakeHttpCallComponent></MakeHttpCallComponent>
+                {/* <Router basename={'/mc'}>
+                        <>
+                            <ErrorBoundary>
+                                <Switch>
+                                    <Route
+                                        path="/:plant?/:project?"
+                                        component={GeneralRouter}
+                                    />
+                                    <Route
+                                        render={(): JSX.Element => <h1>404</h1>}
+                                    />
+                                </Switch>
+                            </ErrorBoundary>
+                        </>
+                    </Router> */}
+            </McAppContextProvider>
+            {/* </AppInsightsContext.Provider> */}
         </>
     );
 };

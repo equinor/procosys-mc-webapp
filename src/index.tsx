@@ -14,7 +14,10 @@ import {
     LoadingPage,
 } from '@equinor/procosys-webapp-components';
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
-import { GetOfflineScope, MakeHttpCallComponent } from './OfflineScope';
+import {
+    GetOfflineScope,
+    MakeHttpCallComponent,
+} from './MakeHttpCallComponent';
 import procosysApiByFetchService from './services/procosysApiByFetch';
 
 serviceWorkerRegistration.register();
@@ -58,10 +61,15 @@ const initialize = async () => {
         configurationAccessToken
     );
 
+    const accessToken = await authInstance.getAccessToken(
+        appConfig.procosysWebApi.scope
+    );
+
     const baseApiInstance = baseApiService({
         authInstance,
         baseURL: appConfig.procosysWebApi.baseUrl,
         scope: appConfig.procosysWebApi.scope,
+        accessToken: accessToken,
     });
 
     const procosysApiInstance = procosysApiService({
@@ -70,18 +78,21 @@ const initialize = async () => {
     });
 
     const procosysApiByFetchInstance = procosysApiByFetchService(
-        { apiVersion: appConfig.procosysWebApi.apiVersion },
-        await authInstance.getAccessToken(appConfig.procosysWebApi.scope)
+        {
+            baseURL: appConfig.procosysWebApi.baseUrl,
+            apiVersion: appConfig.procosysWebApi.apiVersion,
+        },
+        accessToken
     );
 
-    const { appInsightsReactPlugin } = initializeAppInsights(
-        appConfig.appInsights.instrumentationKey
-    );
+    // const { appInsightsReactPlugin } = initializeAppInsights(
+    //     appConfig.appInsights.instrumentationKey
+    // );
     return {
         authInstance,
         procosysApiInstance,
         procosysApiByFetchInstance,
-        appInsightsReactPlugin,
+        // appInsightsReactPlugin,
         appConfig,
         featureFlags,
     };
@@ -96,7 +107,7 @@ const initialize = async () => {
             authInstance,
             procosysApiInstance,
             procosysApiByFetchInstance,
-            appInsightsReactPlugin,
+            // appInsightsReactPlugin,
             appConfig,
             featureFlags,
         } = await initialize();
@@ -105,7 +116,7 @@ const initialize = async () => {
                 authInstance={authInstance}
                 procosysApiInstance={procosysApiInstance}
                 procosysApiByFetchInstance={procosysApiByFetchInstance}
-                appInsightsReactPlugin={appInsightsReactPlugin}
+                // appInsightsReactPlugin={appInsightsReactPlugin}
                 appConfig={appConfig}
                 featureFlags={featureFlags}
             />
@@ -117,8 +128,6 @@ const initialize = async () => {
         } else {
             render(
                 <>
-                    <GetOfflineScope></GetOfflineScope>
-                    <MakeHttpCallComponent></MakeHttpCallComponent>
                     <ErrorPage
                         title="Unable to initialize app"
                         description="Check your connection or reload this page and try again. If problem persists, contact customer support"
