@@ -58,9 +58,9 @@ const App = ({
                 featureFlags={featureFlags}
             >
                 <MakeHttpCallComponent></MakeHttpCallComponent>
-                {/* <Router basename={'/mc'}>
-                        <>
-                            <ErrorBoundary>
+                <Router basename={'/mc'}>
+                    <>
+                        {/* <ErrorBoundary>
                                 <Switch>
                                     <Route
                                         path="/:plant?/:project?"
@@ -70,9 +70,9 @@ const App = ({
                                         render={(): JSX.Element => <h1>404</h1>}
                                     />
                                 </Switch>
-                            </ErrorBoundary>
-                        </>
-                    </Router> */}
+                            </ErrorBoundary> */}
+                    </>
+                </Router>
             </McAppContextProvider>
             {/* </AppInsightsContext.Provider> */}
         </>

@@ -10,6 +10,7 @@ module.exports = {
             './build/index.js',
             './build/specs/hello-integration-spec1.js',
             './build/specs/hello-integration-spec2.js',
+            './build/specs/promise-md5-spec3',
         ],
     },
     output: {

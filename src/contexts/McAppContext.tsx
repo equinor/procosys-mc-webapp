@@ -57,6 +57,7 @@ export const McAppContextProvider: React.FC<McAppContextProviderProps> = ({
         (async (): Promise<void> => {
             setFetchPlantsStatus(AsyncStatus.LOADING);
             try {
+                const plantsFromFetchApi = await apiByFetch.getPlants();
                 const plantsFromApi = await api.getPlants();
                 setAvailablePlants(plantsFromApi);
                 setFetchPlantsStatus(AsyncStatus.SUCCESS);

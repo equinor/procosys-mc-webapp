@@ -66,44 +66,32 @@ const procosysApiByFetchService = (
         headers: { Authorization: `Bearer ${accessToken}` },
     };
 
-    const getPlants = async (): Promise<Array<Plant> | Response> => {
-        const res = cb2(
-            await fetch(
-                `${baseURL}Plants?includePlantsWithoutAccess=false&api-version=${apiVersion}`,
-                GetOperation
-            )
+    const getPlants = async (): Promise<Plant[]> => {
+        const res = await fetch(
+            `${baseURL}/Plants?includePlantsWithoutAccess=false${apiVersion}`,
+            GetOperation
         );
-
         if (res.ok) {
             // if HTTP-status is 200-299
             // get the response body (the method explained below)
-            const plants: Array<Plant> = await res.json();
+            const plants = await res.json();
+            // const camelCasePlants = convertToCamelCase(plants);
 
-            if (typeof plants === 'object' && !(plants instanceof Blob)) {
-                convertToCamelCase(plants);
-            } else {
-                return res;
-            }
-
-            if (isPlants(plants.map((p: unknown) => isPlants(p)))) {
-                throw new Error(typeGuardErrorMessage('plants'));
-            }
-
-            const camelCasePlants = convertToCamelCase(plants);
-
-            if (camelCasePlants instanceof Array && isPlants(camelCasePlants)) {
-                const plantsWithSlug: Array<Plant> = camelCasePlants.map(
-                    (plant: Plant) => ({
-                        ...plant,
-                        slug: plant.id.substr(4),
-                    })
-                );
+            // if (isPlants(plants.map((p: unknown) => isPlants(p)))) {
+            //     throw new Error(typeGuardErrorMessage('plants'));
+            // }
+            if (plants instanceof Array && isPlants(plants)) {
+                const plantsWithSlug: Plant[] = plants.map((plant: Plant) => ({
+                    ...plant,
+                    slug: plant.id.substr(4),
+                }));
                 return plantsWithSlug;
             }
 
-            return res;
+            return plants;
         } else {
             alert('HTTP-Error: ' + res.status);
+            console.error(res.status);
             return new Array<Plant>();
         }
     };
@@ -111,7 +99,8 @@ const procosysApiByFetchService = (
     const getProjectsForPlant = async (
         plantId: string
     ): Promise<Project[] | Response> => {
-        const res = await fetch(`Projects?plantId=${plantId}${apiVersion}`);
+        const res = await fetch(`${baseURL}/Projects?plantId=${plantId}${apiVersion}`);
+
         if (res.ok) {
             if (res.headers.get('Content-Type') === 'application/json') {
                 const projects = await res.json();
