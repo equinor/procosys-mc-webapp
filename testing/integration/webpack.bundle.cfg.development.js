@@ -6,7 +6,11 @@ const { SourceMapDevToolPlugin } = require('webpack');
 module.exports = {
     mode: 'development',
     entry: {
-        main: ['./build/index.js'],
+        main: [
+            './build/index.js',
+            './build/specs/hello-integration-spec1.js',
+            './build/specs/hello-integration-spec2.js',
+        ],
     },
     output: {
         path: path.join(__dirname, './dist'),
@@ -16,7 +20,9 @@ module.exports = {
     },
     devtool: 'source-map',
     plugins: [
-        new HtmlWebpackPlugin(),
+        new HtmlWebpackPlugin({
+            template: './src/template-mocha-testrunner.html',
+        }),
         new SourceMapDevToolPlugin({
             filename: '[file].map',
         }),

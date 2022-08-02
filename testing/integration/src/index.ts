@@ -3,7 +3,6 @@ import 'chai/register-should';
 import Mocha from 'mocha';
 import sinon from 'sinon';
 import fetchMock from 'fetch-mock';
-;
 
 describe('Typescript usage suite', () => {
     it('should be able to execute a test', () => {
