@@ -18,3 +18,24 @@ Features include:
 
 #### Test
 `yarn test`
+
+
+# Sharing code between test projects and web app
+
+mc-app
+    src
+        components
+        contexts
+        services
+        database
+    testing
+        integration
+            src
+                specs
+        tsconfig.json
+    tsconfig.json
+
+
+
+
+ 

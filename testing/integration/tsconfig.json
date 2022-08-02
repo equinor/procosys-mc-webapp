@@ -8,7 +8,6 @@
     ],
     "sourceRoot": "",
     "outDir": "./build",
-
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
@@ -23,13 +22,7 @@
     "noEmit":false,
     "inlineSourceMap": true,
     "jsx": "preserve",
-    "baseUrl": "",
-    "paths": {
-      "*": ["*", "./src/*"],
-      "@mc-app-services": ["C:/Appl/Source/Equinor/procosys-mc-webapp/src/services/*"],
-      "@mc-app-utils": ["C:/Appl/Source/Equinor/procosys-mc-webapp/src/until/*"]
-      
-    }
+    "baseUrl": ""
   },
   "include": [
     "src",
