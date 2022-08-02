@@ -15,7 +15,7 @@
   },
   "scripts": {
     "start": "tsc --build && webpack --config webpack.bundle.cfg.development",
-    "test": "mocha dist/index_bundle.js"
+    "test": "mocha dist/main.js"
   },
   "devDependencies": {
     "@types/chai": "^4.3.1",
