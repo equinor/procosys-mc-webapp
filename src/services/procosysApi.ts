@@ -76,7 +76,9 @@ const procosysApiService = (
             method: 'GET',
             headers: { Authorization: `Bearer ${token}` },
         };
+
         const res = await fetch(`${baseURL}/${url}`, GetOperation);
+
         if (res.ok) {
             const jsonResult = await res.json();
             if (jsonResult instanceof Array) {
@@ -96,6 +98,40 @@ const procosysApiService = (
             console.error(res.status);
             return res;
         }
+    };
+
+    const deleteByFetch = async (url: string, bodyData?: any): Promise<any> => {
+        const DeleteOperation = {
+            method: 'DELETE',
+            headers: { Authorization: `Bearer ${token}` },
+            body: bodyData ? JSON.stringify(bodyData) : null,
+        };
+        await fetch(`${baseURL}/${url}`, DeleteOperation);
+    };
+
+    const postByFetch = async (
+        url: string,
+        bodyData: any,
+        additionalHeaders?: any
+    ): Promise<any> => {
+        const PostOperation = {
+            method: 'POST',
+            headers: {
+                Authorization: `Bearer ${token}`,
+                ...additionalHeaders,
+            },
+            body: JSON.stringify(bodyData),
+        };
+        await fetch(`${baseURL}/${url}`, PostOperation);
+    };
+
+    const putByFetch = async (url: string, bodyData: any): Promise<any> => {
+        const PutOperation = {
+            method: 'PUT',
+            headers: { Authorization: `Bearer ${token}` },
+            body: JSON.stringify(bodyData),
+        };
+        await fetch(`${baseURL}/${url}`, PutOperation);
     };
 
     const getPlants = async (): Promise<Plant[]> => {
@@ -191,7 +227,7 @@ const procosysApiService = (
         plantId: string,
         savedSearchId: number
     ): Promise<void> => {
-        await axios.delete(
+        await deleteByFetch(
             `Search?plantId=PCS$${plantId}&savedSearchId=${savedSearchId}${apiVersion}`
         );
     };
@@ -414,7 +450,7 @@ const procosysApiService = (
         plantId: string,
         newPunchData: NewPunch
     ): Promise<void> => {
-        await axios.post(
+        await postByFetch(
             `PunchListItem?plantId=PCS$${plantId}${apiVersion}`,
             newPunchData
         );
@@ -442,7 +478,7 @@ const procosysApiService = (
         endpoint: string
     ): Promise<void> => {
         const dto = { PunchItemId: punchItemId, ...updateData };
-        await axios.put(
+        await putByFetch(
             `PunchListItem/${endpoint}?plantId=PCS$${plantId}${apiVersion}`,
             dto
         );
@@ -454,10 +490,10 @@ const procosysApiService = (
         punchItemId: string,
         punchAction: PunchAction
     ): Promise<void> => {
-        await axios.post(
+        await postByFetch(
             `PunchListItem/${punchAction}?plantId=PCS$${plantId}${apiVersion}`,
             punchItemId,
-            { headers: { 'Content-Type': 'application/json' } }
+            { 'Content-Type': 'application/json' }
         );
     };
 
@@ -490,9 +526,9 @@ const procosysApiService = (
             PunchItemId: punchItemId,
             AttachmentId: attachmentId,
         };
-        await axios.delete(
+        await deleteByFetch(
             `PunchListItem/Attachment?plantId=PCS$${plantId}${apiVersion}`,
-            { data: dto }
+            dto
         );
     };
 
@@ -501,14 +537,10 @@ const procosysApiService = (
         file: FormData,
         title: string
     ): Promise<string> => {
-        const { data } = await axios.post(
+        const { data } = await postByFetch(
             `PunchListItem/TempAttachment?plantId=PCS$${plantId}${apiVersion}`,
             file,
-            {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                },
-            }
+            { 'Content-Type': 'multipart/form-data' }
         );
         return data.id as string;
     };
@@ -519,14 +551,10 @@ const procosysApiService = (
         file: FormData,
         title: string
     ): Promise<void> => {
-        await axios.post(
+        await postByFetch(
             `PunchListItem/Attachment?plantId=PCS$${plantId}&punchItemId=${punchId}&title=${title}${apiVersion}`,
             file,
-            {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                },
-            }
+            { 'Content-Type': 'multipart/form-data' }
         );
     };
 
@@ -604,14 +632,10 @@ const procosysApiService = (
         title: string,
         file: FormData
     ): Promise<void> => {
-        await axios.post(
+        await postByFetch(
             `WorkOrder/Attachment?plantId=PCS$${plantId}&workOrderId=${workOrderId}&title=${title}${apiVersion}`,
             file,
-            {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                },
-            }
+            { 'Content-Type': 'multipart/form-data' }
         );
     };
 
@@ -624,9 +648,9 @@ const procosysApiService = (
             workOrderId: parseInt(workOrderId),
             AttachmentId: attachmentId,
         };
-        await axios.delete(
+        await deleteByFetch(
             `WorkOrder/Attachment?plantId=PCS$${plantId}${apiVersion}`,
-            { data: dto }
+            dto
         );
     };
 
