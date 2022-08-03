@@ -7,7 +7,6 @@ import SelectPlant from './pages/SelectPlant/SelectPlant';
 import EntityPage from './pages/Entity/EntityPage';
 import ChecklistPage from './pages/Checklist/ChecklistPage';
 import PunchPage from './pages/Punch/PunchPage';
-import Bookmarks from './pages/OfflineBookmark/Bookmarks';
 import SavedSearchRouter from './SavedSearchRouter';
 
 const McRouter = (): JSX.Element => {
@@ -17,12 +16,6 @@ const McRouter = (): JSX.Element => {
                 <Route exact path={'/'} component={SelectPlant} />
                 <Route exact path={'/:plant'} component={SelectProject} />
                 <Route exact path={'/:plant/:project'} component={Search} />
-                <Route
-                    exact
-                    path={'/:plant/:project/bookmark'}
-                    component={Bookmarks}
-                />
-
                 <Route
                     path={
                         '/:plant/:project/saved-search/:savedSearchType/:savedSearchId'
