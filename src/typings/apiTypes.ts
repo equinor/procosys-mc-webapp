@@ -5,10 +5,6 @@ export enum CompletionStatus {
     OK = 'OK',
 }
 
-export type Entities =
-    Plant | Project | SearchResults | ChecklistPreview | PunchPreview | ChecklistResponse | PunchCategory | PunchType | PunchOrganization | NewPunch | PunchItem | Attachment | McPkgPreview | PunchSort | PunchPriority | Person | Tag | WoPreview | PoPreview | SavedSearch | PunchItemSavedSearchResult | ChecklistSavedSearchResult;
-
-
 import { CheckItem } from '@equinor/procosys-webapp-components/dist/typings/apiTypes';
 import * as tg from 'generic-type-guard';
 //https://www.npmjs.com/package/generic-type-guard
