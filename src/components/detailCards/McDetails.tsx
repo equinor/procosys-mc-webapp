@@ -76,42 +76,38 @@ export const BookmarkWrapper = styled.div`
 
 type McDetailsProps = {
     mcPkgDetails: McPkgPreview;
+    isBookmarked?: boolean;
+    offlinePlanningState?: boolean;
     clickable?: boolean;
 };
 
 const McDetails = ({
     mcPkgDetails,
+    isBookmarked = false,
+    offlinePlanningState = false,
     clickable = true,
 }: McDetailsProps): JSX.Element => {
     const { history, url, api, params } = useCommonHooks();
-    const [isBookmarked, setIsBookmarked] = useState(false);
     const [postBookmarkStatus, setPostBookmarkStatus] = useState(
         AsyncStatus.INACTIVE
     );
 
-    const handleSetBookmark = async (): Promise<void> => {
+    const handleClickedBookmark = async (): Promise<void> => {
         setPostBookmarkStatus(AsyncStatus.LOADING);
         try {
-            await api.postSetBookmark(
-                params.plant,
-                params.searchType,
-                params.entityId
-            );
-            setPostBookmarkStatus(AsyncStatus.SUCCESS);
-        } catch (error) {
-            if (!(error instanceof Error)) return;
-            setPostBookmarkStatus(AsyncStatus.ERROR);
-        }
-    };
-
-    const handleDeleteBookmark = async (): Promise<void> => {
-        setPostBookmarkStatus(AsyncStatus.LOADING);
-        try {
-            await api.deleteBookmark(
-                params.plant,
-                params.searchType,
-                params.entityId
-            );
+            if (isBookmarked) {
+                await api.deleteBookmark(
+                    params.plant,
+                    params.searchType,
+                    params.entityId
+                );
+            } else {
+                await api.postSetBookmark(
+                    params.plant,
+                    params.searchType,
+                    params.entityId
+                );
+            }
             setPostBookmarkStatus(AsyncStatus.SUCCESS);
         } catch (error) {
             if (!(error instanceof Error)) return;
@@ -165,27 +161,33 @@ const McDetails = ({
                 <Caption>{mcPkgDetails.description}</Caption>
                 <Caption>{mcPkgDetails.phaseCode}</Caption>
             </DetailsWrapper>
-            {clickable && (
-                <BookmarkWrapper>
-                    <Button
-                        variant="ghost_icon"
-                        onClick={(e: React.MouseEvent<HTMLElement>): void => {
-                            e.stopPropagation();
-                            setIsBookmarked((prev) => !prev);
-                            handleSetBookmark();
-                        }}
-                    >
-                        <EdsIcon
-                            color={COLORS.mossGreen}
-                            name={
-                                isBookmarked
-                                    ? 'bookmark_filled'
-                                    : 'bookmark_outlined'
-                            }
-                        />
-                    </Button>
-                </BookmarkWrapper>
-            )}
+            {offlinePlanningState &&
+                (postBookmarkStatus == AsyncStatus.LOADING ? (
+                    //<Spinner /> // TODO: find a spinner from eds
+                    console.log('loading') // TODO: is loading state actually needed??
+                ) : (
+                    <BookmarkWrapper>
+                        <Button
+                            variant="ghost_icon"
+                            onClick={(
+                                e: React.MouseEvent<HTMLElement>
+                            ): void => {
+                                e.stopPropagation();
+                                //setIsBookmarked((prev) => !prev);
+                                handleClickedBookmark();
+                            }}
+                        >
+                            <EdsIcon
+                                color={COLORS.mossGreen}
+                                name={
+                                    isBookmarked
+                                        ? 'bookmark_filled'
+                                        : 'bookmark_outlined'
+                                }
+                            />
+                        </Button>
+                    </BookmarkWrapper>
+                ))}
         </McDetailsWrapper>
     );
 };
