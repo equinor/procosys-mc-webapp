@@ -2,48 +2,22 @@
   "extends": "../../tsconfig.json",
   
   "compilerOptions": {
-    // "target": "ES2017",
-    // "lib": [
-    //   "dom",
-    //   "dom.iterable",
-    //   "esnext"
-    // ],
-    //"sourceRoot": "",
 
-    "allowJs": true,
-    //"skipLibCheck": true,
-    //"esModuleInterop": true,
-    //"allowSyntheticDefaultImports": true,
-    //"strict": true,
-    //"forceConsistentCasingInFileNames": true,
-    //"noFallthroughCasesInSwitch": true,
-    "module": "commonjs",
-    //"moduleResolution": "node",
-    "resolveJsonModule": true,
-    //"isolatedModules": true,
+    "allowJs": true,    // Test project have a webpack that "still" have java script(*.js) extension
+    // "resolveJsonModule": true,
     "noEmit":false,
-    "inlineSourceMap": true,
-    //"jsx": "preserve",
-    //"baseUrl": "",
-    "outDir": "./build",
+    "inlineSourceMap": true,  
+    "outDir": "./build"
   },
+  
   "include": [
-    "src/**/*.*",
-    "../../src/**/*",
-    // "src",
-    // "src/specs/**/*.ts",
-    // "../../src/database/", // exclude the mc-app app part
-    // "../../src/service", // exclude the mc-app app part
-    // "../../src/typings", // exclude the mc-app app part
-    // "../../src/until", // exclude the mc-app app part
+    "src/**/*.*",     //Take all files in src folder
+    "../../src/**/*", //Include everything from mc-app source (This can be slimed down to just what the tests have a dependency on)
   ],
   "exclude": [
     // "../../src/components", // exclude the mc-app app part
     "../../src/components/",
     "../../src/pages/",
-    "../../src/test", // exclude the mc-app app part
-    // "./src/fetchLibrary/", //Clean-up - Remove when ready!
-    // "./src/specs/fetch-spec3.ts"
+    "../../src/test"
   ]
-  
 }
