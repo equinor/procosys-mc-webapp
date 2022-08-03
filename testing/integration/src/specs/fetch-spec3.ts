@@ -1,9 +1,7 @@
-import procosysApiByFetchService, { ProcosysApiByFetchService, procosysApiByFetchProps } from '../fetchLibrary/procosysApiByFetch'
+import procosysApiByFetchService from '../../../../src/services/procosysApiByFetch';
 
 import { expect } from 'chai';
 import 'chai/register-should';
-import { access } from 'fs';
-import { partial } from 'lodash';
 
 
 describe('Given a fetchAPI', async () => {

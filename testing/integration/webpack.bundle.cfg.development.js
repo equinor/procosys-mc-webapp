@@ -8,10 +8,10 @@ module.exports = {
     mode: 'development',
     entry: {
         main: [
-            './build/index.js',
-            './build/specs/hello-integration-spec1.js',
-            './build/specs/hello-integration-spec2.js',
-            './build/specs/fetch-spec3.js',
+            './build/testing/integration/src/index.js',
+            './build/testing/integration/src/specs/fetch-spec3.js',
+            './build/testing/integration/src/specs/hello-integration-spec1.js',
+            './build/testing/integration/src/specs/hello-integration-spec2.js',
         ],
     },
     output: {
