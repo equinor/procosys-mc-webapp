@@ -1,5 +1,9 @@
 {
-  "compilerOptions": {
+  "exclude": [],
+  "compilerOptions":
+   {
+    "noImplicitAny": true,
+    "strictNullChecks": true,
     "target": "es5",
     "lib": [
       "dom",

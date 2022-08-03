@@ -1,0 +1,35 @@
+{
+  "extends": "../tsconfig.json",
+  "exclude": [],
+  "compilerOptions": {
+    // "target": "ES2017",
+    // "lib": [
+    //   "dom",
+    //   "dom.iterable",
+    //   "esnext"
+    // ],
+    "sourceRoot": "",
+
+    //"allowJs": true,
+    //"skipLibCheck": true,
+    //"esModuleInterop": true,
+    //"allowSyntheticDefaultImports": true,
+    //"strict": true,
+    //"forceConsistentCasingInFileNames": true,
+    //"noFallthroughCasesInSwitch": true,
+    "module": "commonjs",
+    //"moduleResolution": "node",
+    "resolveJsonModule": true,
+    //"isolatedModules": true,
+    "noEmit":false,
+    "inlineSourceMap": true,
+    "jsx": "preserve",
+    "baseUrl": "",
+    "outDir": "./build",
+  },
+  "include": [
+    "src",
+    "src/specs/**/*.ts"
+  ],
+  
+}

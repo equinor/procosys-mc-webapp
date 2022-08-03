@@ -99,7 +99,9 @@ const procosysApiByFetchService = (
     const getProjectsForPlant = async (
         plantId: string
     ): Promise<Project[] | Response> => {
-        const res = await fetch(`${baseURL}/Projects?plantId=${plantId}${apiVersion}`);
+        const res = await fetch(
+            `${baseURL}/Projects?plantId=${plantId}${apiVersion}`
+        );
 
         if (res.ok) {
             if (res.headers.get('Content-Type') === 'application/json') {
