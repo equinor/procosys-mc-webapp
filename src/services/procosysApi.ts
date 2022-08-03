@@ -196,6 +196,10 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
         return data;
     };
 
+    //------------
+    // BOOKMARKS
+    // -----------
+
     const postSetBookmark = async (
         plantId: string,
         searchType: string,
@@ -210,11 +214,7 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
         // );
     };
 
-    const getBookmarks = async (
-        plantId: string,
-        searchType: string,
-        entityId: string
-    ): Promise<void> => {
+    const getBookmarks = async (plantId: string): Promise<any> => {
         console.log('getBookmarks');
         // await axios.get(
         //     `McPkg?plantId=PCS$${plantId}&mcPkgId=${entityId}${apiVersion}`,
@@ -240,8 +240,7 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
 
     const deleteAllBookmarks = async (
         plantId: string,
-        searchType: string,
-        entityId: string
+        projectId: string
     ): Promise<void> => {
         console.log('deleteAllBookmarks');
         // await axios.delete(
