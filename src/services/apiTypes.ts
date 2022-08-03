@@ -1,4 +1,5 @@
 import { CheckItem } from '@equinor/procosys-webapp-components/dist/typings/apiTypes';
+import * as tg from 'generic-type-guard';
 
 export enum CompletionStatus {
     OS = 'OS',
@@ -20,8 +21,28 @@ export interface Plant {
     projects?: Project[];
 }
 
-//SEARCH
+export const isProject: tg.TypeGuard<Project> = new tg.IsInterface()
+    .withProperties({
+        description: tg.isString,
+        id: tg.isNumber,
+        title: tg.isString,
+    })
+    .get();
 
+export const isProjects = (project: unknown) => tg.isArray(isProject);
+
+export const isPlant: tg.TypeGuard<Plant> = new tg.IsInterface()
+    .withProperties({
+        id: tg.isString,
+        title: tg.isString,
+        slug: tg.isString,
+        projects: tg.isArray<Project>(isProject),
+    })
+    .get();
+
+export const isPlants = (plant: unknown) => tg.isArray(isPlant);
+
+//SEARCH
 export enum ApiSavedSearchType {
     CHECKLIST = 'Check Lists',
     PUNCH = 'Punch List Items',

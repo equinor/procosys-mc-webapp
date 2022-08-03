@@ -48,6 +48,8 @@ const WorkOrderInfo = ({
     const { history, url, api, params } = useCommonHooks();
     const { snackbar, setSnackbarText } = useSnackbar();
     const source = Axios.CancelToken.source();
+    const controller = new AbortController();
+    const abortSignal = controller.signal;
     if (
         workOrder === undefined ||
         isOfType<WoPreview>(workOrder, 'workOrderNo')
@@ -74,7 +76,7 @@ const WorkOrderInfo = ({
                             api.getWorkOrderAttachments(
                                 params.plant,
                                 params.entityId,
-                                source.token
+                                abortSignal
                             )
                         }
                         getAttachment={(attachmentId: number): Promise<Blob> =>

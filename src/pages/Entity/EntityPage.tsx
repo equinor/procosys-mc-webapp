@@ -54,12 +54,14 @@ const EntityPage = (): JSX.Element => {
         AsyncStatus.LOADING
     );
     const source = Axios.CancelToken.source();
+    const controller = new AbortController();
+    const abortSignal = controller.signal;
     const isOnPunchListPage = history.location.pathname.includes('/punch-list');
     const isOnWoInfoPage = history.location.pathname.includes('/wo-info');
 
     useEffect(() => {
         return (): void => {
-            source.cancel();
+            controller.abort();
         };
     }, []);
 
@@ -71,13 +73,13 @@ const EntityPage = (): JSX.Element => {
                         params.plant,
                         params.searchType,
                         params.entityId,
-                        source.token
+                        abortSignal
                     ),
                     api.getScope(
                         params.plant,
                         params.searchType,
                         params.entityId,
-                        source.token
+                        abortSignal
                     ),
                 ]);
                 setPunchList(punchListFromApi);
@@ -108,7 +110,7 @@ const EntityPage = (): JSX.Element => {
                     params.plant,
                     params.searchType,
                     params.entityId,
-                    source.token
+                    abortSignal
                 );
                 setDetails(detailsFromApi);
                 setFetchDetailsStatus(AsyncStatus.SUCCESS);

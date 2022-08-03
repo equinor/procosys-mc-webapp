@@ -56,16 +56,27 @@ const initialize = async () => {
         configurationEndpoint,
         configurationAccessToken
     );
+
+    const accessToken = await authInstance.getAccessToken(
+        appConfig.procosysWebApi.scope
+    );
+
     const baseApiInstance = baseApiService({
         authInstance,
         baseURL: appConfig.procosysWebApi.baseUrl,
         scope: appConfig.procosysWebApi.scope,
+        accessToken: accessToken,
     });
 
-    const procosysApiInstance = procosysApiService({
-        axios: baseApiInstance,
-        apiVersion: appConfig.procosysWebApi.apiVersion,
-    });
+    const procosysApiInstance = procosysApiService(
+        {
+            axios: baseApiInstance, // to be removed
+            baseURL: appConfig.procosysWebApi.baseUrl,
+            apiVersion: appConfig.procosysWebApi.apiVersion,
+        },
+        accessToken
+    );
+
     const { appInsightsReactPlugin } = initializeAppInsights(
         appConfig.appInsights.instrumentationKey
     );

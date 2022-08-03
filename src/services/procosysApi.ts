@@ -6,6 +6,7 @@ import {
 import { AxiosInstance, CancelToken } from 'axios';
 import { SavedSearchType } from '../pages/Search/SavedSearches/SavedSearchResult';
 import { SearchType } from '../pages/Search/Search';
+import objectToCamelCase from '../utils/objectToCamelCase';
 import {
     isArrayofPerson,
     isArrayOfType,
@@ -37,41 +38,90 @@ import {
     SavedSearch,
     PunchItemSavedSearchResult,
     ChecklistSavedSearchResult,
+    isPlants,
 } from './apiTypes';
 
 type ProcosysApiServiceProps = {
     axios: AxiosInstance;
+    baseURL: string;
     apiVersion: string;
+    cb2?: (res: Response) => Response;
 };
 
-const typeGuardErrorMessage = (expectedType: string): string => {
+export const typeGuardErrorMessage = (expectedType: string): string => {
     return `Unable to retrieve ${expectedType}. Please try again.`;
 };
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
+const procosysApiService = (
+    {
+        axios,
+        baseURL,
+        apiVersion,
+        cb2 = (res: Response): Response => res,
+    }: ProcosysApiServiceProps,
+    token: string
+) => {
     // General
     const getVersion = (): string => {
         return apiVersion;
     };
+
+    const getByFetch = async (
+        url: string,
+        abortSignal?: AbortSignal
+    ): Promise<any> => {
+        const GetOperation = {
+            abortSignal,
+            method: 'GET',
+            headers: { Authorization: `Bearer ${token}` },
+        };
+        const res = await fetch(`${baseURL}/${url}`, GetOperation);
+        if (res.ok) {
+            const jsonResult = await res.json();
+            if (jsonResult instanceof Array) {
+                return objectToCamelCase(jsonResult);
+            } else {
+                if (
+                    typeof jsonResult === 'object' &&
+                    !(jsonResult instanceof Blob)
+                ) {
+                    return objectToCamelCase(jsonResult);
+                } else {
+                    return jsonResult;
+                }
+            }
+        } else {
+            alert('HTTP-Error: ' + res.status);
+            console.error(res.status);
+            return res;
+        }
+    };
+
     const getPlants = async (): Promise<Plant[]> => {
-        const { data } = await axios.get(
+        const plants = await getByFetch(
             `Plants?includePlantsWithoutAccess=false${apiVersion}`
         );
-        if (!isArrayOfType<Plant>(data, 'title')) {
-            throw new Error(typeGuardErrorMessage('plants'));
+
+        if (plants instanceof Array && isPlants(plants)) {
+            try {
+                const plantsWithSlug: Plant[] = plants.map((plant: Plant) => ({
+                    ...plant,
+                    slug: plant.id.substring(4),
+                }));
+                return plantsWithSlug;
+            } catch (error) {
+                console.error(error);
+            }
         }
-        const plantsWithSlug = data.map((plant: Plant) => ({
-            ...plant,
-            slug: plant.id.substr(4),
-        }));
-        return plantsWithSlug;
+        return plants;
     };
 
     const getProjectsForPlant = async (plantId: string): Promise<Project[]> => {
-        const { data } = await axios.get(
+        const data = await getByFetch(
             `Projects?plantId=${plantId}${apiVersion}`
         );
+
         if (!isArrayOfType<Project>(data, 'title')) {
             throw new Error(typeGuardErrorMessage('projects'));
         }
@@ -81,7 +131,7 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
     const getPermissionsForPlant = async (
         plantId: string
     ): Promise<string[]> => {
-        const { data } = await axios.get(
+        const data = await getByFetch(
             `Permissions?plantId=${plantId}${apiVersion}`
         );
         return data as string[];
@@ -93,7 +143,7 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
         projectId: number,
         plantId: string,
         searchType: string,
-        cancelToken: CancelToken
+        abortSignal: AbortSignal
     ): Promise<SearchResults> => {
         let url = '';
         if (searchType === SearchType.MC) {
@@ -115,7 +165,8 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
         } else {
             throw new Error('An error occurred, please try again.');
         }
-        const { data } = await axios.get(url, { cancelToken });
+
+        const data = await getByFetch(url, abortSignal);
         if (!isOfType<SearchResults>(data, 'maxAvailable')) {
             throw new Error(typeGuardErrorMessage('search results'));
         }
@@ -124,13 +175,11 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
 
     const getSavedSearches = async (
         plantId: string,
-        cancelToken: CancelToken
+        abortSignal: AbortSignal
     ): Promise<SavedSearch[]> => {
-        const { data } = await axios.get(
+        const data = await getByFetch(
             `/SavedSearches?plantId=PCS$${plantId}${apiVersion}`,
-            {
-                cancelToken,
-            }
+            abortSignal
         );
         if (!isArrayOfType<SavedSearch>(data, 'type')) {
             throw new Error(typeGuardErrorMessage('saved search'));
@@ -151,7 +200,7 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
         plantId: string,
         savedSearchId: string,
         savedSearchType: string,
-        cancelToken: CancelToken,
+        abortSignal: AbortSignal,
         currentPage = 0
     ): Promise<PunchItemSavedSearchResult[] | ChecklistSavedSearchResult[]> => {
         let url = '';
@@ -162,9 +211,7 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
         } else {
             throw new Error('The current saved search type is not supported.');
         }
-        const { data } = await axios.get(url, {
-            cancelToken,
-        });
+        const data = await getByFetch(url, abortSignal);
         if (!isCorrectSavedSearchResults(data, savedSearchType)) {
             throw new Error(typeGuardErrorMessage('saved search results'));
         }
@@ -175,7 +222,7 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
         plantId: string,
         searchType: string,
         entityId: string,
-        cancelToken: CancelToken
+        abortSignal: AbortSignal
     ): Promise<McPkgPreview | WoPreview | Tag | PoPreview> => {
         let url = '';
         if (searchType === SearchType.MC) {
@@ -189,7 +236,7 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
         } else {
             throw new Error('The chosen scope type is not supported.');
         }
-        const { data } = await axios.get(url, { cancelToken });
+        const data = await getByFetch(url, abortSignal);
         if (!isCorrectDetails(data, searchType)) {
             throw new Error(typeGuardErrorMessage('details'));
         }
@@ -199,13 +246,11 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
     const getPunchAttachments = async (
         plantId: string,
         punchItemId: number,
-        cancelToken: CancelToken
+        abortSignal: AbortSignal
     ): Promise<Attachment[]> => {
-        const { data } = await axios.get(
+        const data = await getByFetch(
             `PunchListItem/Attachments?plantId=PCS$${plantId}&punchItemId=${punchItemId}&thumbnailSize=128${apiVersion}`,
-            {
-                cancelToken: cancelToken,
-            }
+            abortSignal
         );
         return data as Attachment[];
     };
@@ -217,7 +262,7 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
         plantId: string,
         searchType: SearchType,
         entityId: string,
-        cancelToken: CancelToken
+        abortSignal: AbortSignal
     ): Promise<ChecklistPreview[]> => {
         let url = '';
         if (searchType === SearchType.MC) {
@@ -231,7 +276,7 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
         } else {
             throw new Error('The chosen scope type is not supported.');
         }
-        const { data } = await axios.get(url, { cancelToken });
+        const data = await getByFetch(url, abortSignal);
         if (!isArrayOfType<ChecklistPreview>(data, 'hasElectronicForm')) {
             throw new Error(typeGuardErrorMessage('checklist preview'));
         }
@@ -241,11 +286,11 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
     const getChecklist = async (
         plantId: string,
         checklistId: string,
-        cancelToken: CancelToken
+        abortSignal: AbortSignal
     ): Promise<ChecklistResponse> => {
-        const { data } = await axios.get(
+        const data = await getByFetch(
             `CheckList/MC?plantId=PCS$${plantId}&checklistId=${checklistId}${apiVersion}`,
-            { cancelToken }
+            abortSignal
         );
         if (!isChecklistResponse(data)) {
             throw new Error('An error occurred, please try again');
@@ -256,11 +301,11 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
     const getChecklistPunchList = async (
         plantId: string,
         checklistId: string,
-        cancelToken: CancelToken
+        abortSignal: AbortSignal
     ): Promise<PunchPreview[]> => {
-        const { data } = await axios.get(
+        const data = await getByFetch(
             `CheckList/PunchList?plantId=PCS$${plantId}&checklistId=${checklistId}${apiVersion}`,
-            { cancelToken }
+            abortSignal
         );
         if (!isArrayOfType<PunchPreview>(data, 'cleared')) {
             throw new Error('An error occurred, please try again.');
@@ -275,7 +320,7 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
         plantId: string,
         searchType: SearchType,
         entityId: string,
-        cancelToken: CancelToken
+        abortSignal: AbortSignal
     ): Promise<PunchPreview[]> => {
         let url = '';
         if (searchType === SearchType.MC) {
@@ -289,7 +334,7 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
         } else {
             throw new Error('The chosen scope type is not supported.');
         }
-        const { data } = await axios.get(url, { cancelToken });
+        const data = await getByFetch(url, abortSignal);
         if (!isArrayOfType<PunchPreview>(data, 'responsibleCode')) {
             throw new Error(typeGuardErrorMessage('punch preview'));
         }
@@ -298,11 +343,11 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
 
     const getPunchCategories = async (
         plantId: string,
-        cancelToken: CancelToken
+        abortSignal: AbortSignal
     ): Promise<PunchCategory[]> => {
-        const { data } = await axios.get(
+        const data = await getByFetch(
             `PunchListItem/Categories?plantId=PCS$${plantId}${apiVersion}`,
-            { cancelToken }
+            abortSignal
         );
         if (!isArrayOfType<PunchCategory>(data, 'code')) {
             throw new Error(typeGuardErrorMessage('punch categories'));
@@ -312,11 +357,11 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
 
     const getPunchTypes = async (
         plantId: string,
-        cancelToken: CancelToken
+        abortSignal: AbortSignal
     ): Promise<PunchType[]> => {
-        const { data } = await axios.get(
+        const { data } = await getByFetch(
             `PunchListItem/Types?plantId=PCS$${plantId}${apiVersion}`,
-            { cancelToken }
+            abortSignal
         );
         if (!isArrayOfType<PunchType>(data, 'code')) {
             throw new Error(typeGuardErrorMessage('punch types'));
@@ -326,11 +371,11 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
 
     const getPunchOrganizations = async (
         plantId: string,
-        cancelToken: CancelToken
+        abortSignal: AbortSignal
     ): Promise<PunchOrganization[]> => {
-        const { data } = await axios.get(
+        const { data } = await getByFetch(
             `PunchListItem/Organizations?plantId=PCS$${plantId}${apiVersion}`,
-            { cancelToken }
+            abortSignal
         );
         if (!isArrayOfType<PunchOrganization>(data, 'code')) {
             throw new Error(typeGuardErrorMessage('punch organizations'));
@@ -340,11 +385,11 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
 
     const getPunchSorts = async (
         plantId: string,
-        cancelToken: CancelToken
+        abortSignal: AbortSignal
     ): Promise<PunchSort[]> => {
-        const { data } = await axios.get(
+        const { data } = await getByFetch(
             `PunchListItem/Sorts?plantId=PCS$${plantId}${apiVersion}`,
-            { cancelToken }
+            abortSignal
         );
         if (!isArrayOfType<PunchSort>(data, 'code')) {
             throw new Error(typeGuardErrorMessage('punch sorts'));
@@ -353,11 +398,11 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
     };
     const getPunchPriorities = async (
         plantId: string,
-        cancelToken: CancelToken
+        abortSignal: AbortSignal
     ): Promise<PunchPriority[]> => {
-        const { data } = await axios.get(
+        const { data } = await getByFetch(
             `PunchListItem/Priorities?plantId=PCS$${plantId}${apiVersion}`,
-            { cancelToken }
+            abortSignal
         );
         if (!isArrayOfType<PunchPriority>(data, 'code')) {
             throw new Error(typeGuardErrorMessage('punch priorities'));
@@ -378,11 +423,11 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
     const getPunchItem = async (
         plantId: string,
         punchItemId: string,
-        cancelToken: CancelToken
+        abortSignal: AbortSignal
     ): Promise<PunchItem> => {
-        const { data } = await axios.get(
+        const { data } = await getByFetch(
             `PunchListItem?plantId=PCS$${plantId}&punchItemId=${punchItemId}${apiVersion}`,
-            { cancelToken }
+            abortSignal
         );
         if (!isOfType<PunchItem>(data, 'raisedByCode')) {
             throw new Error(typeGuardErrorMessage('punchItem'));
@@ -488,11 +533,11 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
     const getPersonsByName = async (
         plantId: string,
         searchString: string,
-        cancelToken: CancelToken
+        abortSignal: AbortSignal
     ): Promise<Person[]> => {
-        const { data } = await axios.get(
+        const { data } = await getByFetch(
             `Person/PersonSearch?plantId=${plantId}&searchString=${searchString}${apiVersion}`,
-            { cancelToken }
+            abortSignal
         );
         if (!isArrayofPerson(data)) {
             throw new Error('An error occurred, please try again.');
@@ -503,11 +548,11 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
     const getTag = async (
         plantId: string,
         tagId: number,
-        cancelToken: CancelToken
+        abortSignal: AbortSignal
     ): Promise<Tag> => {
-        const { data } = await axios.get(
+        const { data } = await getByFetch(
             `Tag?plantId=PCS$${plantId}&tagId=${tagId}${apiVersion}`,
-            { cancelToken }
+            abortSignal
         );
         if (!isOfType<Tag>(data, 'tag')) {
             throw Error(typeGuardErrorMessage('tag'));
@@ -518,11 +563,11 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
     const getWorkOrderAttachments = async (
         plantId: string,
         workOrderId: string,
-        cancelToken: CancelToken
+        abortSignal: AbortSignal
     ): Promise<Attachment[]> => {
-        const { data } = await axios.get(
+        const { data } = await getByFetch(
             `WorkOrder/Attachments?plantId=PCS$${plantId}&workOrderId=${workOrderId}&thumbnailSize=128${apiVersion}`,
-            { cancelToken }
+            abortSignal
         );
         if (!isArrayOfType<Attachment>(data, 'fileName')) {
             throw Error(typeGuardErrorMessage('attachments'));
