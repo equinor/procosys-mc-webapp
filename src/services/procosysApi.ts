@@ -555,7 +555,6 @@ const procosysApiService = (
         file: FormData,
         title: string
     ): Promise<string> => {
-        console.log('post temp att', file);
         const data = await postByFetch(
             `PunchListItem/TempAttachment?plantId=PCS$${plantId}${apiVersion}`,
             file,
@@ -570,7 +569,6 @@ const procosysApiService = (
         file: FormData,
         title: string
     ): Promise<void> => {
-        console.log('her er jeg,', file);
         await postByFetch(
             `PunchListItem/Attachment?plantId=PCS$${plantId}&punchItemId=${punchId}&title=${title}${apiVersion}`,
             file,
