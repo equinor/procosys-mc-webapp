@@ -84,7 +84,7 @@ const WorkOrderInfo = ({
                                 params.plant,
                                 params.entityId,
                                 attachmentId,
-                                source.token
+                                abortSignal
                             )
                         }
                         postAttachment={(

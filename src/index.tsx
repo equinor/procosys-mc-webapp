@@ -61,16 +61,8 @@ const initialize = async () => {
         appConfig.procosysWebApi.scope
     );
 
-    const baseApiInstance = baseApiService({
-        authInstance,
-        baseURL: appConfig.procosysWebApi.baseUrl,
-        scope: appConfig.procosysWebApi.scope,
-        accessToken: accessToken,
-    });
-
     const procosysApiInstance = procosysApiService(
         {
-            axios: baseApiInstance, // to be removed
             baseURL: appConfig.procosysWebApi.baseUrl,
             apiVersion: appConfig.procosysWebApi.apiVersion,
         },

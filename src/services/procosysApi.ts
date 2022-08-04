@@ -3,7 +3,6 @@ import {
     PunchEndpoints,
     UpdatePunchData,
 } from '@equinor/procosys-webapp-components';
-import { AxiosInstance, CancelToken } from 'axios';
 import { SavedSearchType } from '../pages/Search/SavedSearches/SavedSearchResult';
 import { SearchType } from '../pages/Search/Search';
 import objectToCamelCase from '../utils/objectToCamelCase';
@@ -42,10 +41,16 @@ import {
 } from './apiTypes';
 
 type ProcosysApiServiceProps = {
-    axios: AxiosInstance;
     baseURL: string;
     apiVersion: string;
     cb2?: (res: Response) => Response;
+};
+
+type GetOperationProps = {
+    abortSignal?: AbortSignal;
+    method: string;
+    headers: any;
+    responseType?: string;
 };
 
 export const typeGuardErrorMessage = (expectedType: string): string => {
@@ -55,7 +60,6 @@ export const typeGuardErrorMessage = (expectedType: string): string => {
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const procosysApiService = (
     {
-        axios,
         baseURL,
         apiVersion,
         cb2 = (res: Response): Response => res,
@@ -69,13 +73,27 @@ const procosysApiService = (
 
     const getByFetch = async (
         url: string,
-        abortSignal?: AbortSignal
+        abortSignal?: AbortSignal,
+        additionalHeaders?: any,
+        isBlob?: boolean
     ): Promise<any> => {
-        const GetOperation = {
-            abortSignal,
+        const GetOperation: GetOperationProps = {
             method: 'GET',
-            headers: { Authorization: `Bearer ${token}` },
+            headers: {
+                Authorization: `Bearer ${token}`,
+                ...additionalHeaders,
+            },
         };
+
+        if (abortSignal) {
+            GetOperation.abortSignal = abortSignal;
+        }
+
+        if (isBlob) {
+            GetOperation.responseType = 'blob';
+        }
+
+        console.log('getOp', GetOperation);
 
         const res = await fetch(`${baseURL}/${url}`, GetOperation);
 
@@ -498,21 +516,16 @@ const procosysApiService = (
     };
 
     const getPunchAttachment = async (
-        cancelToken: CancelToken,
+        abortSignal: AbortSignal,
         plantId: string,
         punchItemId: number,
         attachmentId: number
     ): Promise<Blob> => {
-        const { data } = await axios.get(
+        const data = await getByFetch(
             `PunchListItem/Attachment?plantId=PCS$${plantId}&punchItemId=${punchItemId}&attachmentId=${attachmentId}${apiVersion}`,
-            {
-                cancelToken: cancelToken,
-                responseType: 'blob',
-                headers: {
-                    'Content-Disposition':
-                        'attachment; filename="filename.jpg"',
-                },
-            }
+            abortSignal,
+            { 'Content-Disposition': 'attachment; filename="filename.jpg"' },
+            true
         );
         return data as Blob;
     };
@@ -607,18 +620,13 @@ const procosysApiService = (
         plantId: string,
         workOrderId: string,
         attachmentId: number,
-        cancelToken: CancelToken
+        abortSignal: AbortSignal
     ): Promise<Blob> => {
-        const { data } = await axios.get(
+        const data = getByFetch(
             `WorkOrder/Attachment?plantId=PCS$${plantId}&workOrderId=${workOrderId}&attachmentId=${attachmentId}${apiVersion}`,
-            {
-                cancelToken: cancelToken,
-                responseType: 'blob',
-                headers: {
-                    'Content-Disposition':
-                        'attachment; filename="filename.jpg"',
-                },
-            }
+            abortSignal,
+            { 'Content-Disposition': 'attachment; filename="filename.jpg"' },
+            true
         );
         if (!isOfType<Blob>(data, 'stream')) {
             throw Error(typeGuardErrorMessage('attachments'));
