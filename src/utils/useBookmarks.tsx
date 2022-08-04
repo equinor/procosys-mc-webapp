@@ -1,73 +1,78 @@
-import { StorageKey } from '@equinor/procosys-webapp-components';
+import { AsyncStatus, StorageKey } from '@equinor/procosys-webapp-components';
 import { useContext, useEffect, useState } from 'react';
-import PlantContext from '../contexts/PlantContext';
-
-const cleanUpBookmarks = (bookmarks: any): string[] => {
-    const commPkgIds: string[] = bookmarks.filter(
-        (bookmark: unknown) => typeof bookmark === 'string'
-    );
-    return Array.from(new Set(commPkgIds));
-};
-
-export const getCurrentBookmarks = (projectId: string): string[] => {
-    const bookmarksFromLocalStorage = window.localStorage.getItem(
-        `${StorageKey.BOOKMARK}: ${projectId}`
-    );
-    if (bookmarksFromLocalStorage) {
-        return cleanUpBookmarks(JSON.parse(bookmarksFromLocalStorage));
-    }
-    return [];
-};
+import Search, { SearchType } from '../pages/Search/Search';
+import useCommonHooks from './useCommonHooks';
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-const useBookmarks = (commPkgId: string) => {
-    const { currentProject } = useContext(PlantContext);
-    const projectId = currentProject?.id.toString() as string;
-    const [currentBookmarks, setCurrentBookmarks] = useState<string[]>();
-    const [isBookmarked, setIsBookmarked] = useState(false);
+const useBookmarks = () => {
+    const { params, api } = useCommonHooks();
+    const [currentBookmarks, setCurrentBookmarks] = useState<any[]>(); // TODO: change to return type of getBookmarks
+    const [fetchBookmarksStatus, setFetchBookmarksStatus] =
+        useState<AsyncStatus>(AsyncStatus.INACTIVE);
 
-    // Set current bookmarks to whatever is in local storage
+    // Set current bookmarks
     useEffect(() => {
-        setCurrentBookmarks(getCurrentBookmarks(projectId));
-    }, [projectId]);
+        (async (): Promise<void> => {
+            setFetchBookmarksStatus(AsyncStatus.LOADING);
+            try {
+                const bookmarksFromApi = await api.getBookmarks(params.plant);
+                if (bookmarksFromApi.length < 1) {
+                    // TODO: check in a better way once I know how the DTO looks
+                    setFetchBookmarksStatus(AsyncStatus.EMPTY_RESPONSE);
+                } else {
+                    setFetchBookmarksStatus(AsyncStatus.SUCCESS);
+                    setCurrentBookmarks(bookmarksFromApi);
+                }
+            } catch {
+                setFetchBookmarksStatus(AsyncStatus.ERROR);
+            }
+        })();
+    }, [params.project]);
 
-    // Set isBookmarked to true if package exists in localstorage
-    useEffect(() => {
-        if (!currentBookmarks) return;
-        setIsBookmarked(
-            currentBookmarks.some(
-                (commPkgIdFromCache) => commPkgIdFromCache === commPkgId
-            )
-        );
-    }, [currentBookmarks, commPkgId]);
-
-    // Update currentbookmarks whenever user bookmarks/unbookmarks a pkg
-    useEffect(() => {
-        if (!currentBookmarks) return;
-        if (isBookmarked) {
-            if (!commPkgId) return;
-            setCurrentBookmarks([...currentBookmarks, commPkgId]);
+    const isBookmarked = (
+        entityType: SearchType,
+        entityId: string
+    ): boolean => {
+        // TODO: muligens fikse når jeg ser hvordan getBookmarks DTO ser ut
+        if (!currentBookmarks) return false;
+        if (entityType == SearchType.MC) {
+            currentBookmarks.mcPkgs.some((mcPkg) => mcPkg.id === entityId);
+        } else if (entityType == SearchType.Tag) {
+            currentBookmarks.tags.some((tag) => tag.id === entityId);
+        } else if (entityType == SearchType.PO) {
+            currentBookmarks.purchaseOrders.some((po) => po.id === entityId);
         } else {
-            if (currentBookmarks.length < 1) return;
-            setCurrentBookmarks(
-                currentBookmarks.filter(
-                    (existingCommPkgId) => existingCommPkgId !== commPkgId
-                )
-            );
+            currentBookmarks.workOrders.some((wo) => wo.id === entityId);
         }
-    }, [isBookmarked]);
+    };
 
-    // Set current bookmark state to localstorage whenever it changes
-    useEffect(() => {
-        if (!currentBookmarks) return;
-        window.localStorage.setItem(
-            `${StorageKey.BOOKMARK}: ${projectId}`,
-            JSON.stringify(cleanUpBookmarks(currentBookmarks))
-        );
-    }, [currentBookmarks]);
+    const handleBookmarkClicked = async (
+        entityType: SearchType,
+        entityId: string,
+        isBookmarked: boolean // TODO: or do I just use isBookmarked function?
+    ): Promise<void> => {
+        try {
+            if (isBookmarked) {
+                await api.deleteBookmark(
+                    params.plant,
+                    params.searchType,
+                    params.entityId
+                );
+            } else {
+                await api.postSetBookmark(
+                    params.plant,
+                    params.searchType,
+                    params.entityId
+                );
+            }
+        } catch (error) {
+            if (!(error instanceof Error)) return;
+        }
+    };
 
     return {
-        setIsBookmarked,
+        fetchBookmarksStatus,
+        currentBookmarks,
         isBookmarked,
     };
 };
