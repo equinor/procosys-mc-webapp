@@ -12,7 +12,6 @@ import {
     PoPreview,
 } from '../../services/apiTypes';
 import withAccessControl from '../../services/withAccessControl';
-import Axios from 'axios';
 import EdsIcon from '../../components/icons/EdsIcon';
 import { COLORS } from '../../style/GlobalStyles';
 import { SearchType } from '../Search/Search';
@@ -53,7 +52,6 @@ const EntityPage = (): JSX.Element => {
     const [fetchDetailsStatus, setFetchDetailsStatus] = useState(
         AsyncStatus.LOADING
     );
-    const source = Axios.CancelToken.source();
     const controller = new AbortController();
     const abortSignal = controller.signal;
     const isOnPunchListPage = history.location.pathname.includes('/punch-list');

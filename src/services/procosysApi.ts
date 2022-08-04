@@ -78,6 +78,7 @@ const procosysApiService = (
         isBlob?: boolean
     ): Promise<any> => {
         const GetOperation: GetOperationProps = {
+            abortSignal: abortSignal,
             method: 'GET',
             headers: {
                 Authorization: `Bearer ${token}`,
@@ -85,15 +86,9 @@ const procosysApiService = (
             },
         };
 
-        if (abortSignal) {
-            GetOperation.abortSignal = abortSignal;
-        }
-
         if (isBlob) {
             GetOperation.responseType = 'blob';
         }
-
-        console.log('getOp', GetOperation);
 
         const res = await fetch(`${baseURL}/${url}`, GetOperation);
 
@@ -140,13 +135,21 @@ const procosysApiService = (
             },
             body: JSON.stringify(bodyData),
         };
+
         await fetch(`${baseURL}/${url}`, PostOperation);
     };
 
-    const putByFetch = async (url: string, bodyData: any): Promise<any> => {
+    const putByFetch = async (
+        url: string,
+        bodyData: any,
+        additionalHeaders?: any
+    ): Promise<any> => {
         const PutOperation = {
             method: 'PUT',
-            headers: { Authorization: `Bearer ${token}` },
+            headers: {
+                Authorization: `Bearer ${token}`,
+                ...additionalHeaders,
+            },
             body: JSON.stringify(bodyData),
         };
         await fetch(`${baseURL}/${url}`, PutOperation);
@@ -470,7 +473,8 @@ const procosysApiService = (
     ): Promise<void> => {
         await postByFetch(
             `PunchListItem?plantId=PCS$${plantId}${apiVersion}`,
-            newPunchData
+            newPunchData,
+            { 'Content-Type': 'application/json' }
         );
     };
 
@@ -498,7 +502,8 @@ const procosysApiService = (
         const dto = { PunchItemId: punchItemId, ...updateData };
         await putByFetch(
             `PunchListItem/${endpoint}?plantId=PCS$${plantId}${apiVersion}`,
-            dto
+            dto,
+            { 'Content-Type': 'application/json' }
         );
     };
 
@@ -550,6 +555,7 @@ const procosysApiService = (
         file: FormData,
         title: string
     ): Promise<string> => {
+        console.log('post temp att', file);
         const data = await postByFetch(
             `PunchListItem/TempAttachment?plantId=PCS$${plantId}${apiVersion}`,
             file,
@@ -564,6 +570,7 @@ const procosysApiService = (
         file: FormData,
         title: string
     ): Promise<void> => {
+        console.log('her er jeg,', file);
         await postByFetch(
             `PunchListItem/Attachment?plantId=PCS$${plantId}&punchItemId=${punchId}&title=${title}${apiVersion}`,
             file,
