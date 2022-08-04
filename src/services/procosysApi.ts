@@ -300,7 +300,7 @@ const procosysApiService = (
     const getPunchAttachments = async (
         plantId: string,
         punchItemId: number,
-        abortSignal: AbortSignal
+        abortSignal?: AbortSignal
     ): Promise<Attachment[]> => {
         const data = await getByFetch(
             `PunchListItem/Attachments?plantId=PCS$${plantId}&punchItemId=${punchItemId}&thumbnailSize=128${apiVersion}`,
@@ -413,7 +413,7 @@ const procosysApiService = (
         plantId: string,
         abortSignal: AbortSignal
     ): Promise<PunchType[]> => {
-        const { data } = await getByFetch(
+        const data = await getByFetch(
             `PunchListItem/Types?plantId=PCS$${plantId}${apiVersion}`,
             abortSignal
         );
@@ -427,7 +427,7 @@ const procosysApiService = (
         plantId: string,
         abortSignal: AbortSignal
     ): Promise<PunchOrganization[]> => {
-        const { data } = await getByFetch(
+        const data = await getByFetch(
             `PunchListItem/Organizations?plantId=PCS$${plantId}${apiVersion}`,
             abortSignal
         );
@@ -441,7 +441,7 @@ const procosysApiService = (
         plantId: string,
         abortSignal: AbortSignal
     ): Promise<PunchSort[]> => {
-        const { data } = await getByFetch(
+        const data = await getByFetch(
             `PunchListItem/Sorts?plantId=PCS$${plantId}${apiVersion}`,
             abortSignal
         );
@@ -454,7 +454,7 @@ const procosysApiService = (
         plantId: string,
         abortSignal: AbortSignal
     ): Promise<PunchPriority[]> => {
-        const { data } = await getByFetch(
+        const data = await getByFetch(
             `PunchListItem/Priorities?plantId=PCS$${plantId}${apiVersion}`,
             abortSignal
         );
@@ -479,7 +479,7 @@ const procosysApiService = (
         punchItemId: string,
         abortSignal: AbortSignal
     ): Promise<PunchItem> => {
-        const { data } = await getByFetch(
+        const data = await getByFetch(
             `PunchListItem?plantId=PCS$${plantId}&punchItemId=${punchItemId}${apiVersion}`,
             abortSignal
         );
@@ -550,7 +550,7 @@ const procosysApiService = (
         file: FormData,
         title: string
     ): Promise<string> => {
-        const { data } = await postByFetch(
+        const data = await postByFetch(
             `PunchListItem/TempAttachment?plantId=PCS$${plantId}${apiVersion}`,
             file,
             { 'Content-Type': 'multipart/form-data' }
@@ -576,7 +576,7 @@ const procosysApiService = (
         searchString: string,
         abortSignal: AbortSignal
     ): Promise<Person[]> => {
-        const { data } = await getByFetch(
+        const data = await getByFetch(
             `Person/PersonSearch?plantId=${plantId}&searchString=${searchString}${apiVersion}`,
             abortSignal
         );
@@ -591,7 +591,7 @@ const procosysApiService = (
         tagId: number,
         abortSignal: AbortSignal
     ): Promise<Tag> => {
-        const { data } = await getByFetch(
+        const data = await getByFetch(
             `Tag?plantId=PCS$${plantId}&tagId=${tagId}${apiVersion}`,
             abortSignal
         );
@@ -606,7 +606,7 @@ const procosysApiService = (
         workOrderId: string,
         abortSignal: AbortSignal
     ): Promise<Attachment[]> => {
-        const { data } = await getByFetch(
+        const data = await getByFetch(
             `WorkOrder/Attachments?plantId=PCS$${plantId}&workOrderId=${workOrderId}&thumbnailSize=128${apiVersion}`,
             abortSignal
         );

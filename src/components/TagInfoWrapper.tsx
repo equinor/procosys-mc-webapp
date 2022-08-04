@@ -1,5 +1,4 @@
 import { TagInfo } from '@equinor/procosys-webapp-components';
-import axios from 'axios';
 import React, { useState } from 'react';
 import { useEffect } from 'react';
 import { AsyncStatus } from '../contexts/McAppContext';

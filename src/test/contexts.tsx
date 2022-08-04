@@ -4,7 +4,6 @@ import PlantContext from '../contexts/PlantContext';
 import McAppContext, { AsyncStatus } from '../contexts/McAppContext';
 import * as Msal from '@azure/msal-browser';
 import { Plant, Project } from '../services/apiTypes';
-import baseApiService from '../services/baseApi';
 import procosysApiService, {
     ProcosysApiService,
 } from '../services/procosysApi';
@@ -35,15 +34,13 @@ const dummyFeatureFlags: FeatureFlags = {
 };
 
 const authInstance = authService({ MSAL: client, scopes: ['testScope'] });
-const baseApiInstance = baseApiService({
-    authInstance,
-    baseURL: baseURL,
-    scope: ['testscope'],
-});
-const procosysApiInstance = procosysApiService({
-    axios: baseApiInstance,
-    apiVersion: 'dummy-version',
-});
+
+const procosysApiInstance = procosysApiService(
+    {   baseURL: baseURL,
+        apiVersion: 'dummy-version',
+    }, 
+    'dummy-token'
+);
 
 type WithMcAppContextProps = {
     Component: JSX.Element;

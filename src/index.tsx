@@ -4,7 +4,6 @@ import ReactDOM from 'react-dom';
 import App from './App';
 import authService from './services/authService';
 import * as MSAL from '@azure/msal-browser';
-import baseApiService from './services/baseApi';
 import procosysApiService from './services/procosysApi';
 import { getAppConfig, getAuthConfig } from './services/appConfiguration';
 import initializeAppInsights from './services/appInsights';

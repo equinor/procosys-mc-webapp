@@ -8,7 +8,6 @@ import {
     removeSubdirectories,
     useSnackbar,
 } from '@equinor/procosys-webapp-components';
-import Axios from 'axios';
 import styled from 'styled-components';
 import AsyncPage from '../../components/AsyncPage';
 import { AsyncStatus } from '../../contexts/McAppContext';
@@ -47,9 +46,8 @@ const WorkOrderInfo = ({
 }: WorkOrderInfoProps): JSX.Element => {
     const { history, url, api, params } = useCommonHooks();
     const { snackbar, setSnackbarText } = useSnackbar();
-    const source = Axios.CancelToken.source();
-    const controller = new AbortController();
-    const abortSignal = controller.signal;
+    const abortController = new AbortController();
+    const abortSignal = abortController.signal;
     if (
         workOrder === undefined ||
         isOfType<WoPreview>(workOrder, 'workOrderNo')
@@ -109,7 +107,7 @@ const WorkOrderInfo = ({
                         }
                         setSnackbarText={setSnackbarText}
                         readOnly={false}
-                        source={source}
+                        abortController={abortController}
                     />
                     {snackbar}
                 </TagInfoWrapper>

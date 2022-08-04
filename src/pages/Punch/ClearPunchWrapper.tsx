@@ -16,7 +16,6 @@ import {
     useSnackbar,
     PunchAction,
 } from '@equinor/procosys-webapp-components';
-import Axios from 'axios';
 import usePersonsSearchFacade from '../../utils/usePersonsSearchFacade';
 
 const punchEndpoints: PunchEndpoints = {
@@ -61,9 +60,8 @@ const ClearPunchWrapper = ({
     const [clearPunchStatus, setClearPunchStatus] = useState(
         AsyncStatus.INACTIVE
     );
-    const source = Axios.CancelToken.source();
-    const controller = new AbortController();
-    const abortSignal = controller.signal;
+    const abortController = new AbortController();
+    const abortSignal = abortController.signal;
     const { hits, searchStatus, query, setQuery } = usePersonsSearchFacade();
 
     useEffect(() => {
@@ -93,7 +91,7 @@ const ClearPunchWrapper = ({
             }
         })();
         return (): void => {
-            controller.abort();
+            abortController.abort();
         };
     }, [params.plant, api, params.punchItemId]);
 
@@ -165,7 +163,7 @@ const ClearPunchWrapper = ({
             searchStatus={searchStatus}
             query={query}
             setQuery={setQuery}
-            source={source}
+            abortController={abortController}
         />
     );
 };
