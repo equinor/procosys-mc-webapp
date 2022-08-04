@@ -78,6 +78,7 @@ type McDetailsProps = {
     mcPkgDetails: McPkgPreview;
     isBookmarked?: boolean;
     offlinePlanningState?: boolean;
+    handleBookmarkClicked?: () => Promise<void>;
     clickable?: boolean;
 };
 
@@ -85,6 +86,7 @@ const McDetails = ({
     mcPkgDetails,
     isBookmarked = false,
     offlinePlanningState = false,
+    handleBookmarkClicked,
     clickable = true,
 }: McDetailsProps): JSX.Element => {
     const { history, url, api, params } = useCommonHooks();
@@ -135,13 +137,13 @@ const McDetails = ({
                 <Caption>{mcPkgDetails.description}</Caption>
                 <Caption>{mcPkgDetails.phaseCode}</Caption>
             </DetailsWrapper>
-            {offlinePlanningState && (
+            {offlinePlanningState && handleBookmarkClicked && (
                 <BookmarkWrapper>
                     <Button
                         variant="ghost_icon"
                         onClick={(e: React.MouseEvent<HTMLElement>): void => {
                             e.stopPropagation();
-                            handleClickedBookmark();
+                            handleBookmarkClicked();
                         }}
                     >
                         <EdsIcon

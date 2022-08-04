@@ -18,6 +18,7 @@ import {
     SkeletonLoadingPage,
     TextIcon,
 } from '@equinor/procosys-webapp-components';
+import useBookmarks from '../../../utils/useBookmarks';
 
 const SearchResultAmountWrapper = styled.h6`
     margin: 10px 0px;
@@ -35,6 +36,7 @@ const SearchResults = ({
     searchType,
 }: SearchResultsProps): JSX.Element => {
     const { history, url } = useCommonHooks();
+    const { isBookmarked, handleBookmarkClicked } = useBookmarks();
 
     const getPlaceholderTextType = (): string => {
         if (searchType === SearchType.MC) {
@@ -68,10 +70,21 @@ const SearchResults = ({
             return (
                 <>
                     {searchResults.items.map((searchResult) => {
+                        const id = searchResult.id;
+                        const bookmarked = isBookmarked(SearchType.MC, id);
                         return (
                             <McDetails
-                                key={searchResult.id}
+                                key={id}
                                 mcPkgDetails={searchResult}
+                                isBookmarked={bookmarked}
+                                offlinePlanningState={true}
+                                handleBookmarkClicked={(): Promise<void> =>
+                                    handleBookmarkClicked(
+                                        SearchType.MC,
+                                        id,
+                                        bookmarked
+                                    )
+                                }
                             />
                         );
                     })}

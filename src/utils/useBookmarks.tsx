@@ -31,39 +31,35 @@ const useBookmarks = () => {
 
     const isBookmarked = (
         entityType: SearchType,
-        entityId: string
+        entityId: number
     ): boolean => {
         // TODO: muligens fikse når jeg ser hvordan getBookmarks DTO ser ut
         if (!currentBookmarks) return false;
         if (entityType == SearchType.MC) {
-            currentBookmarks.mcPkgs.some((mcPkg) => mcPkg.id === entityId);
+            return currentBookmarks.mcPkgs.some(
+                (mcPkg) => mcPkg.id === entityId
+            );
         } else if (entityType == SearchType.Tag) {
-            currentBookmarks.tags.some((tag) => tag.id === entityId);
+            return currentBookmarks.tags.some((tag) => tag.id === entityId);
         } else if (entityType == SearchType.PO) {
-            currentBookmarks.purchaseOrders.some((po) => po.id === entityId);
+            return currentBookmarks.purchaseOrders.some(
+                (po) => po.id === entityId
+            );
         } else {
-            currentBookmarks.workOrders.some((wo) => wo.id === entityId);
+            return currentBookmarks.workOrders.some((wo) => wo.id === entityId);
         }
     };
 
     const handleBookmarkClicked = async (
         entityType: SearchType,
-        entityId: string,
+        entityId: number,
         isBookmarked: boolean // TODO: or do I just use isBookmarked function?
     ): Promise<void> => {
         try {
             if (isBookmarked) {
-                await api.deleteBookmark(
-                    params.plant,
-                    params.searchType,
-                    params.entityId
-                );
+                await api.deleteBookmark(params.plant, entityType, entityId);
             } else {
-                await api.postSetBookmark(
-                    params.plant,
-                    params.searchType,
-                    params.entityId
-                );
+                await api.postSetBookmark(params.plant, entityType, entityId);
             }
         } catch (error) {
             if (!(error instanceof Error)) return;
@@ -74,6 +70,7 @@ const useBookmarks = () => {
         fetchBookmarksStatus,
         currentBookmarks,
         isBookmarked,
+        handleBookmarkClicked,
     };
 };
 
