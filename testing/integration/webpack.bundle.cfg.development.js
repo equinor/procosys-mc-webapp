@@ -10,6 +10,7 @@ module.exports = {
         main: [
             './build/testing/integration/src/index.js',
             './build/testing/integration/src/specs/fetch-spec3.js',
+            './build/testing/integration/src/specs/build-offline-scope-level1-entity',
             './build/testing/integration/src/specs/hello-integration-spec1.js',
             './build/testing/integration/src/specs/hello-integration-spec2.js',
         ],

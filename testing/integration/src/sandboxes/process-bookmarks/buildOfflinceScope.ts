@@ -6,8 +6,17 @@ import {
     TagPreview,
     WoPreview,
 } from '../../../../../src/services/apiTypes';
-import procosysApiService from '../../../../../src/services/procosysApiService';
-import isCorrectDetails from '../../../../../src/services/apiTypeGuards';
+import procosysApiService from '../../../../../src/services/procosysApi';
+import {
+    isArrayofPerson,
+    isArrayOfType,
+    isChecklistResponse,
+    isCorrectDetails,
+    isCorrectSavedSearchResults,
+    isOfType,
+} from '../../../../../src/services/apiTypeGuards';
+
+import axios from 'axios';
 
 
 
@@ -23,12 +32,12 @@ const buildOfflineScope = async (bookmarks: Bookmarks): Promise<void> => { };
 export default buildOfflineScope;
 
 
-const getMcPky = (EntityId: number): McPkgPreview => {
-    const { data } = await axios.get(url, { cancelToken });
-    if (!isCorrectDetails(data, searchType)) {
-        throw new Error(typeGuardErrorMessage('details'));
-    }
-    return data;
-};
+// const getMcPky = async (EntityId: number, url: string): Promise<McPkgPreview> => {
+//     const { data } = await axios.get(url, { cancelToken });
+//     if (!isCorrectDetails(data, searchType)) {
+//         throw new Error(typeGuardErrorMessage('details'));
+//     }
+//     return data;
+// };
 
 const databaseAddEntity = async (entity: Entities): Promise<void> => { };
