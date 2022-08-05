@@ -2,7 +2,7 @@ import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { Search as SearchField } from '@equinor/eds-core-react';
 import useSearchPageFacade from '../useSearchPageFacade';
 import SearchResults from './SearchResults';
-import { SearchType } from '../Search';
+import { SearchType } from '../SearchPage';
 import styled from 'styled-components';
 import { TagPhotoRecognition } from '@equinor/procosys-webapp-components';
 import useCommonHooks from '../../../utils/useCommonHooks';

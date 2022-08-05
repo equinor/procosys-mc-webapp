@@ -16,7 +16,7 @@ import {
 } from '../../services/apiTypes';
 import { COLORS } from '../../style/GlobalStyles';
 import useCommonHooks from '../../utils/useCommonHooks';
-import { SearchType } from '../Search/Search';
+import { SearchType } from '../Search/SearchPage';
 
 export const DetailsWrapper = styled.p`
     text-align: center;

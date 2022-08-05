@@ -9,7 +9,7 @@ import {
     AppInsightsContext,
     ReactPlugin,
 } from '@microsoft/applicationinsights-react-js';
-import { SearchType } from './pages/Search/Search';
+import { SearchType } from './pages/Search/SearchPage';
 import { AppConfig, FeatureFlags } from './services/appConfiguration';
 import { SavedSearchType } from './pages/Search/SavedSearches/SavedSearchResult';
 

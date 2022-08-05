@@ -72,10 +72,6 @@ const Search = (): JSX.Element => {
 
     return (
         <>
-            <OfflineBanner>
-                {offlineState ? 'Offline mode active' : undefined}
-            </OfflineBanner>
-
             <SearchPageWrapper>
                 <Navbar
                     leftContent={<ProcosysButton />}

@@ -4,7 +4,7 @@ import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
 import { rest } from 'msw';
 import { server, ENDPOINTS, causeApiError } from '../../test/setupServer';
-import { SearchType } from '../Search/Search';
+import { SearchType } from '../Search/SearchPage';
 import { MemoryRouter, Route } from 'react-router-dom';
 import userEvent from '@testing-library/user-event';
 import {

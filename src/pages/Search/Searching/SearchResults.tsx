@@ -7,7 +7,7 @@ import {
     TagPreview,
     WoPreview,
 } from '../../../services/apiTypes';
-import { SearchType } from '../Search';
+import { SearchType } from '../SearchPage';
 import McDetails from '../../../components/detailCards/McDetails';
 import styled from 'styled-components';
 import { isArrayOfType } from '../../../services/apiTypeGuards';

@@ -5,7 +5,7 @@ import {
 } from '@equinor/procosys-webapp-components';
 import { AxiosInstance, CancelToken } from 'axios';
 import { SavedSearchType } from '../pages/Search/SavedSearches/SavedSearchResult';
-import { SearchType } from '../pages/Search/Search';
+import { SearchType } from '../pages/Search/SearchPage';
 import {
     isArrayofPerson,
     isArrayOfType,
