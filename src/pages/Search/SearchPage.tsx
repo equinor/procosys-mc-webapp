@@ -1,23 +1,22 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext } from 'react';
 import withAccessControl from '../../services/withAccessControl';
 import styled from 'styled-components';
-import SearchArea from './Searching/SearchArea';
-import SavedSearches from './SavedSearches/SavedSearches';
 import {
     Navbar,
     ProcosysButton,
-    SearchTypeButton,
     useSnackbar,
     NavigationFooter,
     FooterButton,
 } from '@equinor/procosys-webapp-components';
 import SideMenu from '../../components/navigation/SideMenu';
-import { Switch } from '@equinor/eds-core-react';
+import { Switch as SwitchButton } from '@equinor/eds-core-react';
 import useCommonHooks from '../../utils/useCommonHooks';
 import { COLORS } from '../../style/GlobalStyles';
 import EdsIcon from '../../components/icons/EdsIcon';
 import { getCurrentBookmarks } from '../../utils/useBookmarks';
+import { Route, Switch } from 'react-router-dom';
 import PlantContext from '../../contexts/PlantContext';
+import Search from './Search';
 
 const SearchPageWrapper = styled.main`
     padding: 0 4%;
@@ -28,21 +27,6 @@ const SearchPageWrapper = styled.main`
     }
 `;
 
-const ButtonsWrapper = styled.div`
-    display: flex;
-    height: 60px;
-    & > button:not(:last-child) {
-        margin-right: 10px;
-    }
-`;
-
-const OfflineBanner = styled.div`
-    background: ${COLORS.mossGreen};
-    color: white;
-    text-align: center;
-    font-weight: bold;
-`;
-
 export enum SearchType {
     PO = 'PO',
     MC = 'MC',
@@ -50,25 +34,15 @@ export enum SearchType {
     Tag = 'Tag',
 }
 
-const Search = (): JSX.Element => {
-    const [searchType, setSearchType] = useState<string>();
+const SearchPage = (): JSX.Element => {
     const { snackbar, setSnackbarText } = useSnackbar();
-    const { offlineState, setOfflineState, history, url } = useCommonHooks();
-    const { currentProject } = useContext(PlantContext);
+    const { offlineState, setOfflineState, history, url, path } =
+        useCommonHooks();
+    const { currentProject } = useContext(PlantContext); // TODO: remove
+    // TODO: use useBookmarks to get current bookmarks
     const bookmarks = currentProject
         ? getCurrentBookmarks(currentProject.id.toString())
         : [];
-
-    useEffect(() => {
-        if (bookmarks) return;
-    }, [bookmarks]);
-
-    const determineComponent = (): JSX.Element => {
-        if (searchType === undefined) {
-            return <SavedSearches setSnackbarText={setSnackbarText} />;
-        }
-        return <SearchArea searchType={searchType} />;
-    };
 
     return (
         <>
@@ -77,31 +51,23 @@ const Search = (): JSX.Element => {
                     leftContent={<ProcosysButton />}
                     rightContent={<SideMenu />}
                 />
-                <p>Search for</p>
-                <ButtonsWrapper>
-                    <SearchTypeButton
-                        searchType={SearchType.PO}
-                        currentSearchType={searchType}
-                        setCurrentSearchType={setSearchType}
+                <Switch>
+                    <Route
+                        exact
+                        path={`${path}`}
+                        render={(): JSX.Element => (
+                            <Search setSnackbarText={setSnackbarText} />
+                        )}
                     />
-                    <SearchTypeButton
-                        searchType={SearchType.MC}
-                        currentSearchType={searchType}
-                        setCurrentSearchType={setSearchType}
+                    <Route
+                        exact
+                        path={`${path}/tag-info`}
+                        render={(): JSX.Element => (
+                            
+                        )}
                     />
-                    <SearchTypeButton
-                        searchType={SearchType.WO}
-                        currentSearchType={searchType}
-                        setCurrentSearchType={setSearchType}
-                    />
-                    <SearchTypeButton
-                        searchType={SearchType.Tag}
-                        currentSearchType={searchType}
-                        setCurrentSearchType={setSearchType}
-                    />
-                </ButtonsWrapper>
-                {determineComponent()}
-                <Switch
+                </Switch>
+                <SwitchButton
                     label={
                         offlineState
                             ? 'Deactivate offline mode'
@@ -139,7 +105,7 @@ const Search = (): JSX.Element => {
     );
 };
 
-export default withAccessControl(Search, [
+export default withAccessControl(SearchPage, [
     'MCPKG/READ',
     'WO/READ',
     'TAG/READ',
