@@ -135,7 +135,20 @@ const procosysApiService = (
             },
             body: JSON.stringify(bodyData),
         };
+        await fetch(`${baseURL}/${url}`, PostOperation);
+    };
 
+    const postAttachmentByFetch = async (
+        url: string,
+        file: FormData
+    ): Promise<any> => {
+        const PostOperation = {
+            method: 'POST',
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+            body: file,
+        };
         await fetch(`${baseURL}/${url}`, PostOperation);
     };
 
@@ -555,10 +568,9 @@ const procosysApiService = (
         file: FormData,
         title: string
     ): Promise<string> => {
-        const data = await postByFetch(
+        const data = await postAttachmentByFetch(
             `PunchListItem/TempAttachment?plantId=PCS$${plantId}${apiVersion}`,
-            file,
-            { 'Content-Type': 'multipart/form-data' }
+            file
         );
         return data.id as string;
     };
@@ -569,10 +581,9 @@ const procosysApiService = (
         file: FormData,
         title: string
     ): Promise<void> => {
-        await postByFetch(
+        await postAttachmentByFetch(
             `PunchListItem/Attachment?plantId=PCS$${plantId}&punchItemId=${punchId}&title=${title}${apiVersion}`,
-            file,
-            { 'Content-Type': 'multipart/form-data' }
+            file
         );
     };
 
@@ -645,10 +656,9 @@ const procosysApiService = (
         title: string,
         file: FormData
     ): Promise<void> => {
-        await postByFetch(
+        await postAttachmentByFetch(
             `WorkOrder/Attachment?plantId=PCS$${plantId}&workOrderId=${workOrderId}&title=${title}${apiVersion}`,
-            file,
-            { 'Content-Type': 'multipart/form-data' }
+            file
         );
     };
 
