@@ -37,6 +37,7 @@ const SearchResults = ({
 }: SearchResultsProps): JSX.Element => {
     const { history, url } = useCommonHooks();
     const { isBookmarked, handleBookmarkClicked } = useBookmarks();
+    // TODO: get offline planning state
 
     const getPlaceholderTextType = (): string => {
         if (searchType === SearchType.MC) {
@@ -62,6 +63,8 @@ const SearchResults = ({
         }
     };
 
+    // TODO: add bookmark stuff to other entity types
+
     const determineContentToRender = (): JSX.Element => {
         if (
             searchType === SearchType.MC &&
@@ -77,7 +80,7 @@ const SearchResults = ({
                                 key={id}
                                 mcPkgDetails={searchResult}
                                 isBookmarked={bookmarked}
-                                offlinePlanningState={true}
+                                offlinePlanningState={true} // TODO: change to actual
                                 handleBookmarkClicked={(): Promise<void> =>
                                     handleBookmarkClicked(
                                         SearchType.MC,

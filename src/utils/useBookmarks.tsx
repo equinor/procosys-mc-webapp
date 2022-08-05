@@ -9,6 +9,8 @@ const useBookmarks = () => {
     const [currentBookmarks, setCurrentBookmarks] = useState<any[]>(); // TODO: change to return type of getBookmarks
     const [fetchBookmarksStatus, setFetchBookmarksStatus] =
         useState<AsyncStatus>(AsyncStatus.INACTIVE);
+    // TODO: only allow this to be used when in editing mode!
+    // TODO: add a way to start editing mode
 
     // Set current bookmarks
     useEffect(() => {
