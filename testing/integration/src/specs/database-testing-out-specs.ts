@@ -2,6 +2,7 @@ import procosysApiByFetchService, { db } from '../../../../src/database/db';
 
 import { expect } from 'chai';
 import 'chai/register-should';
+import { Entity, EntityRepository } from '../../../../src/database/entity';
 
 
 describe('Given a fetchAPI', async () => {
@@ -11,8 +12,12 @@ describe('Given a fetchAPI', async () => {
     });
 
     it('should add a new entity record in database', async () => {
-        db.offlineContent.add({ entityid: 12, entitytype: 'test', data: 'datadatadata' }, { entityid: 12, entitytype: 'test' })
-        true.should.be.true;
+
+
+        var reps = new EntityRepository();
+        const index = await reps.add({ entityid: 12, entitytype: 'test', data: 'datadatadata' });
+
+        //index.entityid.should.equal(entity.entityid);
     });
 
 });
