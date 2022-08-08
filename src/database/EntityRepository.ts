@@ -1,6 +1,7 @@
+
 import { db } from './db';
 import { Entity } from './Entity';
-import { EntityIndexes } from './IEntity';
+import { EntityIndexes } from './EntityIndexes';
 
 class EntityRepository {
     async getById(id: number): Promise<Entity> {

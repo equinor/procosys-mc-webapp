@@ -1,6 +1,7 @@
 import Dexie, { Table } from 'dexie';
-import IEntity, { EntityIndexes } from './IEntity';
 import { Entity } from './Entity';
+import { EntityIndexes } from './EntityIndexes';
+import { IEntity } from './IEntity';
 import { IStatus, Status } from './status';
 
 export default class OfflineStorage extends Dexie {

@@ -1,10 +1,11 @@
 import { expect } from 'chai';
 import 'chai/register-should';
 import { EntityRepository } from '../../../../src/database/EntityRepository';
-import IEntity, { EntityIndexes } from '../../../../src/database/IEntity';
 import { db } from '../../../../src/database/db';
 import 'dexie-export-import';
 import { ExportOptions, ExportProgress } from 'dexie-export-import/dist/export';
+import { IEntity } from '../../../../src/database/IEntity';
+import { EntityIndexes } from '../../../../src/database/EntityIndexes';
 
 describe('Given a fetchAPI', async () => {
     const backupProgress = (progress: ExportProgress): boolean => {

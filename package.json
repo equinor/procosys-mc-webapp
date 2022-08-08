@@ -30,8 +30,8 @@
     "workerize-loader": "^2.0.2"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build ",
+    "start": "react-scripts --openssl-legacy-provider  start",
+    "build": "react-scripts --openssl-legacy-provider  build ",
     "test": "jest",
     "test:debug": "react-scripts --inspect-brk test --runInBand --no-cache",
     "eject": "react-scripts eject",
