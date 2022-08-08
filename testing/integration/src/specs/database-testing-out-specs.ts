@@ -6,6 +6,7 @@ import 'dexie-export-import';
 import { ExportOptions, ExportProgress } from 'dexie-export-import/dist/export';
 import { IEntity } from '../../../../src/database/IEntity';
 import { EntityIndexes } from '../../../../src/database/EntityIndexes';
+import { deleteDBs } from './delete-dbs';
 
 describe('Given a fetchAPI', async () => {
     const backupProgress = (progress: ExportProgress): boolean => {
@@ -27,11 +28,15 @@ describe('Given a fetchAPI', async () => {
     };
 
     before(async () => {
-        dbBackup = await db.export(option);
+        // dbBackup = await db.export(option);
     });
 
     after(async () => {
-        await db.import(dbBackup);
+        // await db.close();
+        // console.log('Deleting database');
+        // await deleteDBs(['offlineStorage']);
+        // await db;
+        // await db.import(dbBackup);
     });
 
     it('should add a new entity record in database', async () => {
