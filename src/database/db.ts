@@ -1,5 +1,6 @@
 import Dexie, { Table } from 'dexie';
-import { Entity, EntityIndexes, IEntity } from './entity';
+import IEntity, { EntityIndexes } from './IEntity';
+import { Entity } from './Entity';
 import { IStatus, Status } from './status';
 
 export default class OfflineStorage extends Dexie {
@@ -9,15 +10,13 @@ export default class OfflineStorage extends Dexie {
 
     constructor() {
         super('offlineStorage');
-        this.version(1).stores(
-            {
-                offlineStatus: 'name',
-                offlineContent: '++id, entityid, entitytype',
-            }
-        );
+        this.version(1).stores({
+            offlineStatus: 'name',
+            offlineContent: '++id, entityid, entitytype',
+        });
 
-        this!.offlineStatus.mapToClass(Status);
-        this!.offlineContent.mapToClass(Entity);
+        this?.offlineStatus.mapToClass(Status);
+        this?.offlineContent.mapToClass(Entity);
     }
 }
 

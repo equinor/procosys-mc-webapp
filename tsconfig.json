@@ -29,6 +29,6 @@
     "src/test/setupTests.ts"
   ],
   "exclude": [
-    "./testing/"
+    // "./testing/"
   ],
 }
