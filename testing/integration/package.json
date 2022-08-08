@@ -16,7 +16,7 @@
     "unit-coverage": "^4.0.3"
   },
   "scripts": {
-    "start": "tsc --build tsconfig.integration-testing.json && webpack --config webpack.bundle.cfg.development.js",
+    "build": "tsc --build tsconfig.integration-testing.json && webpack --config webpack.bundle.cfg.development.js",
     "test": "mocha dist/main.js",
     "coverage": "nyc yarn test -include [dist/main.js]"
   },
@@ -32,6 +32,7 @@
     "awesome-typescript-loader": "^5.2.1",
     "chai": "^4.3.6",
     "copy-webpack-plugin": "^11.0.0",
+    "dexie-export-import": "^1.0.3",
     "eslint": "8.7.0",
     "fake-browser-fetch": "^0.0.2",
     "jest": "^28.1.1",
