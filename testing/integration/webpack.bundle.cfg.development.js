@@ -1,6 +1,6 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const CopyPlugin = require('copy-webpack-plugin');
+//const CopyPlugin = require('copy-webpack-plugin');
 const { SourceMapDevToolPlugin } = require('webpack');
 // const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 
@@ -28,6 +28,7 @@ module.exports = {
     plugins: [
         new HtmlWebpackPlugin({
             template: './src/template-mocha-testrunner.html',
+            inject: 'body'
         }),
         new SourceMapDevToolPlugin({
             filename: '[file].map',
