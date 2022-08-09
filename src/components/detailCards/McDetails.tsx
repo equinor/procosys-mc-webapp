@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Caption, COLORS } from '../../style/GlobalStyles';
-import { McPkgPreview } from '../../services/apiTypes';
+import { McPkgBookmark, McPkgPreview } from '../../services/apiTypes';
 import useCommonHooks from '../../utils/useCommonHooks';
 import { McPackageStatusIcon } from '../icons/McPackageStatusIcon';
 import { Button } from '@equinor/eds-core-react';
@@ -75,7 +75,7 @@ export const BookmarkWrapper = styled.div`
 `;
 
 type McDetailsProps = {
-    mcPkgDetails: McPkgPreview;
+    mcPkgDetails: McPkgPreview | McPkgBookmark;
     isBookmarked?: boolean;
     offlinePlanningState?: boolean;
     handleBookmarkClicked?: () => Promise<void>;

@@ -27,7 +27,7 @@ const SearchArea = ({ searchType }: SearchAreaProps): JSX.Element => {
     const callOffSearchbarRef = useRef<HTMLInputElement>(
         document.createElement('input')
     );
-    const { appConfig } = useCommonHooks();
+    const { appConfig, offlineState } = useCommonHooks();
     const {
         hits,
         searchStatus,
@@ -53,7 +53,7 @@ const SearchArea = ({ searchType }: SearchAreaProps): JSX.Element => {
 
     return (
         <SearchAreaWrapper>
-            {searchType === SearchType.Tag ? (
+            {searchType === SearchType.Tag && offlineState == false ? (
                 <TagPhotoRecognition
                     setQuery={setQuery}
                     tagOcrEndpoint={appConfig.ocrFunctionEndpoint}
