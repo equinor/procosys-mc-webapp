@@ -8,6 +8,4 @@ export interface IEntity {
     data: string;
 }
 
-
-
 export type EntityIndexes = Pick<IEntity, 'entityid' | 'entitytype'>;
