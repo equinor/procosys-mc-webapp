@@ -1,6 +1,30 @@
 import { CheckItem } from '@equinor/procosys-webapp-components/dist/typings/apiTypes';
 import * as tg from 'generic-type-guard';
 
+export type Entities =
+    | Plant
+    | Project
+    | SearchResults
+    | ChecklistPreview
+    | PunchPreview
+    | ChecklistResponse
+    | PunchCategory
+    | PunchType
+    | PunchOrganization
+    | NewPunch
+    | PunchItem
+    | Attachment
+    | McPkgPreview
+    | PunchSort
+    | PunchPriority
+    | Person
+    | Tag
+    | WoPreview
+    | PoPreview
+    | SavedSearch
+    | PunchItemSavedSearchResult
+    | ChecklistSavedSearchResult;
+
 export enum CompletionStatus {
     OS = 'OS',
     PA = 'PA',

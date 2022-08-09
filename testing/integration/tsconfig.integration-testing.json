@@ -1,0 +1,27 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+  "allowJs": true,    // Test project have a webpack that "still" have java script(*.js) extension
+    // "resolveJsonModule": true,
+  "noEmit":false,
+  "inlineSourceMap": true,  
+    "outDir": "./build"
+ },
+
+ 
+
+  "include": [
+    "src/**/*.*",     //Take all files in src folder
+    "../../src/**/*", //Include everything from mc-app source (This can be slimed down to just what the tests have a dependency on)
+  ],
+
+  "exclude": [
+
+    // "../../src/components", // exclude the mc-app app part
+    //"../../src/components/",
+    //    "../../src/pages/",
+    //"../../src/test"
+
+  ]
+
+}
