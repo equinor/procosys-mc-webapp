@@ -203,7 +203,7 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
     const postSetBookmark = async (
         plantId: string,
         searchType: string,
-        entityId: string
+        entityId: number
     ): Promise<void> => {
         console.log('postSetBookmark');
         // await axios.post(
@@ -227,7 +227,7 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
     const deleteBookmark = async (
         plantId: string,
         searchType: string,
-        entityId: string
+        entityId: number
     ): Promise<void> => {
         console.log('deleteBookmark');
         // await axios.delete(

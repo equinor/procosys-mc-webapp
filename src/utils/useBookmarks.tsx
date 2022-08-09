@@ -1,12 +1,13 @@
 import { AsyncStatus, StorageKey } from '@equinor/procosys-webapp-components';
 import { useContext, useEffect, useState } from 'react';
 import Search, { SearchType } from '../pages/Search/Search';
+import { Bookmarks } from '../services/apiTypes';
 import useCommonHooks from './useCommonHooks';
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const useBookmarks = () => {
     const { params, api } = useCommonHooks();
-    const [currentBookmarks, setCurrentBookmarks] = useState<any[]>(); // TODO: change to return type of getBookmarks
+    const [currentBookmarks, setCurrentBookmarks] = useState<Bookmarks>();
     const [fetchBookmarksStatus, setFetchBookmarksStatus] =
         useState<AsyncStatus>(AsyncStatus.INACTIVE);
     // TODO: only allow this to be used when in editing mode!
@@ -18,8 +19,8 @@ const useBookmarks = () => {
             setFetchBookmarksStatus(AsyncStatus.LOADING);
             try {
                 const bookmarksFromApi = await api.getBookmarks(params.plant);
-                if (bookmarksFromApi.length < 1) {
-                    // TODO: check in a better way once I know how the DTO looks
+                if (bookmarksFromApi == null) {
+                    // TODO: check whether this was how it was returned when not started yet
                     setFetchBookmarksStatus(AsyncStatus.EMPTY_RESPONSE);
                 } else {
                     setFetchBookmarksStatus(AsyncStatus.SUCCESS);
@@ -35,27 +36,31 @@ const useBookmarks = () => {
         entityType: SearchType,
         entityId: number
     ): boolean => {
-        // TODO: muligens fikse når jeg ser hvordan getBookmarks DTO ser ut
+        // TODO: create one of these functions for each search type instead?
         if (!currentBookmarks) return false;
         if (entityType == SearchType.MC) {
-            return currentBookmarks.mcPkgs.some(
+            return currentBookmarks.bookmarkedMcPkgs.some(
                 (mcPkg) => mcPkg.id === entityId
             );
         } else if (entityType == SearchType.Tag) {
-            return currentBookmarks.tags.some((tag) => tag.id === entityId);
+            return currentBookmarks.bookmarkedTags.some(
+                (tag) => tag.id === entityId
+            );
         } else if (entityType == SearchType.PO) {
-            return currentBookmarks.purchaseOrders.some(
-                (po) => po.id === entityId
+            return currentBookmarks.bookmarkedPurchaseOrders.some(
+                (po) => po.callOffId === entityId
             );
         } else {
-            return currentBookmarks.workOrders.some((wo) => wo.id === entityId);
+            return currentBookmarks.bookmarkedWorkOrders.some(
+                (wo) => wo.id === entityId
+            );
         }
     };
 
     const handleBookmarkClicked = async (
         entityType: SearchType,
         entityId: number,
-        isBookmarked: boolean // TODO: or do I just use isBookmarked function?
+        isBookmarked: boolean
     ): Promise<void> => {
         try {
             if (isBookmarked) {

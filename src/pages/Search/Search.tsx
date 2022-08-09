@@ -60,7 +60,6 @@ const Search = (): JSX.Element => {
         return <SearchArea searchType={searchType} />;
     };
 
-    // TODO: move offline marking into the navbar
     return (
         <>
             <OfflineBanner>
