@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import Axios from 'axios';
 import EdsIcon from '../../components/icons/EdsIcon';
 import withAccessControl from '../../services/withAccessControl';
 import useCommonHooks from '../../utils/useCommonHooks';
@@ -31,7 +30,8 @@ const ChecklistPage = (): JSX.Element => {
         AsyncStatus.LOADING
     );
     const [refreshChecklistStatus, setRefreshChecklistStatus] = useState(false);
-    const source = Axios.CancelToken.source();
+    const abortController = new AbortController();
+    const abortSignal = abortController.signal;
     const isOnNewPunchPage = history.location.pathname.includes('/new-punch');
     const isOnPunchListPage = history.location.pathname.includes('/punch-list');
     const isOnTagInfoPage = history.location.pathname.includes('/tag-info');
@@ -42,7 +42,7 @@ const ChecklistPage = (): JSX.Element => {
 
     useEffect(() => {
         return (): void => {
-            source.cancel();
+            abortController.abort();
         };
     }, []);
 
@@ -52,7 +52,7 @@ const ChecklistPage = (): JSX.Element => {
                 const detailsFromApi = await api.getChecklist(
                     params.plant,
                     params.checklistId,
-                    source.token
+                    abortSignal
                 );
                 setDetails(detailsFromApi);
                 setFetchDetailsStatus(AsyncStatus.SUCCESS);
@@ -68,7 +68,7 @@ const ChecklistPage = (): JSX.Element => {
                 const punchListFromApi = await api.getChecklistPunchList(
                     params.plant,
                     params.checklistId,
-                    source.token
+                    abortSignal
                 );
                 setPunchList(punchListFromApi);
                 if (punchListFromApi.length === 0) {
