@@ -17,6 +17,8 @@ import {
     FeatureFlags,
     ProcosysApiSettings,
 } from '../services/appConfiguration';
+import baseIPOApiService from '../services/baseIPOApi';
+import procosysIPOApiService, { ProcosysIPOApiService } from '../services/procosysIPOApi';
 
 const client = new Msal.PublicClientApplication({
     auth: { clientId: 'testId', authority: 'testAuthority' },
@@ -32,6 +34,11 @@ const dummyAppConfig: AppConfig = {
         instrumentationKey: '',
     },
     ocrFunctionEndpoint: 'https://dummy-org-endpoint.com',
+    ipoApi: {
+        baseUrl: 'testUrl',
+        apiVersion: '',
+        scope: ['']
+    }
 };
 
 const dummyFeatureFlags: FeatureFlags = {
@@ -49,12 +56,23 @@ const procosysApiInstance = procosysApiService({
     apiVersion: 'dummy-version',
 });
 
+const baseIPOApiInstance = baseIPOApiService({
+    authInstance,
+    baseURL: baseURL,
+    scope: ['testscope']
+});
+
+const ipoApiInstance = procosysIPOApiService({
+    axios: baseIPOApiInstance
+});
+
 type WithMcAppContextProps = {
     Component: JSX.Element;
     asyncStatus?: AsyncStatus;
     plants?: Plant[];
     auth?: IAuthService;
     api?: ProcosysApiService;
+    ipoApi?: ProcosysIPOApiService;
 };
 
 export const withMcAppContext = ({
@@ -63,6 +81,7 @@ export const withMcAppContext = ({
     plants = testPlants,
     auth = authInstance,
     api = procosysApiInstance,
+    ipoApi = ipoApiInstance,
 }: WithMcAppContextProps): JSX.Element => {
     return (
         <MemoryRouter initialEntries={['/test/sub/directory']}>
@@ -74,6 +93,7 @@ export const withMcAppContext = ({
                     api: api,
                     appConfig: dummyAppConfig,
                     featureFlags: dummyFeatureFlags,
+                    ipoApi: ipoApi
                 }}
             >
                 {Component}

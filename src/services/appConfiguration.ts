@@ -35,6 +35,7 @@ export type AppConfig = {
     procosysWebApi: ProcosysApiSettings;
     appInsights: AppInsightsConfig;
     ocrFunctionEndpoint: string;
+    ipoApi: ProcosysApiSettings;
 };
 
 type AppConfigResponse = {

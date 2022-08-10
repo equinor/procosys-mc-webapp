@@ -9,6 +9,7 @@ import { Plant } from '../services/apiTypes';
 import { AppConfig, FeatureFlags } from '../services/appConfiguration';
 import { IAuthService } from '../services/authService';
 import { ProcosysApiService } from '../services/procosysApi';
+import { ProcosysIPOApiService } from '../services/procosysIPOApi';
 
 type McAppContextProps = {
     availablePlants: Plant[];
@@ -17,6 +18,7 @@ type McAppContextProps = {
     auth: IAuthService;
     appConfig: AppConfig;
     featureFlags: FeatureFlags;
+    ipoApi: ProcosysIPOApiService;
 };
 
 export enum AsyncStatus {
@@ -35,6 +37,7 @@ type McAppContextProviderProps = {
     api: ProcosysApiService;
     appConfig: AppConfig;
     featureFlags: FeatureFlags;
+    ipoApi: ProcosysIPOApiService;
 };
 
 export const McAppContextProvider: React.FC<McAppContextProviderProps> = ({
@@ -43,6 +46,7 @@ export const McAppContextProvider: React.FC<McAppContextProviderProps> = ({
     api,
     appConfig,
     featureFlags,
+    ipoApi,
 }: McAppContextProviderProps) => {
     const [availablePlants, setAvailablePlants] = useState<Plant[]>([]);
     const [fetchPlantsStatus, setFetchPlantsStatus] = useState<AsyncStatus>(
@@ -61,6 +65,16 @@ export const McAppContextProvider: React.FC<McAppContextProviderProps> = ({
             }
         })();
     }, [api]);
+
+    useEffect(() => {
+        (async (): Promise<void> => {
+            try {
+                const isAlive = await ipoApi.isAlive();
+            } catch (error) {
+                console.log(error);
+            }
+        })();
+    }, [ipoApi]);
 
     if (fetchPlantsStatus === AsyncStatus.LOADING) {
         return <LoadingPage loadingText={'Loading available plants'} />;
@@ -90,6 +104,7 @@ export const McAppContextProvider: React.FC<McAppContextProviderProps> = ({
                 auth,
                 appConfig,
                 featureFlags,
+                ipoApi,
             }}
         >
             {children}

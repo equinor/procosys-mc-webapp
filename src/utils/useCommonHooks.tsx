@@ -18,6 +18,7 @@ const useCommonHooks = () => {
         path,
         appConfig,
         procosysApiSettings: appConfig.procosysWebApi,
+        ipoApiSettings: appConfig.ipoApi,
     };
 };
 

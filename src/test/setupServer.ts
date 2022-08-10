@@ -24,6 +24,7 @@ import {
     testSavedSearch,
     testChecklistSavedSearch,
     testPunchListItemSavedSearch,
+    dummyIPOIsAliveResponse,
 } from './dummyData';
 import objectToCamelCase from '../utils/objectToCamelCase';
 
@@ -96,6 +97,9 @@ export const ENDPOINTS = {
     //Work Order Attachments
     getWorkOrderAttachments: `${baseURL}/WorkOrder/Attachments`,
     getWorkOrderAttachment: `${baseURL}/WorkOrder/Attachment`,
+
+    //IPO
+    isAlive: `${baseURL}/IsAlive`,
 };
 
 export const server = setupServer(
@@ -322,6 +326,11 @@ export const server = setupServer(
             context.json(dummyAttachmentsResponse),
             context.status(200)
         );
+    }),
+
+    //IPO
+    rest.get(ENDPOINTS.isAlive, (_, response, context) => {
+        return response(context.json(dummyIPOIsAliveResponse), context.status(200));
     })
 );
 

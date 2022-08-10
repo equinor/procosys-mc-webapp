@@ -13,6 +13,8 @@ import {
     ReloadButton,
     LoadingPage,
 } from '@equinor/procosys-webapp-components';
+import procosysIPOApiService from './services/procosysIPOApi';
+import baseIPOApiService from './services/baseIPOApi';
 
 const render = (content: JSX.Element): void => {
     ReactDOM.render(
@@ -62,6 +64,17 @@ const initialize = async () => {
         axios: baseApiInstance,
         apiVersion: appConfig.procosysWebApi.apiVersion,
     });
+
+    const baseIpoApiInstance = baseIPOApiService({
+        authInstance,
+        baseURL: appConfig.ipoApi.baseUrl,
+        scope: appConfig.ipoApi.scope,
+    });
+
+    const procosysIPOApiInstance = procosysIPOApiService({
+        axios: baseIpoApiInstance,
+    });
+
     const { appInsightsReactPlugin } = initializeAppInsights(
         appConfig.appInsights.instrumentationKey
     );
@@ -71,6 +84,7 @@ const initialize = async () => {
         appInsightsReactPlugin,
         appConfig,
         featureFlags,
+        procosysIPOApiInstance,
     };
 };
 
@@ -83,6 +97,7 @@ const initialize = async () => {
             appInsightsReactPlugin,
             appConfig,
             featureFlags,
+            procosysIPOApiInstance,
         } = await initialize();
         render(
             <App
@@ -91,6 +106,7 @@ const initialize = async () => {
                 appInsightsReactPlugin={appInsightsReactPlugin}
                 appConfig={appConfig}
                 featureFlags={featureFlags}
+                procosysIPOApiInstance={procosysIPOApiInstance}
             />
         );
     } catch (error) {
