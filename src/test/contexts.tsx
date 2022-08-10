@@ -19,9 +19,9 @@ const client = new Msal.PublicClientApplication({
 
 const dummyAppConfig: AppConfig = {
     procosysWebApi: {
-        baseUrl: 'testUrl',
-        scope: [''],
-        apiVersion: '',
+        baseUrl: 'https://test-url.com',
+        scope: ['testScope'],
+        apiVersion: '&dummy-version',
     },
     appInsights: {
         instrumentationKey: '',
@@ -36,10 +36,11 @@ const dummyFeatureFlags: FeatureFlags = {
 const authInstance = authService({ MSAL: client, scopes: ['testScope'] });
 
 const procosysApiInstance = procosysApiService(
-    {   baseURL: baseURL,
-        apiVersion: 'dummy-version',
-    }, 
-    'dummy-token'
+    {
+        baseURL: baseURL,
+        apiVersion: '&dummy-version',
+    },
+    'dummy-bearer-token'
 );
 
 type WithMcAppContextProps = {

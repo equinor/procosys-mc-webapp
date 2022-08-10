@@ -13,7 +13,7 @@ export type { baseApiProps };
 
 const baseApiService = ({
     authInstance,
-    baseURL = 'https://pcs-main-api-test.azurewebsites.net/api/',
+    baseURL,
     scope,
     accessToken,
 }: baseApiProps): AxiosInstance => {

@@ -37,5 +37,3 @@ node_modules
 /testing/**/*.js
 /testing/integration/src/**/*.js
 #Exclude
-/testing/integration/src/!webpack.bundle.cfg.development.js
-/testing/integration/!webpack.config.js

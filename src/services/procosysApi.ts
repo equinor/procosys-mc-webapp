@@ -248,7 +248,7 @@ const procosysApiService = (
         abortSignal: AbortSignal
     ): Promise<SavedSearch[]> => {
         const data = await getByFetch(
-            `/SavedSearches?plantId=PCS$${plantId}${apiVersion}`,
+            `SavedSearches?plantId=PCS$${plantId}${apiVersion}`,
             abortSignal
         );
         if (!isArrayOfType<SavedSearch>(data, 'type')) {
