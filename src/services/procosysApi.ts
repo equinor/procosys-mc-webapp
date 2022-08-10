@@ -43,7 +43,7 @@ import {
 type ProcosysApiServiceProps = {
     baseURL: string;
     apiVersion: string;
-    cb2?: (res: Response) => Response;
+    callback?: (res: Response) => Response;
 };
 
 type GetOperationProps = {
@@ -62,7 +62,7 @@ const procosysApiService = (
     {
         baseURL,
         apiVersion,
-        cb2 = (res: Response): Response => res,
+        callback = (res: Response): Response => res,
     }: ProcosysApiServiceProps,
     token: string
 ) => {
@@ -90,7 +90,7 @@ const procosysApiService = (
             GetOperation.responseType = 'blob';
         }
 
-        const res = await fetch(`${baseURL}/${url}`, GetOperation);
+        const res = callback(await fetch(`${baseURL}/${url}`, GetOperation));
 
         if (res.ok) {
             const jsonResult = await res.json();
