@@ -72,9 +72,11 @@ const BookmarkableEntityInfoList = ({
         return (
             <>
                 {entityInfoList.map((entityInfo) => {
+                    const id = entityInfo.id;
+                    const bookmarked = isBookmarked(SearchType.WO, id);
                     return (
                         <EntityDetails
-                            key={entityInfo.id}
+                            key={id}
                             icon={
                                 <TextIcon
                                     color={COLORS.workOrderIcon}
@@ -91,7 +93,16 @@ const BookmarkableEntityInfoList = ({
                                     : undefined
                             }
                             onClick={(): void =>
-                                history.push(`${url}/WO/${entityInfo.id}`)
+                                history.push(`${url}/WO/${id}`)
+                            }
+                            isBookmarked={bookmarked}
+                            offlinePlanningState={true} // TODO: change to actual
+                            handleBookmarkClicked={(): Promise<void> =>
+                                handleBookmarkClicked(
+                                    SearchType.WO,
+                                    id,
+                                    bookmarked
+                                )
                             }
                         />
                     );
@@ -139,9 +150,11 @@ const BookmarkableEntityInfoList = ({
         return (
             <>
                 {entityInfoList.map((entityInfo) => {
+                    const id = entityInfo.callOffId;
+                    const bookmarked = isBookmarked(SearchType.PO, id);
                     return (
                         <EntityDetails
-                            key={entityInfo.callOffId}
+                            key={id}
                             icon={
                                 <TextIcon
                                     color={COLORS.purchaseOrderIcon}
@@ -152,8 +165,15 @@ const BookmarkableEntityInfoList = ({
                             description={entityInfo.description}
                             details={[entityInfo.responsibleCode]}
                             onClick={(): void =>
-                                history.push(
-                                    `${url}/PO/${entityInfo.callOffId}`
+                                history.push(`${url}/PO/${id}`)
+                            }
+                            isBookmarked={bookmarked}
+                            offlinePlanningState={true} // TODO: change to actual
+                            handleBookmarkClicked={(): Promise<void> =>
+                                handleBookmarkClicked(
+                                    SearchType.PO,
+                                    id,
+                                    bookmarked
                                 )
                             }
                         />
