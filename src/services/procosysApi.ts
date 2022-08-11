@@ -124,7 +124,7 @@ const procosysApiService = (
 
     const postByFetch = async (
         url: string,
-        bodyData: any,
+        bodyData?: any,
         additionalHeaders?: any
     ): Promise<any> => {
         const PostOperation = {
@@ -335,22 +335,27 @@ const procosysApiService = (
         entityId: number
     ): Promise<void> => {
         console.log('postSetBookmark');
-        // await axios.post(
-        //     `McPkg?plantId=PCS$${plantId}&mcPkgId=${entityId}${apiVersion}`,
-        //     {
-        //         EntityId: entityId,
-        //     }
-        // );
+        let url = ``;
+        if (searchType == SearchType.MC) {
+            url = `Bookmark/McPkg?plantId=PCS$${plantId}&mcPkgId=${entityId}${apiVersion}`;
+        } else if (searchType == SearchType.Tag) {
+            url = `Bookmark/Tag?plantId=PCS$${plantId}&tagId=${entityId}${apiVersion}`;
+        }
+        await postByFetch(url);
     };
 
-    const getBookmarks = async (plantId: string): Promise<any> => {
+    const getBookmarks = async (
+        plantId: string,
+        projectId: number,
+        abortSignal: AbortSignal
+    ): Promise<any> => {
         console.log('getBookmarks');
-        // await axios.get(
-        //     `McPkg?plantId=PCS$${plantId}&mcPkgId=${entityId}${apiVersion}`,
-        //     {
-        //         EntityId: entityId,
-        //     }
-        // );
+        const data = await getByFetch(
+            `OfflineScope?plantId=PCS$${plantId}&projectId=${projectId}${apiVersion}`,
+            abortSignal
+        );
+        // TODO: add type guard
+        return data;
     };
 
     const deleteBookmark = async (

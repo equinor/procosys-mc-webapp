@@ -1,5 +1,6 @@
 import { AsyncStatus, StorageKey } from '@equinor/procosys-webapp-components';
 import { useContext, useEffect, useState } from 'react';
+import PlantContext from '../contexts/PlantContext';
 import Search, { SearchType } from '../pages/Search/Search';
 import { Bookmarks } from '../services/apiTypes';
 import useCommonHooks from './useCommonHooks';
@@ -10,26 +11,33 @@ const useBookmarks = () => {
     const [currentBookmarks, setCurrentBookmarks] = useState<Bookmarks>();
     const [fetchBookmarksStatus, setFetchBookmarksStatus] =
         useState<AsyncStatus>(AsyncStatus.INACTIVE);
+    const { currentProject } = useContext(PlantContext);
+    const abortController = new AbortController();
     // TODO: only allow this to be used when in editing mode!
     // TODO: add a way to start editing mode
 
-    // Set current bookmarks
-    useEffect(() => {
-        (async (): Promise<void> => {
-            setFetchBookmarksStatus(AsyncStatus.LOADING);
-            try {
-                const bookmarksFromApi = await api.getBookmarks(params.plant);
-                if (bookmarksFromApi == null) {
-                    // TODO: check whether this was how it was returned when not started yet
-                    setFetchBookmarksStatus(AsyncStatus.EMPTY_RESPONSE);
-                } else {
-                    setFetchBookmarksStatus(AsyncStatus.SUCCESS);
-                    setCurrentBookmarks(bookmarksFromApi);
-                }
-            } catch {
-                setFetchBookmarksStatus(AsyncStatus.ERROR);
+    const getCurrentBookmarks = async (): Promise<void> => {
+        if (!currentProject) return;
+        setFetchBookmarksStatus(AsyncStatus.LOADING);
+        try {
+            const bookmarksFromApi = await api.getBookmarks(
+                params.plant,
+                currentProject?.id,
+                abortController.signal
+            );
+            if (bookmarksFromApi == null) {
+                setFetchBookmarksStatus(AsyncStatus.EMPTY_RESPONSE);
+            } else {
+                setFetchBookmarksStatus(AsyncStatus.SUCCESS);
+                setCurrentBookmarks(bookmarksFromApi);
             }
-        })();
+        } catch {
+            setFetchBookmarksStatus(AsyncStatus.ERROR);
+        }
+    };
+
+    useEffect(() => {
+        getCurrentBookmarks();
     }, [params.project]);
 
     const isBookmarked = (
@@ -68,6 +76,7 @@ const useBookmarks = () => {
             } else {
                 await api.postSetBookmark(params.plant, entityType, entityId);
             }
+            getCurrentBookmarks();
         } catch (error) {
             if (!(error instanceof Error)) return;
         }

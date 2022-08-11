@@ -105,16 +105,27 @@ const BookmarkableEntityInfoList = ({
         return (
             <>
                 {entityInfoList.map((entityInfo) => {
+                    const id = entityInfo.id;
+                    const bookmarked = isBookmarked(SearchType.Tag, id);
                     return (
                         <EntityDetails
-                            key={entityInfo.id}
+                            key={id}
                             icon={
                                 <TextIcon color={COLORS.tagIcon} text="Tag" />
                             }
                             headerText={entityInfo.tagNo}
                             description={entityInfo.description}
                             onClick={(): void =>
-                                history.push(`${url}/Tag/${entityInfo.id}`)
+                                history.push(`${url}/Tag/${id}`)
+                            }
+                            isBookmarked={bookmarked}
+                            offlinePlanningState={true} // TODO: change to actual
+                            handleBookmarkClicked={(): Promise<void> =>
+                                handleBookmarkClicked(
+                                    SearchType.Tag,
+                                    id,
+                                    bookmarked
+                                )
                             }
                         />
                     );
