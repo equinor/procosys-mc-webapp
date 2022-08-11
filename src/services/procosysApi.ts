@@ -334,7 +334,6 @@ const procosysApiService = (
         searchType: string,
         entityId: number
     ): Promise<void> => {
-        console.log('postSetBookmark');
         let url = ``;
         if (searchType == SearchType.MC) {
             url = `Bookmark/McPkg?plantId=PCS$${plantId}&mcPkgId=${entityId}${apiVersion}`;
@@ -367,13 +366,17 @@ const procosysApiService = (
         searchType: string,
         entityId: number
     ): Promise<void> => {
-        console.log('deleteBookmark');
-        // await axios.delete(
-        //     `McPkg?plantId=PCS$${plantId}&mcPkgId=${entityId}${apiVersion}`,
-        //     {
-        //         EntityId: entityId,
-        //     }
-        // );
+        let url = ``;
+        if (searchType == SearchType.MC) {
+            url = `Bookmark/McPkg?plantId=PCS$${plantId}&mcPkgId=${entityId}${apiVersion}`;
+        } else if (searchType == SearchType.Tag) {
+            url = `Bookmark/Tag?plantId=PCS$${plantId}&tagId=${entityId}${apiVersion}`;
+        } else if (searchType == SearchType.WO) {
+            url = `Bookmark/WorkOrder?plantId=PCS$${plantId}&workOrderId=${entityId}${apiVersion}`;
+        } else {
+            url = `Bookmark/PurchaseOrder?plantId=PCS$${plantId}&callOffId=${entityId}${apiVersion}`;
+        }
+        await deleteByFetch(url);
     };
 
     const deleteAllBookmarks = async (
