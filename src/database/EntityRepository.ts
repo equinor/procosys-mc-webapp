@@ -16,7 +16,7 @@ class EntityRepository {
         return result as Entity;
     }
 
-    async Add(entity: Entity): Promise<EntityIndexes> {
+    async add(entity: Entity): Promise<EntityIndexes> {
         if ((await db.offlineContent) !== undefined) {
             return await db.offlineContent.put(entity, entity as EntityIndexes);
         }

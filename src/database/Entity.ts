@@ -3,11 +3,11 @@ import { IEntity } from './IEntity';
 export class Entity implements IEntity {
     entityid: number;
     entitytype: string;
-    data: string;
+    response: Response;
 
-    constructor(entityid: number, entitytype: string, data: string) {
+    constructor(entityid: number, entitytype: string, response: Response) {
         this.entityid = entityid;
         this.entitytype = entitytype;
-        this.data = data;
+        this.response = response;
     }
 }

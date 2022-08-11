@@ -3,5 +3,6 @@ export interface IEntity {
     entitytype: string;
     // response: Response
     // request: Request
-    data: string;
+    response: Response;
+    apiPath: string;
 }

@@ -292,7 +292,7 @@ const procosysApiService = (
         plantId: string,
         searchType: string,
         entityId: string,
-        abortSignal: AbortSignal
+        abortSignal?: AbortSignal
     ): Promise<McPkgPreview | WoPreview | Tag | PoPreview> => {
         let url = '';
         if (searchType === SearchType.MC) {
@@ -677,6 +677,24 @@ const procosysApiService = (
         );
     };
 
+    const getOfflineScope = async (
+        plantId: string,
+        workOrderId: string,
+        attachmentId: number,
+        abortSignal: AbortSignal
+    ): Promise<Blob> => {
+        const data = getByFetch(
+            `Offline/OS?plantId=PCS$${plantId}&workOrderId=${workOrderId}&attachmentId=${attachmentId}${apiVersion}`,
+            abortSignal,
+            { 'Content-Disposition': 'attachment; filename="filename.jpg"' },
+            true
+        );
+        if (!isOfType<Blob>(data, 'stream')) {
+            throw Error(typeGuardErrorMessage('attachments'));
+        }
+        return data as Blob;
+    };
+
     return {
         getTag,
         deletePunchAttachment,
@@ -711,6 +729,7 @@ const procosysApiService = (
         getWorkOrderAttachment,
         postWorkOrderAttachment,
         deleteWorkOrderAttachment,
+        getOfflineScope,
     };
 };
 
