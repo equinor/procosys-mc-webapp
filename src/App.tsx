@@ -12,6 +12,7 @@ import {
 import { SearchType } from './pages/Search/Search';
 import { AppConfig, FeatureFlags } from './services/appConfiguration';
 import { SavedSearchType } from './pages/Search/SavedSearches/SavedSearchResult';
+import { ProcosysIPOApiService } from './services/procosysIPOApi';
 
 export type McParams = {
     plant: string;
@@ -30,6 +31,7 @@ type AppProps = {
     appInsightsReactPlugin: ReactPlugin;
     appConfig: AppConfig;
     featureFlags: FeatureFlags;
+    procosysIPOApiInstance: ProcosysIPOApiService;
 };
 
 const App = ({
@@ -38,6 +40,7 @@ const App = ({
     appConfig,
     appInsightsReactPlugin: reactPlugin,
     featureFlags,
+    procosysIPOApiInstance,
 }: AppProps): JSX.Element => {
     return (
         <AppInsightsContext.Provider value={reactPlugin}>
@@ -46,6 +49,7 @@ const App = ({
                 auth={authInstance}
                 appConfig={appConfig}
                 featureFlags={featureFlags}
+                ipoApi={procosysIPOApiInstance}
             >
                 <Router basename={'/mc'}>
                     <ErrorBoundary>
