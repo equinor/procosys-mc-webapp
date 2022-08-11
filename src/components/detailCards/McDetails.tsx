@@ -70,7 +70,6 @@ const HeaderWrapper = styled.div<{ clickable: boolean }>`
 `;
 
 export const BookmarkWrapper = styled.div`
-    margin-left: 80px;
     margin-top: -15px;
 `;
 
