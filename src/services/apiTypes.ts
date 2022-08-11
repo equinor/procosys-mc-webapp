@@ -53,7 +53,8 @@ export const isProject: tg.TypeGuard<Project> = new tg.IsInterface()
     })
     .get();
 
-export const isProjects = (project: unknown) => tg.isArray(isProject);
+export const isProjects = (project: unknown): tg.TypeGuard<Project[]> =>
+    tg.isArray(isProject);
 
 export const isPlant: tg.TypeGuard<Plant> = new tg.IsInterface()
     .withProperties({
@@ -64,7 +65,8 @@ export const isPlant: tg.TypeGuard<Plant> = new tg.IsInterface()
     })
     .get();
 
-export const isPlants = (plant: unknown) => tg.isArray(isPlant);
+export const isPlants = (plant: unknown): tg.TypeGuard<Plant[]> =>
+    tg.isArray(isPlant);
 
 //SEARCH
 export enum ApiSavedSearchType {
