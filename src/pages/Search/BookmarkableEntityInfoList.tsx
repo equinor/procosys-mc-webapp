@@ -36,7 +36,6 @@ const BookmarkableEntityInfoList = ({
     const { history, url } = useCommonHooks();
     const { isBookmarked, handleBookmarkClicked } = useBookmarks();
     // TODO: get offline planning state
-    // TODO: add bookmark stuff to other entity types
     if (
         searchType === SearchType.MC &&
         (isArrayOfType<McPkgPreview>(entityInfoList, 'mcPkgNo') ||

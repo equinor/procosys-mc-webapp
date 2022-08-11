@@ -44,7 +44,6 @@ const useBookmarks = () => {
         entityType: SearchType,
         entityId: number
     ): boolean => {
-        // TODO: create one of these functions for each search type instead?
         if (!currentBookmarks) return false;
         if (entityType == SearchType.MC) {
             return currentBookmarks.bookmarkedMcPkgs.some(
