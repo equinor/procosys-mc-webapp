@@ -6,7 +6,7 @@ import {
 } from '@equinor/procosys-webapp-components';
 
 type ErrorProps = {
-    children: React.ReactChild;
+    children: JSX.Element;
 };
 
 type ErrorState = {
@@ -36,7 +36,7 @@ class ErrorBoundary extends React.Component<ErrorProps, ErrorState> {
         // console.error('ErrorInfo: ', errorInfo);
     }
 
-    render(): React.ReactChild {
+    render(): JSX.Element {
         if (this.state.hasError) {
             return (
                 <ErrorPage

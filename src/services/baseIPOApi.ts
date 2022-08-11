@@ -1,6 +1,5 @@
 import { StorageKey } from '@equinor/procosys-webapp-components';
 import axios, { AxiosInstance } from 'axios';
-import objectToCamelCase from '../utils/objectToCamelCase';
 import { IAuthService } from './authService';
 
 type baseIPOApiProps = {
@@ -33,12 +32,6 @@ const baseIPOApiService = ({
     });
     axiosInstance.interceptors.response.use(
         (response) => {
-            if (
-                typeof response.data === 'object' &&
-                !(response.data instanceof Blob)
-            ) {
-                response.data = objectToCamelCase(response.data);
-            }
             return response;
         },
         (error) => {
