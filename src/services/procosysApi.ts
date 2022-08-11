@@ -132,11 +132,14 @@ const procosysApiService = (
         }
     };
 
-    const deleteByFetch = async (url: string, bodyData?: any): Promise<any> => {
+    const deleteByFetch = async (url: string, data?: any): Promise<any> => {
         const DeleteOperation = {
             method: 'DELETE',
-            headers: { Authorization: `Bearer ${token}` },
-            body: bodyData ? JSON.stringify(bodyData) : null,
+            headers: {
+                Authorization: `Bearer ${token}`,
+                'Content-Type': 'application/json',
+            },
+            body: data ? JSON.stringify(data) : null,
         };
         await fetch(`${baseURL}/${url}`, DeleteOperation);
     };
