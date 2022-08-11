@@ -7,11 +7,12 @@
     "@azure/msal-browser": "2.24.0",
     "@equinor/eds-core-react": "^0.14.0",
     "@equinor/eds-icons": "^0.7.0",
-    "@equinor/procosys-webapp-components": "^1.14.3",
+    "@equinor/procosys-webapp-components": "^2.0.0",
     "@microsoft/applicationinsights-react-js": "^3.2.2",
     "@microsoft/applicationinsights-web": "^2.7.2",
     "axios": "^0.24.0",
     "dexie": "^3.2.2",
+    "generic-type-guard": "^3.7.0",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-router-dom": "^5.2.0",
@@ -46,8 +47,8 @@
     ]
   },
   "devDependencies": {
-    "@testing-library/jest-dom": "^5.16.1",
     "@faker-js/faker": "^6.0.0",
+    "@testing-library/jest-dom": "^5.16.1",
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^13.5.0",
     "@types/jest": "^27.5.1",

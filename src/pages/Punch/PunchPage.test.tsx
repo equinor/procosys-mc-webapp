@@ -72,30 +72,6 @@ describe('<PunchPage>', () => {
         ).toBeInTheDocument();
         expect(tagInfoButton).toBeInTheDocument();
     });
-    it('Renders the VerifyPunch component when the "Clear" button has been clicked', async () => {
-        renderPunchPage();
-        await expectDetails();
-        await expectFooter();
-        const clearButton = await screen.findByRole('button', {
-            name: 'Clear',
-        });
-        expect(clearButton).toBeInTheDocument();
-        server.use(
-            rest.get(ENDPOINTS.getPunchItem, (request, response, context) => {
-                return response(
-                    context.json(dummyPunchItemCleared),
-                    context.status(200)
-                );
-            })
-        );
-        userEvent.click(clearButton);
-        await expectDetails();
-        await expectFooter();
-        const unclearButton = await screen.findByRole('button', {
-            name: 'Unclear',
-        });
-        expect(unclearButton).toBeInTheDocument();
-    });
     it('Renders the ClearPunch component when the "Unclear" button has been clicked', async () => {
         server.use(
             rest.get(ENDPOINTS.getPunchItem, (request, response, context) => {

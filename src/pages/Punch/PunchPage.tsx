@@ -1,6 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Route, Switch } from 'react-router-dom';
-import Axios from 'axios';
 import EdsIcon from '../../components/icons/EdsIcon';
 import withAccessControl from '../../services/withAccessControl';
 import { COLORS } from '../../style/GlobalStyles';
@@ -33,13 +32,14 @@ const PunchPage = (): JSX.Element => {
     const { permissions } = useContext(PlantContext);
 
     useEffect(() => {
-        const source = Axios.CancelToken.source();
+        const controller = new AbortController();
+        const abortSignal = controller.signal;
         (async (): Promise<void> => {
             try {
                 const punchFromApi = await api.getPunchItem(
                     params.plant,
                     params.punchItemId,
-                    source.token
+                    abortSignal
                 );
                 setPunch(punchFromApi);
                 setFetchPunchStatus(AsyncStatus.SUCCESS);
@@ -48,7 +48,7 @@ const PunchPage = (): JSX.Element => {
             }
         })();
         return (): void => {
-            source.cancel();
+            controller.abort();
         };
     }, [api, params]);
 
