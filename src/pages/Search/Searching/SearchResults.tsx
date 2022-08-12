@@ -1,24 +1,9 @@
 import React from 'react';
 import { SearchStatus } from '../useSearchPageFacade';
-import {
-    McPkgPreview,
-    PoPreview,
-    SearchResults as SearchResultsType,
-    TagPreview,
-    WoPreview,
-} from '../../../services/apiTypes';
+import { SearchResults as SearchResultsType } from '../../../services/apiTypes';
 import { SearchType } from '../Search';
-import McDetails from '../../../components/detailCards/McDetails';
 import styled from 'styled-components';
-import { isArrayOfType } from '../../../services/apiTypeGuards';
-import useCommonHooks from '../../../utils/useCommonHooks';
-import { COLORS } from '../../../style/GlobalStyles';
-import {
-    EntityDetails,
-    SkeletonLoadingPage,
-    TextIcon,
-} from '@equinor/procosys-webapp-components';
-import useBookmarks from '../../../utils/useBookmarks';
+import { SkeletonLoadingPage } from '@equinor/procosys-webapp-components';
 import BookmarkableEntityInfoList from '../BookmarkableEntityInfoList';
 
 const SearchResultAmountWrapper = styled.h6`

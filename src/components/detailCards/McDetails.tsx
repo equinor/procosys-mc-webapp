@@ -6,7 +6,6 @@ import useCommonHooks from '../../utils/useCommonHooks';
 import { McPackageStatusIcon } from '../icons/McPackageStatusIcon';
 import { Button } from '@equinor/eds-core-react';
 import EdsIcon from '../icons/EdsIcon';
-import { AsyncStatus } from '../../contexts/McAppContext';
 
 const McDetailsWrapper = styled.article<{ clickable: boolean }>`
     cursor: ${(props): string => (props.clickable ? 'pointer' : 'default')};
@@ -88,7 +87,7 @@ const McDetails = ({
     handleBookmarkClicked,
     clickable = true,
 }: McDetailsProps): JSX.Element => {
-    const { history, url, api, params } = useCommonHooks();
+    const { history, url } = useCommonHooks();
 
     return (
         <McDetailsWrapper

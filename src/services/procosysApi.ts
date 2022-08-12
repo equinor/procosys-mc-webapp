@@ -352,12 +352,10 @@ const procosysApiService = (
         projectId: number,
         abortSignal: AbortSignal
     ): Promise<any> => {
-        console.log('getBookmarks');
         const data = await getByFetch(
             `OfflineScope?plantId=PCS$${plantId}&projectId=${projectId}${apiVersion}`,
             abortSignal
         );
-        // TODO: add type guard
         return data;
     };
 
