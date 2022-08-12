@@ -1,5 +1,5 @@
 import GlobalStyles from './style/GlobalStyles';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
 import authService from './services/authService';
@@ -13,7 +13,6 @@ import {
     LoadingPage,
 } from '@equinor/procosys-webapp-components';
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
-import { StatusRepository } from './database/StatusRepository';
 
 serviceWorkerRegistration.register();
 

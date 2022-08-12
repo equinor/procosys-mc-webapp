@@ -1,6 +1,5 @@
 import {
     PunchAction,
-    PunchEndpoints,
     UpdatePunchData,
 } from '@equinor/procosys-webapp-components';
 import { SavedSearchType } from '../pages/Search/SavedSearches/SavedSearchResult';
@@ -74,8 +73,7 @@ const procosysApiService = (
     const getByFetch = async (
         url: string,
         abortSignal?: AbortSignal,
-        additionalHeaders?: any,
-        isBlob?: boolean
+        additionalHeaders?: any
     ): Promise<any> => {
         const GetOperation: GetOperationProps = {
             abortSignal: abortSignal,
@@ -85,10 +83,6 @@ const procosysApiService = (
                 ...additionalHeaders,
             },
         };
-
-        if (isBlob) {
-            GetOperation.responseType = 'blob';
-        }
 
         const res = callback(await fetch(`${baseURL}/${url}`, GetOperation));
 
@@ -113,11 +107,39 @@ const procosysApiService = (
         }
     };
 
-    const deleteByFetch = async (url: string, bodyData?: any): Promise<any> => {
+    const getAttachmentByFetch = async (
+        url: string,
+        abortSignal?: AbortSignal
+    ): Promise<Blob> => {
+        const GetOperation: GetOperationProps = {
+            abortSignal: abortSignal,
+            method: 'GET',
+            responseType: 'blob',
+            headers: {
+                Authorization: `Bearer ${token}`,
+                'Content-Disposition': 'attachment; filename="filename.jpg"',
+            },
+        };
+
+        const res = callback(await fetch(`${baseURL}/${url}`, GetOperation));
+
+        if (res.ok) {
+            return res.blob();
+        } else {
+            alert('HTTP-Error: ' + res.status);
+            console.error(res.status);
+            return res.blob();
+        }
+    };
+
+    const deleteByFetch = async (url: string, data?: any): Promise<any> => {
         const DeleteOperation = {
             method: 'DELETE',
-            headers: { Authorization: `Bearer ${token}` },
-            body: bodyData ? JSON.stringify(bodyData) : null,
+            headers: {
+                Authorization: `Bearer ${token}`,
+                'Content-Type': 'application/json',
+            },
+            body: data ? JSON.stringify(data) : null,
         };
         await fetch(`${baseURL}/${url}`, DeleteOperation);
     };
@@ -605,11 +627,9 @@ const procosysApiService = (
         punchItemId: number,
         attachmentId: number
     ): Promise<Blob> => {
-        const data = await getByFetch(
+        const data = await getAttachmentByFetch(
             `PunchListItem/Attachment?plantId=PCS$${plantId}&punchItemId=${punchItemId}&attachmentId=${attachmentId}${apiVersion}`,
-            abortSignal,
-            { 'Content-Disposition': 'attachment; filename="filename.jpg"' },
-            true
+            abortSignal
         );
         return data as Blob;
     };
@@ -704,16 +724,11 @@ const procosysApiService = (
         attachmentId: number,
         abortSignal: AbortSignal
     ): Promise<Blob> => {
-        const data = getByFetch(
+        const data = getAttachmentByFetch(
             `WorkOrder/Attachment?plantId=PCS$${plantId}&workOrderId=${workOrderId}&attachmentId=${attachmentId}${apiVersion}`,
-            abortSignal,
-            { 'Content-Disposition': 'attachment; filename="filename.jpg"' },
-            true
+            abortSignal
         );
-        if (!isOfType<Blob>(data, 'stream')) {
-            throw Error(typeGuardErrorMessage('attachments'));
-        }
-        return data as Blob;
+        return data;
     };
 
     const postWorkOrderAttachment = async (
