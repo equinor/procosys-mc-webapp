@@ -402,3 +402,31 @@ export interface Person {
     lastName: string;
     email: string;
 }
+export interface McPkgBookmark {
+    id: number;
+    mcPkgNo: string;
+    description: string;
+    status: CompletionStatus;
+    commPkgNo: string;
+    phaseCode: string;
+    responsibleCode: string;
+    commissioningHandoverStatus: string;
+    operationHandoverStatus: string;
+}
+
+export interface TagBookmark {
+    id: number;
+    tagNo: string;
+    description: string;
+}
+
+export interface Bookmarks {
+    openDefinition: {
+        offlineAt: Date;
+        status: string;
+    };
+    bookmarkedMcPkgs: McPkgBookmark[];
+    bookmarkedPurchaseOrders: PoPreview[];
+    bookmarkedTags: TagBookmark[];
+    bookmarkedWorkOrders: WoPreview[];
+}
