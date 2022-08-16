@@ -1,4 +1,29 @@
 import { CheckItem } from '@equinor/procosys-webapp-components/dist/typings/apiTypes';
+import * as tg from 'generic-type-guard';
+
+export type Entities =
+    | Plant
+    | Project
+    | SearchResults
+    | ChecklistPreview
+    | PunchPreview
+    | ChecklistResponse
+    | PunchCategory
+    | PunchType
+    | PunchOrganization
+    | NewPunch
+    | PunchItem
+    | Attachment
+    | McPkgPreview
+    | PunchSort
+    | PunchPriority
+    | Person
+    | Tag
+    | WoPreview
+    | PoPreview
+    | SavedSearch
+    | PunchItemSavedSearchResult
+    | ChecklistSavedSearchResult;
 
 export enum CompletionStatus {
     OS = 'OS',
@@ -20,8 +45,30 @@ export interface Plant {
     projects?: Project[];
 }
 
-//SEARCH
+export const isProject: tg.TypeGuard<Project> = new tg.IsInterface()
+    .withProperties({
+        description: tg.isString,
+        id: tg.isNumber,
+        title: tg.isString,
+    })
+    .get();
 
+export const isProjects = (project: unknown): tg.TypeGuard<Project[]> =>
+    tg.isArray(isProject);
+
+export const isPlant: tg.TypeGuard<Plant> = new tg.IsInterface()
+    .withProperties({
+        id: tg.isString,
+        title: tg.isString,
+        slug: tg.isString,
+        projects: tg.isArray<Project>(isProject),
+    })
+    .get();
+
+export const isPlants = (plant: unknown): tg.TypeGuard<Plant[]> =>
+    tg.isArray(isPlant);
+
+//SEARCH
 export enum ApiSavedSearchType {
     CHECKLIST = 'Check Lists',
     PUNCH = 'Punch List Items',
@@ -401,4 +448,33 @@ export interface Person {
     firstName: string;
     lastName: string;
     email: string;
+}
+
+export interface McPkgBookmark {
+    id: number;
+    mcPkgNo: string;
+    description: string;
+    status: CompletionStatus;
+    commPkgNo: string;
+    phaseCode: string;
+    responsibleCode: string;
+    commissioningHandoverStatus: string;
+    operationHandoverStatus: string;
+}
+
+export interface TagBookmark {
+    id: number;
+    tagNo: string;
+    description: string;
+}
+
+export interface Bookmarks {
+    openDefinition: {
+        offlineAt: Date;
+        status: string;
+    };
+    bookmarkedMcPkgs: McPkgBookmark[];
+    bookmarkedPurchaseOrders: PoPreview[];
+    bookmarkedTags: TagBookmark[];
+    bookmarkedWorkOrders: WoPreview[];
 }
