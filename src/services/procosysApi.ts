@@ -146,7 +146,7 @@ const procosysApiService = (
 
     const postByFetch = async (
         url: string,
-        bodyData: any,
+        bodyData?: any,
         additionalHeaders?: any
     ): Promise<any> => {
         const PostOperation = {
@@ -348,6 +348,71 @@ const procosysApiService = (
     };
 
     //------------
+    // BOOKMARKS
+    // -----------
+
+    const postSetBookmark = async (
+        plantId: string,
+        searchType: string,
+        entityId: number
+    ): Promise<void> => {
+        let url = ``;
+        if (searchType == SearchType.MC) {
+            url = `Bookmark/McPkg?plantId=PCS$${plantId}&mcPkgId=${entityId}${apiVersion}`;
+        } else if (searchType == SearchType.Tag) {
+            url = `Bookmark/Tag?plantId=PCS$${plantId}&tagId=${entityId}${apiVersion}`;
+        } else if (searchType == SearchType.WO) {
+            url = `Bookmark/WorkOrder?plantId=PCS$${plantId}&workOrderId=${entityId}${apiVersion}`;
+        } else {
+            url = `Bookmark/PurchaseOrder?plantId=PCS$${plantId}&callOffId=${entityId}${apiVersion}`;
+        }
+        await postByFetch(url);
+    };
+
+    const getBookmarks = async (
+        plantId: string,
+        projectId: number,
+        abortSignal: AbortSignal
+    ): Promise<any> => {
+        const data = await getByFetch(
+            `OfflineScope?plantId=PCS$${plantId}&projectId=${projectId}${apiVersion}`,
+            abortSignal
+        );
+        return data;
+    };
+
+    const deleteBookmark = async (
+        plantId: string,
+        searchType: string,
+        entityId: number
+    ): Promise<void> => {
+        let url = ``;
+        if (searchType == SearchType.MC) {
+            url = `Bookmark/McPkg?plantId=PCS$${plantId}&mcPkgId=${entityId}${apiVersion}`;
+        } else if (searchType == SearchType.Tag) {
+            url = `Bookmark/Tag?plantId=PCS$${plantId}&tagId=${entityId}${apiVersion}`;
+        } else if (searchType == SearchType.WO) {
+            url = `Bookmark/WorkOrder?plantId=PCS$${plantId}&workOrderId=${entityId}${apiVersion}`;
+        } else {
+            url = `Bookmark/PurchaseOrder?plantId=PCS$${plantId}&callOffId=${entityId}${apiVersion}`;
+        }
+        await deleteByFetch(url);
+    };
+
+    const deleteAllBookmarks = async (
+        plantId: string,
+        projectId: string
+    ): Promise<void> => {
+        console.log('deleteAllBookmarks');
+        // await axios.delete(
+        //     `McPkg?plantId=PCS$${plantId}&mcPkgId=${entityId}${apiVersion}`,
+        //     {
+        //         EntityId: entityId,
+        //     }
+        // );
+    };
+
+    //------------
     // CHECKLIST
     // -----------
     const getScope = async (
@@ -408,6 +473,7 @@ const procosysApiService = (
     //------------
     // PUNCH ITEMS
     // -----------
+
     const getPunchList = async (
         plantId: string,
         searchType: SearchType,
@@ -718,6 +784,10 @@ const procosysApiService = (
         putUpdatePunch,
         getSearchResults,
         getEntityDetails,
+        postSetBookmark,
+        getBookmarks,
+        deleteBookmark,
+        deleteAllBookmarks,
         getPersonsByName,
         getSavedSearches,
         deleteSavedSearch,

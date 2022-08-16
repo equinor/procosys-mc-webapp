@@ -53,7 +53,8 @@ export const isProject: tg.TypeGuard<Project> = new tg.IsInterface()
     })
     .get();
 
-export const isProjects = (project: unknown) => tg.isArray(isProject);
+export const isProjects = (project: unknown): tg.TypeGuard<Project[]> =>
+    tg.isArray(isProject);
 
 export const isPlant: tg.TypeGuard<Plant> = new tg.IsInterface()
     .withProperties({
@@ -64,7 +65,8 @@ export const isPlant: tg.TypeGuard<Plant> = new tg.IsInterface()
     })
     .get();
 
-export const isPlants = (plant: unknown) => tg.isArray(isPlant);
+export const isPlants = (plant: unknown): tg.TypeGuard<Plant[]> =>
+    tg.isArray(isPlant);
 
 //SEARCH
 export enum ApiSavedSearchType {
@@ -446,4 +448,33 @@ export interface Person {
     firstName: string;
     lastName: string;
     email: string;
+}
+
+export interface McPkgBookmark {
+    id: number;
+    mcPkgNo: string;
+    description: string;
+    status: CompletionStatus;
+    commPkgNo: string;
+    phaseCode: string;
+    responsibleCode: string;
+    commissioningHandoverStatus: string;
+    operationHandoverStatus: string;
+}
+
+export interface TagBookmark {
+    id: number;
+    tagNo: string;
+    description: string;
+}
+
+export interface Bookmarks {
+    openDefinition: {
+        offlineAt: Date;
+        status: string;
+    };
+    bookmarkedMcPkgs: McPkgBookmark[];
+    bookmarkedPurchaseOrders: PoPreview[];
+    bookmarkedTags: TagBookmark[];
+    bookmarkedWorkOrders: WoPreview[];
 }
