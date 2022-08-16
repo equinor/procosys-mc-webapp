@@ -1,7 +1,7 @@
 import { AsyncStatus } from '@equinor/procosys-webapp-components';
 import { useContext, useEffect, useState } from 'react';
 import PlantContext from '../contexts/PlantContext';
-import { SearchType } from '../pages/Search/SearchPage';
+import { SearchType } from '../pages/Search/Search';
 import { Bookmarks } from '../services/apiTypes';
 import useCommonHooks from './useCommonHooks';
 

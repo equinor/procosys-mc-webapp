@@ -13,11 +13,10 @@ import { Switch as SwitchButton } from '@equinor/eds-core-react';
 import useCommonHooks from '../../utils/useCommonHooks';
 import { COLORS } from '../../style/GlobalStyles';
 import EdsIcon from '../../components/icons/EdsIcon';
+import { getCurrentBookmarks } from '../../utils/useBookmarks';
 import { Route, Switch } from 'react-router-dom';
 import PlantContext from '../../contexts/PlantContext';
 import Search from './Search';
-import useBookmarks from '../../utils/useBookmarks';
-import Bookmarks from './Bookmarks/Bookmarks';
 
 const SearchPageWrapper = styled.main`
     padding: 0 4%;
@@ -39,6 +38,11 @@ const SearchPage = (): JSX.Element => {
     const { snackbar, setSnackbarText } = useSnackbar();
     const { offlineState, setOfflineState, history, url, path } =
         useCommonHooks();
+    const { currentProject } = useContext(PlantContext); // TODO: remove
+    // TODO: use useBookmarks to get current bookmarks
+    const bookmarks = currentProject
+        ? getCurrentBookmarks(currentProject.id.toString())
+        : [];
 
     return (
         <>
@@ -58,7 +62,9 @@ const SearchPage = (): JSX.Element => {
                     <Route
                         exact
                         path={`${path}/tag-info`}
-                        render={(): JSX.Element => <Bookmarks />}
+                        render={(): JSX.Element => (
+                            
+                        )}
                     />
                 </Switch>
                 <SwitchButton
@@ -92,7 +98,7 @@ const SearchPage = (): JSX.Element => {
                         />
                     }
                     label={'Offline bookmarks'}
-                    numberOfItems={1} // TODO: add
+                    numberOfItems={bookmarks.length}
                 />
             </NavigationFooter>
         </>

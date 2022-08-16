@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import Axios from 'axios';
 import {
     PunchCategory,
     PunchOrganization,
@@ -55,7 +54,8 @@ const NewPunchWrapper = (): JSX.Element => {
     );
     const { snackbar, setSnackbarText } = useSnackbar();
     const [tempIds, setTempIds] = useState<string[]>([]);
-    const source = Axios.CancelToken.source();
+    const controller = new AbortController();
+    const abortSignal = controller.signal;
     const { hits, searchStatus, query, setQuery } = usePersonsSearchFacade();
 
     useEffect(() => {
@@ -68,11 +68,11 @@ const NewPunchWrapper = (): JSX.Element => {
                     sortsFromApi,
                     prioritiesFromApi,
                 ] = await Promise.all([
-                    api.getPunchCategories(params.plant, source.token),
-                    api.getPunchTypes(params.plant, source.token),
-                    api.getPunchOrganizations(params.plant, source.token),
-                    api.getPunchSorts(params.plant, source.token),
-                    api.getPunchPriorities(params.plant, source.token),
+                    api.getPunchCategories(params.plant, abortSignal),
+                    api.getPunchTypes(params.plant, abortSignal),
+                    api.getPunchOrganizations(params.plant, abortSignal),
+                    api.getPunchSorts(params.plant, abortSignal),
+                    api.getPunchPriorities(params.plant, abortSignal),
                 ]);
                 setCategories(categoriesFromApi);
                 setTypes(typesFromApi);
@@ -85,7 +85,7 @@ const NewPunchWrapper = (): JSX.Element => {
             }
         })();
         return (): void => {
-            source.cancel();
+            controller.abort();
         };
     }, [params.plant, api]);
 
