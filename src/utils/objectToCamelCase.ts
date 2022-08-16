@@ -7,13 +7,12 @@ const isObject = function (subject: Record<string, any>): boolean {
 };
 
 const stringToCamelCase = (input: string): string => {
-    return input[0].toLowerCase() + input.substr(1, input.length);
+    return input[0].toLowerCase() + input.substring(1, input.length);
 };
 
 const objectToCamelCase = (input: Record<string, any>): Record<string, any> => {
     if (isObject(input)) {
         const n: Record<string, any> = {};
-
         Object.keys(input).forEach((k) => {
             n[stringToCamelCase(k)] = objectToCamelCase(input[k]);
         });

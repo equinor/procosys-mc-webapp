@@ -15,9 +15,6 @@ import SideMenu from '../../components/navigation/SideMenu';
 import { Switch } from '@equinor/eds-core-react';
 import useCommonHooks from '../../utils/useCommonHooks';
 import { COLORS } from '../../style/GlobalStyles';
-import EdsIcon from '../../components/icons/EdsIcon';
-import { getCurrentBookmarks } from '../../utils/useBookmarks';
-import PlantContext from '../../contexts/PlantContext';
 
 const SearchPageWrapper = styled.main`
     padding: 0 4%;
@@ -75,7 +72,6 @@ const Search = (): JSX.Element => {
             <OfflineBanner>
                 {offlineState ? 'Offline mode active' : undefined}
             </OfflineBanner>
-
             <SearchPageWrapper>
                 <Navbar
                     leftContent={<ProcosysButton />}

@@ -1,12 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Caption, COLORS } from '../../style/GlobalStyles';
-import { McPkgPreview } from '../../services/apiTypes';
+import { McPkgBookmark, McPkgPreview } from '../../services/apiTypes';
 import useCommonHooks from '../../utils/useCommonHooks';
 import { McPackageStatusIcon } from '../icons/McPackageStatusIcon';
-import { Checkbox, Button } from '@equinor/eds-core-react';
+import { Button } from '@equinor/eds-core-react';
 import EdsIcon from '../icons/EdsIcon';
-import useBookmarks from '../../utils/useBookmarks';
 
 const McDetailsWrapper = styled.article<{ clickable: boolean }>`
     cursor: ${(props): string => (props.clickable ? 'pointer' : 'default')};
@@ -70,23 +69,25 @@ const HeaderWrapper = styled.div<{ clickable: boolean }>`
 `;
 
 export const BookmarkWrapper = styled.div`
-    margin-left: 80px;
     margin-top: -15px;
 `;
 
 type McDetailsProps = {
-    mcPkgDetails: McPkgPreview;
+    mcPkgDetails: McPkgPreview | McPkgBookmark;
+    isBookmarked?: boolean;
+    offlinePlanningState?: boolean;
+    handleBookmarkClicked?: () => Promise<void>;
     clickable?: boolean;
 };
 
 const McDetails = ({
     mcPkgDetails,
+    isBookmarked = false,
+    offlinePlanningState = false,
+    handleBookmarkClicked,
     clickable = true,
 }: McDetailsProps): JSX.Element => {
     const { history, url } = useCommonHooks();
-    const { isBookmarked, setIsBookmarked } = useBookmarks(
-        mcPkgDetails.mcPkgNo
-    );
     return (
         <McDetailsWrapper
             onClick={(): void => {
@@ -133,13 +134,13 @@ const McDetails = ({
                 <Caption>{mcPkgDetails.description}</Caption>
                 <Caption>{mcPkgDetails.phaseCode}</Caption>
             </DetailsWrapper>
-            {clickable && (
+            {offlinePlanningState && handleBookmarkClicked && (
                 <BookmarkWrapper>
                     <Button
                         variant="ghost_icon"
                         onClick={(e: React.MouseEvent<HTMLElement>): void => {
                             e.stopPropagation();
-                            setIsBookmarked((prev) => !prev);
+                            handleBookmarkClicked();
                         }}
                     >
                         <EdsIcon
