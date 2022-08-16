@@ -16,6 +16,7 @@ import {
     useSnackbar,
     PunchAction,
 } from '@equinor/procosys-webapp-components';
+import Axios from 'axios';
 import usePersonsSearchFacade from '../../utils/usePersonsSearchFacade';
 
 const punchEndpoints: PunchEndpoints = {
@@ -60,8 +61,7 @@ const ClearPunchWrapper = ({
     const [clearPunchStatus, setClearPunchStatus] = useState(
         AsyncStatus.INACTIVE
     );
-    const abortController = new AbortController();
-    const abortSignal = abortController.signal;
+    const source = Axios.CancelToken.source();
     const { hits, searchStatus, query, setQuery } = usePersonsSearchFacade();
 
     useEffect(() => {
@@ -74,11 +74,11 @@ const ClearPunchWrapper = ({
                     sortsFromApi,
                     prioritiesFromApi,
                 ] = await Promise.all([
-                    api.getPunchCategories(params.plant, abortSignal),
-                    api.getPunchTypes(params.plant, abortSignal),
-                    api.getPunchOrganizations(params.plant, abortSignal),
-                    api.getPunchSorts(params.plant, abortSignal),
-                    api.getPunchPriorities(params.plant, abortSignal),
+                    api.getPunchCategories(params.plant, source.token),
+                    api.getPunchTypes(params.plant, source.token),
+                    api.getPunchOrganizations(params.plant, source.token),
+                    api.getPunchSorts(params.plant, source.token),
+                    api.getPunchPriorities(params.plant, source.token),
                 ]);
                 setCategories(categoriesFromApi);
                 setTypes(typesFromApi);
@@ -91,7 +91,7 @@ const ClearPunchWrapper = ({
             }
         })();
         return (): void => {
-            abortController.abort();
+            source.cancel();
         };
     }, [params.plant, api, params.punchItemId]);
 
@@ -163,7 +163,7 @@ const ClearPunchWrapper = ({
             searchStatus={searchStatus}
             query={query}
             setQuery={setQuery}
-            abortController={abortController}
+            source={source}
         />
     );
 };

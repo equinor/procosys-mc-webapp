@@ -47,12 +47,12 @@ const fetchHits = async (
     query: string,
     dispatch: React.Dispatch<Action>,
     plantId: string,
-    abortSignal: AbortSignal,
+    cancelToken: CancelToken,
     api: ProcosysApiService
 ): Promise<void> => {
     dispatch({ type: 'FETCH_START' });
     try {
-        const persons = await api.getPersonsByName(plantId, query, abortSignal);
+        const persons = await api.getPersonsByName(plantId, query, cancelToken);
         dispatch({
             type: 'FETCH_SUCCESS',
             payload: { persons },
@@ -78,15 +78,13 @@ const usePersonsSearchFacade = () => {
             dispatch({ type: 'FETCH_INACTIVE' });
             return;
         }
-        const controller = new AbortController();
-        const abortSignal = controller.signal;
-
+        const { cancel, token } = axios.CancelToken.source();
         const timeOutId = setTimeout(
-            () => fetchHits(query, dispatch, currentPlant.id, abortSignal, api),
+            () => fetchHits(query, dispatch, currentPlant.id, token, api),
             300
         );
         return (): void => {
-            controller.abort('A new search has taken place instead');
+            cancel('A new search has taken place instead');
             clearTimeout(timeOutId);
         };
     }, [query, currentPlant, api]);

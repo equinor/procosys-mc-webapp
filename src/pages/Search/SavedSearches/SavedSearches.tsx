@@ -43,13 +43,12 @@ const SavedSearches = ({
     );
 
     useEffect(() => {
-        const controller = new AbortController();
-        const abortSignal = controller.signal;
+        const source = Axios.CancelToken.source();
         (async (): Promise<void> => {
             try {
                 const searchesFromApi = await api.getSavedSearches(
                     params.plant,
-                    abortSignal
+                    source.token
                 );
                 if (searchesFromApi.length > 0) {
                     setSearches(searchesFromApi);
@@ -62,7 +61,7 @@ const SavedSearches = ({
             }
         })();
         return (): void => {
-            controller.abort();
+            source.cancel();
         };
     }, [params.plant]);
 

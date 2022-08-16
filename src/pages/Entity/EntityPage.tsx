@@ -12,6 +12,7 @@ import {
     PoPreview,
 } from '../../services/apiTypes';
 import withAccessControl from '../../services/withAccessControl';
+import Axios from 'axios';
 import EdsIcon from '../../components/icons/EdsIcon';
 import { COLORS } from '../../style/GlobalStyles';
 import { SearchType } from '../Search/SearchPage';
@@ -52,14 +53,13 @@ const EntityPage = (): JSX.Element => {
     const [fetchDetailsStatus, setFetchDetailsStatus] = useState(
         AsyncStatus.LOADING
     );
-    const controller = new AbortController();
-    const abortSignal = controller.signal;
+    const source = Axios.CancelToken.source();
     const isOnPunchListPage = history.location.pathname.includes('/punch-list');
     const isOnWoInfoPage = history.location.pathname.includes('/wo-info');
 
     useEffect(() => {
         return (): void => {
-            controller.abort();
+            source.cancel();
         };
     }, []);
 
@@ -71,13 +71,13 @@ const EntityPage = (): JSX.Element => {
                         params.plant,
                         params.searchType,
                         params.entityId,
-                        abortSignal
+                        source.token
                     ),
                     api.getScope(
                         params.plant,
                         params.searchType,
                         params.entityId,
-                        abortSignal
+                        source.token
                     ),
                 ]);
                 setPunchList(punchListFromApi);
@@ -108,7 +108,7 @@ const EntityPage = (): JSX.Element => {
                     params.plant,
                     params.searchType,
                     params.entityId,
-                    abortSignal
+                    source.token
                 );
                 setDetails(detailsFromApi);
                 setFetchDetailsStatus(AsyncStatus.SUCCESS);

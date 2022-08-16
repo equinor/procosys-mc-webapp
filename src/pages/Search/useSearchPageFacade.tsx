@@ -58,7 +58,7 @@ const fetchHits = async (
     dispatch: React.Dispatch<Action>,
     plantId: string,
     projectId: number,
-    abortSignal: AbortSignal,
+    cancelToken: CancelToken,
     api: ProcosysApiService,
     searchType: string
 ): Promise<void> => {
@@ -70,7 +70,7 @@ const fetchHits = async (
             projectId,
             plantId,
             searchType,
-            abortSignal
+            cancelToken
         );
         dispatch({
             type: 'FETCH_SUCCESS',
@@ -103,10 +103,7 @@ const useSearchPageFacade = (searchType: string) => {
             dispatch({ type: 'FETCH_INACTIVE' });
             return;
         }
-
-        const controller = new AbortController();
-        const signal = controller.signal;
-
+        const { cancel, token } = axios.CancelToken.source();
         const timeOutId = setTimeout(
             () =>
                 fetchHits(
@@ -115,14 +112,14 @@ const useSearchPageFacade = (searchType: string) => {
                     dispatch,
                     currentPlant.id,
                     currentProject.id,
-                    signal,
+                    token,
                     api,
                     searchType
                 ),
             300
         );
         return (): void => {
-            controller.abort('A new search has taken place instead');
+            cancel('A new search has taken place instead');
             clearTimeout(timeOutId);
         };
     }, [query, callOffQuery, currentProject, currentPlant, api, searchType]);

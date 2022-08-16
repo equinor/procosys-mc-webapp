@@ -1,6 +1,5 @@
 import { setupServer } from 'msw/node';
 import { rest } from 'msw';
-import 'whatwg-fetch';
 import {
     dummyChecklistResponse,
     dummyPunchListResponse,

@@ -1,4 +1,5 @@
 import { TagInfo } from '@equinor/procosys-webapp-components';
+import axios from 'axios';
 import React, { useState } from 'react';
 import { useEffect } from 'react';
 import { AsyncStatus } from '../contexts/McAppContext';
@@ -16,8 +17,7 @@ const TagInfoWrapper = ({ tagId }: TagInfoWrapperProps): JSX.Element => {
     const [additionalFields, setAdditionalFields] = useState<
         AdditionalTagField[]
     >([]);
-    const controller = new AbortController();
-    const abortSignal = controller.signal;
+    const { token, cancel } = axios.CancelToken.source();
 
     useEffect(() => {
         if (!tagId) return;
@@ -26,7 +26,7 @@ const TagInfoWrapper = ({ tagId }: TagInfoWrapperProps): JSX.Element => {
                 const tagResponse = await api.getTag(
                     params.plant,
                     tagId,
-                    abortSignal
+                    token
                 );
                 setTagInfo(tagResponse.tag);
                 setAdditionalFields(tagResponse.additionalFields);
@@ -36,7 +36,7 @@ const TagInfoWrapper = ({ tagId }: TagInfoWrapperProps): JSX.Element => {
             }
         })();
         return (): void => {
-            controller.abort('Tag info component unmounted');
+            cancel('Tag info component unmounted');
         };
     }, [tagId]);
 

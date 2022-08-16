@@ -51,20 +51,19 @@ const SavedSearchPage = (): JSX.Element => {
     const [fetchMoreResultsStatus, setFetchMoreResultsStatus] =
         useState<AsyncStatus>(AsyncStatus.INACTIVE);
     const [nextPageNumber, setNextPageNumber] = useState<number>(1);
-    const controller = new AbortController();
-    const abortSignal = controller.signal;
+    const source = Axios.CancelToken.source();
 
     useEffect(() => {
         (async (): Promise<void> => {
             try {
                 const [savedSearchesFromApi, resultsFromAPI] =
                     await Promise.all([
-                        api.getSavedSearches(params.plant, abortSignal),
+                        api.getSavedSearches(params.plant, source.token),
                         api.getSavedSearchResults(
                             params.plant,
                             params.savedSearchId,
                             params.savedSearchType,
-                            abortSignal
+                            source.token
                         ),
                     ]);
                 setSavedSearch(
@@ -83,7 +82,7 @@ const SavedSearchPage = (): JSX.Element => {
             }
         })();
         return (): void => {
-            controller.abort();
+            source.cancel();
         };
     }, [params]);
 
@@ -94,7 +93,7 @@ const SavedSearchPage = (): JSX.Element => {
                 params.plant,
                 params.savedSearchId,
                 params.savedSearchType,
-                abortSignal,
+                source.token,
                 nextPageNumber
             );
             if (newResults.length === 0) {

@@ -1,9 +1,10 @@
 import GlobalStyles from './style/GlobalStyles';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
 import authService from './services/authService';
 import * as MSAL from '@azure/msal-browser';
+import baseApiService from './services/baseApi';
 import procosysApiService from './services/procosysApi';
 import { getAppConfig, getAuthConfig } from './services/appConfiguration';
 import initializeAppInsights from './services/appInsights';
@@ -13,6 +14,7 @@ import {
     LoadingPage,
 } from '@equinor/procosys-webapp-components';
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
+import { StatusRepository } from './database/StatusRepository';
 
 serviceWorkerRegistration.register();
 
@@ -54,19 +56,16 @@ const initialize = async () => {
         configurationEndpoint,
         configurationAccessToken
     );
+    const baseApiInstance = baseApiService({
+        authInstance,
+        baseURL: appConfig.procosysWebApi.baseUrl,
+        scope: appConfig.procosysWebApi.scope,
+    });
 
-    const accessToken = await authInstance.getAccessToken(
-        appConfig.procosysWebApi.scope
-    );
-
-    const procosysApiInstance = procosysApiService(
-        {
-            baseURL: appConfig.procosysWebApi.baseUrl,
-            apiVersion: appConfig.procosysWebApi.apiVersion,
-        },
-        accessToken
-    );
-
+    const procosysApiInstance = procosysApiService({
+        axios: baseApiInstance,
+        apiVersion: appConfig.procosysWebApi.apiVersion,
+    });
     const { appInsightsReactPlugin } = initializeAppInsights(
         appConfig.appInsights.instrumentationKey
     );

@@ -4,6 +4,8 @@ import { Caption, COLORS } from '../../style/GlobalStyles';
 import { McPkgBookmark, McPkgPreview } from '../../services/apiTypes';
 import useCommonHooks from '../../utils/useCommonHooks';
 import { McPackageStatusIcon } from '../icons/McPackageStatusIcon';
+import { Button } from '@equinor/eds-core-react';
+import EdsIcon from '../icons/EdsIcon';
 
 const McDetailsWrapper = styled.article<{ clickable: boolean }>`
     cursor: ${(props): string => (props.clickable ? 'pointer' : 'default')};
@@ -66,6 +68,10 @@ const HeaderWrapper = styled.div<{ clickable: boolean }>`
     }
 `;
 
+export const BookmarkWrapper = styled.div`
+    margin-top: -15px;
+`;
+
 type McDetailsProps = {
     mcPkgDetails: McPkgPreview | McPkgBookmark;
     isBookmarked?: boolean;
@@ -82,6 +88,7 @@ const McDetails = ({
     clickable = true,
 }: McDetailsProps): JSX.Element => {
     const { history, url } = useCommonHooks();
+
     return (
         <McDetailsWrapper
             onClick={(): void => {
@@ -128,6 +135,26 @@ const McDetails = ({
                 <Caption>{mcPkgDetails.description}</Caption>
                 <Caption>{mcPkgDetails.phaseCode}</Caption>
             </DetailsWrapper>
+            {offlinePlanningState && handleBookmarkClicked && (
+                <BookmarkWrapper>
+                    <Button
+                        variant="ghost_icon"
+                        onClick={(e: React.MouseEvent<HTMLElement>): void => {
+                            e.stopPropagation();
+                            handleBookmarkClicked();
+                        }}
+                    >
+                        <EdsIcon
+                            color={COLORS.mossGreen}
+                            name={
+                                isBookmarked
+                                    ? 'bookmark_filled'
+                                    : 'bookmark_outlined'
+                            }
+                        />
+                    </Button>
+                </BookmarkWrapper>
+            )}
         </McDetailsWrapper>
     );
 };

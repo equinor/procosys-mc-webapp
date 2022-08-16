@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 import { AsyncStatus } from '../../contexts/McAppContext';
 import { PunchItem } from '../../services/apiTypes';
 import useCommonHooks from '../../utils/useCommonHooks';
@@ -25,7 +26,7 @@ const VerifyPunchWrapper = ({
         AsyncStatus.INACTIVE
     );
     const { snackbar, setSnackbarText } = useSnackbar();
-    const abortController = new AbortController();
+    const source = axios.CancelToken.source();
 
     const handlePunchAction = async (
         punchAction: PunchAction,
@@ -75,7 +76,7 @@ const VerifyPunchWrapper = ({
             getPunchAttachment={api.getPunchAttachment}
             snackbar={snackbar}
             setSnackbarText={setSnackbarText}
-            abortController={abortController}
+            source={source}
         />
     );
 };

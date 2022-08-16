@@ -1,23 +1,17 @@
 import Dexie, { Table } from 'dexie';
-import { Entity } from './Entity';
-import { EntityIndexes } from './EntityIndexes';
-import { IEntity } from './IEntity';
 import { IStatus, Status } from './status';
 
 export default class OfflineStorage extends Dexie {
+    public readonly dbName: string = 'offlineStorage';
     offlineStatus!: Table<IStatus>;
-    offlineContent!: Table<IEntity, EntityIndexes>;
-    static offlineContent: any;
 
     constructor() {
         super('offlineStorage');
         this.version(1).stores({
             offlineStatus: 'name',
-            offlineContent: '++id, entityid, entitytype',
         });
 
-        this?.offlineStatus.mapToClass(Status);
-        this?.offlineContent.mapToClass(Entity);
+        this.offlineStatus.mapToClass(Status);
     }
 }
 
