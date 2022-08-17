@@ -12,7 +12,9 @@ import {
 } from '../../test/dummyData';
 import { causeApiError, ENDPOINTS, server } from '../../test/setupServer';
 import { rest } from 'msw';
-import Search, { SearchType } from './SearchPage';
+import SearchPage from './SearchPage';
+import { SearchType } from '../../typings/enums';
+import { MemoryRouter, Route } from 'react-router-dom';
 
 const search = async (
     searchType: SearchType,
@@ -34,35 +36,19 @@ describe('<Search/> successes', () => {
     beforeEach(() => {
         render(
             withPlantContext({
-                Component: <Search />,
+                Component: (
+                    <MemoryRouter initialEntries={[`/plant-name/project-name`]}>
+                        <Route path="/:plant/:project">
+                            <SearchPage />
+                        </Route>
+                    </MemoryRouter>
+                ),
                 offlineState: false,
                 setOfflineState: jest.fn(() => {
                     // Should be empty
                 }),
             })
         );
-    });
-    it('Renders MC SearchArea if MC SearchTypeButton is clicked and removes SearchArea if the button is cliced again', async () => {
-        expect(
-            await screen.findByText(testSavedSearch[0].name)
-        ).toBeInTheDocument();
-        const mcButton = await screen.findByRole('button', { name: 'MC' });
-        userEvent.click(mcButton);
-        expect(
-            await screen.findByPlaceholderText('For example: "1002-A001"')
-        ).toBeInTheDocument();
-        expect(
-            await screen.findByText(
-                'Start typing your MC Package number in the field above.'
-            )
-        ).toBeInTheDocument();
-        userEvent.click(mcButton);
-        expect(
-            screen.queryByPlaceholderText('For example: "1002-A001"')
-        ).not.toBeInTheDocument();
-        expect(
-            await screen.findByText(testSavedSearch[0].name)
-        ).toBeInTheDocument();
     });
     it('Renders MC search results if user inputs value into the MC search field', async () => {
         await search(SearchType.MC, testMcPkgPreview[0].mcPkgNo);
@@ -145,7 +131,13 @@ describe('<Search/> successes', () => {
 const renderSearch = (): void => {
     render(
         withPlantContext({
-            Component: <Search />,
+            Component: (
+                <MemoryRouter initialEntries={[`/plant-name/project-name`]}>
+                    <Route path="/:plant/:project">
+                        <SearchPage />
+                    </Route>
+                </MemoryRouter>
+            ),
             offlineState: false,
             setOfflineState: jest.fn(() => {
                 // Should be empty
