@@ -13,6 +13,7 @@ const useBookmarks = () => {
         useState<AsyncStatus>(AsyncStatus.INACTIVE);
     const { currentProject } = useContext(PlantContext);
     const abortController = new AbortController();
+    console.log(currentBookmarks);
     // TODO: only allow this to be used when in editing mode!
     // TODO: add a way to start editing mode
 

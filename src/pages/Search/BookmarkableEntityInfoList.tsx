@@ -20,7 +20,7 @@ import { SearchType } from './SearchPage';
 
 interface BookmarkableEntityInfoListProps {
     searchType: string;
-    entityInfoList:
+    entityInfoList?:
         | McPkgPreview[]
         | McPkgBookmark[]
         | TagPreview[]

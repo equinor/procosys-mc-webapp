@@ -58,7 +58,7 @@ const SearchPage = (): JSX.Element => {
                     <Route
                         exact
                         path={`${path}/bookmarks`}
-                        render={(): JSX.Element => <Bookmarks bookmarks={1} />} // TODO: finish
+                        render={(): JSX.Element => <Bookmarks />} // TODO: finish
                     />
                 </Switch>
                 <SwitchButton // TODO: move

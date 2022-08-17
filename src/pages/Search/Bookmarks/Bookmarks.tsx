@@ -11,6 +11,7 @@ import {
 } from '../../../services/apiTypes';
 import { AsyncStatus } from '../../../contexts/McAppContext';
 import useBookmarks from '../../../utils/useBookmarks';
+import BookmarkableEntityInfoList from '../BookmarkableEntityInfoList';
 
 const BookmarksWrapper = styled.div`
     margin: 16px 0;
@@ -23,18 +24,14 @@ export enum SearchType {
     Tag = 'Tag',
 }
 
-interface OfflineBookmarkProps {
-    bookmarks: any;
-}
-
-const Bookmarks = ({ bookmarks }: OfflineBookmarkProps): JSX.Element => {
-    // TODO: finish once backend is ready
-    // TODO: should the bookmarks be passed into this component?
+const Bookmarks = (): JSX.Element => {
+    const { currentBookmarks, fetchBookmarksStatus } = useBookmarks();
+    console.log(currentBookmarks);
 
     return (
         <>
             <BookmarksWrapper>
-                {bookmarks.length < 1 ? (
+                {fetchBookmarksStatus == AsyncStatus.EMPTY_RESPONSE ? (
                     <Banner>
                         <Banner.Icon>
                             <EdsIcon
@@ -43,11 +40,68 @@ const Bookmarks = ({ bookmarks }: OfflineBookmarkProps): JSX.Element => {
                             />
                         </Banner.Icon>
                         <Banner.Message role={'paragraph'}>
-                            The bookmark list is empty
+                            You haven`&apos;`t started adding offline bookmarks
                         </Banner.Message>
                     </Banner>
                 ) : (
-                    <></> // todo: list the bookmarks
+                    // TODO: style
+                    // TODO: add buttons
+                    <>
+                        {currentBookmarks
+                            ? currentBookmarks.bookmarkedMcPkgs.length > 0 && (
+                                  <>
+                                      <h5>MC package bookmarks</h5>
+                                      <BookmarkableEntityInfoList
+                                          searchType={SearchType.MC}
+                                          entityInfoList={
+                                              currentBookmarks?.bookmarkedMcPkgs
+                                          }
+                                      />
+                                  </>
+                              )
+                            : null}
+                        {currentBookmarks
+                            ? currentBookmarks.bookmarkedTags.length > 0 && (
+                                  <>
+                                      <h5>Tag bookmarks</h5>
+                                      <BookmarkableEntityInfoList
+                                          searchType={SearchType.Tag}
+                                          entityInfoList={
+                                              currentBookmarks?.bookmarkedTags
+                                          }
+                                      />
+                                  </>
+                              )
+                            : null}
+                        {currentBookmarks
+                            ? currentBookmarks.bookmarkedWorkOrders.length >
+                                  0 && (
+                                  <>
+                                      <h5>Work order bookmarks</h5>
+                                      <BookmarkableEntityInfoList
+                                          searchType={SearchType.WO}
+                                          entityInfoList={
+                                              currentBookmarks?.bookmarkedWorkOrders
+                                          }
+                                      />
+                                  </>
+                              )
+                            : null}
+                        {currentBookmarks
+                            ? currentBookmarks.bookmarkedPurchaseOrders.length >
+                                  0 && (
+                                  <>
+                                      <h5>Purchase order bookmarks</h5>
+                                      <BookmarkableEntityInfoList
+                                          searchType={SearchType.PO}
+                                          entityInfoList={
+                                              currentBookmarks?.bookmarkedPurchaseOrders
+                                          }
+                                      />
+                                  </>
+                              )
+                            : null}
+                    </>
                 )}
             </BookmarksWrapper>
         </>
