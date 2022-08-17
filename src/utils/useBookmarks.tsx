@@ -8,7 +8,9 @@ import useCommonHooks from './useCommonHooks';
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const useBookmarks = () => {
     const { params, api } = useCommonHooks();
-    const [currentBookmarks, setCurrentBookmarks] = useState<Bookmarks>();
+    const [currentBookmarks, setCurrentBookmarks] = useState<Bookmarks | null>(
+        null
+    );
     const [fetchBookmarksStatus, setFetchBookmarksStatus] =
         useState<AsyncStatus>(AsyncStatus.INACTIVE);
     const { currentProject } = useContext(PlantContext);
@@ -29,8 +31,8 @@ const useBookmarks = () => {
                 setFetchBookmarksStatus(AsyncStatus.EMPTY_RESPONSE);
             } else {
                 setFetchBookmarksStatus(AsyncStatus.SUCCESS);
-                setCurrentBookmarks(bookmarksFromApi);
             }
+            setCurrentBookmarks(bookmarksFromApi);
         } catch {
             setFetchBookmarksStatus(AsyncStatus.ERROR);
         }
@@ -83,11 +85,11 @@ const useBookmarks = () => {
 
     const deleteAllBookmarks = async (): Promise<void> => {
         try {
-            currentProject &&
-                (await api.deleteAllBookmarks(
-                    params.plant,
-                    currentProject?.id
-                ));
+            if (currentProject) {
+                await api.deleteAllBookmarks(params.plant, currentProject?.id);
+                setFetchBookmarksStatus(AsyncStatus.EMPTY_RESPONSE);
+                setCurrentBookmarks(null);
+            }
         } catch (error) {
             if (!(error instanceof Error)) return;
         }
