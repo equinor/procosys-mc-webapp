@@ -1,14 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { Banner, Button } from '@equinor/eds-core-react';
 import { COLORS } from '../../../style/GlobalStyles';
 import EdsIcon from '../../../components/icons/EdsIcon';
-import {
-    McPkgPreview,
-    WoPreview,
-    Tag,
-    PoPreview,
-} from '../../../services/apiTypes';
 import { AsyncStatus } from '../../../contexts/McAppContext';
 import useBookmarks from '../../../utils/useBookmarks';
 import BookmarkableEntityInfoList from '../BookmarkableEntityInfoList';
@@ -20,6 +14,7 @@ const BookmarksWrapper = styled.div`
 
 const ButtonsWrapper = styled.div`
     display: flex;
+    justify-content: space-between;
 `;
 
 const Bookmarks = (): JSX.Element => {
@@ -28,6 +23,7 @@ const Bookmarks = (): JSX.Element => {
         fetchBookmarksStatus,
         isBookmarked,
         handleBookmarkClicked,
+        deleteAllBookmarks,
     } = useBookmarks();
 
     return (
@@ -42,15 +38,16 @@ const Bookmarks = (): JSX.Element => {
                             />
                         </Banner.Icon>
                         <Banner.Message role={'paragraph'}>
-                            You haven`&apos;`t started adding offline bookmarks
+                            You haven&apos;t started adding offline bookmarks
                         </Banner.Message>
                     </Banner>
                 ) : (
-                    // TODO: add buttons
                     <>
                         <ButtonsWrapper>
-                            <Button>Delete all</Button>
                             <Button>Start offline</Button>
+                            <Button onClick={deleteAllBookmarks}>
+                                Delete all
+                            </Button>
                         </ButtonsWrapper>
                         {currentBookmarks
                             ? currentBookmarks.bookmarkedMcPkgs.length > 0 && (

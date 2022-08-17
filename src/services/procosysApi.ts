@@ -400,15 +400,15 @@ const procosysApiService = (
 
     const deleteAllBookmarks = async (
         plantId: string,
-        projectId: string
+        projectId: number
     ): Promise<void> => {
-        console.log('deleteAllBookmarks');
-        // await axios.delete(
-        //     `McPkg?plantId=PCS$${plantId}&mcPkgId=${entityId}${apiVersion}`,
-        //     {
-        //         EntityId: entityId,
-        //     }
-        // );
+        putByFetch(
+            `OfflineScope/Cancel?plantId=PCS$${plantId}${apiVersion}`,
+            {
+                ProjectId: projectId,
+            },
+            { 'Content-Type': 'application/json' }
+        );
     };
 
     //------------

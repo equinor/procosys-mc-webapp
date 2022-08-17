@@ -81,11 +81,24 @@ const useBookmarks = () => {
         }
     };
 
+    const deleteAllBookmarks = async (): Promise<void> => {
+        try {
+            currentProject &&
+                (await api.deleteAllBookmarks(
+                    params.plant,
+                    currentProject?.id
+                ));
+        } catch (error) {
+            if (!(error instanceof Error)) return;
+        }
+    };
+
     return {
         fetchBookmarksStatus,
         currentBookmarks,
         isBookmarked,
         handleBookmarkClicked,
+        deleteAllBookmarks,
     };
 };
 
