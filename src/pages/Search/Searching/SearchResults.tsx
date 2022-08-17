@@ -1,7 +1,7 @@
 import React from 'react';
 import { SearchStatus } from '../useSearchPageFacade';
 import { SearchResults as SearchResultsType } from '../../../services/apiTypes';
-import { SearchType } from '../Search';
+import { SearchType } from '../SearchPage';
 import styled from 'styled-components';
 import { SkeletonLoadingPage } from '@equinor/procosys-webapp-components';
 import BookmarkableEntityInfoList from '../BookmarkableEntityInfoList';

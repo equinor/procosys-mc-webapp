@@ -27,7 +27,7 @@ interface OfflineBookmarkProps {
     bookmarks: any;
 }
 
-const OfflineBookmark = ({ bookmarks }: OfflineBookmarkProps): JSX.Element => {
+const Bookmarks = ({ bookmarks }: OfflineBookmarkProps): JSX.Element => {
     // TODO: finish once backend is ready
     // TODO: should the bookmarks be passed into this component?
 
@@ -54,4 +54,4 @@ const OfflineBookmark = ({ bookmarks }: OfflineBookmarkProps): JSX.Element => {
     );
 };
 
-export default OfflineBookmark;
+export default Bookmarks;

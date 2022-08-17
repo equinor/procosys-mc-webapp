@@ -16,7 +16,7 @@ import {
 import { COLORS } from '../../style/GlobalStyles';
 import useBookmarks from '../../utils/useBookmarks';
 import useCommonHooks from '../../utils/useCommonHooks';
-import { SearchType } from './Search';
+import { SearchType } from './SearchPage';
 
 interface BookmarkableEntityInfoListProps {
     searchType: string;

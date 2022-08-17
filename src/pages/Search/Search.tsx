@@ -1,27 +1,9 @@
 import React, { useState } from 'react';
-import withAccessControl from '../../services/withAccessControl';
-import styled from 'styled-components';
-import SearchArea from './Searching/SearchArea';
+import { SearchTypeButton } from '@equinor/procosys-webapp-components';
 import SavedSearches from './SavedSearches/SavedSearches';
-import {
-    Navbar,
-    ProcosysButton,
-    SearchTypeButton,
-    useSnackbar,
-} from '@equinor/procosys-webapp-components';
-import SideMenu from '../../components/navigation/SideMenu';
-import { Switch } from '@equinor/eds-core-react';
-import useCommonHooks from '../../utils/useCommonHooks';
-import { COLORS } from '../../style/GlobalStyles';
-
-const SearchPageWrapper = styled.main`
-    padding: 0 4%;
-    margin: 0;
-    & > p {
-        margin: 0;
-        padding: 16px 0;
-    }
-`;
+import SearchArea from './Searching/SearchArea';
+import { SearchType } from './SearchPage';
+import styled from 'styled-components';
 
 const ButtonsWrapper = styled.div`
     display: flex;
@@ -31,24 +13,12 @@ const ButtonsWrapper = styled.div`
     }
 `;
 
-const OfflineBanner = styled.div`
-    background: ${COLORS.mossGreen};
-    color: white;
-    text-align: center;
-    font-weight: bold;
-`;
-
-export enum SearchType {
-    PO = 'PO',
-    MC = 'MC',
-    WO = 'WO',
-    Tag = 'Tag',
+interface SearchProps {
+    setSnackbarText: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const Search = (): JSX.Element => {
+const Search = ({ setSnackbarText }: SearchProps): JSX.Element => {
     const [searchType, setSearchType] = useState<string>();
-    const { snackbar, setSnackbarText } = useSnackbar();
-    const { offlineState, setOfflineState } = useCommonHooks();
 
     const determineComponent = (): JSX.Element => {
         if (searchType === undefined) {
@@ -59,59 +29,32 @@ const Search = (): JSX.Element => {
 
     return (
         <>
-            <OfflineBanner>
-                {offlineState ? 'Offline mode active' : undefined}
-            </OfflineBanner>
-            <SearchPageWrapper>
-                <Navbar
-                    leftContent={<ProcosysButton />}
-                    rightContent={<SideMenu />}
+            <p>Search for</p>
+            <ButtonsWrapper>
+                <SearchTypeButton
+                    searchType={SearchType.PO}
+                    currentSearchType={searchType}
+                    setCurrentSearchType={setSearchType}
                 />
-                <p>Search for</p>
-                <ButtonsWrapper>
-                    <SearchTypeButton
-                        searchType={SearchType.PO}
-                        currentSearchType={searchType}
-                        setCurrentSearchType={setSearchType}
-                    />
-                    <SearchTypeButton
-                        searchType={SearchType.MC}
-                        currentSearchType={searchType}
-                        setCurrentSearchType={setSearchType}
-                    />
-                    <SearchTypeButton
-                        searchType={SearchType.WO}
-                        currentSearchType={searchType}
-                        setCurrentSearchType={setSearchType}
-                    />
-                    <SearchTypeButton
-                        searchType={SearchType.Tag}
-                        currentSearchType={searchType}
-                        setCurrentSearchType={setSearchType}
-                    />
-                </ButtonsWrapper>
-                {determineComponent()}
-                <Switch
-                    label={
-                        offlineState
-                            ? 'Deactivate offline mode'
-                            : 'Activate offline mode'
-                    }
-                    onChange={(): void => {
-                        setOfflineState((prev) => !prev);
-                    }}
-                    checked={offlineState ? true : false}
+                <SearchTypeButton
+                    searchType={SearchType.MC}
+                    currentSearchType={searchType}
+                    setCurrentSearchType={setSearchType}
                 />
-
-                {snackbar}
-            </SearchPageWrapper>
+                <SearchTypeButton
+                    searchType={SearchType.WO}
+                    currentSearchType={searchType}
+                    setCurrentSearchType={setSearchType}
+                />
+                <SearchTypeButton
+                    searchType={SearchType.Tag}
+                    currentSearchType={searchType}
+                    setCurrentSearchType={setSearchType}
+                />
+            </ButtonsWrapper>
+            {determineComponent()}
         </>
     );
 };
 
-export default withAccessControl(Search, [
-    'MCPKG/READ',
-    'WO/READ',
-    'TAG/READ',
-    'PURCHASEORDER/READ',
-]);
+export default Search;

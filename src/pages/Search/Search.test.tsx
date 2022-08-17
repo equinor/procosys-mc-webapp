@@ -12,7 +12,7 @@ import {
 } from '../../test/dummyData';
 import { causeApiError, ENDPOINTS, server } from '../../test/setupServer';
 import { rest } from 'msw';
-import Search, { SearchType } from './Search';
+import Search, { SearchType } from './SearchPage';
 
 const search = async (
     searchType: SearchType,

@@ -14,7 +14,7 @@ import {
 import withAccessControl from '../../services/withAccessControl';
 import EdsIcon from '../../components/icons/EdsIcon';
 import { COLORS } from '../../style/GlobalStyles';
-import { SearchType } from '../Search/Search';
+import { SearchType } from '../Search/SearchPage';
 import WorkOrderInfo from './WorkOrderInfo';
 import {
     BackButton,

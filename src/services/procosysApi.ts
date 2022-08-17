@@ -3,7 +3,7 @@ import {
     UpdatePunchData,
 } from '@equinor/procosys-webapp-components';
 import { SavedSearchType } from '../pages/Search/SavedSearches/SavedSearchResult';
-import { SearchType } from '../pages/Search/Search';
+import { SearchType } from '../pages/Search/SearchPage';
 import objectToCamelCase from '../utils/objectToCamelCase';
 import {
     isArrayofPerson,

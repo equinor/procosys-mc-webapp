@@ -2,7 +2,7 @@ import React from 'react';
 import { Redirect, Route, Switch } from 'react-router-dom';
 import { PlantContextProvider } from './contexts/PlantContext';
 import SelectProject from './pages/SelectProject/SelectProject';
-import Search from './pages/Search/Search';
+import Search from './pages/Search/SearchPage';
 import SelectPlant from './pages/SelectPlant/SelectPlant';
 import EntityPage from './pages/Entity/EntityPage';
 import ChecklistPage from './pages/Checklist/ChecklistPage';

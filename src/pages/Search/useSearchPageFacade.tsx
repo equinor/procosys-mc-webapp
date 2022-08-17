@@ -3,7 +3,7 @@ import axios, { CancelToken } from 'axios';
 import PlantContext from '../../contexts/PlantContext';
 import { SearchResults } from '../../services/apiTypes';
 import { ProcosysApiService } from '../../services/procosysApi';
-import { SearchType } from './Search';
+import { SearchType } from './SearchPage';
 import useCommonHooks from '../../utils/useCommonHooks';
 
 export enum SearchStatus {
