@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { Banner } from '@equinor/eds-core-react';
+import { Banner, Button } from '@equinor/eds-core-react';
 import { COLORS } from '../../../style/GlobalStyles';
 import EdsIcon from '../../../components/icons/EdsIcon';
 import {
@@ -12,17 +12,15 @@ import {
 import { AsyncStatus } from '../../../contexts/McAppContext';
 import useBookmarks from '../../../utils/useBookmarks';
 import BookmarkableEntityInfoList from '../BookmarkableEntityInfoList';
+import { SearchType } from '../../../typings/enums';
 
 const BookmarksWrapper = styled.div`
     margin: 16px 0;
 `;
 
-export enum SearchType {
-    PO = 'PO',
-    MC = 'MC',
-    WO = 'WO',
-    Tag = 'Tag',
-}
+const ButtonsWrapper = styled.div`
+    display: flex;
+`;
 
 const Bookmarks = (): JSX.Element => {
     const {
@@ -48,9 +46,12 @@ const Bookmarks = (): JSX.Element => {
                         </Banner.Message>
                     </Banner>
                 ) : (
-                    // TODO: style
                     // TODO: add buttons
                     <>
+                        <ButtonsWrapper>
+                            <Button>Delete all</Button>
+                            <Button>Start offline</Button>
+                        </ButtonsWrapper>
                         {currentBookmarks
                             ? currentBookmarks.bookmarkedMcPkgs.length > 0 && (
                                   <>

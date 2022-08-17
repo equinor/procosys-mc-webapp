@@ -2,8 +2,7 @@ import {
     PunchAction,
     UpdatePunchData,
 } from '@equinor/procosys-webapp-components';
-import { SavedSearchType } from '../pages/Search/SavedSearches/SavedSearchResult';
-import { SearchType } from '../pages/Search/SearchPage';
+import { SavedSearchType, SearchType } from '../typings/enums';
 import objectToCamelCase from '../utils/objectToCamelCase';
 import {
     isArrayofPerson,

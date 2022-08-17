@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { SearchTypeButton } from '@equinor/procosys-webapp-components';
 import SavedSearches from './SavedSearches/SavedSearches';
 import SearchArea from './Searching/SearchArea';
-import { SearchType } from './SearchPage';
 import styled from 'styled-components';
+import { SearchType } from '../../typings/enums';
 
 const ButtonsWrapper = styled.div`
     display: flex;

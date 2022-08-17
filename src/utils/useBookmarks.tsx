@@ -1,8 +1,8 @@
 import { AsyncStatus } from '@equinor/procosys-webapp-components';
 import { useContext, useEffect, useState } from 'react';
 import PlantContext from '../contexts/PlantContext';
-import { SearchType } from '../pages/Search/SearchPage';
 import { Bookmarks } from '../services/apiTypes';
+import { SearchType } from '../typings/enums';
 import useCommonHooks from './useCommonHooks';
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
@@ -13,7 +13,6 @@ const useBookmarks = () => {
         useState<AsyncStatus>(AsyncStatus.INACTIVE);
     const { currentProject } = useContext(PlantContext);
     const abortController = new AbortController();
-    console.log(currentBookmarks);
     // TODO: only allow this to be used when in editing mode!
     // TODO: add a way to start editing mode
 

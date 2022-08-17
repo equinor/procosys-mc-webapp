@@ -27,13 +27,6 @@ const SearchPageWrapper = styled.main`
     }
 `;
 
-export enum SearchType {
-    PO = 'PO',
-    MC = 'MC',
-    WO = 'WO',
-    Tag = 'Tag',
-}
-
 const SearchPage = (): JSX.Element => {
     const { snackbar, setSnackbarText } = useSnackbar();
     const { offlineState, setOfflineState, history, url, path } =

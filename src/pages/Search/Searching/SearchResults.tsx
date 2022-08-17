@@ -1,11 +1,11 @@
 import React from 'react';
 import { SearchStatus } from '../useSearchPageFacade';
 import { SearchResults as SearchResultsType } from '../../../services/apiTypes';
-import { SearchType } from '../SearchPage';
 import styled from 'styled-components';
 import { SkeletonLoadingPage } from '@equinor/procosys-webapp-components';
 import BookmarkableEntityInfoList from '../BookmarkableEntityInfoList';
 import useBookmarks from '../../../utils/useBookmarks';
+import { SearchType } from '../../../typings/enums';
 
 const SearchResultAmountWrapper = styled.h6`
     margin: 10px 0px;
