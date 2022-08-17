@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import withAccessControl from '../../services/withAccessControl';
 import styled from 'styled-components';
 import {
@@ -14,7 +14,6 @@ import useCommonHooks from '../../utils/useCommonHooks';
 import { COLORS } from '../../style/GlobalStyles';
 import EdsIcon from '../../components/icons/EdsIcon';
 import { Route, Switch } from 'react-router-dom';
-import PlantContext from '../../contexts/PlantContext';
 import Bookmarks from './Bookmarks/Bookmarks';
 import Search from './Search';
 
@@ -31,7 +30,6 @@ const SearchPage = (): JSX.Element => {
     const { snackbar, setSnackbarText } = useSnackbar();
     const { offlineState, setOfflineState, history, url, path } =
         useCommonHooks();
-    // TODO: use useBookmarks to get current bookmarks
 
     return (
         <>
@@ -51,7 +49,7 @@ const SearchPage = (): JSX.Element => {
                     <Route
                         exact
                         path={`${path}/bookmarks`}
-                        render={(): JSX.Element => <Bookmarks />} // TODO: finish
+                        render={(): JSX.Element => <Bookmarks />}
                     />
                 </Switch>
                 <SwitchButton // TODO: move
@@ -85,7 +83,6 @@ const SearchPage = (): JSX.Element => {
                         />
                     }
                     label={'Offline bookmarks'}
-                    numberOfItems={1} // TODO: fix
                 />
             </NavigationFooter>
         </>

@@ -15,7 +15,6 @@ import {
 } from '../../services/apiTypes';
 import { COLORS } from '../../style/GlobalStyles';
 import { SearchType } from '../../typings/enums';
-import useBookmarks from '../../utils/useBookmarks';
 import useCommonHooks from '../../utils/useCommonHooks';
 
 interface BookmarkableEntityInfoListProps {
