@@ -57,7 +57,7 @@ const SearchPage = (): JSX.Element => {
                     />
                     <Route
                         exact
-                        path={`${path}/tag-info`}
+                        path={`${path}/bookmarks`}
                         render={(): JSX.Element => <Bookmarks bookmarks={1} />} // TODO: finish
                     />
                 </Switch>
@@ -77,14 +77,14 @@ const SearchPage = (): JSX.Element => {
             </SearchPageWrapper>
             <NavigationFooter>
                 <FooterButton
-                    active={!history.location.pathname.includes('/bookmark')}
-                    goTo={(): void => history.push(url)}
+                    active={!history.location.pathname.includes('/bookmarks')}
+                    goTo={(): void => history.push(`${url}`)}
                     icon={<EdsIcon name="search" color={COLORS.mossGreen} />}
                     label="Search"
                 />
                 <FooterButton
-                    active={history.location.pathname.includes('/bookmark')}
-                    goTo={(): void => history.push(`${url}/bookmark`)}
+                    active={history.location.pathname.includes('/bookmarks')}
+                    goTo={(): void => history.push(`${url}/bookmarks`)}
                     icon={
                         <EdsIcon
                             name="bookmark_outlined"
