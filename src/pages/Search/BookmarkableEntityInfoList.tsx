@@ -20,6 +20,12 @@ import { SearchType } from './SearchPage';
 
 interface BookmarkableEntityInfoListProps {
     searchType: string;
+    isBookmarked: (searchType: SearchType, id: number) => boolean;
+    handleBookmarkClicked: (
+        entityType: SearchType,
+        entityId: number,
+        isBookmarked: boolean
+    ) => Promise<void>;
     entityInfoList?:
         | McPkgPreview[]
         | McPkgBookmark[]
@@ -31,10 +37,11 @@ interface BookmarkableEntityInfoListProps {
 
 const BookmarkableEntityInfoList = ({
     searchType,
+    isBookmarked,
+    handleBookmarkClicked,
     entityInfoList,
 }: BookmarkableEntityInfoListProps): JSX.Element => {
     const { history, url } = useCommonHooks();
-    const { isBookmarked, handleBookmarkClicked } = useBookmarks();
     // TODO: get offline planning state
     if (
         searchType === SearchType.MC &&

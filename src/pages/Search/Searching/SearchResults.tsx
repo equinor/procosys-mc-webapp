@@ -5,6 +5,7 @@ import { SearchType } from '../SearchPage';
 import styled from 'styled-components';
 import { SkeletonLoadingPage } from '@equinor/procosys-webapp-components';
 import BookmarkableEntityInfoList from '../BookmarkableEntityInfoList';
+import useBookmarks from '../../../utils/useBookmarks';
 
 const SearchResultAmountWrapper = styled.h6`
     margin: 10px 0px;
@@ -21,6 +22,7 @@ const SearchResults = ({
     searchResults,
     searchType,
 }: SearchResultsProps): JSX.Element => {
+    const { isBookmarked, handleBookmarkClicked } = useBookmarks();
     const getPlaceholderTextType = (): string => {
         if (searchType === SearchType.MC) {
             return 'MC Package number';
@@ -69,6 +71,8 @@ const SearchResults = ({
                 </SearchResultAmountWrapper>
                 <BookmarkableEntityInfoList
                     searchType={searchType}
+                    isBookmarked={isBookmarked}
+                    handleBookmarkClicked={handleBookmarkClicked}
                     entityInfoList={searchResults.items}
                 />
             </div>

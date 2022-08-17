@@ -25,8 +25,12 @@ export enum SearchType {
 }
 
 const Bookmarks = (): JSX.Element => {
-    const { currentBookmarks, fetchBookmarksStatus } = useBookmarks();
-    console.log(currentBookmarks);
+    const {
+        currentBookmarks,
+        fetchBookmarksStatus,
+        isBookmarked,
+        handleBookmarkClicked,
+    } = useBookmarks();
 
     return (
         <>
@@ -53,6 +57,10 @@ const Bookmarks = (): JSX.Element => {
                                       <h5>MC package bookmarks</h5>
                                       <BookmarkableEntityInfoList
                                           searchType={SearchType.MC}
+                                          isBookmarked={isBookmarked}
+                                          handleBookmarkClicked={
+                                              handleBookmarkClicked
+                                          }
                                           entityInfoList={
                                               currentBookmarks?.bookmarkedMcPkgs
                                           }
@@ -66,6 +74,10 @@ const Bookmarks = (): JSX.Element => {
                                       <h5>Tag bookmarks</h5>
                                       <BookmarkableEntityInfoList
                                           searchType={SearchType.Tag}
+                                          isBookmarked={isBookmarked}
+                                          handleBookmarkClicked={
+                                              handleBookmarkClicked
+                                          }
                                           entityInfoList={
                                               currentBookmarks?.bookmarkedTags
                                           }
@@ -80,6 +92,10 @@ const Bookmarks = (): JSX.Element => {
                                       <h5>Work order bookmarks</h5>
                                       <BookmarkableEntityInfoList
                                           searchType={SearchType.WO}
+                                          isBookmarked={isBookmarked}
+                                          handleBookmarkClicked={
+                                              handleBookmarkClicked
+                                          }
                                           entityInfoList={
                                               currentBookmarks?.bookmarkedWorkOrders
                                           }
@@ -94,6 +110,10 @@ const Bookmarks = (): JSX.Element => {
                                       <h5>Purchase order bookmarks</h5>
                                       <BookmarkableEntityInfoList
                                           searchType={SearchType.PO}
+                                          isBookmarked={isBookmarked}
+                                          handleBookmarkClicked={
+                                              handleBookmarkClicked
+                                          }
                                           entityInfoList={
                                               currentBookmarks?.bookmarkedPurchaseOrders
                                           }
