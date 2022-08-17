@@ -50,6 +50,9 @@ export const ENDPOINTS = {
     getChecklistSavedSearch: `${baseURL}/CheckList/Search`,
     getPunchItemSavedSearch: `${baseURL}/PunchListItem/Search`,
 
+    //Bookmarks
+    getOfflineScope: `${baseURL}/OfflineScope`,
+
     // Checklist
     getMcScope: `${baseURL}/McPkg/CheckLists`,
     getWorkOrderScope: `${baseURL}/WorkOrder/CheckLists`,
@@ -158,6 +161,11 @@ export const server = setupServer(
             context.json(testPunchListItemSavedSearch),
             context.status(200)
         );
+    }),
+
+    //Bookmarks
+    rest.get(ENDPOINTS.getOfflineScope, (_, response, context) => {
+        return response(context.json(null), context.status(200));
     }),
 
     //Checklist
