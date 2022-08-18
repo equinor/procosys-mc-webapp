@@ -1,5 +1,5 @@
 import GlobalStyles from './style/GlobalStyles';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
 import authService from './services/authService';
@@ -95,13 +95,15 @@ const initialize = async () => {
     };
 
     const bookmarks: Bookmarks = {
-        Id: '1234',
         plantId: 'HEIMDAL',
-        projectId: '21684993',
-        McPkg: [mcpkg],
-        Tag: [],
-        Wo: [],
-        Po: [],
+        projectId: '',
+        openDefinition: {
+            status: '',
+        },
+        bookmarkedMcPkgs: [mcpkg],
+        bookmarkedPurchaseOrders: [],
+        bookmarkedTags: [],
+        bookmarkedWorkOrders: [],
     };
 
     //const [buildOfflineScopeWorker] = useWorker(buildOfflineScope);

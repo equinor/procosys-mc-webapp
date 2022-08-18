@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
+import React, { ChangeEvent, useEffect, useRef } from 'react';
 import { Search as SearchField } from '@equinor/eds-core-react';
 import useSearchPageFacade from '../useSearchPageFacade';
 import SearchResults from './SearchResults';
@@ -27,7 +27,7 @@ const SearchArea = ({ searchType }: SearchAreaProps): JSX.Element => {
     const callOffSearchbarRef = useRef<HTMLInputElement>(
         document.createElement('input')
     );
-    const { appConfig } = useCommonHooks();
+    const { appConfig, offlineState } = useCommonHooks();
     const {
         hits,
         searchStatus,
@@ -53,7 +53,7 @@ const SearchArea = ({ searchType }: SearchAreaProps): JSX.Element => {
 
     return (
         <SearchAreaWrapper>
-            {searchType === SearchType.Tag ? (
+            {searchType === SearchType.Tag && offlineState == false ? (
                 <TagPhotoRecognition
                     setQuery={setQuery}
                     tagOcrEndpoint={appConfig.ocrFunctionEndpoint}

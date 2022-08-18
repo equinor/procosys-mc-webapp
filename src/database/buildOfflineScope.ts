@@ -96,7 +96,7 @@ const buildOfflineScope = async (
         apipath: currentApiPath,
     });
 
-    for (const mcPkg of bookmarks.McPkg) {
+    for (const mcPkg of bookmarks.bookmarkedMcPkgs) {
         //todo: Bygge følgende generelt for alle seawrchtypes.
 
         //TODO: legg inn getPlants og getProjnects, kun med det ene prosjekte.
