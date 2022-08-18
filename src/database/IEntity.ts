@@ -1,8 +1,6 @@
 export interface IEntity {
     entityid: number;
     entitytype: string;
-    // response: Response
-    // request: Request
-    response: Response;
-    apiPath: string;
+    apipath: string;
+    responseObj: string | Blob;
 }

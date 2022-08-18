@@ -123,6 +123,16 @@ export interface PoPreview {
     responsibleCode: string;
 }
 
+export interface Bookmarks {
+    Id: string;
+    plantId: string;
+    projectId: string;
+    McPkg: Array<McPkgPreview>;
+    Tag: Array<TagPreview>;
+    Wo: Array<WoPreview>;
+    Po: Array<PoPreview>;
+}
+
 export interface SearchResults {
     maxAvailable: number;
     items: McPkgPreview[] | WoPreview[] | TagPreview[] | PoPreview[];
