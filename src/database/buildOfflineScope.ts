@@ -6,7 +6,9 @@ import {
     Entities,
     McPkgPreview,
     Person,
+    Plant,
     PoPreview,
+    Project,
     PunchItem,
     PunchPreview,
     Tag,
@@ -33,12 +35,13 @@ import { IEntity } from './IEntity';
 
 const buildOfflineScope = async (
     api: ProcosysApiService,
-    bookmarks: Bookmarks
+    plantId: string,
+    projectId: number
 ): Promise<void> => {
     const controller = new AbortController();
     const abortSignal = controller.signal;
     const offlineContentRepository = new OfflineContentRepository();
-    const offlineEntities: Entity[] = [];
+    let offlineEntities: Entity[] = [];
 
     let currentResponseObj = '' as string | Blob;
     let currentApiPath = '';
@@ -54,9 +57,37 @@ const buildOfflineScope = async (
 
     api.setCallbackFunction(cbFunc);
 
-    //Common data
-    //--------------------
-    await api.getPunchCategories(bookmarks.plantId, abortSignal);
+    //Bookmarks
+    const bookmarks = await api.getBookmarks(plantId, projectId, abortSignal);
+    offlineEntities.push({
+        entityid: 0,
+        entitytype: 'Bookmarks',
+        responseObj: currentResponseObj,
+        apipath: currentApiPath,
+    });
+
+    //Plants
+    const plants = await api.getPlants();
+    //todo: hvis vi ikke ønsker å vise alle plants, kan vi filtrere her.
+    offlineEntities.push({
+        entityid: 0,
+        entitytype: 'Plants',
+        responseObj: currentResponseObj,
+        apipath: currentApiPath,
+    });
+
+    //Projects
+    const projects = await api.getProjectsForPlant(`PCS$${plantId}`);
+    //todo: hvis vi ikke ønsker å vise alle projects, kan vi filtrere her.
+    offlineEntities.push({
+        entityid: 0,
+        entitytype: 'Projects',
+        responseObj: currentResponseObj,
+        apipath: currentApiPath,
+    });
+
+    //Punch categories
+    await api.getPunchCategories(plantId, abortSignal);
     offlineEntities.push({
         entityid: 0,
         entitytype: 'PunchCategories',
@@ -64,7 +95,8 @@ const buildOfflineScope = async (
         apipath: currentApiPath,
     });
 
-    await api.getPunchOrganizations(bookmarks.plantId, abortSignal);
+    //Punch organization
+    await api.getPunchOrganizations(plantId, abortSignal);
     offlineEntities.push({
         entityid: 0,
         entitytype: 'PunchOrganization',
@@ -72,7 +104,8 @@ const buildOfflineScope = async (
         apipath: currentApiPath,
     });
 
-    await api.getPunchPriorities(bookmarks.plantId, abortSignal);
+    //Punch priorities
+    await api.getPunchPriorities(plantId, abortSignal);
     offlineEntities.push({
         entityid: 0,
         entitytype: 'PunchPriorities',
@@ -80,7 +113,8 @@ const buildOfflineScope = async (
         apipath: currentApiPath,
     });
 
-    await api.getPunchSorts(bookmarks.plantId, abortSignal);
+    //Punch sorts
+    await api.getPunchSorts(plantId, abortSignal);
     offlineEntities.push({
         entityid: 0,
         entitytype: 'PunchSorts',
@@ -88,7 +122,8 @@ const buildOfflineScope = async (
         apipath: currentApiPath,
     });
 
-    await api.getPunchTypes(bookmarks.plantId, abortSignal);
+    //Punch types
+    await api.getPunchTypes(plantId, abortSignal);
     offlineEntities.push({
         entityid: 0,
         entitytype: 'PunchTypes',
@@ -96,124 +131,124 @@ const buildOfflineScope = async (
         apipath: currentApiPath,
     });
 
-    for (const mcPkg of bookmarks.bookmarkedMcPkgs) {
-        //todo: Bygge følgende generelt for alle seawrchtypes.
+    console.log(
+        'Store common data: ' + offlineEntities.length.toString(),
+        offlineEntities
+    );
+    await offlineContentRepository.bulkAdd(offlineEntities);
 
-        //TODO: legg inn getPlants og getProjnects, kun med det ene prosjekte.
-        //Entity Details
-        await api.getEntityDetails(
-            bookmarks.plantId,
-            SearchType.MC,
-            mcPkg.id.toString()
-        );
+    /**
+     * Build offline scope for a search type entity
+     */
+    const buildOfflineScopeForEntity = async (
+        entityId: number,
+        plantId: string,
+        searchType: SearchType
+    ): Promise<void> => {
+        offlineEntities = [];
+
+        await api.getEntityDetails(plantId, searchType, entityId.toString());
 
         offlineEntities.push({
-            entityid: mcPkg.id,
-            entitytype: SearchType.MC,
+            entityid: entityId,
+            entitytype: searchType,
             responseObj: currentResponseObj,
             apipath: currentApiPath,
         });
 
-        //Get punch list
-        await api.getPunchList(
-            bookmarks.plantId,
-            SearchType.MC,
-            mcPkg.id.toString()
-        );
+        //Punch list
+        await api.getPunchList(plantId, searchType, entityId.toString());
 
         offlineEntities.push({
-            entityid: mcPkg.id,
-            entitytype: SearchType.MC,
+            entityid: entityId,
+            entitytype: searchType,
             responseObj: currentResponseObj,
             apipath: currentApiPath,
         });
 
-        //Get scope
+        //Scope (checklists)
         const scope = await api.getScope(
-            bookmarks.plantId,
-            SearchType.MC,
-            mcPkg.id.toString()
+            plantId,
+            searchType,
+            entityId.toString()
         );
 
         offlineEntities.push({
-            entityid: mcPkg.id,
-            entitytype: SearchType.MC,
+            entityid: entityId,
+            entitytype: searchType,
             responseObj: currentResponseObj,
             apipath: currentApiPath,
         });
 
         //For all checklists
         for (const checklist of scope) {
-            //Get checklist
+            //Checklist
             const checklistResp: ChecklistResponse = await api.getChecklist(
-                bookmarks.plantId,
+                plantId,
                 checklist.id.toString()
             );
 
             offlineEntities.push({
                 entityid: checklist.id,
-                entitytype: SearchType.MC,
+                entitytype: searchType,
                 responseObj: currentResponseObj,
                 apipath: currentApiPath,
             });
 
-            //Get tag
+            //Tag
             const tag: Tag = await api.getTag(
-                bookmarks.plantId,
+                plantId,
                 checklistResp.checkList.tagId
             );
 
             offlineEntities.push({
                 entityid: checklistResp.checkList.tagId,
-                entitytype: SearchType.MC,
+                entitytype: searchType,
                 responseObj: currentResponseObj,
                 apipath: currentApiPath,
             });
 
-            //Get checklist punchlist
+            //Checklist punchlist
             const checklistPunchList: PunchPreview[] =
                 await api.getChecklistPunchList(
-                    bookmarks.plantId,
+                    plantId,
                     checklist.id.toString()
                 );
 
             offlineEntities.push({
                 entityid: checklist.id,
-                entitytype: SearchType.MC,
+                entitytype: searchType,
                 responseObj: currentResponseObj,
                 apipath: currentApiPath,
             });
 
             for (const punch of checklistPunchList) {
-                //Get punch item
-                const punchItem: PunchItem = await api.getPunchItem(
-                    bookmarks.plantId,
-                    punch.id.toString()
-                );
+                //Punch item
+                await api.getPunchItem(plantId, punch.id.toString());
 
                 offlineEntities.push({
                     entityid: punch.id,
-                    entitytype: SearchType.MC,
+                    entitytype: searchType,
                     responseObj: currentResponseObj,
                     apipath: currentApiPath,
                 });
 
-                //get punch attachments
+                //Punch attachments
                 const punchAttachments: Attachment[] =
-                    await api.getPunchAttachments(bookmarks.plantId, punch.id);
+                    await api.getPunchAttachments(plantId, punch.id);
 
                 offlineEntities.push({
                     entityid: checklist.id,
-                    entitytype: SearchType.MC,
+                    entitytype: searchType,
                     responseObj: currentResponseObj,
                     apipath: currentApiPath,
                 });
 
                 for (const attachment of punchAttachments) {
-                    //Get checklist attachment
-                    const attachmentBlob: Blob = await api.getPunchAttachment(
+                    //Checklist attachment
+                    await api.getPunchAttachment(
                         abortSignal,
-                        bookmarks.plantId,
+                        plantId,
                         punch.id,
                         attachment.id
                     );
@@ -223,61 +258,79 @@ const buildOfflineScope = async (
                     );
                     offlineEntities.push({
                         entityid: attachment.id,
-                        entitytype: SearchType.MC,
+                        entitytype: searchType,
                         apipath: currentApiPath,
                         responseObj: currentResponseObj,
                     });
                 }
             }
-            //Get checklist attachment list
+            //Checklist attachment list
             const checklistAttachments: Attachment[] =
                 await api.getChecklistAttachments(
-                    bookmarks.plantId,
+                    plantId,
                     checklist.id.toString()
                 );
 
             offlineEntities.push({
                 entityid: checklist.id,
-                entitytype: SearchType.MC,
+                entitytype: searchType,
                 apipath: currentApiPath,
                 responseObj: currentResponseObj,
             });
 
             for (const attachment of checklistAttachments) {
-                //Get checklist attachment
-                const attachmentBlob: Blob = await api.getChecklistAttachment(
-                    bookmarks.plantId,
+                //Checklist attachment
+                await api.getChecklistAttachment(
+                    plantId,
                     checklist.id.toString(),
                     attachment.id
                 );
 
                 offlineEntities.push({
                     entityid: attachment.id,
-                    entitytype: SearchType.MC,
+                    entitytype: searchType,
                     apipath: currentApiPath,
                     responseObj: currentResponseObj,
                 });
             }
         }
+        console.log(
+            'Antall offline entities som skal lagres: ' +
+                offlineEntities.length.toString(),
+            offlineEntities
+        );
+
+        //todo: Filtrer bort de som allerede er inne. For for testing
+        const filteredOfflineEntities = offlineEntities.filter(
+            (entity) => entity.apipath != ''
+        );
+
+        console.log(
+            'Antall filtered offline entities som skal lagres: ' +
+                filteredOfflineEntities.length.toString(),
+            filteredOfflineEntities
+        );
+        await offlineContentRepository.bulkAdd(filteredOfflineEntities);
+    };
+
+    //MC pkgs
+    for (const mcPkg of bookmarks.bookmarkedMcPkgs) {
+        console.log('Build offline scoe for MC pkgs.');
+        buildOfflineScopeForEntity(mcPkg.id, plantId, SearchType.MC);
     }
 
-    //todo: Jeg tar her bort de som har tom apipath. Dette er bare midlertidig, for testing
-    console.log(
-        'Antall offline entities som skal lagres: ' +
-            offlineEntities.length.toString(),
-        offlineEntities
-    );
-
-    const filteredOfflineEntities = offlineEntities.filter(
-        (entity) => entity.apipath != ''
-    );
-
-    console.log(
-        'Antall filtered offline entities som skal lagres: ' +
-            filteredOfflineEntities.length.toString(),
-        filteredOfflineEntities
-    );
-    await offlineContentRepository.bulkAdd(filteredOfflineEntities);
+    //Tag
+    for (const tag of bookmarks.bookmarkedTags) {
+        buildOfflineScopeForEntity(tag.id, plantId, SearchType.Tag);
+    }
+    //PO
+    for (const po of bookmarks.bookmarkedPurchaseOrders) {
+        buildOfflineScopeForEntity(po.callOffId, plantId, SearchType.PO);
+    }
+    //WO
+    for (const wo of bookmarks.bookmarkedWorkOrders) {
+        buildOfflineScopeForEntity(wo.id, plantId, SearchType.WO);
+    }
 };
 
 export default buildOfflineScope;

@@ -95,8 +95,6 @@ const initialize = async () => {
     };
 
     const bookmarks: Bookmarks = {
-        plantId: 'HEIMDAL',
-        projectId: '',
         openDefinition: {
             status: '',
         },
@@ -108,7 +106,10 @@ const initialize = async () => {
 
     //const [buildOfflineScopeWorker] = useWorker(buildOfflineScope);
     //buildOfflineScopeWorker(procosysApiInstance, bookmarks);
-    buildOfflineScope(procosysApiInstance, bookmarks);
+    const plantId = 'HEIMDAL';
+    const projectId = 21684993;
+
+    buildOfflineScope(procosysApiInstance, plantId, projectId);
 
     return {
         authInstance,

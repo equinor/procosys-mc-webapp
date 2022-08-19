@@ -38,6 +38,7 @@ import {
     PunchItemSavedSearchResult,
     ChecklistSavedSearchResult,
     isPlants,
+    Bookmarks,
 } from './apiTypes';
 
 type ProcosysApiServiceProps = {
@@ -107,7 +108,7 @@ const procosysApiService = (
             callback(resultObj, res.url);
             return resultObj;
         } else {
-            alert('HTTP-Error: ' + res.status);
+            //alert('HTTP-Error: ' + res.status);
             console.error(res.status);
             return res;
         }
@@ -144,7 +145,7 @@ const procosysApiService = (
             callback(resultObj, res.url);
             return resultObj;
         } else {
-            alert('HTTP-Error: ' + res.status);
+            //alert('HTTP-Error: ' + res.status);
             console.error(res.status);
             return res.blob();
         }
@@ -212,7 +213,6 @@ const procosysApiService = (
         const plants = await getByFetch(
             `Plants?includePlantsWithoutAccess=false${apiVersion}`
         );
-
         if (plants instanceof Array && isPlants(plants)) {
             try {
                 const plantsWithSlug: Plant[] = plants.map((plant: Plant) => ({
@@ -391,11 +391,13 @@ const procosysApiService = (
         plantId: string,
         projectId: number,
         abortSignal: AbortSignal
-    ): Promise<any> => {
+    ): Promise<Bookmarks> => {
         const data = await getByFetch(
             `OfflineScope?plantId=PCS$${plantId}&projectId=${projectId}${apiVersion}`,
             abortSignal
         );
+
+        //todo: Feilhåndtering. Hva om vi ikke har noen bookmarks?
         return data;
     };
 

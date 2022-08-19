@@ -469,8 +469,6 @@ export interface TagBookmark {
 }
 
 export interface Bookmarks {
-    plantId: string;
-    projectId: string;
     openDefinition: {
         offlineAt?: Date;
         status: string;
