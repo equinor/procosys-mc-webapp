@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import Axios from 'axios';
 import { AsyncStatus } from '../../contexts/McAppContext';
 import {
     ChecklistSavedSearchResult,
@@ -7,7 +6,6 @@ import {
     SavedSearch,
 } from '../../services/apiTypes';
 import useCommonHooks from '../../utils/useCommonHooks';
-import { SavedSearchType } from '../Search/SavedSearches/SavedSearchResult';
 import AsyncPage from '../../components/AsyncPage';
 import { isArrayOfType } from '../../services/apiTypeGuards';
 import {
@@ -19,6 +17,7 @@ import {
 import styled from 'styled-components';
 import { Button, DotProgress } from '@equinor/eds-core-react';
 import { PageHeader } from '@equinor/procosys-webapp-components';
+import { SavedSearchType } from '../../typings/enums';
 
 const DetailsWrapper = styled.div`
     padding: 0 4%;

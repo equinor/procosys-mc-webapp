@@ -9,9 +9,8 @@ import {
     AppInsightsContext,
     ReactPlugin,
 } from '@microsoft/applicationinsights-react-js';
-import { SearchType } from './pages/Search/Search';
 import { AppConfig, FeatureFlags } from './services/appConfiguration';
-import { SavedSearchType } from './pages/Search/SavedSearches/SavedSearchResult';
+import { SavedSearchType, SearchType } from './typings/enums';
 
 export type McParams = {
     plant: string;

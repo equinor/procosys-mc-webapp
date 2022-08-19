@@ -14,13 +14,18 @@ import {
     WoPreview,
 } from '../../services/apiTypes';
 import { COLORS } from '../../style/GlobalStyles';
-import useBookmarks from '../../utils/useBookmarks';
+import { SearchType } from '../../typings/enums';
 import useCommonHooks from '../../utils/useCommonHooks';
-import { SearchType } from './Search';
 
 interface BookmarkableEntityInfoListProps {
     searchType: string;
-    entityInfoList:
+    isBookmarked: (searchType: SearchType, id: number) => boolean;
+    handleBookmarkClicked: (
+        entityType: SearchType,
+        entityId: number,
+        isBookmarked: boolean
+    ) => Promise<void>;
+    entityInfoList?:
         | McPkgPreview[]
         | McPkgBookmark[]
         | TagPreview[]
@@ -31,10 +36,11 @@ interface BookmarkableEntityInfoListProps {
 
 const BookmarkableEntityInfoList = ({
     searchType,
+    isBookmarked,
+    handleBookmarkClicked,
     entityInfoList,
 }: BookmarkableEntityInfoListProps): JSX.Element => {
     const { history, url } = useCommonHooks();
-    const { isBookmarked, handleBookmarkClicked } = useBookmarks();
     // TODO: get offline planning state
     if (
         searchType === SearchType.MC &&

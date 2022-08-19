@@ -14,10 +14,6 @@ import {
     CompletionStatus,
 } from '@equinor/procosys-webapp-components';
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
-import { StatusRepository } from './database/StatusRepository';
-import buildOfflineScope from './database/buildOfflineScope';
-import { Bookmarks, McPkgPreview } from './services/apiTypes';
-import { useWorker } from '@koale/useworker';
 
 serviceWorkerRegistration.register();
 
@@ -75,41 +71,6 @@ const initialize = async () => {
     const { appInsightsReactPlugin } = initializeAppInsights(
         appConfig.appInsights.instrumentationKey
     );
-
-    //Testkode som vi vil ha i den nye 'offline' siden.
-    //---------------------------------------------------------
-    //Jeg kaller api.getOfflineScope, og får:
-
-    const mcpkg: McPkgPreview = {
-        id: 17712984,
-        mcPkgNo: '26023-E026',
-        description: 'hallo',
-        status: CompletionStatus.OK,
-        commPkgNo: '',
-        phaseCode: '',
-        phaseDescription: '',
-        responsibleCode: '',
-        responsibleDescription: '',
-        commissioningHandoverStatus: '',
-        operationHandoverStatus: '',
-    };
-
-    const bookmarks: Bookmarks = {
-        openDefinition: {
-            status: '',
-        },
-        bookmarkedMcPkgs: [mcpkg],
-        bookmarkedPurchaseOrders: [],
-        bookmarkedTags: [],
-        bookmarkedWorkOrders: [],
-    };
-
-    //const [buildOfflineScopeWorker] = useWorker(buildOfflineScope);
-    //buildOfflineScopeWorker(procosysApiInstance, bookmarks);
-    const plantId = 'HEIMDAL';
-    const projectId = 21684993;
-
-    buildOfflineScope(procosysApiInstance, plantId, projectId);
 
     return {
         authInstance,

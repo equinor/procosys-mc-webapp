@@ -43,11 +43,6 @@ const IconWrapper = styled.div`
     margin-right: 16px;
 `;
 
-export enum SavedSearchType {
-    CHECKLIST = 'checklist',
-    PUNCH = 'punch',
-}
-
 type SavedSearchProps = {
     search: SavedSearch;
     deleteSavedSearch: React.Dispatch<React.SetStateAction<number>>;

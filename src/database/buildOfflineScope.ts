@@ -57,8 +57,32 @@ const buildOfflineScope = async (
 
     api.setCallbackFunction(cbFunc);
 
+    const addToDatabase = async (offlineEntities: Entity[]): Promise<void> => {
+        console.log(
+            'Antall offline entities ' + offlineEntities.length.toString(),
+            offlineEntities
+        );
+
+        //todo: Filtrer bort de som allerede er inne. For for testing
+        const filteredOfflineEntities = offlineEntities.filter(
+            (entity) => entity.apipath != ''
+        );
+
+        console.log(
+            'Antall som skal lagres: ' +
+                filteredOfflineEntities.length.toString(),
+            filteredOfflineEntities
+        );
+        await offlineContentRepository.bulkAdd(filteredOfflineEntities);
+    };
+
     //Bookmarks
     const bookmarks = await api.getBookmarks(plantId, projectId, abortSignal);
+    if (bookmarks == null) {
+        console.log('No offline scope started for project.', projectId);
+        return; //todo: Må gi feilmelding. Dette skal ikke kunne gå ann.
+    }
+    console.log('Offline bookmarks', bookmarks);
     offlineEntities.push({
         entityid: 0,
         entitytype: 'Bookmarks',
@@ -131,6 +155,7 @@ const buildOfflineScope = async (
         apipath: currentApiPath,
     });
 
+    addToDatabase(offlineEntities);
     console.log(
         'Store common data: ' + offlineEntities.length.toString(),
         offlineEntities
@@ -294,41 +319,31 @@ const buildOfflineScope = async (
                 });
             }
         }
-        console.log(
-            'Antall offline entities som skal lagres: ' +
-                offlineEntities.length.toString(),
-            offlineEntities
-        );
 
-        //todo: Filtrer bort de som allerede er inne. For for testing
-        const filteredOfflineEntities = offlineEntities.filter(
-            (entity) => entity.apipath != ''
-        );
-
-        console.log(
-            'Antall filtered offline entities som skal lagres: ' +
-                filteredOfflineEntities.length.toString(),
-            filteredOfflineEntities
-        );
-        await offlineContentRepository.bulkAdd(filteredOfflineEntities);
+        addToDatabase(offlineEntities);
     };
+
+    //Todo: vi bør sjekke om vi kan bygge parallelt, for å spare tid
 
     //MC pkgs
     for (const mcPkg of bookmarks.bookmarkedMcPkgs) {
-        console.log('Build offline scoe for MC pkgs.');
+        console.log('Build offline scope for MC pkgs.');
         buildOfflineScopeForEntity(mcPkg.id, plantId, SearchType.MC);
     }
 
     //Tag
     for (const tag of bookmarks.bookmarkedTags) {
+        console.log('Build offline scope for Tag pkgs.');
         buildOfflineScopeForEntity(tag.id, plantId, SearchType.Tag);
     }
     //PO
     for (const po of bookmarks.bookmarkedPurchaseOrders) {
+        console.log('Build offline scope for PO pkgs.');
         buildOfflineScopeForEntity(po.callOffId, plantId, SearchType.PO);
     }
     //WO
     for (const wo of bookmarks.bookmarkedWorkOrders) {
+        console.log('Build offline scope for WO pkgs.');
         buildOfflineScopeForEntity(wo.id, plantId, SearchType.WO);
     }
 };
