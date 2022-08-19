@@ -2,8 +2,7 @@ import {
     PunchAction,
     UpdatePunchData,
 } from '@equinor/procosys-webapp-components';
-import { SavedSearchType } from '../pages/Search/SavedSearches/SavedSearchResult';
-import { SearchType } from '../pages/Search/Search';
+import { SavedSearchType, SearchType } from '../typings/enums';
 import objectToCamelCase from '../utils/objectToCamelCase';
 import {
     isArrayofPerson,
@@ -401,15 +400,15 @@ const procosysApiService = (
 
     const deleteAllBookmarks = async (
         plantId: string,
-        projectId: string
+        projectId: number
     ): Promise<void> => {
-        console.log('deleteAllBookmarks');
-        // await axios.delete(
-        //     `McPkg?plantId=PCS$${plantId}&mcPkgId=${entityId}${apiVersion}`,
-        //     {
-        //         EntityId: entityId,
-        //     }
-        // );
+        putByFetch(
+            `OfflineScope/Cancel?plantId=PCS$${plantId}${apiVersion}`,
+            {
+                ProjectId: projectId,
+            },
+            { 'Content-Type': 'application/json' }
+        );
     };
 
     //------------
