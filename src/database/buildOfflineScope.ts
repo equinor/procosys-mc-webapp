@@ -205,6 +205,41 @@ const buildOfflineScope = async (
             apipath: currentApiPath,
         });
 
+        //WO Info
+        if (searchType === SearchType.WO) {
+            //WO attachments
+            const woAttachments: Attachment[] =
+                await api.getWorkOrderAttachments(
+                    plantId,
+                    entityId.toString(),
+                    abortSignal
+                );
+
+            offlineEntities.push({
+                entityid: entityId,
+                entitytype: searchType,
+                responseObj: currentResponseObj,
+                apipath: currentApiPath,
+            });
+
+            for (const attachment of woAttachments) {
+                //Checklist attachment
+                await api.getWorkOrderAttachment(
+                    plantId,
+                    entityId.toString(),
+                    attachment.id,
+                    abortSignal
+                );
+                console.log('attachment WO', currentResponseObj);
+                offlineEntities.push({
+                    entityid: attachment.id,
+                    entitytype: searchType,
+                    apipath: currentApiPath,
+                    responseObj: currentResponseObj,
+                });
+            }
+        }
+
         //For all checklists
         for (const checklist of scope) {
             //Checklist

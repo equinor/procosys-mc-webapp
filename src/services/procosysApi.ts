@@ -39,6 +39,7 @@ import {
     isPlants,
     Bookmarks,
 } from './apiTypes';
+import { StatusRepository } from '../database/StatusRepository';
 
 type ProcosysApiServiceProps = {
     baseURL: string;
@@ -87,15 +88,18 @@ const procosysApiService = (
         };
 
         //Todo: Følgende blir tatt bort når vi har fått på plass en interceptor.
-        const entity = await offlineContentRepository.getByApiPath(
-            `${baseURL}/${url}`
-        );
-        if (entity) {
-            callback('', '');
-            //return object from database instead of doing a fetch
-            return entity.responseObj;
+        const statusRepository = new StatusRepository();
+        const statusObj = await statusRepository.getStatus();
+        if (statusObj.status) {
+            const entity = await offlineContentRepository.getByApiPath(
+                `${baseURL}/${url}`
+            );
+            if (entity) {
+                callback('', '');
+                //return object from database instead of doing a fetch
+                return entity.responseObj;
+            }
         }
-        //-----
 
         const res = await fetch(`${baseURL}/${url}`, GetOperation);
         console.log('fetchkall ', url);
@@ -128,14 +132,17 @@ const procosysApiService = (
         };
 
         //todo: Midlertidig håndtering av offline
-        const entity = await offlineContentRepository.getByApiPath(
-            `${baseURL}/${url}`
-        );
-        if (entity) {
-            callback('', '');
-            return entity.responseObj as Blob;
+        const statusRepository = new StatusRepository();
+        const statusObj = await statusRepository.getStatus();
+        if (statusObj.status) {
+            const entity = await offlineContentRepository.getByApiPath(
+                `${baseURL}/${url}`
+            );
+            if (entity) {
+                callback('', '');
+                return entity.responseObj as Blob;
+            }
         }
-        //-----
 
         const res = await fetch(`${baseURL}/${url}`, GetOperation);
 
@@ -725,7 +732,7 @@ const procosysApiService = (
     const getWorkOrderAttachments = async (
         plantId: string,
         workOrderId: string,
-        abortSignal: AbortSignal
+        abortSignal?: AbortSignal
     ): Promise<Attachment[]> => {
         const data = await getByFetch(
             `WorkOrder/Attachments?plantId=PCS$${plantId}&workOrderId=${workOrderId}&thumbnailSize=128${apiVersion}`,
