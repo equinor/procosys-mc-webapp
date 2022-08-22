@@ -8,7 +8,7 @@ import {
 import { ProcosysApiService } from '../services/procosysApi';
 import { SearchType } from '../typings/enums';
 import { OfflineContentRepository } from './OfflineContentRepository';
-import { Entity } from './Entity';
+import { IEntity } from './IEntity';
 
 const buildOfflineScope = async (
     api: ProcosysApiService,
@@ -18,7 +18,7 @@ const buildOfflineScope = async (
     const controller = new AbortController();
     const abortSignal = controller.signal;
     const offlineContentRepository = new OfflineContentRepository();
-    let offlineEntities: Entity[] = [];
+    const offlineEntities: Map<string, IEntity> = new Map();
 
     let currentResponseObj = '' as string | Blob;
     let currentApiPath = '';
@@ -34,23 +34,23 @@ const buildOfflineScope = async (
 
     api.setCallbackFunction(cbFunc);
 
-    const addToDatabase = async (offlineEntities: Entity[]): Promise<void> => {
+    /**
+     * Add entities to a map. This will ensure that no duplicates are stored in the database (entities with same api path)
+     */
+    const addEntityToMap = (entity: IEntity): void => {
+        if (!offlineEntities.get(entity.apipath)) {
+            offlineEntities.set(entity.apipath, entity);
+        }
+    };
+
+    const addEntitiesToDatabase = async (): Promise<void> => {
         console.log(
-            'Antall offline entities ' + offlineEntities.length.toString(),
+            `Entities to store in database (${offlineEntities.size}`,
             offlineEntities
         );
-
-        //todo: Filtrer bort de som allerede er inne. For for testing
-        const filteredOfflineEntities = offlineEntities.filter(
-            (entity) => entity.apipath != ''
+        await offlineContentRepository.bulkAdd(
+            Array.from(offlineEntities.values())
         );
-
-        console.log(
-            'Antall som skal lagres: ' +
-                filteredOfflineEntities.length.toString(),
-            filteredOfflineEntities
-        );
-        await offlineContentRepository.bulkAdd(filteredOfflineEntities);
     };
 
     //Bookmarks
@@ -60,9 +60,18 @@ const buildOfflineScope = async (
         return; //todo: Må gi feilmelding. Dette skal ikke kunne gå ann.
     }
     console.log('Offline bookmarks', bookmarks);
-    offlineEntities.push({
+    addEntityToMap({
         entityid: 0,
         entitytype: 'Bookmarks',
+        responseObj: currentResponseObj,
+        apipath: currentApiPath,
+    });
+
+    //Permissions
+    await api.getPermissionsForPlant(`PCS$${plantId}`);
+    addEntityToMap({
+        entityid: 0,
+        entitytype: 'Permissions',
         responseObj: currentResponseObj,
         apipath: currentApiPath,
     });
@@ -70,7 +79,7 @@ const buildOfflineScope = async (
     //Plants
     const plants = await api.getPlants();
     //todo: hvis vi ikke ønsker å vise alle plants, kan vi filtrere her.
-    offlineEntities.push({
+    addEntityToMap({
         entityid: 0,
         entitytype: 'Plants',
         responseObj: currentResponseObj,
@@ -80,7 +89,7 @@ const buildOfflineScope = async (
     //Projects
     const projects = await api.getProjectsForPlant(`PCS$${plantId}`);
     //todo: hvis vi ikke ønsker å vise alle projects, kan vi filtrere her.
-    offlineEntities.push({
+    addEntityToMap({
         entityid: 0,
         entitytype: 'Projects',
         responseObj: currentResponseObj,
@@ -89,7 +98,7 @@ const buildOfflineScope = async (
 
     //Punch categories
     await api.getPunchCategories(plantId, abortSignal);
-    offlineEntities.push({
+    addEntityToMap({
         entityid: 0,
         entitytype: 'PunchCategories',
         responseObj: currentResponseObj,
@@ -98,7 +107,7 @@ const buildOfflineScope = async (
 
     //Punch organization
     await api.getPunchOrganizations(plantId, abortSignal);
-    offlineEntities.push({
+    addEntityToMap({
         entityid: 0,
         entitytype: 'PunchOrganization',
         responseObj: currentResponseObj,
@@ -107,7 +116,7 @@ const buildOfflineScope = async (
 
     //Punch priorities
     await api.getPunchPriorities(plantId, abortSignal);
-    offlineEntities.push({
+    addEntityToMap({
         entityid: 0,
         entitytype: 'PunchPriorities',
         responseObj: currentResponseObj,
@@ -116,7 +125,7 @@ const buildOfflineScope = async (
 
     //Punch sorts
     await api.getPunchSorts(plantId, abortSignal);
-    offlineEntities.push({
+    addEntityToMap({
         entityid: 0,
         entitytype: 'PunchSorts',
         responseObj: currentResponseObj,
@@ -125,19 +134,12 @@ const buildOfflineScope = async (
 
     //Punch types
     await api.getPunchTypes(plantId, abortSignal);
-    offlineEntities.push({
+    addEntityToMap({
         entityid: 0,
         entitytype: 'PunchTypes',
         responseObj: currentResponseObj,
         apipath: currentApiPath,
     });
-
-    addToDatabase(offlineEntities);
-    console.log(
-        'Store common data: ' + offlineEntities.length.toString(),
-        offlineEntities
-    );
-    await offlineContentRepository.bulkAdd(offlineEntities);
 
     /**
      * Build offline scope for a search type entity
@@ -147,11 +149,9 @@ const buildOfflineScope = async (
         plantId: string,
         searchType: SearchType
     ): Promise<void> => {
-        offlineEntities = [];
-
         await api.getEntityDetails(plantId, searchType, entityId.toString());
 
-        offlineEntities.push({
+        addEntityToMap({
             entityid: entityId,
             entitytype: searchType,
             responseObj: currentResponseObj,
@@ -161,7 +161,7 @@ const buildOfflineScope = async (
         //Punch list
         await api.getPunchList(plantId, searchType, entityId.toString());
 
-        offlineEntities.push({
+        addEntityToMap({
             entityid: entityId,
             entitytype: searchType,
             responseObj: currentResponseObj,
@@ -175,7 +175,7 @@ const buildOfflineScope = async (
             entityId.toString()
         );
 
-        offlineEntities.push({
+        addEntityToMap({
             entityid: entityId,
             entitytype: searchType,
             responseObj: currentResponseObj,
@@ -192,7 +192,7 @@ const buildOfflineScope = async (
                     abortSignal
                 );
 
-            offlineEntities.push({
+            addEntityToMap({
                 entityid: entityId,
                 entitytype: searchType,
                 responseObj: currentResponseObj,
@@ -207,7 +207,7 @@ const buildOfflineScope = async (
                     attachment.id,
                     abortSignal
                 );
-                offlineEntities.push({
+                addEntityToMap({
                     entityid: attachment.id,
                     entitytype: searchType,
                     apipath: currentApiPath,
@@ -224,7 +224,7 @@ const buildOfflineScope = async (
                 checklist.id.toString()
             );
 
-            offlineEntities.push({
+            addEntityToMap({
                 entityid: checklist.id,
                 entitytype: searchType,
                 responseObj: currentResponseObj,
@@ -237,7 +237,7 @@ const buildOfflineScope = async (
                 checklistResp.checkList.tagId
             );
 
-            offlineEntities.push({
+            addEntityToMap({
                 entityid: checklistResp.checkList.tagId,
                 entitytype: searchType,
                 responseObj: currentResponseObj,
@@ -251,7 +251,7 @@ const buildOfflineScope = async (
                     checklist.id.toString()
                 );
 
-            offlineEntities.push({
+            addEntityToMap({
                 entityid: checklist.id,
                 entitytype: searchType,
                 responseObj: currentResponseObj,
@@ -262,7 +262,7 @@ const buildOfflineScope = async (
                 //Punch item
                 await api.getPunchItem(plantId, punch.id.toString());
 
-                offlineEntities.push({
+                addEntityToMap({
                     entityid: punch.id,
                     entitytype: searchType,
                     responseObj: currentResponseObj,
@@ -273,7 +273,7 @@ const buildOfflineScope = async (
                 const punchAttachments: Attachment[] =
                     await api.getPunchAttachments(plantId, punch.id);
 
-                offlineEntities.push({
+                addEntityToMap({
                     entityid: checklist.id,
                     entitytype: searchType,
                     responseObj: currentResponseObj,
@@ -288,7 +288,7 @@ const buildOfflineScope = async (
                         punch.id,
                         attachment.id
                     );
-                    offlineEntities.push({
+                    addEntityToMap({
                         entityid: attachment.id,
                         entitytype: searchType,
                         apipath: currentApiPath,
@@ -303,7 +303,7 @@ const buildOfflineScope = async (
                     checklist.id.toString()
                 );
 
-            offlineEntities.push({
+            addEntityToMap({
                 entityid: checklist.id,
                 entitytype: searchType,
                 apipath: currentApiPath,
@@ -318,7 +318,7 @@ const buildOfflineScope = async (
                     attachment.id
                 );
 
-                offlineEntities.push({
+                addEntityToMap({
                     entityid: attachment.id,
                     entitytype: searchType,
                     apipath: currentApiPath,
@@ -326,33 +326,33 @@ const buildOfflineScope = async (
                 });
             }
         }
-
-        addToDatabase(offlineEntities);
     };
 
-    //Todo: vi bør sjekke om vi kan bygge parallelt, for å spare tid
+    //Todo: Vi bør sjekke om vi kan bygge parallelt, for å spare tid
+    //Todo: Istedenfor å gjøre api-kall, og så finne ut om vi allerede har entity i map-en, burde vi unngå å hente samme entity flere ganger.
 
     //MC pkgs
     for (const mcPkg of bookmarks.bookmarkedMcPkgs) {
         console.log('Build offline scope for MC pkgs.');
-        buildOfflineScopeForEntity(mcPkg.id, plantId, SearchType.MC);
+        await buildOfflineScopeForEntity(mcPkg.id, plantId, SearchType.MC);
     }
 
     //Tag
     for (const tag of bookmarks.bookmarkedTags) {
         console.log('Build offline scope for Tag pkgs.');
-        buildOfflineScopeForEntity(tag.id, plantId, SearchType.Tag);
+        await buildOfflineScopeForEntity(tag.id, plantId, SearchType.Tag);
     }
     //PO
     for (const po of bookmarks.bookmarkedPurchaseOrders) {
         console.log('Build offline scope for PO pkgs.');
-        buildOfflineScopeForEntity(po.callOffId, plantId, SearchType.PO);
+        await buildOfflineScopeForEntity(po.callOffId, plantId, SearchType.PO);
     }
     //WO
     for (const wo of bookmarks.bookmarkedWorkOrders) {
         console.log('Build offline scope for WO pkgs.');
-        buildOfflineScopeForEntity(wo.id, plantId, SearchType.WO);
+        await buildOfflineScopeForEntity(wo.id, plantId, SearchType.WO);
     }
+    addEntitiesToDatabase();
 };
 
 export default buildOfflineScope;

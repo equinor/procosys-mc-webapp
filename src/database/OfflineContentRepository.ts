@@ -14,26 +14,10 @@ class OfflineContentRepository {
 
     async getByEntityId(entityId: number): Promise<Entity> {
         const result = await db.offlineContent
-            .where('id')
+            .where('entityid')
             .equals(entityId)
             .first();
         return result as Entity;
-    }
-
-    async add(entity: Entity): Promise<EntityIndexes> {
-        if ((await db.offlineContent) !== undefined) {
-            return await db.offlineContent.add(entity); //Vi trenger ikke å oppgi keys når vi har 'inbound-keys' + autoinc
-        }
-        throw Error(`Entity ${entity.entityid} not added to database`);
-    }
-
-    //todo: Kanskje jeg skal ta bulkPut istedenfor, så er jeg sikker på at det ikke ligger dupliater
-    async bulkAdd(entities: Entity[]): Promise<EntityIndexes> {
-        console.log('Skal lagre entities: ', entities);
-        if ((await db.offlineContent) !== undefined) {
-            return await db.offlineContent.bulkAdd(entities);
-        }
-        throw Error(`Entities ${entities} not added to database.`);
     }
 
     async getByApiPath(apiPath: string): Promise<Entity> {
@@ -41,10 +25,21 @@ class OfflineContentRepository {
             .where('apipath')
             .equals(apiPath)
             .first();
-        if (result != undefined) {
-            console.log('getByapiPath, har funnet objekt i db'); //, result);
-        }
         return result as Entity;
+    }
+
+    async add(entity: Entity): Promise<EntityIndexes> {
+        if ((await db.offlineContent) !== undefined) {
+            return await db.offlineContent.add(entity);
+        }
+        throw Error(`Entity ${entity.entityid} not added to database`);
+    }
+
+    async bulkAdd(entities: Entity[]): Promise<EntityIndexes> {
+        if ((await db.offlineContent) !== undefined) {
+            return await db.offlineContent.bulkAdd(entities);
+        }
+        throw Error(`Entities ${entities} not added to database.`);
     }
 }
 

@@ -90,7 +90,7 @@ const procosysApiService = (
         //Todo: Følgende blir tatt bort når vi har fått på plass en interceptor.
         const statusRepository = new StatusRepository();
         const statusObj = await statusRepository.getStatus();
-        if (statusObj.status) {
+        if (statusObj && statusObj.status) {
             const entity = await offlineContentRepository.getByApiPath(
                 `${baseURL}/${url}`
             );
@@ -98,11 +98,16 @@ const procosysApiService = (
                 callback('', '');
                 //return object from database instead of doing a fetch
                 return entity.responseObj;
+            } else {
+                console.error(
+                    'Offline-mode. Entity for given url is not found in local database',
+                    url
+                );
             }
         }
 
+        console.log('fetch-kall ', url);
         const res = await fetch(`${baseURL}/${url}`, GetOperation);
-        console.log('fetchkall ', url);
 
         if (res.ok) {
             const jsonResult = await res.json();
@@ -134,16 +139,22 @@ const procosysApiService = (
         //todo: Midlertidig håndtering av offline
         const statusRepository = new StatusRepository();
         const statusObj = await statusRepository.getStatus();
-        if (statusObj.status) {
+        if (statusObj && statusObj.status) {
             const entity = await offlineContentRepository.getByApiPath(
                 `${baseURL}/${url}`
             );
             if (entity) {
                 callback('', '');
                 return entity.responseObj as Blob;
+            } else {
+                console.error(
+                    'Offline-mode. Entity for given url is not found in local database',
+                    url
+                );
             }
         }
 
+        console.log('fetch-kall ', url);
         const res = await fetch(`${baseURL}/${url}`, GetOperation);
 
         if (res.ok) {

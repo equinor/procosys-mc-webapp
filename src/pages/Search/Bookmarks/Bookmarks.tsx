@@ -33,13 +33,13 @@ const Bookmarks = (): JSX.Element => {
     const { currentPlant, currentProject } = useContext(PlantContext);
     const { api, setOfflineState } = useCommonHooks();
 
-    const startOffline = (): void => {
+    const startOffline = async (): Promise<void> => {
         const offlineContentRepository = new OfflineContentRepository();
 
         offlineContentRepository.cleanOfflineContent();
 
         if (currentPlant && currentProject) {
-            buildOfflineScope(api, currentPlant.slug, currentProject.id);
+            await buildOfflineScope(api, currentPlant.slug, currentProject.id);
         }
 
         setOfflineState(true);
