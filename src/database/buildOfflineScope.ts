@@ -1,37 +1,14 @@
 import {
     Attachment,
-    Bookmarks,
-    ChecklistPreview,
     ChecklistResponse,
-    Entities,
-    McPkgPreview,
-    Person,
-    Plant,
-    PoPreview,
-    Project,
-    PunchItem,
     PunchPreview,
     Tag,
-    TagPreview,
-    WoPreview,
 } from '../services/apiTypes';
 
-import procosysApiService, {
-    ProcosysApiService,
-} from '../services/procosysApi';
-import {
-    isArrayofPerson,
-    isArrayOfType,
-    isChecklistResponse,
-    isCorrectDetails,
-    isCorrectSavedSearchResults,
-    isOfType,
-} from '../services/apiTypeGuards';
+import { ProcosysApiService } from '../services/procosysApi';
 import { SearchType } from '../typings/enums';
-import { db } from './db';
 import { OfflineContentRepository } from './OfflineContentRepository';
 import { Entity } from './Entity';
-import { IEntity } from './IEntity';
 
 const buildOfflineScope = async (
     api: ProcosysApiService,
@@ -230,7 +207,6 @@ const buildOfflineScope = async (
                     attachment.id,
                     abortSignal
                 );
-                console.log('attachment WO', currentResponseObj);
                 offlineEntities.push({
                     entityid: attachment.id,
                     entitytype: searchType,
@@ -311,10 +287,6 @@ const buildOfflineScope = async (
                         plantId,
                         punch.id,
                         attachment.id
-                    );
-                    console.log(
-                        'attachment currentresposobj',
-                        currentResponseObj
                     );
                     offlineEntities.push({
                         entityid: attachment.id,
