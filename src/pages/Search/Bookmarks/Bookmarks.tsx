@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import styled from 'styled-components';
 import { Banner, Button } from '@equinor/eds-core-react';
 import { COLORS } from '../../../style/GlobalStyles';
@@ -7,6 +7,10 @@ import { AsyncStatus } from '../../../contexts/McAppContext';
 import useBookmarks from '../../../utils/useBookmarks';
 import BookmarkableEntityInfoList from '../BookmarkableEntityInfoList';
 import { SearchType } from '../../../typings/enums';
+import useCommonHooks from '../../../utils/useCommonHooks';
+import buildOfflineScope from '../../../database/buildOfflineScope';
+import PlantContext from '../../../contexts/PlantContext';
+import { OfflineContentRepository } from '../../../database/OfflineContentRepository';
 
 const BookmarksWrapper = styled.div`
     margin: 16px 0;
@@ -26,6 +30,21 @@ const Bookmarks = (): JSX.Element => {
         deleteAllBookmarks,
     } = useBookmarks();
 
+    const { currentPlant, currentProject } = useContext(PlantContext);
+    const { api, setOfflineState } = useCommonHooks();
+
+    const startOffline = async (): Promise<void> => {
+        const offlineContentRepository = new OfflineContentRepository();
+
+        offlineContentRepository.cleanOfflineContent();
+
+        if (currentPlant && currentProject) {
+            await buildOfflineScope(api, currentPlant.slug, currentProject.id);
+        }
+
+        setOfflineState(true);
+    };
+
     return (
         <>
             <BookmarksWrapper>
@@ -44,7 +63,9 @@ const Bookmarks = (): JSX.Element => {
                 ) : (
                     <>
                         <ButtonsWrapper>
-                            <Button>Start offline</Button>
+                            <Button onClick={startOffline}>
+                                Start offline
+                            </Button>
                             <Button onClick={deleteAllBookmarks}>
                                 Delete all
                             </Button>

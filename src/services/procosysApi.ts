@@ -2,6 +2,7 @@ import {
     PunchAction,
     UpdatePunchData,
 } from '@equinor/procosys-webapp-components';
+import { OfflineContentRepository } from '../database/OfflineContentRepository';
 import { SavedSearchType, SearchType } from '../typings/enums';
 import objectToCamelCase from '../utils/objectToCamelCase';
 import {
@@ -36,12 +37,13 @@ import {
     PunchItemSavedSearchResult,
     ChecklistSavedSearchResult,
     isPlants,
+    Bookmarks,
 } from './apiTypes';
+import { StatusRepository } from '../database/StatusRepository';
 
 type ProcosysApiServiceProps = {
     baseURL: string;
     apiVersion: string;
-    callback?: (res: Response) => Response;
 };
 
 type GetOperationProps = {
@@ -57,13 +59,17 @@ export const typeGuardErrorMessage = (expectedType: string): string => {
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const procosysApiService = (
-    {
-        baseURL,
-        apiVersion,
-        callback = (res: Response): Response => res,
-    }: ProcosysApiServiceProps,
+    { baseURL, apiVersion }: ProcosysApiServiceProps,
     token: string
 ) => {
+    const offlineContentRepository = new OfflineContentRepository();
+
+    let callback = (resultObj: any, apiPath: string): string => resultObj;
+
+    const setCallbackFunction = (cbFunc: any): void => {
+        callback = cbFunc;
+    };
+
     // General
     const getVersion = (): string => {
         return apiVersion;
@@ -71,36 +77,46 @@ const procosysApiService = (
 
     const getByFetch = async (
         url: string,
-        abortSignal?: AbortSignal,
-        additionalHeaders?: any
+        abortSignal?: AbortSignal
     ): Promise<any> => {
         const GetOperation: GetOperationProps = {
             abortSignal: abortSignal,
             method: 'GET',
             headers: {
                 Authorization: `Bearer ${token}`,
-                ...additionalHeaders,
             },
         };
 
-        const res = callback(await fetch(`${baseURL}/${url}`, GetOperation));
+        //Todo: Følgende blir tatt bort når vi har fått på plass en interceptor.
+        const statusRepository = new StatusRepository();
+        const statusObj = await statusRepository.getStatus();
+        if (statusObj && statusObj.status) {
+            const entity = await offlineContentRepository.getByApiPath(
+                `${baseURL}/${url}`
+            );
+            if (entity) {
+                callback('', '');
+                //return object from database instead of doing a fetch
+                return entity.responseObj;
+            } else {
+                console.error(
+                    'Offline-mode. Entity for given url is not found in local database',
+                    url
+                );
+            }
+        }
+
+        console.log('fetch-kall ', url);
+        const res = await fetch(`${baseURL}/${url}`, GetOperation);
 
         if (res.ok) {
             const jsonResult = await res.json();
-            if (jsonResult instanceof Array) {
-                return objectToCamelCase(jsonResult);
-            } else {
-                if (
-                    typeof jsonResult === 'object' &&
-                    !(jsonResult instanceof Blob)
-                ) {
-                    return objectToCamelCase(jsonResult);
-                } else {
-                    return jsonResult;
-                }
-            }
+
+            const resultObj = objectToCamelCase(jsonResult);
+            callback(resultObj, res.url);
+            return resultObj;
         } else {
-            alert('HTTP-Error: ' + res.status);
+            //alert('HTTP-Error: ' + res.status);
             console.error(res.status);
             return res;
         }
@@ -120,12 +136,33 @@ const procosysApiService = (
             },
         };
 
-        const res = callback(await fetch(`${baseURL}/${url}`, GetOperation));
+        //todo: Midlertidig håndtering av offline
+        const statusRepository = new StatusRepository();
+        const statusObj = await statusRepository.getStatus();
+        if (statusObj && statusObj.status) {
+            const entity = await offlineContentRepository.getByApiPath(
+                `${baseURL}/${url}`
+            );
+            if (entity) {
+                callback('', '');
+                return entity.responseObj as Blob;
+            } else {
+                console.error(
+                    'Offline-mode. Entity for given url is not found in local database',
+                    url
+                );
+            }
+        }
+
+        console.log('fetch-kall ', url);
+        const res = await fetch(`${baseURL}/${url}`, GetOperation);
 
         if (res.ok) {
-            return res.blob();
+            const resultObj = await res.blob();
+            callback(resultObj, res.url);
+            return resultObj;
         } else {
-            alert('HTTP-Error: ' + res.status);
+            //alert('HTTP-Error: ' + res.status);
             console.error(res.status);
             return res.blob();
         }
@@ -193,7 +230,6 @@ const procosysApiService = (
         const plants = await getByFetch(
             `Plants?includePlantsWithoutAccess=false${apiVersion}`
         );
-
         if (plants instanceof Array && isPlants(plants)) {
             try {
                 const plantsWithSlug: Plant[] = plants.map((plant: Plant) => ({
@@ -313,7 +349,7 @@ const procosysApiService = (
         plantId: string,
         searchType: string,
         entityId: string,
-        abortSignal: AbortSignal
+        abortSignal?: AbortSignal
     ): Promise<McPkgPreview | WoPreview | Tag | PoPreview> => {
         let url = '';
         if (searchType === SearchType.MC) {
@@ -372,11 +408,13 @@ const procosysApiService = (
         plantId: string,
         projectId: number,
         abortSignal: AbortSignal
-    ): Promise<any> => {
+    ): Promise<Bookmarks | null> => {
         const data = await getByFetch(
             `OfflineScope?plantId=PCS$${plantId}&projectId=${projectId}${apiVersion}`,
             abortSignal
         );
+
+        //todo: Feilhåndtering. Hva om vi ikke har noen bookmarks?
         return data;
     };
 
@@ -418,7 +456,7 @@ const procosysApiService = (
         plantId: string,
         searchType: SearchType,
         entityId: string,
-        abortSignal: AbortSignal
+        abortSignal?: AbortSignal
     ): Promise<ChecklistPreview[]> => {
         let url = '';
         if (searchType === SearchType.MC) {
@@ -442,7 +480,7 @@ const procosysApiService = (
     const getChecklist = async (
         plantId: string,
         checklistId: string,
-        abortSignal: AbortSignal
+        abortSignal?: AbortSignal
     ): Promise<ChecklistResponse> => {
         const data = await getByFetch(
             `CheckList/MC?plantId=PCS$${plantId}&checklistId=${checklistId}${apiVersion}`,
@@ -457,7 +495,7 @@ const procosysApiService = (
     const getChecklistPunchList = async (
         plantId: string,
         checklistId: string,
-        abortSignal: AbortSignal
+        abortSignal?: AbortSignal
     ): Promise<PunchPreview[]> => {
         const data = await getByFetch(
             `CheckList/PunchList?plantId=PCS$${plantId}&checklistId=${checklistId}${apiVersion}`,
@@ -477,7 +515,7 @@ const procosysApiService = (
         plantId: string,
         searchType: SearchType,
         entityId: string,
-        abortSignal: AbortSignal
+        abortSignal?: AbortSignal
     ): Promise<PunchPreview[]> => {
         let url = '';
         if (searchType === SearchType.MC) {
@@ -581,7 +619,7 @@ const procosysApiService = (
     const getPunchItem = async (
         plantId: string,
         punchItemId: string,
-        abortSignal: AbortSignal
+        abortSignal?: AbortSignal
     ): Promise<PunchItem> => {
         const data = await getByFetch(
             `PunchListItem?plantId=PCS$${plantId}&punchItemId=${punchItemId}${apiVersion}`,
@@ -690,7 +728,7 @@ const procosysApiService = (
     const getTag = async (
         plantId: string,
         tagId: number,
-        abortSignal: AbortSignal
+        abortSignal?: AbortSignal
     ): Promise<Tag> => {
         const data = await getByFetch(
             `Tag?plantId=PCS$${plantId}&tagId=${tagId}${apiVersion}`,
@@ -705,7 +743,7 @@ const procosysApiService = (
     const getWorkOrderAttachments = async (
         plantId: string,
         workOrderId: string,
-        abortSignal: AbortSignal
+        abortSignal?: AbortSignal
     ): Promise<Attachment[]> => {
         const data = await getByFetch(
             `WorkOrder/Attachments?plantId=PCS$${plantId}&workOrderId=${workOrderId}&thumbnailSize=128${apiVersion}`,
@@ -757,6 +795,58 @@ const procosysApiService = (
         );
     };
 
+    const getChecklistAttachments = async (
+        plantId: string,
+        checklistId: string,
+        abortSignal?: AbortSignal
+    ): Promise<Attachment[]> => {
+        const data = await getByFetch(
+            `CheckList/Attachments?plantId=PCS$${plantId}&checkListId=${checklistId}&thumbnailSize=128${apiVersion}`,
+            abortSignal
+        );
+        return data as Attachment[];
+    };
+
+    const getChecklistAttachment = async (
+        plantId: string,
+        checklistId: string,
+        attachmentId: number,
+        abortSignal?: AbortSignal
+    ): Promise<Blob> => {
+        const data = await getAttachmentByFetch(
+            `CheckList/Attachment?plantId=PCS$${plantId}&checkListId=${checklistId}&attachmentId=${attachmentId}${apiVersion}`,
+            abortSignal
+        );
+        return data as Blob;
+    };
+
+    const deleteChecklistAttachment = async (
+        plantId: string,
+        checklistId: string,
+        attachmentId: number
+    ): Promise<void> => {
+        const dto = {
+            CheckListId: parseInt(checklistId),
+            AttachmentId: attachmentId,
+        };
+        await deleteByFetch(
+            `CheckList/Attachment?plantId=PCS$${plantId}&api-version=4.1`,
+            dto
+        );
+    };
+
+    const postChecklistAttachment = async (
+        plantId: string,
+        checklistId: string,
+        data: FormData,
+        title?: string
+    ): Promise<void> => {
+        await postAttachmentByFetch(
+            `CheckList/Attachment?plantId=PCS$${plantId}&checkListId=${checklistId}&title=${title}${apiVersion}`,
+            data
+        );
+    };
+
     return {
         getTag,
         deletePunchAttachment,
@@ -795,6 +885,11 @@ const procosysApiService = (
         getWorkOrderAttachment,
         postWorkOrderAttachment,
         deleteWorkOrderAttachment,
+        getChecklistAttachments,
+        getChecklistAttachment,
+        deleteChecklistAttachment,
+        postChecklistAttachment,
+        setCallbackFunction,
     };
 };
 

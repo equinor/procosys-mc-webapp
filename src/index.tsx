@@ -11,6 +11,7 @@ import {
     ErrorPage,
     ReloadButton,
     LoadingPage,
+    CompletionStatus,
 } from '@equinor/procosys-webapp-components';
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 

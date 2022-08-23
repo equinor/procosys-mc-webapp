@@ -470,7 +470,7 @@ export interface TagBookmark {
 
 export interface Bookmarks {
     openDefinition: {
-        offlineAt: Date;
+        offlineAt?: Date;
         status: string;
     };
     bookmarkedMcPkgs: McPkgBookmark[];

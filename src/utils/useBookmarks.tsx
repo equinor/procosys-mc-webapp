@@ -1,8 +1,8 @@
 import { AsyncStatus } from '@equinor/procosys-webapp-components';
 import { useContext, useEffect, useState } from 'react';
 import PlantContext from '../contexts/PlantContext';
-import { Bookmarks } from '../services/apiTypes';
 import { SearchType } from '../typings/enums';
+import { Bookmarks } from '../services/apiTypes';
 import useCommonHooks from './useCommonHooks';
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
@@ -31,8 +31,8 @@ const useBookmarks = () => {
                 setFetchBookmarksStatus(AsyncStatus.EMPTY_RESPONSE);
             } else {
                 setFetchBookmarksStatus(AsyncStatus.SUCCESS);
+                setCurrentBookmarks(bookmarksFromApi);
             }
-            setCurrentBookmarks(bookmarksFromApi);
         } catch {
             setFetchBookmarksStatus(AsyncStatus.ERROR);
         }

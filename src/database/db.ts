@@ -10,10 +10,10 @@ export default class OfflineStorage extends Dexie {
     static offlineContent: any;
 
     constructor() {
-        super('offlineStorage');
+        super('ProCoSysMcAppDB');
         this.version(1).stores({
             offlineStatus: 'name',
-            offlineContent: '++id, entityid, entitytype',
+            offlineContent: 'entityid, entitytype, apipath',
         });
 
         this?.offlineStatus.mapToClass(Status);

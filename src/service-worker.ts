@@ -78,4 +78,17 @@ self.addEventListener('message', (event) => {
     }
 });
 
-// Any other custom service worker logic can go here.
+// const handlerCb = async ({ url, request, event, params }) => {
+//     const response = await fetch(request);
+//     const responseBody = await response.text();
+//     return new Response(`${responseBody} <!-- Look Ma. Added Content. -->`, {
+//         headers: response.headers,
+//     });
+// };
+
+// // Any other custom service worker logic can go here.
+// const matchCb = ({ url }): boolean => {
+//     return url.pathname === 'pcs-main-api-dev.azurewebsites.net/api';
+// };
+
+// registerRoute(matchCb, handlerCb);
