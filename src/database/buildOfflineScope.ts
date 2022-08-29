@@ -38,7 +38,8 @@ const buildOfflineScope = async (
      * Add entities to a map. This will ensure that no duplicates are stored in the database (entities with same api path)
      */
     const addEntityToMap = (entity: IEntity): void => {
-        if (!offlineEntities.get(entity.apipath)) {
+        const entityExists = offlineEntities.has(entity.apipath);
+        if (!entityExists) {
             offlineEntities.set(entity.apipath, entity);
         }
     };

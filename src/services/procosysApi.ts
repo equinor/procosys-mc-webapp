@@ -101,7 +101,7 @@ const procosysApiService = (
             } else {
                 console.error(
                     'Offline-mode. Entity for given url is not found in local database',
-                    url
+                    baseURL + '/' + url
                 );
             }
         }

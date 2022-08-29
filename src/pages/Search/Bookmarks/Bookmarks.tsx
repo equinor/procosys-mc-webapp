@@ -36,7 +36,7 @@ const Bookmarks = (): JSX.Element => {
     const startOffline = async (): Promise<void> => {
         const offlineContentRepository = new OfflineContentRepository();
 
-        offlineContentRepository.cleanOfflineContent();
+        await offlineContentRepository.cleanOfflineContent();
 
         if (currentPlant && currentProject) {
             await buildOfflineScope(api, currentPlant.slug, currentProject.id);
