@@ -28,8 +28,7 @@ const SearchPageWrapper = styled.main`
 
 const SearchPage = (): JSX.Element => {
     const { snackbar, setSnackbarText } = useSnackbar();
-    const { offlineState, setOfflineState, history, url, path } =
-        useCommonHooks();
+    const { history, url, path } = useCommonHooks();
 
     return (
         <>
@@ -52,18 +51,6 @@ const SearchPage = (): JSX.Element => {
                         render={(): JSX.Element => <Bookmarks />}
                     />
                 </Switch>
-                <SwitchButton // TODO: move
-                    label={
-                        offlineState
-                            ? 'Deactivate offline mode'
-                            : 'Activate offline mode'
-                    }
-                    onChange={(): void => {
-                        setOfflineState((prev) => !prev);
-                    }}
-                    checked={offlineState ? true : false}
-                />
-
                 {snackbar}
             </SearchPageWrapper>
             <NavigationFooter>
