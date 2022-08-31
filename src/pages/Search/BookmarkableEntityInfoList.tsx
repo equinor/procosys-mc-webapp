@@ -32,6 +32,7 @@ interface BookmarkableEntityInfoListProps {
         | TagBookmark[]
         | WoPreview[]
         | PoPreview[];
+    offlinePlanningState: boolean;
 }
 
 const BookmarkableEntityInfoList = ({
@@ -39,6 +40,7 @@ const BookmarkableEntityInfoList = ({
     isBookmarked,
     handleBookmarkClicked,
     entityInfoList,
+    offlinePlanningState,
 }: BookmarkableEntityInfoListProps): JSX.Element => {
     const { history, url } = useCommonHooks();
     // TODO: get offline planning state
@@ -57,7 +59,7 @@ const BookmarkableEntityInfoList = ({
                             key={id}
                             mcPkgDetails={entityInfo}
                             isBookmarked={bookmarked}
-                            offlinePlanningState={true} // TODO: change to actual
+                            offlinePlanningState={offlinePlanningState}
                             handleBookmarkClicked={(): Promise<void> =>
                                 handleBookmarkClicked(
                                     SearchType.MC,
@@ -101,7 +103,7 @@ const BookmarkableEntityInfoList = ({
                                 history.push(`${url}/WO/${id}`)
                             }
                             isBookmarked={bookmarked}
-                            offlinePlanningState={true} // TODO: change to actual
+                            offlinePlanningState={offlinePlanningState}
                             handleBookmarkClicked={(): Promise<void> =>
                                 handleBookmarkClicked(
                                     SearchType.WO,
@@ -135,7 +137,7 @@ const BookmarkableEntityInfoList = ({
                                 history.push(`${url}/Tag/${id}`)
                             }
                             isBookmarked={bookmarked}
-                            offlinePlanningState={true} // TODO: change to actual
+                            offlinePlanningState={offlinePlanningState}
                             handleBookmarkClicked={(): Promise<void> =>
                                 handleBookmarkClicked(
                                     SearchType.Tag,
@@ -173,7 +175,7 @@ const BookmarkableEntityInfoList = ({
                                 history.push(`${url}/PO/${id}`)
                             }
                             isBookmarked={bookmarked}
-                            offlinePlanningState={true} // TODO: change to actual
+                            offlinePlanningState={offlinePlanningState}
                             handleBookmarkClicked={(): Promise<void> =>
                                 handleBookmarkClicked(
                                     SearchType.PO,

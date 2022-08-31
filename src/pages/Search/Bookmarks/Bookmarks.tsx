@@ -32,17 +32,14 @@ const Bookmarks = (): JSX.Element => {
     } = useBookmarks();
 
     const { currentPlant, currentProject } = useContext(PlantContext);
-    const { api, setOfflineState } = useCommonHooks();
+    const { api, offlineState, setOfflineState } = useCommonHooks();
 
     const startOffline = async (): Promise<void> => {
         const offlineContentRepository = new OfflineContentRepository();
-
         offlineContentRepository.cleanOfflineContent();
-
         if (currentPlant && currentProject) {
             await buildOfflineScope(api, currentPlant.slug, currentProject.id);
         }
-
         setOfflineState(true);
     };
 
@@ -59,8 +56,23 @@ const Bookmarks = (): JSX.Element => {
             <BookmarksWrapper>
                 <>
                     <ButtonsWrapper>
-                        <Button onClick={startOffline}>Start offline</Button>
-                        <Button onClick={cancelOffline}>Delete all</Button>
+                        {offlineState == true ? (
+                            <>
+                                <Button>Finish offline</Button>
+                                <Button onClick={cancelOffline}>
+                                    Cancel offline
+                                </Button>
+                            </>
+                        ) : (
+                            <>
+                                <Button onClick={startOffline}>
+                                    Start offline
+                                </Button>
+                                <Button onClick={cancelOffline}>
+                                    Delete all
+                                </Button>
+                            </>
+                        )}
                     </ButtonsWrapper>
                     {currentBookmarks
                         ? currentBookmarks.bookmarkedMcPkgs.length > 0 && (
@@ -75,6 +87,7 @@ const Bookmarks = (): JSX.Element => {
                                       entityInfoList={
                                           currentBookmarks?.bookmarkedMcPkgs
                                       }
+                                      offlinePlanningState={!offlineState}
                                   />
                               </>
                           )
@@ -92,6 +105,7 @@ const Bookmarks = (): JSX.Element => {
                                       entityInfoList={
                                           currentBookmarks?.bookmarkedTags
                                       }
+                                      offlinePlanningState={!offlineState}
                                   />
                               </>
                           )
@@ -109,6 +123,7 @@ const Bookmarks = (): JSX.Element => {
                                       entityInfoList={
                                           currentBookmarks?.bookmarkedWorkOrders
                                       }
+                                      offlinePlanningState={!offlineState}
                                   />
                               </>
                           )
@@ -127,6 +142,7 @@ const Bookmarks = (): JSX.Element => {
                                       entityInfoList={
                                           currentBookmarks?.bookmarkedPurchaseOrders
                                       }
+                                      offlinePlanningState={!offlineState}
                                   />
                               </>
                           )

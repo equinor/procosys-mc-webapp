@@ -7,7 +7,7 @@ import useCommonHooks from './useCommonHooks';
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const useBookmarks = () => {
-    const { params, api } = useCommonHooks();
+    const { params, api, setOfflineState } = useCommonHooks();
     const [currentBookmarks, setCurrentBookmarks] = useState<Bookmarks | null>(
         null
     );
@@ -88,6 +88,7 @@ const useBookmarks = () => {
         try {
             if (currentProject) {
                 await api.putCancelOffline(params.plant, currentProject?.id);
+                setOfflineState(false);
                 getCurrentBookmarks();
             }
         } catch (error) {
