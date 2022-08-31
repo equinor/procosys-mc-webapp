@@ -9,7 +9,6 @@ import {
     FooterButton,
 } from '@equinor/procosys-webapp-components';
 import SideMenu from '../../components/navigation/SideMenu';
-import { Switch as SwitchButton } from '@equinor/eds-core-react';
 import useCommonHooks from '../../utils/useCommonHooks';
 import { COLORS } from '../../style/GlobalStyles';
 import EdsIcon from '../../components/icons/EdsIcon';

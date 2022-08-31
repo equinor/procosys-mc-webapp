@@ -1,9 +1,6 @@
 import React, { useContext } from 'react';
 import styled from 'styled-components';
-import { Banner, Button } from '@equinor/eds-core-react';
-import { COLORS } from '../../../style/GlobalStyles';
-import EdsIcon from '../../../components/icons/EdsIcon';
-import { AsyncStatus } from '../../../contexts/McAppContext';
+import { Button } from '@equinor/eds-core-react';
 import useBookmarks from '../../../utils/useBookmarks';
 import BookmarkableEntityInfoList from '../BookmarkableEntityInfoList';
 import { SearchType } from '../../../typings/enums';

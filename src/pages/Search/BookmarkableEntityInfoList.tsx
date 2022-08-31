@@ -43,7 +43,6 @@ const BookmarkableEntityInfoList = ({
     offlinePlanningState,
 }: BookmarkableEntityInfoListProps): JSX.Element => {
     const { history, url } = useCommonHooks();
-    // TODO: get offline planning state
     if (
         searchType === SearchType.MC &&
         (isArrayOfType<McPkgPreview>(entityInfoList, 'mcPkgNo') ||
