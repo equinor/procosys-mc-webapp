@@ -46,9 +46,7 @@ const Bookmarks = (): JSX.Element => {
     return (
         <AsyncPage
             fetchStatus={fetchBookmarksStatus}
-            emptyContentMessage={
-                'You haven&apos;t started adding offline bookmarks'
-            }
+            emptyContentMessage={"You don't have any offline bookmarks"}
             errorMessage={
                 'Couldn&apos;t get bookmarks, please reload page to try again'
             }

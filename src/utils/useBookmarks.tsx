@@ -27,8 +27,13 @@ const useBookmarks = () => {
                 currentProject?.id,
                 abortController.signal
             );
-            // TODO: add if all types of bookmarks are empty
-            if (bookmarksFromApi == null) {
+            if (
+                bookmarksFromApi == null ||
+                (bookmarksFromApi.bookmarkedMcPkgs.length < 1 &&
+                    bookmarksFromApi.bookmarkedPurchaseOrders.length < 1 &&
+                    bookmarksFromApi.bookmarkedTags.length < 1 &&
+                    bookmarksFromApi.bookmarkedWorkOrders.length < 1)
+            ) {
                 setFetchBookmarksStatus(AsyncStatus.EMPTY_RESPONSE);
             } else {
                 setFetchBookmarksStatus(AsyncStatus.SUCCESS);
