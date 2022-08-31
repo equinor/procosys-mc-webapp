@@ -3,6 +3,8 @@ import withAccessControl from '../../services/withAccessControl';
 import styled from 'styled-components';
 import SearchArea from './Searching/SearchArea';
 import SavedSearches from './SavedSearches/SavedSearches';
+import OutstandingIpo from '../../components/OutstandingIpo';
+
 import {
     Navbar,
     ProcosysButton,
@@ -41,7 +43,12 @@ const Search = (): JSX.Element => {
 
     const determineComponent = (): JSX.Element => {
         if (searchType === undefined) {
-            return <SavedSearches setSnackbarText={setSnackbarText} />;
+            return (
+                <>
+                    <SavedSearches setSnackbarText={setSnackbarText} />{' '}
+                    <OutstandingIpo />{' '}
+                </>
+            );
         }
         return <SearchArea searchType={searchType} />;
     };
