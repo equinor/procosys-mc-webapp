@@ -12,7 +12,7 @@ const useBookmarks = () => {
         null
     );
     const [fetchBookmarksStatus, setFetchBookmarksStatus] =
-        useState<AsyncStatus>(AsyncStatus.INACTIVE);
+        useState<AsyncStatus>(AsyncStatus.LOADING);
     const { currentProject } = useContext(PlantContext);
     const abortController = new AbortController();
     // TODO: only allow this to be used when in editing mode!
@@ -27,6 +27,7 @@ const useBookmarks = () => {
                 currentProject?.id,
                 abortController.signal
             );
+            // TODO: add if all types of bookmarks are empty
             if (bookmarksFromApi == null) {
                 setFetchBookmarksStatus(AsyncStatus.EMPTY_RESPONSE);
             } else {
@@ -83,12 +84,11 @@ const useBookmarks = () => {
         }
     };
 
-    const deleteAllBookmarks = async (): Promise<void> => {
+    const cancelOffline = async (): Promise<void> => {
         try {
             if (currentProject) {
-                await api.deleteAllBookmarks(params.plant, currentProject?.id);
-                setFetchBookmarksStatus(AsyncStatus.EMPTY_RESPONSE);
-                setCurrentBookmarks(null);
+                await api.putCancelOffline(params.plant, currentProject?.id);
+                getCurrentBookmarks();
             }
         } catch (error) {
             if (!(error instanceof Error)) return;
@@ -100,7 +100,7 @@ const useBookmarks = () => {
         currentBookmarks,
         isBookmarked,
         handleBookmarkClicked,
-        deleteAllBookmarks,
+        cancelOffline,
     };
 };
 
