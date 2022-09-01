@@ -64,20 +64,20 @@ export const McAppContextProvider: React.FC<McAppContextProviderProps> = ({
     useEffect(() => {
         const asyncFunction = async (): Promise<void> => {
             const status = await statusRepository.getStatus();
-            setOfflineState(
-                status
-                    ? status.status
-                    : (): boolean => {
-                          statusRepository.addOfflineStatus(false);
-                          return false;
-                      }
-            );
+            if (status) {
+                setOfflineState(status.status);
+            } else {
+                await statusRepository.addOfflineStatus(false);
+                setOfflineState(false);
+            }
         };
         asyncFunction();
     }, []);
 
     useEffect(() => {
-        statusRepository.updateStatus(offlineState);
+        (async (): Promise<void> => {
+            await statusRepository.updateStatus(offlineState);
+        })();
     }, [offlineState]);
 
     useEffect(() => {

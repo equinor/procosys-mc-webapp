@@ -9,8 +9,11 @@ import { ProcosysApiService } from '../services/procosysApi';
 import { SearchType } from '../typings/enums';
 import { OfflineContentRepository } from './OfflineContentRepository';
 import { IEntity } from './IEntity';
+import { IAuthService } from '../services/authService';
+import { fetchAppConfig, fetchAuthConfig } from '../services/appConfiguration';
 
 const buildOfflineScope = async (
+    auth: IAuthService,
     api: ProcosysApiService,
     plantId: string,
     projectId: number
@@ -53,6 +56,31 @@ const buildOfflineScope = async (
             Array.from(offlineEntities.values())
         );
     };
+
+    //------------------------------------------------------------
+    // Fetch data from procosysApi, and store in browser database
+    //------------------------------------------------------------
+
+    //auth config
+    const authConfig = await fetchAuthConfig(cbFunc);
+    addEntityToMap({
+        entityid: 0,
+        entitytype: 'Auth',
+        responseObj: currentResponseObj,
+        apipath: currentApiPath,
+    });
+
+    //auth config
+    const appConfig = await fetchAppConfig(
+        authConfig.configurationEndpoint,
+        authConfig.authority
+    );
+    addEntityToMap({
+        entityid: 0,
+        entitytype: 'Auth',
+        responseObj: currentResponseObj,
+        apipath: currentApiPath,
+    });
 
     //Bookmarks
     const bookmarks = await api.getBookmarks(plantId, projectId, abortSignal);
