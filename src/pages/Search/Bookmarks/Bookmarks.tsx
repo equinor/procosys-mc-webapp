@@ -45,7 +45,7 @@ const Bookmarks = (): JSX.Element => {
             fetchStatus={fetchBookmarksStatus}
             emptyContentMessage={"You don't have any offline bookmarks"}
             errorMessage={
-                'Couldn&apos;t get bookmarks, please reload page to try again'
+                "Couldn't get bookmarks, please reload page to try again"
             }
         >
             <BookmarksWrapper>
