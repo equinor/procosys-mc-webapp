@@ -71,7 +71,7 @@ const buildOfflineScope = async (
     });
 
     //auth config
-    const appConfig = await fetchAppConfig(
+    /*    const appConfig = await fetchAppConfig(
         authConfig.configurationEndpoint,
         authConfig.authority
     );
@@ -81,7 +81,7 @@ const buildOfflineScope = async (
         responseObj: currentResponseObj,
         apipath: currentApiPath,
     });
-
+*/
     //Bookmarks
     const bookmarks = await api.getBookmarks(plantId, projectId, abortSignal);
     if (bookmarks == null) {
