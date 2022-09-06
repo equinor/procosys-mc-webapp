@@ -1,9 +1,7 @@
-import { Button } from '@equinor/eds-core-react';
 import React from 'react';
 import styled from 'styled-components';
 import { OutstandingIpo } from '../services/apiTypes';
 import { COLORS, Caption } from '../style/GlobalStyles';
-import useCommonHooks from '../utils/useCommonHooks';
 import { TextIcon } from '@equinor/procosys-webapp-components';
 
 const IconWrapper = styled.div`
@@ -45,8 +43,6 @@ type OutstandingIPOsProps = {
 };
 
 const OutstandingIpoResult = ({ ipo }: OutstandingIPOsProps): JSX.Element => {
-    const { history, url } = useCommonHooks();
-
     return (
         <OutstandingIpoWrapper>
             <IconWrapper>
@@ -56,6 +52,12 @@ const OutstandingIpoResult = ({ ipo }: OutstandingIPOsProps): JSX.Element => {
                 <h6>{ipo.invitationId}</h6>
                 <Caption>{ipo.description}</Caption>
             </ContentWrapper>
+            <Caption>
+                {ipo.organization == 'Contractor' && 'Ready for completing'}
+                {ipo.organization == 'ConstructionCompany' &&
+                    'Ready for acceptance'}
+                {ipo.organization == 'Commissioning' && 'Ready for signing'}
+            </Caption>
         </OutstandingIpoWrapper>
     );
 };
