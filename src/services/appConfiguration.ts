@@ -44,8 +44,6 @@ type AppConfigResponse = {
     featureFlags: FeatureFlags;
 };
 
-const offlineContentRepository = new OfflineContentRepository();
-
 /**
  * Fetch auth config
  * @param callbackFunc  This function is used to create offline scope
