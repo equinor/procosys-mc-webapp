@@ -1,23 +1,18 @@
 import { AxiosInstance } from 'axios';
+import { OutstandingIpos } from './apiTypes';
 
 type ProcosysIPOApiServiceProps = {
     axios: AxiosInstance;
 };
 
-type OutstandingIpos = {
-    invitationId: number;
-    description: string;
-    organization: string;
-};
-
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const procosysIPOApiService = ({ axios }: ProcosysIPOApiServiceProps) => {
     const getOutstandingIpos = async (
-        invitationId: number,
-        description: string,
-        organization: string
+        plantId: string
     ): Promise<OutstandingIpos> => {
-        const { data } = await axios.get(`Me/OutstandingIpos`);
+        const { data } = await axios.get(
+            `Me/OutstandingIpos?plantId=PCS$${plantId}`
+        );
         return data;
     };
 

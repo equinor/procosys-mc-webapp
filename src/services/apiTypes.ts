@@ -116,6 +116,18 @@ export interface PunchItemSavedSearchResult {
     attachmentCount: number;
 }
 
+// IPO
+
+export interface OutstandingIpos {
+    items: OutstandingIpo[];
+}
+
+export interface OutstandingIpo {
+    invitationId: number;
+    description: string;
+    organization: string;
+}
+
 // COMM PKG AND LISTS
 
 export interface CommPkg {
