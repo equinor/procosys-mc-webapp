@@ -33,7 +33,7 @@ const newPunchInitialValues = {
 };
 
 const NewPunchWrapper = (): JSX.Element => {
-    const { api, params, url, history } = useCommonHooks();
+    const { api, params, url, history, offlineState } = useCommonHooks();
     const { formFields, createChangeHandler } = useFormFields(
         newPunchInitialValues
     );
@@ -151,6 +151,7 @@ const NewPunchWrapper = (): JSX.Element => {
                     searchStatus={searchStatus}
                     query={query}
                     setQuery={setQuery}
+                    disablePersonsSearch={offlineState}
                 />
             </AsyncPage>
             {snackbar}
