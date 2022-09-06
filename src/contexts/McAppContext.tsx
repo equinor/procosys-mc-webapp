@@ -26,6 +26,7 @@ type McAppContextProps = {
     offlineState: boolean;
     setOfflineState: Dispatch<SetStateAction<boolean>>;
     featureFlags: FeatureFlags;
+    configurationAccessToken: string;
 };
 
 export enum AsyncStatus {
@@ -44,6 +45,7 @@ type McAppContextProviderProps = {
     api: ProcosysApiService;
     appConfig: AppConfig;
     featureFlags: FeatureFlags;
+    configurationAccessToken: string;
 };
 
 export const McAppContextProvider: React.FC<McAppContextProviderProps> = ({
@@ -52,6 +54,7 @@ export const McAppContextProvider: React.FC<McAppContextProviderProps> = ({
     api,
     appConfig,
     featureFlags,
+    configurationAccessToken,
 }: McAppContextProviderProps) => {
     const [availablePlants, setAvailablePlants] = useState<Plant[]>([]);
     const [fetchPlantsStatus, setFetchPlantsStatus] = useState<AsyncStatus>(
@@ -123,6 +126,7 @@ export const McAppContextProvider: React.FC<McAppContextProviderProps> = ({
                 offlineState,
                 setOfflineState,
                 featureFlags,
+                configurationAccessToken,
             }}
         >
             {children}

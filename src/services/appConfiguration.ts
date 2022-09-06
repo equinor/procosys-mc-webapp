@@ -51,28 +51,11 @@ const offlineContentRepository = new OfflineContentRepository();
  * @param callbackFunc  This function is used to create offline scope
  */
 export const fetchAuthConfig = async (
-    callbackFunc: any
+    callbackFunc?: any
 ): Promise<AuthConfigResponse> => {
-    const statusRepository = new StatusRepository();
-    const statusObj = await statusRepository.getStatus();
-    if (statusObj && statusObj.status) {
-        const entity = await offlineContentRepository.getByApiPath(
-            Settings.authSettingsEndpoint
-        );
-        if (entity) {
-            //return object from database instead of doing a fetch
-            return entity.responseObj as AuthConfigResponse;
-        } else {
-            console.error(
-                'Offline-mode. Entity for given url is not found in local database',
-                Settings.authSettingsEndpoint
-            );
-        }
-    }
-
     const data = await fetch(Settings.authSettingsEndpoint);
     const authConfigResp: AuthConfigResponse = await data.json();
-    if (callbackFunc != null) {
+    if (callbackFunc) {
         callbackFunc(authConfigResp, Settings.authSettingsEndpoint);
     }
     return authConfigResp;
@@ -103,15 +86,21 @@ export const getAuthConfig = async () => {
 
 export const fetchAppConfig = async (
     endpoint: string,
-    accessToken: string
+    accessToken: string,
+    callbackFunc?: any
 ): Promise<AppConfigResponse> => {
     const data = await fetch(endpoint, {
         headers: {
             Authorization: 'Bearer ' + accessToken,
         },
     });
+    const resp = await data.json();
 
-    return await data.json();
+    if (callbackFunc) {
+        callbackFunc(resp, endpoint);
+    }
+
+    return resp;
 };
 
 export const getAppConfig = async (endpoint: string, accessToken: string) => {

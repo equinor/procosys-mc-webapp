@@ -16,7 +16,8 @@ const buildOfflineScope = async (
     auth: IAuthService,
     api: ProcosysApiService,
     plantId: string,
-    projectId: number
+    projectId: number,
+    configurationAccessToken: string
 ): Promise<void> => {
     const controller = new AbortController();
     const abortSignal = controller.signal;
@@ -71,17 +72,18 @@ const buildOfflineScope = async (
     });
 
     //auth config
-    /*    const appConfig = await fetchAppConfig(
+    await fetchAppConfig(
         authConfig.configurationEndpoint,
-        authConfig.authority
+        configurationAccessToken,
+        cbFunc
     );
     addEntityToMap({
         entityid: 0,
-        entitytype: 'Auth',
+        entitytype: 'AppConfig',
         responseObj: currentResponseObj,
         apipath: currentApiPath,
     });
-*/
+
     //Bookmarks
     const bookmarks = await api.getBookmarks(plantId, projectId, abortSignal);
     if (bookmarks == null) {

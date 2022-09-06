@@ -105,7 +105,7 @@ async function IsOnlineMode(): Promise<boolean | undefined> {
 self.addEventListener('fetch', function (event: FetchEvent) {
     console.log('Intercepter fetch', event.request.url);
     const url = event.request.url;
-    if (url.includes('/api') && !url.includes('api/MCWebApp')) {
+    if (url.includes('/api')) {
         event.respondWith(
             (async (): Promise<Response> => {
                 if (!(await IsOnlineMode())) {
@@ -132,6 +132,7 @@ self.addEventListener('fetch', function (event: FetchEvent) {
                         return fetch(event.request);
                     }
                 } else {
+                    console.log('Interceptor: online mode.');
                     return fetch(event.request);
                 }
             })()

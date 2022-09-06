@@ -32,7 +32,8 @@ const Bookmarks = (): JSX.Element => {
     } = useBookmarks();
 
     const { currentPlant, currentProject } = useContext(PlantContext);
-    const { auth, api, setOfflineState } = useCommonHooks();
+    const { auth, api, setOfflineState, configurationAccessToken } =
+        useCommonHooks();
 
     const startOffline = async (): Promise<void> => {
         const offlineContentRepository = new OfflineContentRepository();
@@ -54,7 +55,8 @@ const Bookmarks = (): JSX.Element => {
                 auth,
                 api,
                 currentPlant.slug,
-                currentProject.id
+                currentProject.id,
+                configurationAccessToken
             );
         }
 
