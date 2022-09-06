@@ -1,5 +1,7 @@
+import { OfflineContentRepository } from '../database/OfflineContentRepository';
+import { StatusRepository } from '../database/StatusRepository';
+
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
-import axios from 'axios';
 
 const Settings = require('../settings.json');
 
@@ -19,7 +21,7 @@ type AppInsightsConfig = {
     instrumentationKey: string;
 };
 
-type AuthConfigResponse = {
+export type AuthConfigResponse = {
     clientId: string;
     authority: string;
     scopes: string[];
@@ -42,21 +44,35 @@ type AppConfigResponse = {
     featureFlags: FeatureFlags;
 };
 
+/**
+ * Fetch auth config
+ * @param callbackFunc  This function is used to create offline scope
+ */
+export const fetchAuthConfig = async (
+    callbackFunc?: any
+): Promise<AuthConfigResponse> => {
+    const data = await fetch(Settings.authSettingsEndpoint);
+    const authConfigResp: AuthConfigResponse = await data.json();
+    if (callbackFunc) {
+        callbackFunc(authConfigResp, Settings.authSettingsEndpoint);
+    }
+    return authConfigResp;
+};
+
 export const getAuthConfig = async () => {
-    const { data } = await axios.get<AuthConfigResponse>(
-        Settings.authSettingsEndpoint
-    );
+    const authConfigResp = await fetchAuthConfig(null);
+
     // Todo: TypeGuard authsettings
     const clientSettings = {
         auth: {
-            clientId: data.clientId,
-            authority: data.authority,
+            clientId: authConfigResp.clientId,
+            authority: authConfigResp.authority,
             redirectUri: window.location.origin + '/mc',
         },
     };
-    const scopes = data.scopes;
-    const configurationScope = data.configurationScope;
-    const configurationEndpoint = data.configurationEndpoint;
+    const scopes = authConfigResp.scopes;
+    const configurationScope = authConfigResp.configurationScope;
+    const configurationEndpoint = authConfigResp.configurationEndpoint;
 
     return {
         clientSettings,
@@ -66,14 +82,29 @@ export const getAuthConfig = async () => {
     };
 };
 
-export const getAppConfig = async (endpoint: string, accessToken: string) => {
-    const { data } = await axios.get<AppConfigResponse>(endpoint, {
+export const fetchAppConfig = async (
+    endpoint: string,
+    accessToken: string,
+    callbackFunc?: any
+): Promise<AppConfigResponse> => {
+    const data = await fetch(endpoint, {
         headers: {
             Authorization: 'Bearer ' + accessToken,
         },
     });
+    const resp = await data.json();
 
-    const appConfig: AppConfig = data.configuration;
-    const featureFlags: FeatureFlags = data.featureFlags;
+    if (callbackFunc) {
+        callbackFunc(resp, endpoint);
+    }
+
+    return resp;
+};
+
+export const getAppConfig = async (endpoint: string, accessToken: string) => {
+    const appConfigResponse = await fetchAppConfig(endpoint, accessToken);
+
+    const appConfig: AppConfig = appConfigResponse.configuration;
+    const featureFlags: FeatureFlags = appConfigResponse.featureFlags;
     return { appConfig, featureFlags };
 };

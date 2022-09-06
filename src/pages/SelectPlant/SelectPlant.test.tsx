@@ -15,6 +15,7 @@ describe('<SelectPlant />', () => {
                 setOfflineState: jest.fn(() => {
                     // Should be empty
                 }),
+                configurationAccessToken: 'dummy',
             })
         );
         expect(getByText(testPlants[0].title)).toBeInTheDocument();
@@ -29,6 +30,7 @@ describe('<SelectPlant />', () => {
                 setOfflineState: jest.fn(() => {
                     // Should be empty
                 }),
+                configurationAccessToken: 'dummy',
             })
         );
         expect(getByText('No plants to show')).toBeInTheDocument();

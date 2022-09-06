@@ -9,6 +9,7 @@ import buildOfflineScope from '../../../database/buildOfflineScope';
 import PlantContext from '../../../contexts/PlantContext';
 import { OfflineContentRepository } from '../../../database/OfflineContentRepository';
 import AsyncPage from '../../../components/AsyncPage';
+import { StatusRepository } from '../../../database/StatusRepository';
 
 const BookmarksWrapper = styled.div`
     margin: 16px 0;
@@ -29,14 +30,41 @@ const Bookmarks = (): JSX.Element => {
     } = useBookmarks();
 
     const { currentPlant, currentProject } = useContext(PlantContext);
-    const { api, offlineState, setOfflineState } = useCommonHooks();
+    const {
+        auth,
+        api,
+        offlineState,
+        setOfflineState,
+        configurationAccessToken,
+    } = useCommonHooks();
 
     const startOffline = async (): Promise<void> => {
         const offlineContentRepository = new OfflineContentRepository();
-        offlineContentRepository.cleanOfflineContent();
-        if (currentPlant && currentProject) {
-            await buildOfflineScope(api, currentPlant.slug, currentProject.id);
+
+        await offlineContentRepository.cleanOfflineContent();
+
+        //Setter til offline false for sikkerhetsskyld. Vi må rydde litt i hvordan status settes gjennom systmet.
+        setOfflineState(false);
+        const statusRepository = new StatusRepository();
+        const statusObj = await statusRepository.getStatus();
+        if (statusObj) {
+            await statusRepository.updateStatus(false);
+        } else {
+            await statusRepository.addOfflineStatus(false);
         }
+
+        if (currentPlant && currentProject) {
+            await buildOfflineScope(
+                auth,
+                api,
+                currentPlant.slug,
+                currentProject.id,
+                configurationAccessToken
+            );
+        }
+
+        //todo: Denne skal nok bort.
+        await statusRepository.updateStatus(true);
         setOfflineState(true);
     };
 

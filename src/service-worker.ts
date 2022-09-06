@@ -13,8 +13,19 @@ import { ExpirationPlugin } from 'workbox-expiration';
 import { precacheAndRoute, createHandlerBoundToURL } from 'workbox-precaching';
 import { registerRoute } from 'workbox-routing';
 import { StaleWhileRevalidate } from 'workbox-strategies';
+import {
+    RouteMatchCallbackOptions,
+    RouteHandlerCallbackOptions,
+} from 'workbox-core';
+import { StatusRepository } from './database/StatusRepository';
+import { db } from './database/db';
+import { OfflineContentRepository } from './database/OfflineContentRepository';
+import { SeverityLevel } from '@microsoft/applicationinsights-web';
+import { request } from 'http';
 
 declare const self: ServiceWorkerGlobalScope;
+
+const offlineContentRepository = new OfflineContentRepository();
 
 clientsClaim();
 
@@ -78,17 +89,53 @@ self.addEventListener('message', (event) => {
     }
 });
 
-// const handlerCb = async ({ url, request, event, params }) => {
-//     const response = await fetch(request);
-//     const responseBody = await response.text();
-//     return new Response(`${responseBody} <!-- Look Ma. Added Content. -->`, {
-//         headers: response.headers,
-//     });
-// };
+async function IsOnlineMode(): Promise<boolean | undefined> {
+    const statusRepository = new StatusRepository();
+    try {
+        const status = await statusRepository.getStatus();
+        if (status !== undefined) {
+            return !status.status;
+        }
+        return true;
+    } catch (err) {
+        console.log(err);
+    }
+}
 
-// // Any other custom service worker logic can go here.
-// const matchCb = ({ url }): boolean => {
-//     return url.pathname === 'pcs-main-api-dev.azurewebsites.net/api';
-// };
-
-// registerRoute(matchCb, handlerCb);
+self.addEventListener('fetch', function (event: FetchEvent) {
+    console.log('Intercepter fetch', event.request.url);
+    const url = event.request.url;
+    if (url.includes('/api')) {
+        event.respondWith(
+            (async (): Promise<Response> => {
+                if (!(await IsOnlineMode())) {
+                    // Try to get the response from a cache.
+                    const entity = await offlineContentRepository.getByApiPath(
+                        url
+                    );
+                    if (entity) {
+                        //todo: Ta bort log
+                        console.log(
+                            'Interceptor: Returnerer objekt fra database. ' +
+                                url,
+                            entity.responseObj
+                        );
+                        const blob = new Blob([
+                            JSON.stringify(entity.responseObj),
+                        ]);
+                        return new Response(blob);
+                    } else {
+                        console.error(
+                            'Offline-mode. Entity for given url is not found in local database. Will try to fetch.',
+                            url
+                        );
+                        return fetch(event.request);
+                    }
+                } else {
+                    console.log('Interceptor: online mode.');
+                    return fetch(event.request);
+                }
+            })()
+        );
+    }
+});

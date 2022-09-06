@@ -11,10 +11,10 @@ export class StatusRepository {
     }
 
     async addOfflineStatus(status: boolean): Promise<void> {
-        db.offlineStatus.add({ name: 'offline', status: status });
+        await db.offlineStatus.add({ name: 'offline', status: status });
     }
 
     async updateStatus(newStatus: boolean): Promise<void> {
-        db.offlineStatus.update('offline', { status: newStatus });
+        await db.offlineStatus.update('offline', { status: newStatus });
     }
 }
