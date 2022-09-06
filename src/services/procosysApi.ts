@@ -416,7 +416,7 @@ const procosysApiService = (
         await deleteByFetch(url);
     };
 
-    const deleteAllBookmarks = async (
+    const putCancelOffline = async (
         plantId: string,
         projectId: number
     ): Promise<void> => {
@@ -856,7 +856,7 @@ const procosysApiService = (
         postSetBookmark,
         getBookmarks,
         deleteBookmark,
-        deleteAllBookmarks,
+        putCancelOffline,
         getPersonsByName,
         getSavedSearches,
         deleteSavedSearch,

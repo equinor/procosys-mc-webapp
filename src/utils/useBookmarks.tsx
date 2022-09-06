@@ -7,16 +7,14 @@ import useCommonHooks from './useCommonHooks';
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const useBookmarks = () => {
-    const { params, api } = useCommonHooks();
+    const { params, api, setOfflineState } = useCommonHooks();
     const [currentBookmarks, setCurrentBookmarks] = useState<Bookmarks | null>(
         null
     );
     const [fetchBookmarksStatus, setFetchBookmarksStatus] =
-        useState<AsyncStatus>(AsyncStatus.INACTIVE);
+        useState<AsyncStatus>(AsyncStatus.LOADING);
     const { currentProject } = useContext(PlantContext);
     const abortController = new AbortController();
-    // TODO: only allow this to be used when in editing mode!
-    // TODO: add a way to start editing mode
 
     const getCurrentBookmarks = async (): Promise<void> => {
         if (!currentProject) return;
@@ -27,7 +25,13 @@ const useBookmarks = () => {
                 currentProject?.id,
                 abortController.signal
             );
-            if (bookmarksFromApi == null) {
+            if (
+                bookmarksFromApi == null ||
+                (bookmarksFromApi.bookmarkedMcPkgs.length < 1 &&
+                    bookmarksFromApi.bookmarkedPurchaseOrders.length < 1 &&
+                    bookmarksFromApi.bookmarkedTags.length < 1 &&
+                    bookmarksFromApi.bookmarkedWorkOrders.length < 1)
+            ) {
                 setFetchBookmarksStatus(AsyncStatus.EMPTY_RESPONSE);
             } else {
                 setFetchBookmarksStatus(AsyncStatus.SUCCESS);
@@ -83,12 +87,12 @@ const useBookmarks = () => {
         }
     };
 
-    const deleteAllBookmarks = async (): Promise<void> => {
+    const cancelOffline = async (): Promise<void> => {
         try {
             if (currentProject) {
-                await api.deleteAllBookmarks(params.plant, currentProject?.id);
-                setFetchBookmarksStatus(AsyncStatus.EMPTY_RESPONSE);
-                setCurrentBookmarks(null);
+                await api.putCancelOffline(params.plant, currentProject?.id);
+                setOfflineState(false);
+                getCurrentBookmarks();
             }
         } catch (error) {
             if (!(error instanceof Error)) return;
@@ -100,7 +104,7 @@ const useBookmarks = () => {
         currentBookmarks,
         isBookmarked,
         handleBookmarkClicked,
-        deleteAllBookmarks,
+        cancelOffline,
     };
 };
 

@@ -1,9 +1,6 @@
 import React, { useContext } from 'react';
 import styled from 'styled-components';
-import { Banner, Button } from '@equinor/eds-core-react';
-import { COLORS } from '../../../style/GlobalStyles';
-import EdsIcon from '../../../components/icons/EdsIcon';
-import { AsyncStatus } from '../../../contexts/McAppContext';
+import { Button } from '@equinor/eds-core-react';
 import useBookmarks from '../../../utils/useBookmarks';
 import BookmarkableEntityInfoList from '../BookmarkableEntityInfoList';
 import { SearchType } from '../../../typings/enums';
@@ -11,6 +8,7 @@ import useCommonHooks from '../../../utils/useCommonHooks';
 import buildOfflineScope from '../../../database/buildOfflineScope';
 import PlantContext from '../../../contexts/PlantContext';
 import { OfflineContentRepository } from '../../../database/OfflineContentRepository';
+import AsyncPage from '../../../components/AsyncPage';
 import { StatusRepository } from '../../../database/StatusRepository';
 
 const BookmarksWrapper = styled.div`
@@ -28,12 +26,17 @@ const Bookmarks = (): JSX.Element => {
         fetchBookmarksStatus,
         isBookmarked,
         handleBookmarkClicked,
-        deleteAllBookmarks,
+        cancelOffline,
     } = useBookmarks();
 
     const { currentPlant, currentProject } = useContext(PlantContext);
-    const { auth, api, setOfflineState, configurationAccessToken } =
-        useCommonHooks();
+    const {
+        auth,
+        api,
+        offlineState,
+        setOfflineState,
+        configurationAccessToken,
+    } = useCommonHooks();
 
     const startOffline = async (): Promise<void> => {
         const offlineContentRepository = new OfflineContentRepository();
@@ -66,104 +69,110 @@ const Bookmarks = (): JSX.Element => {
     };
 
     return (
-        <>
+        <AsyncPage
+            fetchStatus={fetchBookmarksStatus}
+            emptyContentMessage={"You don't have any offline bookmarks"}
+            errorMessage={
+                "Couldn't get bookmarks, please reload page to try again"
+            }
+        >
             <BookmarksWrapper>
-                {fetchBookmarksStatus == AsyncStatus.EMPTY_RESPONSE ? (
-                    <Banner>
-                        <Banner.Icon>
-                            <EdsIcon
-                                name={'info_circle'}
-                                color={COLORS.mossGreen}
-                            />
-                        </Banner.Icon>
-                        <Banner.Message role={'paragraph'}>
-                            You haven&apos;t started adding offline bookmarks
-                        </Banner.Message>
-                    </Banner>
-                ) : (
-                    <>
-                        <ButtonsWrapper>
-                            <Button onClick={startOffline}>
-                                Start offline
-                            </Button>
-                            <Button onClick={deleteAllBookmarks}>
-                                Delete all
-                            </Button>
-                        </ButtonsWrapper>
-                        {currentBookmarks
-                            ? currentBookmarks.bookmarkedMcPkgs.length > 0 && (
-                                  <>
-                                      <h5>MC package bookmarks</h5>
-                                      <BookmarkableEntityInfoList
-                                          searchType={SearchType.MC}
-                                          isBookmarked={isBookmarked}
-                                          handleBookmarkClicked={
-                                              handleBookmarkClicked
-                                          }
-                                          entityInfoList={
-                                              currentBookmarks?.bookmarkedMcPkgs
-                                          }
-                                      />
-                                  </>
-                              )
-                            : null}
-                        {currentBookmarks
-                            ? currentBookmarks.bookmarkedTags.length > 0 && (
-                                  <>
-                                      <h5>Tag bookmarks</h5>
-                                      <BookmarkableEntityInfoList
-                                          searchType={SearchType.Tag}
-                                          isBookmarked={isBookmarked}
-                                          handleBookmarkClicked={
-                                              handleBookmarkClicked
-                                          }
-                                          entityInfoList={
-                                              currentBookmarks?.bookmarkedTags
-                                          }
-                                      />
-                                  </>
-                              )
-                            : null}
-                        {currentBookmarks
-                            ? currentBookmarks.bookmarkedWorkOrders.length >
-                                  0 && (
-                                  <>
-                                      <h5>Work order bookmarks</h5>
-                                      <BookmarkableEntityInfoList
-                                          searchType={SearchType.WO}
-                                          isBookmarked={isBookmarked}
-                                          handleBookmarkClicked={
-                                              handleBookmarkClicked
-                                          }
-                                          entityInfoList={
-                                              currentBookmarks?.bookmarkedWorkOrders
-                                          }
-                                      />
-                                  </>
-                              )
-                            : null}
-                        {currentBookmarks
-                            ? currentBookmarks.bookmarkedPurchaseOrders.length >
-                                  0 && (
-                                  <>
-                                      <h5>Purchase order bookmarks</h5>
-                                      <BookmarkableEntityInfoList
-                                          searchType={SearchType.PO}
-                                          isBookmarked={isBookmarked}
-                                          handleBookmarkClicked={
-                                              handleBookmarkClicked
-                                          }
-                                          entityInfoList={
-                                              currentBookmarks?.bookmarkedPurchaseOrders
-                                          }
-                                      />
-                                  </>
-                              )
-                            : null}
-                    </>
-                )}
+                <>
+                    <ButtonsWrapper>
+                        {offlineState == true ? (
+                            <>
+                                <Button>Finish offline</Button>
+                                <Button onClick={cancelOffline}>
+                                    Cancel offline
+                                </Button>
+                            </>
+                        ) : (
+                            <>
+                                <Button onClick={startOffline}>
+                                    Start offline
+                                </Button>
+                                <Button onClick={cancelOffline}>
+                                    Delete all
+                                </Button>
+                            </>
+                        )}
+                    </ButtonsWrapper>
+                    {currentBookmarks
+                        ? currentBookmarks.bookmarkedMcPkgs.length > 0 && (
+                              <>
+                                  <h5>MC package bookmarks</h5>
+                                  <BookmarkableEntityInfoList
+                                      searchType={SearchType.MC}
+                                      isBookmarked={isBookmarked}
+                                      handleBookmarkClicked={
+                                          handleBookmarkClicked
+                                      }
+                                      entityInfoList={
+                                          currentBookmarks?.bookmarkedMcPkgs
+                                      }
+                                      offlinePlanningState={!offlineState}
+                                  />
+                              </>
+                          )
+                        : null}
+                    {currentBookmarks
+                        ? currentBookmarks.bookmarkedTags.length > 0 && (
+                              <>
+                                  <h5>Tag bookmarks</h5>
+                                  <BookmarkableEntityInfoList
+                                      searchType={SearchType.Tag}
+                                      isBookmarked={isBookmarked}
+                                      handleBookmarkClicked={
+                                          handleBookmarkClicked
+                                      }
+                                      entityInfoList={
+                                          currentBookmarks?.bookmarkedTags
+                                      }
+                                      offlinePlanningState={!offlineState}
+                                  />
+                              </>
+                          )
+                        : null}
+                    {currentBookmarks
+                        ? currentBookmarks.bookmarkedWorkOrders.length > 0 && (
+                              <>
+                                  <h5>Work order bookmarks</h5>
+                                  <BookmarkableEntityInfoList
+                                      searchType={SearchType.WO}
+                                      isBookmarked={isBookmarked}
+                                      handleBookmarkClicked={
+                                          handleBookmarkClicked
+                                      }
+                                      entityInfoList={
+                                          currentBookmarks?.bookmarkedWorkOrders
+                                      }
+                                      offlinePlanningState={!offlineState}
+                                  />
+                              </>
+                          )
+                        : null}
+                    {currentBookmarks
+                        ? currentBookmarks.bookmarkedPurchaseOrders.length >
+                              0 && (
+                              <>
+                                  <h5>Purchase order bookmarks</h5>
+                                  <BookmarkableEntityInfoList
+                                      searchType={SearchType.PO}
+                                      isBookmarked={isBookmarked}
+                                      handleBookmarkClicked={
+                                          handleBookmarkClicked
+                                      }
+                                      entityInfoList={
+                                          currentBookmarks?.bookmarkedPurchaseOrders
+                                      }
+                                      offlinePlanningState={!offlineState}
+                                  />
+                              </>
+                          )
+                        : null}
+                </>
             </BookmarksWrapper>
-        </>
+        </AsyncPage>
     );
 };
 
