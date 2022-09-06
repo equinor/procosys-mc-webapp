@@ -7,15 +7,16 @@ import {
 import styled from 'styled-components';
 import useCommonHooks from '../utils/useCommonHooks';
 import { AsyncStatus } from '../contexts/McAppContext';
-import { SavedSearch } from '../services/apiTypes';
+import { OutstandingIpos } from '../services/apiTypes';
+import OutstandingIpoResult from './OutstandingIpoResult';
 
 const OutstandingIpoWrapper = styled.div`
     margin: 16px 0;
 `;
 
 const OutstandingIpo = (): JSX.Element => {
-    const { params, api } = useCommonHooks();
-    const [searches, setSearches] = useState<SavedSearch[]>([]);
+    const { params, api, ipoApi } = useCommonHooks();
+    const [outstandingIpos, setOutstandingIpos] = useState<OutstandingIpos>();
     const [fetchSearchesStatus, setFetchSearchesStatus] = useState(
         AsyncStatus.LOADING
     );
@@ -24,12 +25,11 @@ const OutstandingIpo = (): JSX.Element => {
         const source = Axios.CancelToken.source();
         (async (): Promise<void> => {
             try {
-                const searchesFromApi = await api.getSavedSearches(
-                    params.plant,
-                    source.token
+                const outstandingIposFromApi = await ipoApi.getOutstandingIpos(
+                    params.plant
                 );
-                if (searchesFromApi.length > 0) {
-                    setSearches(searchesFromApi);
+                if (outstandingIposFromApi.items.length > 0) {
+                    setOutstandingIpos(outstandingIposFromApi);
                     setFetchSearchesStatus(AsyncStatus.SUCCESS);
                 } else {
                     setFetchSearchesStatus(AsyncStatus.EMPTY_RESPONSE);
@@ -46,12 +46,17 @@ const OutstandingIpo = (): JSX.Element => {
     const determineContent = (): JSX.Element => {
         if (
             fetchSearchesStatus === AsyncStatus.SUCCESS &&
-            searches != undefined
+            outstandingIpos != undefined
         ) {
             return (
                 <div>
-                    {searches.map(() => {
-                        return <></>;
+                    {outstandingIpos.items.map((ipo) => {
+                        return (
+                            <OutstandingIpoResult
+                                key={ipo.invitationId}
+                                ipo={ipo}
+                            />
+                        );
                     })}
                 </div>
             );
