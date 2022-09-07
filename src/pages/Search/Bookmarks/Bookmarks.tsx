@@ -47,7 +47,7 @@ const Bookmarks = (): JSX.Element => {
                         {offlineState == true ? (
                             <>
                                 <Button>Finish offline</Button>
-                                <Button onClick={cancelOffline}>
+                                <Button color="danger" onClick={cancelOffline}>
                                     Cancel offline
                                 </Button>
                             </>
@@ -57,7 +57,7 @@ const Bookmarks = (): JSX.Element => {
                                     Start offline
                                 </Button>
                                 <Button onClick={cancelOffline}>
-                                    Delete all
+                                    Delete bookmarks
                                 </Button>
                             </>
                         )}
