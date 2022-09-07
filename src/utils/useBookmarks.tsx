@@ -4,21 +4,25 @@ import PlantContext from '../contexts/PlantContext';
 import { SearchType } from '../typings/enums';
 import { Bookmarks } from '../services/apiTypes';
 import useCommonHooks from './useCommonHooks';
+import { OfflineContentRepository } from '../database/OfflineContentRepository';
+import buildOfflineScope from '../database/buildOfflineScope';
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const useBookmarks = () => {
+    const { currentPlant, currentProject } = useContext(PlantContext);
     const { params, api, setOfflineState } = useCommonHooks();
     const [currentBookmarks, setCurrentBookmarks] = useState<Bookmarks | null>(
         null
     );
-    const [fetchBookmarksStatus, setFetchBookmarksStatus] =
-        useState<AsyncStatus>(AsyncStatus.LOADING);
-    const { currentProject } = useContext(PlantContext);
+    const [bookmarksStatus, setBookmarksStatus] = useState<AsyncStatus>(
+        AsyncStatus.LOADING
+    );
+    const [isDownloading, setIsDownloading] = useState<boolean>(false);
     const abortController = new AbortController();
 
     const getCurrentBookmarks = async (): Promise<void> => {
         if (!currentProject) return;
-        setFetchBookmarksStatus(AsyncStatus.LOADING);
+        setBookmarksStatus(AsyncStatus.LOADING);
         try {
             const bookmarksFromApi = await api.getBookmarks(
                 params.plant,
@@ -32,13 +36,13 @@ const useBookmarks = () => {
                     bookmarksFromApi.bookmarkedTags.length < 1 &&
                     bookmarksFromApi.bookmarkedWorkOrders.length < 1)
             ) {
-                setFetchBookmarksStatus(AsyncStatus.EMPTY_RESPONSE);
+                setBookmarksStatus(AsyncStatus.EMPTY_RESPONSE);
             } else {
-                setFetchBookmarksStatus(AsyncStatus.SUCCESS);
+                setBookmarksStatus(AsyncStatus.SUCCESS);
                 setCurrentBookmarks(bookmarksFromApi);
             }
         } catch {
-            setFetchBookmarksStatus(AsyncStatus.ERROR);
+            setBookmarksStatus(AsyncStatus.ERROR);
         }
     };
 
@@ -92,19 +96,35 @@ const useBookmarks = () => {
             if (currentProject) {
                 await api.putCancelOffline(params.plant, currentProject?.id);
                 setOfflineState(false);
-                getCurrentBookmarks();
+                setCurrentBookmarks(null);
+                setBookmarksStatus(AsyncStatus.EMPTY_RESPONSE);
             }
         } catch (error) {
             if (!(error instanceof Error)) return;
         }
     };
 
+    const startOffline = async (): Promise<void> => {
+        setBookmarksStatus(AsyncStatus.LOADING);
+        setIsDownloading(true);
+        const offlineContentRepository = new OfflineContentRepository();
+        offlineContentRepository.cleanOfflineContent();
+        if (currentPlant && currentProject) {
+            await buildOfflineScope(api, currentPlant.slug, currentProject.id);
+        }
+        setOfflineState(true);
+        setBookmarksStatus(AsyncStatus.SUCCESS);
+        setIsDownloading(false);
+    };
+
     return {
-        fetchBookmarksStatus,
+        bookmarksStatus,
         currentBookmarks,
         isBookmarked,
         handleBookmarkClicked,
         cancelOffline,
+        startOffline,
+        isDownloading,
     };
 };
 

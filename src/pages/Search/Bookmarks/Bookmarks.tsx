@@ -1,13 +1,10 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { Button } from '@equinor/eds-core-react';
 import useBookmarks from '../../../utils/useBookmarks';
 import BookmarkableEntityInfoList from '../BookmarkableEntityInfoList';
 import { SearchType } from '../../../typings/enums';
 import useCommonHooks from '../../../utils/useCommonHooks';
-import buildOfflineScope from '../../../database/buildOfflineScope';
-import PlantContext from '../../../contexts/PlantContext';
-import { OfflineContentRepository } from '../../../database/OfflineContentRepository';
 import AsyncPage from '../../../components/AsyncPage';
 
 const BookmarksWrapper = styled.div`
@@ -22,30 +19,26 @@ const ButtonsWrapper = styled.div`
 const Bookmarks = (): JSX.Element => {
     const {
         currentBookmarks,
-        fetchBookmarksStatus,
+        bookmarksStatus,
         isBookmarked,
         handleBookmarkClicked,
         cancelOffline,
+        startOffline,
+        isDownloading,
     } = useBookmarks();
-
-    const { currentPlant, currentProject } = useContext(PlantContext);
-    const { api, offlineState, setOfflineState } = useCommonHooks();
-
-    const startOffline = async (): Promise<void> => {
-        const offlineContentRepository = new OfflineContentRepository();
-        offlineContentRepository.cleanOfflineContent();
-        if (currentPlant && currentProject) {
-            await buildOfflineScope(api, currentPlant.slug, currentProject.id);
-        }
-        setOfflineState(true);
-    };
+    const { offlineState } = useCommonHooks();
 
     return (
         <AsyncPage
-            fetchStatus={fetchBookmarksStatus}
+            fetchStatus={bookmarksStatus}
             emptyContentMessage={"You don't have any offline bookmarks"}
             errorMessage={
                 "Couldn't get bookmarks, please reload page to try again"
+            }
+            loadingMessage={
+                isDownloading
+                    ? 'Downloading data for offline use. Please do not exit the app until download has finished.'
+                    : ''
             }
         >
             <BookmarksWrapper>
