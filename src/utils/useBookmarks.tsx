@@ -6,11 +6,13 @@ import { Bookmarks } from '../services/apiTypes';
 import useCommonHooks from './useCommonHooks';
 import { OfflineContentRepository } from '../database/OfflineContentRepository';
 import buildOfflineScope from '../database/buildOfflineScope';
+import { StatusRepository } from '../database/StatusRepository';
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const useBookmarks = () => {
     const { currentPlant, currentProject } = useContext(PlantContext);
-    const { params, api, setOfflineState } = useCommonHooks();
+    const { params, api, setOfflineState, auth, configurationAccessToken } =
+        useCommonHooks();
     const [currentBookmarks, setCurrentBookmarks] = useState<Bookmarks | null>(
         null
     );
@@ -109,10 +111,27 @@ const useBookmarks = () => {
         setBookmarksStatus(AsyncStatus.LOADING);
         setIsDownloading(true);
         const offlineContentRepository = new OfflineContentRepository();
-        offlineContentRepository.cleanOfflineContent();
-        if (currentPlant && currentProject) {
-            await buildOfflineScope(api, currentPlant.slug, currentProject.id);
+        await offlineContentRepository.cleanOfflineContent();
+        //Setter til offline false for sikkerhetsskyld. Vi må rydde litt i hvordan status settes gjennom systmet.
+        setOfflineState(false);
+        const statusRepository = new StatusRepository();
+        const statusObj = await statusRepository.getStatus();
+        if (statusObj) {
+            await statusRepository.updateStatus(false);
+        } else {
+            await statusRepository.addOfflineStatus(false);
         }
+        if (currentPlant && currentProject) {
+            await buildOfflineScope(
+                auth,
+                api,
+                currentPlant.slug,
+                currentProject.id,
+                configurationAccessToken
+            );
+        }
+        //todo: Denne skal nok bort.
+        await statusRepository.updateStatus(true);
         setOfflineState(true);
         setBookmarksStatus(AsyncStatus.SUCCESS);
         setIsDownloading(false);

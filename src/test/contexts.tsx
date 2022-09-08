@@ -43,6 +43,8 @@ const procosysApiInstance = procosysApiService(
     'dummy-bearer-token'
 );
 
+const dummyConfigurationAccessToken = 'dummytoken';
+
 type WithMcAppContextProps = {
     Component: JSX.Element;
     asyncStatus?: AsyncStatus;
@@ -51,6 +53,7 @@ type WithMcAppContextProps = {
     api?: ProcosysApiService;
     offlineState?: boolean;
     setOfflineState: Dispatch<SetStateAction<boolean>>;
+    configurationAccessToken: string;
 };
 
 export const withMcAppContext = ({
@@ -61,6 +64,7 @@ export const withMcAppContext = ({
     api = procosysApiInstance,
     offlineState = false,
     setOfflineState,
+    configurationAccessToken,
 }: WithMcAppContextProps): JSX.Element => {
     return (
         <MemoryRouter initialEntries={['/test/sub/directory']}>
@@ -74,6 +78,7 @@ export const withMcAppContext = ({
                     featureFlags: dummyFeatureFlags,
                     offlineState: offlineState,
                     setOfflineState: setOfflineState,
+                    configurationAccessToken: configurationAccessToken,
                 }}
             >
                 {Component}
@@ -121,5 +126,6 @@ export const withPlantContext = ({
         ),
         offlineState: offlineState,
         setOfflineState: setOfflineState,
+        configurationAccessToken: dummyConfigurationAccessToken,
     });
 };

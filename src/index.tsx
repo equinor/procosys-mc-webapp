@@ -39,10 +39,12 @@ const initialize = async () => {
         configurationEndpoint,
     } = await getAuthConfig();
     const authClient = new MSAL.PublicClientApplication(clientSettings);
+
     const authInstance = authService({
         MSAL: authClient,
         scopes: scopes,
     });
+
     const isRedirecting = await authInstance.handleLogin();
     if (isRedirecting) return Promise.reject('redirecting');
 
@@ -78,6 +80,7 @@ const initialize = async () => {
         appInsightsReactPlugin,
         appConfig,
         featureFlags,
+        configurationAccessToken,
     };
 };
 
@@ -90,6 +93,7 @@ const initialize = async () => {
             appInsightsReactPlugin,
             appConfig,
             featureFlags,
+            configurationAccessToken,
         } = await initialize();
 
         render(
@@ -99,6 +103,7 @@ const initialize = async () => {
                 appInsightsReactPlugin={appInsightsReactPlugin}
                 appConfig={appConfig}
                 featureFlags={featureFlags}
+                configurationAccessToken={configurationAccessToken}
             />
         );
     } catch (error) {

@@ -9,11 +9,15 @@ import { ProcosysApiService } from '../services/procosysApi';
 import { SearchType } from '../typings/enums';
 import { OfflineContentRepository } from './OfflineContentRepository';
 import { IEntity } from './IEntity';
+import { IAuthService } from '../services/authService';
+import { fetchAppConfig, fetchAuthConfig } from '../services/appConfiguration';
 
 const buildOfflineScope = async (
+    auth: IAuthService,
     api: ProcosysApiService,
     plantId: string,
-    projectId: number
+    projectId: number,
+    configurationAccessToken: string
 ): Promise<void> => {
     const controller = new AbortController();
     const abortSignal = controller.signal;
@@ -38,7 +42,8 @@ const buildOfflineScope = async (
      * Add entities to a map. This will ensure that no duplicates are stored in the database (entities with same api path)
      */
     const addEntityToMap = (entity: IEntity): void => {
-        if (!offlineEntities.get(entity.apipath)) {
+        const entityExists = offlineEntities.has(entity.apipath);
+        if (!entityExists) {
             offlineEntities.set(entity.apipath, entity);
         }
     };
@@ -52,6 +57,32 @@ const buildOfflineScope = async (
             Array.from(offlineEntities.values())
         );
     };
+
+    //------------------------------------------------------------
+    // Fetch data from procosysApi, and store in browser database
+    //------------------------------------------------------------
+
+    //auth config
+    const authConfig = await fetchAuthConfig(cbFunc);
+    addEntityToMap({
+        entityid: 0,
+        entitytype: 'Auth',
+        responseObj: currentResponseObj,
+        apipath: currentApiPath,
+    });
+
+    //auth config
+    await fetchAppConfig(
+        authConfig.configurationEndpoint,
+        configurationAccessToken,
+        cbFunc
+    );
+    addEntityToMap({
+        entityid: 0,
+        entitytype: 'AppConfig',
+        responseObj: currentResponseObj,
+        apipath: currentApiPath,
+    });
 
     //Bookmarks
     const bookmarks = await api.getBookmarks(plantId, projectId, abortSignal);

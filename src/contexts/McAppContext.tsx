@@ -26,6 +26,7 @@ type McAppContextProps = {
     offlineState: boolean;
     setOfflineState: Dispatch<SetStateAction<boolean>>;
     featureFlags: FeatureFlags;
+    configurationAccessToken: string;
 };
 
 export enum AsyncStatus {
@@ -44,6 +45,7 @@ type McAppContextProviderProps = {
     api: ProcosysApiService;
     appConfig: AppConfig;
     featureFlags: FeatureFlags;
+    configurationAccessToken: string;
 };
 
 export const McAppContextProvider: React.FC<McAppContextProviderProps> = ({
@@ -52,6 +54,7 @@ export const McAppContextProvider: React.FC<McAppContextProviderProps> = ({
     api,
     appConfig,
     featureFlags,
+    configurationAccessToken,
 }: McAppContextProviderProps) => {
     const [availablePlants, setAvailablePlants] = useState<Plant[]>([]);
     const [fetchPlantsStatus, setFetchPlantsStatus] = useState<AsyncStatus>(
@@ -64,20 +67,20 @@ export const McAppContextProvider: React.FC<McAppContextProviderProps> = ({
     useEffect(() => {
         const asyncFunction = async (): Promise<void> => {
             const status = await statusRepository.getStatus();
-            setOfflineState(
-                status
-                    ? status.status
-                    : (): boolean => {
-                          statusRepository.addOfflineStatus(false);
-                          return false;
-                      }
-            );
+            if (status) {
+                setOfflineState(status.status);
+            } else {
+                await statusRepository.addOfflineStatus(false);
+                setOfflineState(false);
+            }
         };
         asyncFunction();
     }, []);
 
     useEffect(() => {
-        statusRepository.updateStatus(offlineState);
+        (async (): Promise<void> => {
+            await statusRepository.updateStatus(offlineState);
+        })();
     }, [offlineState]);
 
     useEffect(() => {
@@ -123,6 +126,7 @@ export const McAppContextProvider: React.FC<McAppContextProviderProps> = ({
                 offlineState,
                 setOfflineState,
                 featureFlags,
+                configurationAccessToken,
             }}
         >
             {children}
