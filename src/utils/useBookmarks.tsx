@@ -94,6 +94,7 @@ const useBookmarks = () => {
     const cancelOffline = async (): Promise<void> => {
         try {
             if (currentProject) {
+                setBookmarksStatus(AsyncStatus.LOADING);
                 await api.putCancelOffline(params.plant, currentProject?.id);
                 setOfflineState(false);
                 setCurrentBookmarks(null);

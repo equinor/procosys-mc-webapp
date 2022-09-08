@@ -1,19 +1,28 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
-import { Button } from '@equinor/eds-core-react';
+import { Button, Checkbox, Scrim } from '@equinor/eds-core-react';
 import useBookmarks from '../../../utils/useBookmarks';
 import BookmarkableEntityInfoList from '../BookmarkableEntityInfoList';
 import { SearchType } from '../../../typings/enums';
 import useCommonHooks from '../../../utils/useCommonHooks';
 import AsyncPage from '../../../components/AsyncPage';
+import { COLORS, SHADOW } from '../../../style/GlobalStyles';
+import { AsyncStatus } from '@equinor/procosys-webapp-components';
 
-const BookmarksWrapper = styled.div`
-    margin: 16px 0;
+const CancellingPopup = styled.div`
+    display: flex;
+    flex-direction: column;
+    border-radius: 5px;
+    background-color: ${COLORS.white};
+    padding: 16px;
+    margin: 0 16px;
+    box-shadow: ${SHADOW};
 `;
 
 const ButtonsWrapper = styled.div`
     display: flex;
     justify-content: space-between;
+    padding-top: 16px;
 `;
 
 const Bookmarks = (): JSX.Element => {
@@ -27,6 +36,8 @@ const Bookmarks = (): JSX.Element => {
         isDownloading,
     } = useBookmarks();
     const { offlineState } = useCommonHooks();
+    const [isCancelling, setIsCancelling] = useState<boolean>(false);
+    const [isSure, setIsSure] = useState<boolean>(false);
 
     return (
         <AsyncPage
@@ -41,102 +52,127 @@ const Bookmarks = (): JSX.Element => {
                     : ''
             }
         >
-            <BookmarksWrapper>
-                <>
-                    <ButtonsWrapper>
-                        {offlineState == true ? (
-                            <>
-                                <Button>Finish offline</Button>
-                                <Button color="danger" onClick={cancelOffline}>
-                                    Cancel offline
+            <div>
+                {isCancelling ? (
+                    <Scrim
+                        isDismissable
+                        onClose={(): void => setIsCancelling(false)}
+                    >
+                        <CancellingPopup>
+                            <h3>Do you really wish to cancel offline mode?</h3>
+                            <Checkbox
+                                label="I understand that cancelling offline mode deletes all my offline changes"
+                                onClick={(): void => setIsSure(true)}
+                            />
+                            <ButtonsWrapper>
+                                <Button
+                                    variant={'outlined'}
+                                    onClick={(): void => setIsCancelling(false)}
+                                >
+                                    Don&apos;t cancel
                                 </Button>
-                            </>
-                        ) : (
-                            <>
-                                <Button onClick={startOffline}>
-                                    Start offline
+                                <Button
+                                    color={'danger'}
+                                    disabled={
+                                        bookmarksStatus ===
+                                            AsyncStatus.LOADING || !isSure
+                                    }
+                                    onClick={cancelOffline}
+                                    aria-label="Delete"
+                                >
+                                    Yes, cancel offline
                                 </Button>
-                                <Button onClick={cancelOffline}>
-                                    Delete bookmarks
-                                </Button>
-                            </>
-                        )}
-                    </ButtonsWrapper>
-                    {currentBookmarks
-                        ? currentBookmarks.bookmarkedMcPkgs.length > 0 && (
-                              <>
-                                  <h5>MC package bookmarks</h5>
-                                  <BookmarkableEntityInfoList
-                                      searchType={SearchType.MC}
-                                      isBookmarked={isBookmarked}
-                                      handleBookmarkClicked={
-                                          handleBookmarkClicked
-                                      }
-                                      entityInfoList={
-                                          currentBookmarks?.bookmarkedMcPkgs
-                                      }
-                                      offlinePlanningState={!offlineState}
-                                  />
-                              </>
-                          )
-                        : null}
-                    {currentBookmarks
-                        ? currentBookmarks.bookmarkedTags.length > 0 && (
-                              <>
-                                  <h5>Tag bookmarks</h5>
-                                  <BookmarkableEntityInfoList
-                                      searchType={SearchType.Tag}
-                                      isBookmarked={isBookmarked}
-                                      handleBookmarkClicked={
-                                          handleBookmarkClicked
-                                      }
-                                      entityInfoList={
-                                          currentBookmarks?.bookmarkedTags
-                                      }
-                                      offlinePlanningState={!offlineState}
-                                  />
-                              </>
-                          )
-                        : null}
-                    {currentBookmarks
-                        ? currentBookmarks.bookmarkedWorkOrders.length > 0 && (
-                              <>
-                                  <h5>Work order bookmarks</h5>
-                                  <BookmarkableEntityInfoList
-                                      searchType={SearchType.WO}
-                                      isBookmarked={isBookmarked}
-                                      handleBookmarkClicked={
-                                          handleBookmarkClicked
-                                      }
-                                      entityInfoList={
-                                          currentBookmarks?.bookmarkedWorkOrders
-                                      }
-                                      offlinePlanningState={!offlineState}
-                                  />
-                              </>
-                          )
-                        : null}
-                    {currentBookmarks
-                        ? currentBookmarks.bookmarkedPurchaseOrders.length >
-                              0 && (
-                              <>
-                                  <h5>Purchase order bookmarks</h5>
-                                  <BookmarkableEntityInfoList
-                                      searchType={SearchType.PO}
-                                      isBookmarked={isBookmarked}
-                                      handleBookmarkClicked={
-                                          handleBookmarkClicked
-                                      }
-                                      entityInfoList={
-                                          currentBookmarks?.bookmarkedPurchaseOrders
-                                      }
-                                      offlinePlanningState={!offlineState}
-                                  />
-                              </>
-                          )
-                        : null}
-                </>
-            </BookmarksWrapper>
+                            </ButtonsWrapper>
+                        </CancellingPopup>
+                    </Scrim>
+                ) : null}
+                <ButtonsWrapper>
+                    {offlineState == true ? (
+                        <>
+                            <Button>Finish offline</Button>
+                            <Button
+                                color="danger"
+                                onClick={(): void => setIsCancelling(true)}
+                            >
+                                Cancel offline
+                            </Button>
+                        </>
+                    ) : (
+                        <>
+                            <Button onClick={startOffline}>
+                                Start offline
+                            </Button>
+                            <Button onClick={cancelOffline}>
+                                Delete bookmarks
+                            </Button>
+                        </>
+                    )}
+                </ButtonsWrapper>
+                {currentBookmarks
+                    ? currentBookmarks.bookmarkedMcPkgs.length > 0 && (
+                          <>
+                              <h5>MC package bookmarks</h5>
+                              <BookmarkableEntityInfoList
+                                  searchType={SearchType.MC}
+                                  isBookmarked={isBookmarked}
+                                  handleBookmarkClicked={handleBookmarkClicked}
+                                  entityInfoList={
+                                      currentBookmarks?.bookmarkedMcPkgs
+                                  }
+                                  offlinePlanningState={!offlineState}
+                              />
+                          </>
+                      )
+                    : null}
+                {currentBookmarks
+                    ? currentBookmarks.bookmarkedTags.length > 0 && (
+                          <>
+                              <h5>Tag bookmarks</h5>
+                              <BookmarkableEntityInfoList
+                                  searchType={SearchType.Tag}
+                                  isBookmarked={isBookmarked}
+                                  handleBookmarkClicked={handleBookmarkClicked}
+                                  entityInfoList={
+                                      currentBookmarks?.bookmarkedTags
+                                  }
+                                  offlinePlanningState={!offlineState}
+                              />
+                          </>
+                      )
+                    : null}
+                {currentBookmarks
+                    ? currentBookmarks.bookmarkedWorkOrders.length > 0 && (
+                          <>
+                              <h5>Work order bookmarks</h5>
+                              <BookmarkableEntityInfoList
+                                  searchType={SearchType.WO}
+                                  isBookmarked={isBookmarked}
+                                  handleBookmarkClicked={handleBookmarkClicked}
+                                  entityInfoList={
+                                      currentBookmarks?.bookmarkedWorkOrders
+                                  }
+                                  offlinePlanningState={!offlineState}
+                              />
+                          </>
+                      )
+                    : null}
+                {currentBookmarks
+                    ? currentBookmarks.bookmarkedPurchaseOrders.length > 0 && (
+                          <>
+                              <h5>Purchase order bookmarks</h5>
+                              <BookmarkableEntityInfoList
+                                  searchType={SearchType.PO}
+                                  isBookmarked={isBookmarked}
+                                  handleBookmarkClicked={handleBookmarkClicked}
+                                  entityInfoList={
+                                      currentBookmarks?.bookmarkedPurchaseOrders
+                                  }
+                                  offlinePlanningState={!offlineState}
+                              />
+                          </>
+                      )
+                    : null}
+            </div>
         </AsyncPage>
     );
 };
