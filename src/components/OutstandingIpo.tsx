@@ -15,7 +15,7 @@ const OutstandingIpoWrapper = styled.div`
 `;
 
 const OutstandingIpo = (): JSX.Element => {
-    const { params, api, ipoApi } = useCommonHooks();
+    const { params, ipoApi } = useCommonHooks();
     const [outstandingIpos, setOutstandingIpos] = useState<OutstandingIpos>();
     const [fetchSearchesStatus, setFetchSearchesStatus] = useState(
         AsyncStatus.LOADING

@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { OutstandingIpo } from '../services/apiTypes';
 import { COLORS, Caption } from '../style/GlobalStyles';
 import { TextIcon } from '@equinor/procosys-webapp-components';
+import useCommonHooks from '../utils/useCommonHooks';
 
 const IconWrapper = styled.div`
     padding-top: 3px;
@@ -43,8 +44,13 @@ type OutstandingIPOsProps = {
 };
 
 const OutstandingIpoResult = ({ ipo }: OutstandingIPOsProps): JSX.Element => {
+    const { history, url } = useCommonHooks();
+
     return (
-        <OutstandingIpoWrapper>
+        <OutstandingIpoWrapper
+            role="link"
+            onClick={(): void => history.push(`${url}/IPO/${ipo.invitationId}`)}
+        >
             <IconWrapper>
                 <TextIcon color={COLORS.ipoIcon} text="IPO" />
             </IconWrapper>
