@@ -128,6 +128,95 @@ export interface OutstandingIpo {
     organization: string;
 }
 
+export interface IpoDetails {
+    projectName: string;
+    title: string;
+    description: string;
+    location: string;
+    type: string;
+    status: string;
+    createdBy: {
+        id: number;
+        firstName: string;
+        lastName: string;
+        userName: string;
+        azureOid: string;
+        email: string;
+        rowVersion: string;
+    };
+    startTimeUtc: Date;
+    endTimeUtc: Date;
+    canEdit: boolean;
+    canCancel: boolean;
+    canDelete: boolean;
+    rowVersion: string;
+    participants: {
+        id: number;
+        organization: string;
+        sortKey: number;
+        signedBy: {
+            id: number;
+            firstName: string;
+            lastName: string;
+            userName: string;
+            azureOid: string;
+            email: string;
+            rowVersion: string;
+        };
+        signedAtUtc: Date;
+        note: string;
+        attended: boolean;
+        isAttendedTouched: boolean;
+        isSigner: boolean;
+        canEditAttendedStatusAndNote: boolean;
+        externalEmail: {
+            externalEmail: string;
+            response: string;
+        };
+        person: {
+            response: string;
+            firstName: string;
+            lastName: string;
+            userName: string;
+            azureOid: string;
+            email: string;
+        };
+        functionalRole: {
+            code: string;
+            email: string;
+            persons: {
+                response: string;
+                id: number;
+                firstName: string;
+                lastName: string;
+                userName: string;
+                azureOid: string;
+                email: string;
+                required: boolean;
+                rowVersion: string;
+            };
+            response: string;
+            rowVersion: string;
+        };
+    };
+    mcPkgScope: [
+        {
+            mcPkgNo: string;
+            description: string;
+            commPkgNo: string;
+            system: string;
+        }
+    ];
+    commPkgScope: [
+        {
+            commPkgNo: string;
+            description: string;
+            status: string;
+            system: string;
+        }
+    ];
+}
+
 // COMM PKG AND LISTS
 
 export interface CommPkg {
@@ -149,18 +238,38 @@ export interface ChecklistPreview {
     tagId: number;
     tagNo: string;
     tagDescription: string;
+    mcPkgId?: number;
+    mcPkgNo?: string;
     responsibleCode: string;
     status: CompletionStatus;
     formularType: string;
     formularGroup: string;
-    sheetNo: number;
-    subSheetNo: number;
+    sheetNo?: number;
+    subSheetNo?: number;
     isRestrictedForUser: boolean;
     hasElectronicForm: boolean;
     attachmentCount: number;
     isSigned: boolean;
     isVerified: boolean;
 }
+
+// export interface McPkgsChecklists {
+//     id: number;
+//     tagId: number;
+//     tagNo: string;
+//     tagDescription: string;
+//     mcPkgId: number;
+//     mcPkgNo: string;
+//     responsibleCode: string;
+//     status: CompletionStatus;
+//     formularType: string;
+//     formularGroup: string;
+//     isRestrictedForUser: boolean;
+//     hasElectronicForm: boolean;
+//     attachmentCount: number;
+//     isSigned: boolean;
+//     isVerified: boolean;
+// }
 
 export interface PunchPreview {
     id: number;

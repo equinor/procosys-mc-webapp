@@ -37,6 +37,7 @@ import {
     SavedSearch,
     PunchItemSavedSearchResult,
     ChecklistSavedSearchResult,
+    IpoDetails,
 } from './apiTypes';
 
 type ProcosysApiServiceProps = {
@@ -186,6 +187,8 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
             url = `Tag?plantId=PCS$${plantId}&tagId=${entityId}${apiVersion}`;
         } else if (searchType === SearchType.PO) {
             url = `PurchaseOrder?plantId=PCS$${plantId}&callOffId=${entityId}${apiVersion}`;
+        } else if (searchType === SearchType.IPO) {
+            url = `IPO?plantId=PCS$${plantId}&invitationId=${entityId}${apiVersion}`;
         } else {
             throw new Error('The chosen scope type is not supported.');
         }
@@ -217,7 +220,8 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
         plantId: string,
         searchType: SearchType,
         entityId: string,
-        cancelToken: CancelToken
+        cancelToken: CancelToken,
+        ipoDetails: McPkgPreview | WoPreview | Tag | PoPreview | IpoDetails
     ): Promise<ChecklistPreview[]> => {
         let url = '';
         if (searchType === SearchType.MC) {
@@ -228,6 +232,21 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
             url = `Tag/CheckLists?plantId=PCS$${plantId}&tagId=${entityId}${apiVersion}`;
         } else if (searchType === SearchType.PO) {
             url = `PurchaseOrder/CheckLists?plantId=PCS$${plantId}&callOffId=${entityId}${apiVersion}`;
+        } else if (
+            searchType === SearchType.IPO &&
+            isOfType<IpoDetails>(ipoDetails, 'location')
+        ) {
+            if (ipoDetails.type == 'DP') {
+                const mcPkgNo = ipoDetails.mcPkgScope.map(
+                    (mcPkg) => mcPkg.mcPkgNo
+                );
+                url = `McPkgs/CheckLists?plantId=PCS$${plantId}&projectName=${ipoDetails.projectName}&mcPkgNos=${mcPkgNo}${apiVersion}`;
+            } else {
+                const commPkgNo = ipoDetails.commPkgScope.map(
+                    (commPkg) => commPkg.commPkgNo
+                );
+                url = `CommPkgs/CheckLists?plantId=PCS$${plantId}&projectName=${ipoDetails.projectName}&mcPkgNos=${commPkgNo}${apiVersion}`;
+            }
         } else {
             throw new Error('The chosen scope type is not supported.');
         }
@@ -275,7 +294,8 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
         plantId: string,
         searchType: SearchType,
         entityId: string,
-        cancelToken: CancelToken
+        cancelToken: CancelToken,
+        ipoDetails: McPkgPreview | WoPreview | Tag | PoPreview | IpoDetails
     ): Promise<PunchPreview[]> => {
         let url = '';
         if (searchType === SearchType.MC) {
@@ -286,6 +306,21 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
             url = `Tag/PunchList?plantId=PCS$${plantId}&tagId=${entityId}${apiVersion}`;
         } else if (searchType === SearchType.PO) {
             url = `PurchaseOrder/PunchList?plantId=PCS$${plantId}&callOffId=${entityId}${apiVersion}`;
+        } else if (
+            searchType === SearchType.IPO &&
+            isOfType<IpoDetails>(ipoDetails, 'location')
+        ) {
+            if (ipoDetails.type == 'DP') {
+                const mcPkgNo = ipoDetails.mcPkgScope.map(
+                    (mcPkg) => mcPkg.mcPkgNo
+                );
+                url = `McPkgs/CheckLists?plantId=PCS$${plantId}&projectName=${ipoDetails.projectName}&mcPkgNos=${mcPkgNo}${apiVersion}`;
+            } else {
+                const commPkgNo = ipoDetails.commPkgScope.map(
+                    (commPkg) => commPkg.commPkgNo
+                );
+                url = `CommPkgs/CheckLists?plantId=PCS$${plantId}&projectName=${ipoDetails.projectName}&mcPkgNos=${commPkgNo}${apiVersion}`;
+            }
         } else {
             throw new Error('The chosen scope type is not supported.');
         }

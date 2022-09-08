@@ -1,5 +1,5 @@
 import { AxiosInstance } from 'axios';
-import { OutstandingIpos } from './apiTypes';
+import { IpoDetails, OutstandingIpos } from './apiTypes';
 
 type ProcosysIPOApiServiceProps = {
     axios: AxiosInstance;
@@ -16,8 +16,19 @@ const procosysIPOApiService = ({ axios }: ProcosysIPOApiServiceProps) => {
         return data;
     };
 
+    const getIpoDetails = async (
+        plantId: string,
+        id: string
+    ): Promise<IpoDetails> => {
+        const { data } = await axios.get(
+            `Invitations/${id}/?plantId=PCS$${plantId}`
+        );
+        return data;
+    };
+
     return {
         getOutstandingIpos,
+        getIpoDetails,
     };
 };
 
