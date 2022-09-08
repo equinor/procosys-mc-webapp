@@ -35,6 +35,7 @@ export enum SearchType {
     MC = 'MC',
     WO = 'WO',
     Tag = 'Tag',
+    IPO = 'IPO',
 }
 
 const Search = (): JSX.Element => {
