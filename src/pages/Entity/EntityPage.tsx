@@ -166,6 +166,9 @@ const EntityPage = (): JSX.Element => {
                                 isPoScope={history.location.pathname.includes(
                                     '/PO/'
                                 )}
+                                isIpoScope={history.location.pathname.includes(
+                                    '/IPO/'
+                                )}
                             />
                         )}
                     />
@@ -185,6 +188,9 @@ const EntityPage = (): JSX.Element => {
                                 punchList={punchList}
                                 isPoPunchList={history.location.pathname.includes(
                                     '/PO/'
+                                )}
+                                isIpoPunchList={history.location.pathname.includes(
+                                    '/IPO/'
                                 )}
                             />
                         )}
