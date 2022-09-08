@@ -1,15 +1,19 @@
 import { DotProgress } from '@equinor/eds-core-react';
 import {
     EntityDetails,
+    InfoItem,
     isOfType,
     TextIcon,
 } from '@equinor/procosys-webapp-components';
 import React from 'react';
 import styled from 'styled-components';
 import McDetails from '../../components/detailCards/McDetails';
+import OutstandingIpoResult from '../../components/OutstandingIpoResult';
 import { AsyncStatus } from '../../contexts/McAppContext';
 import {
+    IpoDetails,
     McPkgPreview,
+    OutstandingIpo,
     PoPreview,
     Tag,
     WoPreview,
@@ -25,7 +29,13 @@ export const DetailsWrapper = styled.p`
 
 type EntityPageDetailsCardProps = {
     fetchDetailsStatus: AsyncStatus;
-    details: McPkgPreview | WoPreview | Tag | PoPreview | undefined;
+    details:
+        | McPkgPreview
+        | WoPreview
+        | Tag
+        | PoPreview
+        | IpoDetails
+        | undefined;
 };
 
 const EntityPageDetailsCard = ({
@@ -62,6 +72,17 @@ const EntityPageDetailsCard = ({
                               ]
                             : undefined
                     }
+                />
+            );
+        } else if (
+            params.searchType === SearchType.IPO &&
+            isOfType<IpoDetails>(details, 'location')
+        ) {
+            return (
+                <InfoItem
+                    isDetailsCard={true}
+                    headerText={params.entityId}
+                    description={details.description}
                 />
             );
         } else if (

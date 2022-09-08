@@ -10,6 +10,7 @@ import {
     WoPreview,
     Tag,
     PoPreview,
+    IpoDetails,
 } from '../../services/apiTypes';
 import withAccessControl from '../../services/withAccessControl';
 import Axios from 'axios';
@@ -35,11 +36,11 @@ const ContentWrapper = styled.div`
 `;
 
 const EntityPage = (): JSX.Element => {
-    const { api, params, path, history, url } = useCommonHooks();
+    const { api, ipoApi, params, path, history, url } = useCommonHooks();
     const [scope, setScope] = useState<ChecklistPreview[]>();
     const [punchList, setPunchList] = useState<PunchPreview[]>();
     const [details, setDetails] = useState<
-        McPkgPreview | WoPreview | Tag | PoPreview
+        McPkgPreview | WoPreview | Tag | PoPreview | IpoDetails
     >();
     const [fetchScopeStatus, setFetchScopeStatus] = useState(
         AsyncStatus.LOADING
@@ -66,50 +67,63 @@ const EntityPage = (): JSX.Element => {
     useEffect(() => {
         (async (): Promise<void> => {
             try {
-                const [punchListFromApi, scopeFromApi] = await Promise.all([
-                    api.getPunchList(
-                        params.plant,
-                        params.searchType,
-                        params.entityId,
-                        source.token
-                    ),
-                    api.getScope(
-                        params.plant,
-                        params.searchType,
-                        params.entityId,
-                        source.token
-                    ),
-                ]);
-                setPunchList(punchListFromApi);
-                if (punchListFromApi.length > 0) {
-                    setFetchPunchListStatus(AsyncStatus.SUCCESS);
-                } else {
-                    setFetchPunchListStatus(AsyncStatus.EMPTY_RESPONSE);
+                if (details) {
+                    const [punchListFromApi, scopeFromApi] = await Promise.all([
+                        api.getPunchList(
+                            params.plant,
+                            params.searchType,
+                            params.entityId,
+                            source.token,
+                            details
+                        ),
+                        api.getScope(
+                            params.plant,
+                            params.searchType,
+                            params.entityId,
+                            source.token,
+                            details
+                        ),
+                    ]);
+
+                    setPunchList(punchListFromApi);
+                    if (punchListFromApi.length > 0) {
+                        setFetchPunchListStatus(AsyncStatus.SUCCESS);
+                    } else {
+                        setFetchPunchListStatus(AsyncStatus.EMPTY_RESPONSE);
+                    }
+                    setScope(scopeFromApi);
+                    if (scopeFromApi.length > 0) {
+                        setFetchScopeStatus(AsyncStatus.SUCCESS);
+                    } else {
+                        setFetchScopeStatus(AsyncStatus.EMPTY_RESPONSE);
+                    }
+                    setFetchFooterStatus(AsyncStatus.SUCCESS);
                 }
-                setScope(scopeFromApi);
-                if (scopeFromApi.length > 0) {
-                    setFetchScopeStatus(AsyncStatus.SUCCESS);
-                } else {
-                    setFetchScopeStatus(AsyncStatus.EMPTY_RESPONSE);
-                }
-                setFetchFooterStatus(AsyncStatus.SUCCESS);
             } catch {
                 setFetchPunchListStatus(AsyncStatus.ERROR);
                 setFetchScopeStatus(AsyncStatus.ERROR);
                 setFetchFooterStatus(AsyncStatus.ERROR);
             }
         })();
-    }, [api, params]);
+    }, [api, params, details]);
 
     useEffect(() => {
         (async (): Promise<void> => {
             try {
-                const detailsFromApi = await api.getEntityDetails(
-                    params.plant,
-                    params.searchType,
-                    params.entityId,
-                    source.token
-                );
+                let detailsFromApi;
+                if (params.searchType !== SearchType.IPO) {
+                    detailsFromApi = await api.getEntityDetails(
+                        params.plant,
+                        params.searchType,
+                        params.entityId,
+                        source.token
+                    );
+                } else {
+                    detailsFromApi = await ipoApi.getIpoDetails(
+                        params.plant,
+                        params.entityId
+                    );
+                }
                 setDetails(detailsFromApi);
                 setFetchDetailsStatus(AsyncStatus.SUCCESS);
             } catch {
