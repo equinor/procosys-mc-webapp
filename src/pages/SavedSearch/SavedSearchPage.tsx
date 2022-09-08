@@ -39,7 +39,7 @@ const ButtonWrapper = styled.div`
 `;
 
 const SavedSearchPage = (): JSX.Element => {
-    const { url, params, api, history } = useCommonHooks();
+    const { url, params, api, history, offlineState } = useCommonHooks();
     const [savedSearch, setSavedSearch] = useState<SavedSearch>();
     const [results, setResults] = useState<
         ChecklistSavedSearchResult[] | PunchItemSavedSearchResult[]
@@ -248,6 +248,7 @@ const SavedSearchPage = (): JSX.Element => {
                 leftContent={
                     <BackButton to={`${removeSubdirectories(url, 3)}`} />
                 }
+                isOffline={offlineState}
             />
             <AsyncPage
                 errorMessage={
