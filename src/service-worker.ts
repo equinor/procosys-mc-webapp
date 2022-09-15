@@ -13,15 +13,14 @@ import { ExpirationPlugin } from 'workbox-expiration';
 import { precacheAndRoute, createHandlerBoundToURL } from 'workbox-precaching';
 import { registerRoute } from 'workbox-routing';
 import { StaleWhileRevalidate } from 'workbox-strategies';
-import {
-    RouteMatchCallbackOptions,
-    RouteHandlerCallbackOptions,
-} from 'workbox-core';
-import { StatusRepository } from './database/StatusRepository';
-import { db } from './database/db';
-import { OfflineContentRepository } from './database/OfflineContentRepository';
+import { StatusRepository } from './offline/StatusRepository';
+import { OfflineContentRepository } from './offline/OfflineContentRepository';
 import { SeverityLevel } from '@microsoft/applicationinsights-web';
 import { request } from 'http';
+import { updateOfflineContentDatabase } from './offline/offlineContentUpdates/updateOfflineDatabase';
+import { addUpdateRequestToDatabase } from './offline/addUpdateRequestToDatabase';
+import { OfflineUpdateRequest } from './offline/OfflineUpdateRequest';
+import removeBaseUrlFromUrl from './utils/removeBaseUrlFromUrl';
 
 declare const self: ServiceWorkerGlobalScope;
 
@@ -93,49 +92,74 @@ async function IsOnlineMode(): Promise<boolean | undefined> {
     const statusRepository = new StatusRepository();
     try {
         const status = await statusRepository.getStatus();
+        console.log('IsOnlineMode: leser fra database', status);
         if (status !== undefined) {
             return !status.status;
         }
+        console.error('IsOnlineMode. Klarer ikke å hente status.');
         return true;
     } catch (err) {
         console.log(err);
     }
 }
 
+const handleFetchGET = async (event: FetchEvent): Promise<any> => {
+    const url = removeBaseUrlFromUrl(event.request.url);
+    if (!(await IsOnlineMode())) {
+        // Try to get the response from a cache.
+        const entity = await offlineContentRepository.getByApiPath(url);
+        if (entity) {
+            //todo: Ta bort log
+            console.log(
+                'Interceptor: Returnerer objekt fra database. ' + url,
+                entity.responseObj
+            );
+            const blob = new Blob([JSON.stringify(entity.responseObj)]);
+            return new Response(blob);
+        } else {
+            console.error(
+                'Offline-mode. Entity for given url is not found in local database. Will try to fetch.',
+                url
+            );
+            return await fetch(event.request);
+        }
+    } else {
+        console.error('Interceptor: online mode.');
+        return await fetch(event.request);
+    }
+};
+
+const handleFetchUpdate = async (event: FetchEvent): Promise<Response> => {
+    if (await IsOnlineMode()) {
+        console.log(
+            'Interceptor: handleFetchUpdate. Online mode',
+            event.request.url
+        );
+        return await fetch(event.request);
+    } else {
+        console.log(
+            'Interceptor: handleFetchupdate. Offline mode.',
+            event.request.url
+        );
+
+        const offlinePostRequest = await OfflineUpdateRequest.build(
+            event.request
+        );
+        await updateOfflineContentDatabase(offlinePostRequest);
+        await addUpdateRequestToDatabase(offlinePostRequest);
+
+        return new Response();
+    }
+};
+
 self.addEventListener('fetch', function (event: FetchEvent) {
     console.log('Intercepter fetch', event.request.url);
     const url = event.request.url;
-    if (url.includes('/api')) {
-        event.respondWith(
-            (async (): Promise<Response> => {
-                if (!(await IsOnlineMode())) {
-                    // Try to get the response from a cache.
-                    const entity = await offlineContentRepository.getByApiPath(
-                        url
-                    );
-                    if (entity) {
-                        //todo: Ta bort log
-                        console.log(
-                            'Interceptor: Returnerer objekt fra database. ' +
-                                url,
-                            entity.responseObj
-                        );
-                        const blob = new Blob([
-                            JSON.stringify(entity.responseObj),
-                        ]);
-                        return new Response(blob);
-                    } else {
-                        console.error(
-                            'Offline-mode. Entity for given url is not found in local database. Will try to fetch.',
-                            url
-                        );
-                        return fetch(event.request);
-                    }
-                } else {
-                    console.log('Interceptor: online mode.');
-                    return fetch(event.request);
-                }
-            })()
-        );
+    const method = event.request.method;
+    console.log('insterncpet Get, ', method);
+    if (url.includes('/api') && method == 'GET') {
+        event.respondWith(handleFetchGET(event));
+    } else if ((method == 'POST' || method == 'PUT') && url.includes('/api')) {
+        event.respondWith(handleFetchUpdate(event));
     }
 });

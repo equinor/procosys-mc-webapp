@@ -15,7 +15,7 @@ import { Plant } from '../services/apiTypes';
 import { AppConfig, FeatureFlags } from '../services/appConfiguration';
 import { IAuthService } from '../services/authService';
 import { ProcosysApiService } from '../services/procosysApi';
-import { StatusRepository } from '../database/StatusRepository';
+import { StatusRepository } from '../offline/StatusRepository';
 
 type McAppContextProps = {
     availablePlants: Plant[];

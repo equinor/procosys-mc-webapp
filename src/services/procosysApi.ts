@@ -2,7 +2,6 @@ import {
     PunchAction,
     UpdatePunchData,
 } from '@equinor/procosys-webapp-components';
-import { OfflineContentRepository } from '../database/OfflineContentRepository';
 import { SavedSearchType, SearchType } from '../typings/enums';
 import objectToCamelCase from '../utils/objectToCamelCase';
 import {
@@ -39,7 +38,6 @@ import {
     isPlants,
     Bookmarks,
 } from './apiTypes';
-import { StatusRepository } from '../database/StatusRepository';
 
 type ProcosysApiServiceProps = {
     baseURL: string;
@@ -62,8 +60,6 @@ const procosysApiService = (
     { baseURL, apiVersion }: ProcosysApiServiceProps,
     token: string
 ) => {
-    const offlineContentRepository = new OfflineContentRepository();
-
     let callback = (resultObj: any, apiPath: string): string => resultObj;
 
     const setCallbackFunction = (cbFunc: any): void => {
@@ -115,24 +111,6 @@ const procosysApiService = (
                 'Content-Disposition': 'attachment; filename="filename.jpg"',
             },
         };
-
-        //todo: Midlertidig håndtering av offline
-        const statusRepository = new StatusRepository();
-        const statusObj = await statusRepository.getStatus();
-        if (statusObj && statusObj.status) {
-            const entity = await offlineContentRepository.getByApiPath(
-                `${baseURL}/${url}`
-            );
-            if (entity) {
-                callback('', '');
-                return entity.responseObj as Blob;
-            } else {
-                console.error(
-                    'Offline-mode. Entity for given url is not found in local database',
-                    url
-                );
-            }
-        }
 
         //todo: ta bort
         console.log('fetch-kall attachment ', url);
@@ -870,6 +848,10 @@ const procosysApiService = (
         deleteChecklistAttachment,
         postChecklistAttachment,
         setCallbackFunction,
+        postByFetch,
+        postAttachmentByFetch,
+        deleteByFetch,
+        putByFetch,
     };
 };
 

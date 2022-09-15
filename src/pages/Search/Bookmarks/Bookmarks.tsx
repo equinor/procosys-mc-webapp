@@ -5,11 +5,12 @@ import useBookmarks from '../../../utils/useBookmarks';
 import BookmarkableEntityInfoList from '../BookmarkableEntityInfoList';
 import { SearchType } from '../../../typings/enums';
 import useCommonHooks from '../../../utils/useCommonHooks';
-import buildOfflineScope from '../../../database/buildOfflineScope';
+import buildOfflineScope from '../../../offline/buildOfflineScope';
 import PlantContext from '../../../contexts/PlantContext';
-import { OfflineContentRepository } from '../../../database/OfflineContentRepository';
+import { OfflineContentRepository } from '../../../offline/OfflineContentRepository';
 import AsyncPage from '../../../components/AsyncPage';
-import { StatusRepository } from '../../../database/StatusRepository';
+import { StatusRepository } from '../../../offline/StatusRepository';
+import { OfflineUpdateRepository } from '../../../offline/OfflineUpdateRepository';
 
 const BookmarksWrapper = styled.div`
     margin: 16px 0;
@@ -27,6 +28,7 @@ const Bookmarks = (): JSX.Element => {
         isBookmarked,
         handleBookmarkClicked,
         cancelOffline,
+        finishOffline,
     } = useBookmarks();
 
     const { currentPlant, currentProject } = useContext(PlantContext);
@@ -40,8 +42,10 @@ const Bookmarks = (): JSX.Element => {
 
     const startOffline = async (): Promise<void> => {
         const offlineContentRepository = new OfflineContentRepository();
+        const offlineUpdateRepository = new OfflineUpdateRepository();
 
         await offlineContentRepository.cleanOfflineContent();
+        await offlineUpdateRepository.cleanOfflineUpdates();
 
         //Setter til offline false for sikkerhetsskyld. Vi må rydde litt i hvordan status settes gjennom systmet.
         setOfflineState(false);
@@ -55,7 +59,6 @@ const Bookmarks = (): JSX.Element => {
 
         if (currentPlant && currentProject) {
             await buildOfflineScope(
-                auth,
                 api,
                 currentPlant.slug,
                 currentProject.id,
@@ -81,7 +84,9 @@ const Bookmarks = (): JSX.Element => {
                     <ButtonsWrapper>
                         {offlineState == true ? (
                             <>
-                                <Button>Finish offline</Button>
+                                <Button onClick={finishOffline}>
+                                    Finish offline
+                                </Button>
                                 <Button onClick={cancelOffline}>
                                     Cancel offline
                                 </Button>
