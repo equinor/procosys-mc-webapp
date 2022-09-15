@@ -39,7 +39,6 @@ const buildOfflineScope = async (
     ): string | Blob => {
         currentResponseObj = responseObj;
         currentApiPath = removeBaseUrlFromUrl(apiPath);
-        console.log('Når er jeg i callback', currentApiPath);
         return responseObj;
     };
 
