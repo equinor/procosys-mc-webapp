@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction } from 'react';
+import React from 'react';
 import { MemoryRouter } from 'react-router-dom';
 import PlantContext from '../contexts/PlantContext';
 import McAppContext, { AsyncStatus } from '../contexts/McAppContext';
@@ -52,7 +52,7 @@ type WithMcAppContextProps = {
     auth?: IAuthService;
     api?: ProcosysApiService;
     offlineState?: boolean;
-    setOfflineState: Dispatch<SetStateAction<boolean>>;
+    setOfflineState: (offlineState: boolean) => Promise<void>;
     configurationAccessToken: string;
 };
 
@@ -96,7 +96,7 @@ type WithPlantContextProps = {
     currentProject?: Project | undefined;
     setCurrentProject?: (project: Project) => void;
     offlineState?: boolean;
-    setOfflineState: Dispatch<SetStateAction<boolean>>;
+    setOfflineState: (offlineState: boolean) => Promise<void>;
 };
 
 export const withPlantContext = ({

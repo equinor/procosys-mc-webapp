@@ -5,7 +5,6 @@ import { SearchType } from '../typings/enums';
 import { Bookmarks } from '../services/apiTypes';
 import useCommonHooks from './useCommonHooks';
 import { syncUpdatesWithBackend } from '../offline/syncUpdatesWithBackend';
-import { StatusRepository } from '../offline/StatusRepository';
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const useBookmarks = () => {
@@ -93,7 +92,7 @@ const useBookmarks = () => {
         try {
             if (currentProject) {
                 await api.putCancelOffline(params.plant, currentProject?.id);
-                setOfflineState(false);
+                await setOfflineState(false);
                 getCurrentBookmarks();
             }
         } catch (error) {
@@ -102,10 +101,7 @@ const useBookmarks = () => {
     };
 
     const finishOffline = async (): Promise<void> => {
-        const statusRepository = new StatusRepository();
-        await statusRepository.updateStatus(false);
-        setOfflineState(false);
-
+        await setOfflineState(false);
         await syncUpdatesWithBackend(api);
     };
 

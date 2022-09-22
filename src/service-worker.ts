@@ -13,14 +13,12 @@ import { ExpirationPlugin } from 'workbox-expiration';
 import { precacheAndRoute, createHandlerBoundToURL } from 'workbox-precaching';
 import { registerRoute } from 'workbox-routing';
 import { StaleWhileRevalidate } from 'workbox-strategies';
-import { StatusRepository } from './offline/StatusRepository';
 import { OfflineContentRepository } from './offline/OfflineContentRepository';
-import { SeverityLevel } from '@microsoft/applicationinsights-web';
-import { request } from 'http';
 import { updateOfflineContentDatabase } from './offline/offlineContentUpdates/updateOfflineDatabase';
 import { addUpdateRequestToDatabase } from './offline/addUpdateRequestToDatabase';
 import { OfflineUpdateRequest } from './offline/OfflineUpdateRequest';
 import removeBaseUrlFromUrl from './utils/removeBaseUrlFromUrl';
+import IsOfflineMode from './utils/isOfflineMode';
 
 declare const self: ServiceWorkerGlobalScope;
 
@@ -88,30 +86,18 @@ self.addEventListener('message', (event) => {
     }
 });
 
-async function IsOnlineMode(): Promise<boolean | undefined> {
-    const statusRepository = new StatusRepository();
-    try {
-        const status = await statusRepository.getStatus();
-        console.log('IsOnlineMode: leser fra database', status);
-        if (status !== undefined) {
-            return !status.status;
-        }
-        console.error('IsOnlineMode. Klarer ikke å hente status.');
-        return true;
-    } catch (err) {
-        console.log(err);
-    }
-}
-
 const handleFetchGET = async (event: FetchEvent): Promise<any> => {
+    console.log('handleFetchGET', event.request.url);
     const url = removeBaseUrlFromUrl(event.request.url);
-    if (!(await IsOnlineMode())) {
-        // Try to get the response from a cache.
+
+    if (await IsOfflineMode()) {
+        // Try to get the response from offline content database.
         const entity = await offlineContentRepository.getByApiPath(url);
         if (entity) {
             //todo: Ta bort log
             console.log(
-                'Interceptor: Returnerer objekt fra database. ' + url,
+                'handleFetchGET: Returnerer objekt fra database. ' +
+                    event.request.url,
                 entity.responseObj
             );
             const blob = new Blob([JSON.stringify(entity.responseObj)]);
@@ -119,28 +105,18 @@ const handleFetchGET = async (event: FetchEvent): Promise<any> => {
         } else {
             console.error(
                 'Offline-mode. Entity for given url is not found in local database. Will try to fetch.',
-                url
+                event.request.url
             );
             return await fetch(event.request);
         }
     } else {
-        console.error('Interceptor: online mode.');
         return await fetch(event.request);
     }
 };
 
 const handleFetchUpdate = async (event: FetchEvent): Promise<Response> => {
-    if (await IsOnlineMode()) {
-        console.log(
-            'Interceptor: handleFetchUpdate. Online mode',
-            event.request.url
-        );
-        return await fetch(event.request);
-    } else {
-        console.log(
-            'Interceptor: handleFetchupdate. Offline mode.',
-            event.request.url
-        );
+    if (await IsOfflineMode()) {
+        console.log('handleFetchupdate. Offline mode.', event.request.url);
 
         const offlinePostRequest = await OfflineUpdateRequest.build(
             event.request
@@ -149,17 +125,39 @@ const handleFetchUpdate = async (event: FetchEvent): Promise<Response> => {
         await addUpdateRequestToDatabase(offlinePostRequest);
 
         return new Response();
+    } else {
+        console.log('handleFetchUpdate. Online mode', event.request.url);
+        return await fetch(event.request);
+    }
+};
+
+const handleOtherFetchEvents = async (event: FetchEvent): Promise<Response> => {
+    if (await IsOfflineMode()) {
+        console.error(
+            'We are in offline mode, and should not need to perform any fetch.',
+            event.request.url
+        );
+        return await fetch(event.request);
+    } else {
+        console.log('handleFetchUpdate. Online mode', event.request.url);
+        return await fetch(event.request);
     }
 };
 
 self.addEventListener('fetch', function (event: FetchEvent) {
-    console.log('Intercepter fetch', event.request.url);
+    console.log('Intercept fetch', event.request.url);
     const url = event.request.url;
     const method = event.request.method;
-    console.log('insterncpet Get, ', method);
-    if (url.includes('/api') && method == 'GET') {
+    if (method == 'GET' && url.includes('/api/')) {
+        //todo: We should find a better way to identify these requests!
         event.respondWith(handleFetchGET(event));
-    } else if ((method == 'POST' || method == 'PUT') && url.includes('/api')) {
+        return;
+    } else if (
+        (method == 'POST' || method == 'PUT' || method == 'DELETE') &&
+        url.includes('/api/')
+    ) {
         event.respondWith(handleFetchUpdate(event));
+        return;
     }
+    event.respondWith(handleOtherFetchEvents(event));
 });
