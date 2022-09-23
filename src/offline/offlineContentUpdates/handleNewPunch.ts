@@ -7,7 +7,11 @@ import {
     PunchItem,
     PunchPreview,
 } from '../../services/apiTypes';
-import { generateRandomId, getCompletionStatusByCategory } from './utils';
+import {
+    generateRandomId,
+    getCompletionStatusByCategory,
+    getOrganizationById,
+} from './utils';
 
 const offlineContentRepository = new OfflineContentRepository();
 
@@ -41,9 +45,6 @@ export const handleNewPunch = async (
         tagNo = checklistPunchlist[0].tagNo;
         callOffNo = checklistPunchlist[0].callOffNo;
     }
-    const completionStatus = await getCompletionStatusByCategory(
-        newPunch.CategoryId
-    );
 
     //Construct url for new PunchlistItem
     const newPunchItemId = generateRandomId();
@@ -52,6 +53,18 @@ export const handleNewPunch = async (
     const newPunchItemUrl = `PunchListItem?plantId=${plantId}&punchItemId=${newPunchItemId}&${apiVersion}`;
 
     //Create respons object and add punch to database
+    const completionStatus = await getCompletionStatusByCategory(
+        newPunch.CategoryId
+    );
+
+    const raisedByOrganization = await getOrganizationById(
+        newPunch.RaisedByOrganizationId
+    );
+
+    const clearingByOrganization = await getOrganizationById(
+        newPunch.ClearingByOrganizationId
+    );
+
     const responseObj: PunchItem = {
         actionByPerson: newPunch.ActionByPerson,
         actionByPersonFirstName: null,
@@ -62,8 +75,8 @@ export const handleNewPunch = async (
         clearedByFirstName: null,
         clearedByLastName: null,
         clearedByUser: null,
-        clearingByCode: '',
-        clearingByDescription: '',
+        clearingByCode: clearingByOrganization?.code ?? '',
+        clearingByDescription: clearingByOrganization?.description ?? '',
         description: newPunch.Description,
         dueDate: newPunch.DueDate,
         estimate: newPunch.Estimate,
@@ -76,8 +89,8 @@ export const handleNewPunch = async (
         priorityCode: null,
         priorityDescription: null,
         priorityId: null,
-        raisedByCode: '',
-        raisedByDescription: '',
+        raisedByCode: raisedByOrganization?.code ?? '',
+        raisedByDescription: raisedByOrganization?.description ?? '',
         rejectedAt: null,
         rejectedByFirstName: null,
         rejectedByLastName: null,

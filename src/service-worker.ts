@@ -87,7 +87,7 @@ self.addEventListener('message', (event) => {
 });
 
 const handleFetchGET = async (event: FetchEvent): Promise<any> => {
-    console.log('handleFetchGET', event.request.url);
+    //console.log('handleFetchGET', event.request.url);
     const url = removeBaseUrlFromUrl(event.request.url);
 
     if (await IsOfflineMode()) {
@@ -95,11 +95,11 @@ const handleFetchGET = async (event: FetchEvent): Promise<any> => {
         const entity = await offlineContentRepository.getByApiPath(url);
         if (entity) {
             //todo: Ta bort log
-            console.log(
-                'handleFetchGET: Returnerer objekt fra database. ' +
-                    event.request.url,
-                entity.responseObj
-            );
+            // console.log(
+            //     'handleFetchGET: Returnerer objekt fra database. ' +
+            //         event.request.url,
+            //     entity.responseObj
+            // );
             const blob = new Blob([JSON.stringify(entity.responseObj)]);
             return new Response(blob);
         } else {
@@ -116,7 +116,7 @@ const handleFetchGET = async (event: FetchEvent): Promise<any> => {
 
 const handleFetchUpdate = async (event: FetchEvent): Promise<Response> => {
     if (await IsOfflineMode()) {
-        console.log('handleFetchupdate. Offline mode.', event.request.url);
+        // console.log('handleFetchupdate. Offline mode.', event.request.url);
 
         const offlinePostRequest = await OfflineUpdateRequest.build(
             event.request
@@ -126,7 +126,7 @@ const handleFetchUpdate = async (event: FetchEvent): Promise<Response> => {
 
         return new Response();
     } else {
-        console.log('handleFetchUpdate. Online mode', event.request.url);
+        // console.log('handleFetchUpdate. Online mode', event.request.url);
         return await fetch(event.request);
     }
 };
@@ -139,13 +139,13 @@ const handleOtherFetchEvents = async (event: FetchEvent): Promise<Response> => {
         );
         return await fetch(event.request);
     } else {
-        console.log('handleFetchUpdate. Online mode', event.request.url);
+        // console.log('handleFetchUpdate. Online mode', event.request.url);
         return await fetch(event.request);
     }
 };
 
 self.addEventListener('fetch', function (event: FetchEvent) {
-    console.log('Intercept fetch', event.request.url);
+    // console.log('Intercept fetch', event.request.url);
     const url = event.request.url;
     const method = event.request.method;
     if (method == 'GET' && url.includes('/api/')) {

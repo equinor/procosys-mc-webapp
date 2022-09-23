@@ -2,6 +2,7 @@ import {
     PunchAction,
     UpdatePunchData,
 } from '@equinor/procosys-webapp-components';
+import { Console } from 'console';
 import { SavedSearchType, SearchType } from '../typings/enums';
 import objectToCamelCase from '../utils/objectToCamelCase';
 import {
@@ -84,7 +85,7 @@ const procosysApiService = (
         };
 
         //todo: ta bort log
-        console.log('fetch-kall ' + url);
+        //console.log('fetch-kall ' + url);
         const res = await fetch(`${baseURL}/${url}`, GetOperation);
         if (res.ok) {
             const jsonResult = await res.json();
@@ -113,7 +114,7 @@ const procosysApiService = (
         };
 
         //todo: ta bort
-        console.log('fetch-kall attachment ', url);
+        //console.log('fetch-kall attachment ', url);
         const res = await fetch(`${baseURL}/${url}`, GetOperation);
 
         if (res.ok) {

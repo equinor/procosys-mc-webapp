@@ -1,4 +1,8 @@
-import { CompletionStatus, PunchCategory } from '../../services/apiTypes';
+import {
+    CompletionStatus,
+    PunchCategory,
+    PunchOrganization,
+} from '../../services/apiTypes';
 import { EntityType } from '../../typings/enums';
 import { OfflineContentRepository } from '../OfflineContentRepository';
 
@@ -14,8 +18,31 @@ export const getCompletionStatusByCategory = async (
         EntityType.PunchCategories
     );
     const categories: PunchCategory[] = entity.responseObj;
-    const category = categories.find((category) => (category.id = categoryId));
+    const category = categories.find((category) => category.id == categoryId);
     return category ? (category.code as CompletionStatus) : CompletionStatus.PA;
+};
+
+/**
+ * Find the organization code based on punch organization id
+ */
+export const getOrganizationById = async (
+    organizationId: number
+): Promise<PunchOrganization | null> => {
+    const entity = await offlineContentRepository.getEntity(
+        EntityType.PunchOrganization
+    );
+    const organizations: PunchOrganization[] = entity.responseObj;
+    console.log('organizatis', organizations);
+    const organization = organizations.find(
+        (organization) => organization.id == organizationId
+    );
+    if (organization) {
+        return organization;
+    }
+    console.error(
+        `The organization with id ${organizationId} was not found in offline database.`
+    );
+    return null;
 };
 
 /**
