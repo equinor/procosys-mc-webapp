@@ -11,9 +11,9 @@ import {
     ErrorPage,
     ReloadButton,
     LoadingPage,
-    CompletionStatus,
 } from '@equinor/procosys-webapp-components';
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
+import isOfflineMode from './utils/isOfflineMode';
 
 serviceWorkerRegistration.register();
 
@@ -31,6 +31,8 @@ const render = (content: JSX.Element): void => {
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const initialize = async () => {
+    await navigator.serviceWorker.ready; //wait until service worker is active
+
     // Get auth config, setup auth client and handle login
     const {
         clientSettings,
@@ -38,6 +40,7 @@ const initialize = async () => {
         configurationScope,
         configurationEndpoint,
     } = await getAuthConfig();
+
     const authClient = new MSAL.PublicClientApplication(clientSettings);
 
     const authInstance = authService({
@@ -45,22 +48,30 @@ const initialize = async () => {
         scopes: scopes,
     });
 
-    const isRedirecting = await authInstance.handleLogin();
-    if (isRedirecting) return Promise.reject('redirecting');
+    const offlineMode = await isOfflineMode();
+
+    let configurationAccessToken = '';
+
+    if (!offlineMode) {
+        const isRedirecting = await authInstance.handleLogin();
+        if (isRedirecting) return Promise.reject('redirecting');
+        configurationAccessToken = await authInstance.getAccessToken(
+            configurationScope
+        );
+    }
 
     // Get config from App Configuration
-    const configurationAccessToken = await authInstance.getAccessToken(
-        configurationScope
-    );
-
     const { appConfig, featureFlags } = await getAppConfig(
         configurationEndpoint,
         configurationAccessToken
     );
 
-    const accessToken = await authInstance.getAccessToken(
-        appConfig.procosysWebApi.scope
-    );
+    let accessToken = '';
+    if (!offlineMode) {
+        accessToken = await authInstance.getAccessToken(
+            appConfig.procosysWebApi.scope
+        );
+    }
 
     const procosysApiInstance = procosysApiService(
         {

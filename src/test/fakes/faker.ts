@@ -447,6 +447,9 @@ export const FakerNewPunch = (): NewPunch => {
         RaisedByOrganizationId: FakerId(),
         ClearingByOrganizationId: FakerId(),
         TemporaryFileIds: new Array<string>().concat('101', '102', '103'),
+        ActionByPerson: null,
+        DueDate: null,
+        Estimate: null,
     };
 };
 

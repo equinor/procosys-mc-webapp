@@ -6,14 +6,13 @@ import {
 } from '../services/apiTypes';
 
 import { ProcosysApiService } from '../services/procosysApi';
-import { SearchType } from '../typings/enums';
+import { EntityType, SearchType } from '../typings/enums';
 import { OfflineContentRepository } from './OfflineContentRepository';
 import { IEntity } from './IEntity';
-import { IAuthService } from '../services/authService';
 import { fetchAppConfig, fetchAuthConfig } from '../services/appConfiguration';
+import removeBaseUrlFromUrl from '../utils/removeBaseUrlFromUrl';
 
 const buildOfflineScope = async (
-    auth: IAuthService,
     api: ProcosysApiService,
     plantId: string,
     projectId: number,
@@ -27,19 +26,26 @@ const buildOfflineScope = async (
     let currentResponseObj = '' as string | Blob;
     let currentApiPath = '';
 
+    /**
+     * This function will be used as a callback function when calling fetch-methods.
+     * When performing a fetch call (in e.g. procosysApi.ts) we must call this function, and pass the resonse object and url path.
+     * This function will then update the local variables currentResponsObj and currentApiPath, so that we can build the offline scope.
+     * @param responseObj The response object given by the fetch
+     * @param apiPath The url path
+     */
     const cbFunc = (
         responseObj: string | Blob,
         apiPath: string
     ): string | Blob => {
         currentResponseObj = responseObj;
-        currentApiPath = apiPath;
+        currentApiPath = removeBaseUrlFromUrl(apiPath);
         return responseObj;
     };
 
     api.setCallbackFunction(cbFunc);
 
     /**
-     * Add entities to a map. This will ensure that no duplicates are stored in the database (entities with same api path)
+     * This function will be use to add entities to a map. It will ensure that no duplicates are stored in the database (entities with same api path)
      */
     const addEntityToMap = (entity: IEntity): void => {
         const entityExists = offlineEntities.has(entity.apipath);
@@ -48,6 +54,9 @@ const buildOfflineScope = async (
         }
     };
 
+    /**
+     * This function will add the map of offline entities, to the offline database.
+     */
     const addEntitiesToDatabase = async (): Promise<void> => {
         console.log(
             `Entities to store in database (${offlineEntities.size}`,
@@ -59,14 +68,14 @@ const buildOfflineScope = async (
     };
 
     //------------------------------------------------------------
-    // Fetch data from procosysApi, and store in browser database
+    // Fetch data and store in offline database.
+    // The entity
     //------------------------------------------------------------
 
     //auth config
     const authConfig = await fetchAuthConfig(cbFunc);
     addEntityToMap({
-        entityid: 0,
-        entitytype: 'Auth',
+        entitytype: EntityType.AuthConfig,
         responseObj: currentResponseObj,
         apipath: currentApiPath,
     });
@@ -78,8 +87,7 @@ const buildOfflineScope = async (
         cbFunc
     );
     addEntityToMap({
-        entityid: 0,
-        entitytype: 'AppConfig',
+        entitytype: EntityType.AppConfig,
         responseObj: currentResponseObj,
         apipath: currentApiPath,
     });
@@ -92,8 +100,7 @@ const buildOfflineScope = async (
     }
     console.log('Offline bookmarks', bookmarks);
     addEntityToMap({
-        entityid: 0,
-        entitytype: 'Bookmarks',
+        entitytype: EntityType.Bookmarks,
         responseObj: currentResponseObj,
         apipath: currentApiPath,
     });
@@ -101,28 +108,25 @@ const buildOfflineScope = async (
     //Permissions
     await api.getPermissionsForPlant(`PCS$${plantId}`);
     addEntityToMap({
-        entityid: 0,
-        entitytype: 'Permissions',
+        entitytype: EntityType.Permissions,
         responseObj: currentResponseObj,
         apipath: currentApiPath,
     });
 
     //Plants
-    const plants = await api.getPlants();
+    await api.getPlants();
     //todo: hvis vi ikke ønsker å vise alle plants, kan vi filtrere her.
     addEntityToMap({
-        entityid: 0,
-        entitytype: 'Plants',
+        entitytype: EntityType.Plants,
         responseObj: currentResponseObj,
         apipath: currentApiPath,
     });
 
     //Projects
-    const projects = await api.getProjectsForPlant(`PCS$${plantId}`);
+    await api.getProjectsForPlant(`PCS$${plantId}`);
     //todo: hvis vi ikke ønsker å vise alle projects, kan vi filtrere her.
     addEntityToMap({
-        entityid: 0,
-        entitytype: 'Projects',
+        entitytype: EntityType.Projects,
         responseObj: currentResponseObj,
         apipath: currentApiPath,
     });
@@ -130,8 +134,7 @@ const buildOfflineScope = async (
     //Punch categories
     await api.getPunchCategories(plantId, abortSignal);
     addEntityToMap({
-        entityid: 0,
-        entitytype: 'PunchCategories',
+        entitytype: EntityType.PunchCategories,
         responseObj: currentResponseObj,
         apipath: currentApiPath,
     });
@@ -139,8 +142,7 @@ const buildOfflineScope = async (
     //Punch organization
     await api.getPunchOrganizations(plantId, abortSignal);
     addEntityToMap({
-        entityid: 0,
-        entitytype: 'PunchOrganization',
+        entitytype: EntityType.PunchOrganization,
         responseObj: currentResponseObj,
         apipath: currentApiPath,
     });
@@ -148,8 +150,7 @@ const buildOfflineScope = async (
     //Punch priorities
     await api.getPunchPriorities(plantId, abortSignal);
     addEntityToMap({
-        entityid: 0,
-        entitytype: 'PunchPriorities',
+        entitytype: EntityType.PunchPriorities,
         responseObj: currentResponseObj,
         apipath: currentApiPath,
     });
@@ -157,8 +158,7 @@ const buildOfflineScope = async (
     //Punch sorts
     await api.getPunchSorts(plantId, abortSignal);
     addEntityToMap({
-        entityid: 0,
-        entitytype: 'PunchSorts',
+        entitytype: EntityType.PunchSorts,
         responseObj: currentResponseObj,
         apipath: currentApiPath,
     });
@@ -166,8 +166,7 @@ const buildOfflineScope = async (
     //Punch types
     await api.getPunchTypes(plantId, abortSignal);
     addEntityToMap({
-        entityid: 0,
-        entitytype: 'PunchTypes',
+        entitytype: EntityType.PunchTypes,
         responseObj: currentResponseObj,
         apipath: currentApiPath,
     });
@@ -180,11 +179,12 @@ const buildOfflineScope = async (
         plantId: string,
         searchType: SearchType
     ): Promise<void> => {
+        //Entity details
         await api.getEntityDetails(plantId, searchType, entityId.toString());
 
         addEntityToMap({
             entityid: entityId,
-            entitytype: searchType,
+            entitytype: searchType + EntityType.EntityDetails,
             responseObj: currentResponseObj,
             apipath: currentApiPath,
         });
@@ -194,7 +194,7 @@ const buildOfflineScope = async (
 
         addEntityToMap({
             entityid: entityId,
-            entitytype: searchType,
+            entitytype: searchType + EntityType.Punchlist,
             responseObj: currentResponseObj,
             apipath: currentApiPath,
         });
@@ -207,8 +207,8 @@ const buildOfflineScope = async (
         );
 
         addEntityToMap({
+            entitytype: searchType + EntityType.Checklists,
             entityid: entityId,
-            entitytype: searchType,
             responseObj: currentResponseObj,
             apipath: currentApiPath,
         });
@@ -224,8 +224,8 @@ const buildOfflineScope = async (
                 );
 
             addEntityToMap({
+                entitytype: EntityType.WorkOrderAttachments,
                 entityid: entityId,
-                entitytype: searchType,
                 responseObj: currentResponseObj,
                 apipath: currentApiPath,
             });
@@ -239,8 +239,9 @@ const buildOfflineScope = async (
                     abortSignal
                 );
                 addEntityToMap({
+                    entitytype: EntityType.WorkOrderAttachment,
                     entityid: attachment.id,
-                    entitytype: searchType,
+                    parententityid: entityId,
                     apipath: currentApiPath,
                     responseObj: currentResponseObj,
                 });
@@ -256,21 +257,20 @@ const buildOfflineScope = async (
             );
 
             addEntityToMap({
+                entitytype: EntityType.Checklist,
                 entityid: checklist.id,
-                entitytype: searchType,
+                parententityid: entityId,
                 responseObj: currentResponseObj,
                 apipath: currentApiPath,
             });
 
             //Tag
-            const tag: Tag = await api.getTag(
-                plantId,
-                checklistResp.checkList.tagId
-            );
+            await api.getTag(plantId, checklistResp.checkList.tagId);
 
             addEntityToMap({
+                entitytype: EntityType.Tag,
                 entityid: checklistResp.checkList.tagId,
-                entitytype: searchType,
+                parententityid: entityId,
                 responseObj: currentResponseObj,
                 apipath: currentApiPath,
             });
@@ -283,8 +283,9 @@ const buildOfflineScope = async (
                 );
 
             addEntityToMap({
+                entitytype: EntityType.ChecklistPunchlist,
                 entityid: checklist.id,
-                entitytype: searchType,
+                parententityid: entityId,
                 responseObj: currentResponseObj,
                 apipath: currentApiPath,
             });
@@ -294,8 +295,9 @@ const buildOfflineScope = async (
                 await api.getPunchItem(plantId, punch.id.toString());
 
                 addEntityToMap({
+                    entitytype: EntityType.PunchItem,
                     entityid: punch.id,
-                    entitytype: searchType,
+                    parententityid: checklist.id,
                     responseObj: currentResponseObj,
                     apipath: currentApiPath,
                 });
@@ -305,8 +307,9 @@ const buildOfflineScope = async (
                     await api.getPunchAttachments(plantId, punch.id);
 
                 addEntityToMap({
-                    entityid: checklist.id,
-                    entitytype: searchType,
+                    entitytype: EntityType.PunchAttachments,
+                    entityid: punch.id,
+                    parententityid: checklist.id,
                     responseObj: currentResponseObj,
                     apipath: currentApiPath,
                 });
@@ -320,8 +323,9 @@ const buildOfflineScope = async (
                         attachment.id
                     );
                     addEntityToMap({
+                        entitytype: EntityType.PunchAttachment,
                         entityid: attachment.id,
-                        entitytype: searchType,
+                        parententityid: punch.id,
                         apipath: currentApiPath,
                         responseObj: currentResponseObj,
                     });
@@ -335,8 +339,9 @@ const buildOfflineScope = async (
                 );
 
             addEntityToMap({
+                entitytype: EntityType.ChecklistAttachments,
                 entityid: checklist.id,
-                entitytype: searchType,
+                parententityid: entityId,
                 apipath: currentApiPath,
                 responseObj: currentResponseObj,
             });
@@ -350,8 +355,9 @@ const buildOfflineScope = async (
                 );
 
                 addEntityToMap({
+                    entitytype: EntityType.ChecklistAttachment,
                     entityid: attachment.id,
-                    entitytype: searchType,
+                    parententityid: checklist.id,
                     apipath: currentApiPath,
                     responseObj: currentResponseObj,
                 });
@@ -359,7 +365,7 @@ const buildOfflineScope = async (
         }
     };
 
-    //Todo: Vi bør sjekke om vi kan bygge parallelt, for å spare tid
+    //Todo: Vi bør sjekke om vi kan bygge parallelt, for å spare tid. Altså, for-løkke som start buildOfflineScopeForEntity for alle elementer.
     //Todo: Istedenfor å gjøre api-kall, og så finne ut om vi allerede har entity i map-en, burde vi unngå å hente samme entity flere ganger.
 
     //MC pkgs
@@ -383,6 +389,7 @@ const buildOfflineScope = async (
         console.log('Build offline scope for WO pkgs.');
         await buildOfflineScopeForEntity(wo.id, plantId, SearchType.WO);
     }
+
     addEntitiesToDatabase();
 };
 

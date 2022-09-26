@@ -44,9 +44,11 @@ describe('<Search/> successes', () => {
                     </MemoryRouter>
                 ),
                 offlineState: false,
-                setOfflineState: jest.fn(() => {
-                    // Should be empty
-                }),
+                setOfflineState: jest.fn(
+                    (offlineState: boolean): Promise<void> => {
+                        return Promise.resolve();
+                    }
+                ),
             })
         );
     });
@@ -139,8 +141,8 @@ const renderSearch = (): void => {
                 </MemoryRouter>
             ),
             offlineState: false,
-            setOfflineState: jest.fn(() => {
-                // Should be empty
+            setOfflineState: jest.fn((offlineState: boolean): Promise<void> => {
+                return Promise.resolve();
             }),
         })
     );

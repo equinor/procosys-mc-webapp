@@ -1,6 +1,3 @@
-import { OfflineContentRepository } from '../database/OfflineContentRepository';
-import { StatusRepository } from '../database/StatusRepository';
-
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 
 const Settings = require('../settings.json');
