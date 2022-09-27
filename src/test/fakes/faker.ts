@@ -581,6 +581,7 @@ export const FakeChecklistDetails = (id: number): ChecklistDetails => {
         isRestrictedForUser: FakerRandomBoolean(),
         hasElectronicForm: FakerRandomBoolean(),
         attachmentCount: 10,
+        partOfCertificateSentToCommissioning: false,
     };
 };
 
