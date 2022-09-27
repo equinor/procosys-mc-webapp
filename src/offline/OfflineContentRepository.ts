@@ -64,6 +64,9 @@ class OfflineContentRepository {
         throw Error(`Entities ${entities} not added to database.`);
     }
 
+    /**
+     * Replaces the entity in the offline database, given that only the responseObj has changes.
+     */
     async replaceEntity(entity: Entity): Promise<EntityIndexes> {
         if (db.offlineContent !== undefined) {
             return await db.offlineContent.put(entity);

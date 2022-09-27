@@ -16,7 +16,7 @@ async function IsOfflineMode(): Promise<boolean | undefined> {
     console.error(
         'Not able to get offline status. Will continue in online mode.'
     );
-    return true;
+    return false;
 }
 
 export default IsOfflineMode;

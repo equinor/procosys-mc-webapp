@@ -140,16 +140,12 @@ const procosysApiService = (
         await fetch(`${baseURL}/${url}`, DeleteOperation);
     };
 
-    const postByFetch = async (
-        url: string,
-        bodyData?: any,
-        additionalHeaders?: any
-    ): Promise<any> => {
+    const postByFetch = async (url: string, bodyData?: any): Promise<any> => {
         const PostOperation = {
             method: 'POST',
             headers: {
                 Authorization: `Bearer ${token}`,
-                ...additionalHeaders,
+                'Content-Type': 'application/json',
             },
             body: JSON.stringify(bodyData),
         };
@@ -570,8 +566,7 @@ const procosysApiService = (
     ): Promise<void> => {
         await postByFetch(
             `PunchListItem?plantId=PCS$${plantId}${apiVersion}`,
-            newPunchData,
-            { 'Content-Type': 'application/json' }
+            newPunchData
         );
     };
 
@@ -587,6 +582,7 @@ const procosysApiService = (
         if (!isOfType<PunchItem>(data, 'raisedByCode')) {
             throw new Error(typeGuardErrorMessage('punchItem'));
         }
+        console.log('har hentet punch: ', data);
         return data;
     };
 
@@ -612,8 +608,7 @@ const procosysApiService = (
     ): Promise<void> => {
         await postByFetch(
             `PunchListItem/${punchAction}?plantId=PCS$${plantId}${apiVersion}`,
-            punchItemId,
-            { 'Content-Type': 'application/json' }
+            punchItemId
         );
     };
 

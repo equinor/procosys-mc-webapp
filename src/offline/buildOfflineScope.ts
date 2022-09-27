@@ -194,7 +194,7 @@ const buildOfflineScope = async (
 
         addEntityToMap({
             entityid: entityId,
-            entitytype: searchType + EntityType.Punchlist,
+            entitytype: EntityType.Punchlist,
             responseObj: currentResponseObj,
             apipath: currentApiPath,
         });
@@ -209,6 +209,7 @@ const buildOfflineScope = async (
         addEntityToMap({
             entitytype: searchType + EntityType.Checklists,
             entityid: entityId,
+            parententityid: entityId,
             responseObj: currentResponseObj,
             apipath: currentApiPath,
         });
@@ -226,6 +227,7 @@ const buildOfflineScope = async (
             addEntityToMap({
                 entitytype: EntityType.WorkOrderAttachments,
                 entityid: entityId,
+                parententityid: entityId,
                 responseObj: currentResponseObj,
                 apipath: currentApiPath,
             });
