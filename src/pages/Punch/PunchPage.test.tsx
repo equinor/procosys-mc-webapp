@@ -99,9 +99,7 @@ describe('<PunchPage>', () => {
         userEvent.click(unclearButton);
         await expectDetails();
         await expectFooter();
-        const clearButton = await screen.findByRole('button', {
-            name: 'Clear',
-        });
+        const clearButton = await screen.findByText('Clear');
         expect(clearButton).toBeInTheDocument();
     });
 });
