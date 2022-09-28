@@ -48,7 +48,7 @@ const Bookmarks = (): JSX.Element => {
             }
             loadingMessage={
                 isDownloading
-                    ? 'Downloading data for offline use. Please do not exit the app until download has finished.'
+                    ? 'Downloading data for offline use. Please do not exit the app until the download has finished.'
                     : ''
             }
         >
