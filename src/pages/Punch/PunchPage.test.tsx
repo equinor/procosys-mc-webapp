@@ -31,8 +31,8 @@ const renderPunchPage = (): void => {
                 </MemoryRouter>
             ),
             offlineState: false,
-            setOfflineState: jest.fn(() => {
-                // Should be empty
+            setOfflineState: jest.fn((offlineState: boolean): Promise<void> => {
+                return Promise.resolve();
             }),
         })
     );

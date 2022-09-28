@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction } from 'react';
+import React from 'react';
 import { MemoryRouter } from 'react-router-dom';
 import PlantContext from '../contexts/PlantContext';
 import McAppContext, { AsyncStatus } from '../contexts/McAppContext';
@@ -43,6 +43,8 @@ const procosysApiInstance = procosysApiService(
     'dummy-bearer-token'
 );
 
+const dummyConfigurationAccessToken = 'dummytoken';
+
 type WithMcAppContextProps = {
     Component: JSX.Element;
     asyncStatus?: AsyncStatus;
@@ -50,7 +52,8 @@ type WithMcAppContextProps = {
     auth?: IAuthService;
     api?: ProcosysApiService;
     offlineState?: boolean;
-    setOfflineState: Dispatch<SetStateAction<boolean>>;
+    setOfflineState: (offlineState: boolean) => Promise<void>;
+    configurationAccessToken: string;
 };
 
 export const withMcAppContext = ({
@@ -61,6 +64,7 @@ export const withMcAppContext = ({
     api = procosysApiInstance,
     offlineState = false,
     setOfflineState,
+    configurationAccessToken,
 }: WithMcAppContextProps): JSX.Element => {
     return (
         <MemoryRouter initialEntries={['/test/sub/directory']}>
@@ -74,6 +78,7 @@ export const withMcAppContext = ({
                     featureFlags: dummyFeatureFlags,
                     offlineState: offlineState,
                     setOfflineState: setOfflineState,
+                    configurationAccessToken: configurationAccessToken,
                 }}
             >
                 {Component}
@@ -91,7 +96,7 @@ type WithPlantContextProps = {
     currentProject?: Project | undefined;
     setCurrentProject?: (project: Project) => void;
     offlineState?: boolean;
-    setOfflineState: Dispatch<SetStateAction<boolean>>;
+    setOfflineState: (offlineState: boolean) => Promise<void>;
 };
 
 export const withPlantContext = ({
@@ -121,5 +126,6 @@ export const withPlantContext = ({
         ),
         offlineState: offlineState,
         setOfflineState: setOfflineState,
+        configurationAccessToken: dummyConfigurationAccessToken,
     });
 };

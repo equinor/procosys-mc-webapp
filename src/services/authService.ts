@@ -1,6 +1,7 @@
 import * as Msal from '@azure/msal-browser';
 import { AccountInfo } from '@azure/msal-browser';
 import { StorageKey } from '@equinor/procosys-webapp-components';
+
 export interface IAuthService {
     login: () => Promise<void>;
     logout: () => Promise<void>;

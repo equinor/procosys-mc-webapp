@@ -2,7 +2,7 @@ import {
     PunchAction,
     UpdatePunchData,
 } from '@equinor/procosys-webapp-components';
-import { OfflineContentRepository } from '../database/OfflineContentRepository';
+import { Console } from 'console';
 import { SavedSearchType, SearchType } from '../typings/enums';
 import objectToCamelCase from '../utils/objectToCamelCase';
 import {
@@ -39,7 +39,6 @@ import {
     isPlants,
     Bookmarks,
 } from './apiTypes';
-import { StatusRepository } from '../database/StatusRepository';
 
 type ProcosysApiServiceProps = {
     baseURL: string;
@@ -62,8 +61,6 @@ const procosysApiService = (
     { baseURL, apiVersion }: ProcosysApiServiceProps,
     token: string
 ) => {
-    const offlineContentRepository = new OfflineContentRepository();
-
     let callback = (resultObj: any, apiPath: string): string => resultObj;
 
     const setCallbackFunction = (cbFunc: any): void => {
@@ -87,37 +84,17 @@ const procosysApiService = (
             },
         };
 
-        //Todo: Følgende blir tatt bort når vi har fått på plass en interceptor.
-        const statusRepository = new StatusRepository();
-        const statusObj = await statusRepository.getStatus();
-        if (statusObj && statusObj.status) {
-            const entity = await offlineContentRepository.getByApiPath(
-                `${baseURL}/${url}`
-            );
-            if (entity) {
-                callback('', '');
-                //return object from database instead of doing a fetch
-                return entity.responseObj;
-            } else {
-                console.error(
-                    'Offline-mode. Entity for given url is not found in local database',
-                    url
-                );
-            }
-        }
-
-        console.log('fetch-kall ', url);
+        //todo: ta bort log
+        //console.log('fetch-kall ' + url);
         const res = await fetch(`${baseURL}/${url}`, GetOperation);
-
         if (res.ok) {
             const jsonResult = await res.json();
-
             const resultObj = objectToCamelCase(jsonResult);
             callback(resultObj, res.url);
             return resultObj;
         } else {
             //alert('HTTP-Error: ' + res.status);
-            console.error(res.status);
+            console.error('Error occured on fetch call', res.status);
             return res;
         }
     };
@@ -136,25 +113,8 @@ const procosysApiService = (
             },
         };
 
-        //todo: Midlertidig håndtering av offline
-        const statusRepository = new StatusRepository();
-        const statusObj = await statusRepository.getStatus();
-        if (statusObj && statusObj.status) {
-            const entity = await offlineContentRepository.getByApiPath(
-                `${baseURL}/${url}`
-            );
-            if (entity) {
-                callback('', '');
-                return entity.responseObj as Blob;
-            } else {
-                console.error(
-                    'Offline-mode. Entity for given url is not found in local database',
-                    url
-                );
-            }
-        }
-
-        console.log('fetch-kall ', url);
+        //todo: ta bort
+        //console.log('fetch-kall attachment ', url);
         const res = await fetch(`${baseURL}/${url}`, GetOperation);
 
         if (res.ok) {
@@ -248,7 +208,6 @@ const procosysApiService = (
         const data = await getByFetch(
             `Projects?plantId=${plantId}${apiVersion}`
         );
-
         if (!isArrayOfType<Project>(data, 'title')) {
             throw new Error(typeGuardErrorMessage('projects'));
         }
@@ -890,6 +849,10 @@ const procosysApiService = (
         deleteChecklistAttachment,
         postChecklistAttachment,
         setCallbackFunction,
+        postByFetch,
+        postAttachmentByFetch,
+        deleteByFetch,
+        putByFetch,
     };
 };
 

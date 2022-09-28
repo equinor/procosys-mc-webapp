@@ -1,11 +1,5 @@
 import { Button } from '@equinor/eds-core-react';
-import React, {
-    Dispatch,
-    ReactNode,
-    SetStateAction,
-    useEffect,
-    useState,
-} from 'react';
+import React, { ReactNode, useEffect, useState } from 'react';
 import {
     ErrorPage,
     ReloadButton,
@@ -15,7 +9,7 @@ import { Plant } from '../services/apiTypes';
 import { AppConfig, FeatureFlags } from '../services/appConfiguration';
 import { IAuthService } from '../services/authService';
 import { ProcosysApiService } from '../services/procosysApi';
-import { StatusRepository } from '../database/StatusRepository';
+import { StatusRepository } from '../offline/StatusRepository';
 
 type McAppContextProps = {
     availablePlants: Plant[];
@@ -24,8 +18,9 @@ type McAppContextProps = {
     auth: IAuthService;
     appConfig: AppConfig;
     offlineState: boolean;
-    setOfflineState: Dispatch<SetStateAction<boolean>>;
+    setOfflineState: (offlineState: boolean) => Promise<void>;
     featureFlags: FeatureFlags;
+    configurationAccessToken: string;
 };
 
 export enum AsyncStatus {
@@ -44,6 +39,7 @@ type McAppContextProviderProps = {
     api: ProcosysApiService;
     appConfig: AppConfig;
     featureFlags: FeatureFlags;
+    configurationAccessToken: string;
 };
 
 export const McAppContextProvider: React.FC<McAppContextProviderProps> = ({
@@ -52,33 +48,33 @@ export const McAppContextProvider: React.FC<McAppContextProviderProps> = ({
     api,
     appConfig,
     featureFlags,
+    configurationAccessToken,
 }: McAppContextProviderProps) => {
     const [availablePlants, setAvailablePlants] = useState<Plant[]>([]);
     const [fetchPlantsStatus, setFetchPlantsStatus] = useState<AsyncStatus>(
         AsyncStatus.LOADING
     );
 
-    const [offlineState, setOfflineState] = useState(false);
+    const [offlineState, setOfflineStateSync] = useState(false);
     const statusRepository = new StatusRepository();
+
+    const setOfflineState = async (offlineState: boolean): Promise<void> => {
+        await statusRepository.updateStatus(offlineState);
+        setOfflineStateSync(offlineState);
+    };
 
     useEffect(() => {
         const asyncFunction = async (): Promise<void> => {
             const status = await statusRepository.getStatus();
-            setOfflineState(
-                status
-                    ? status.status
-                    : (): boolean => {
-                          statusRepository.addOfflineStatus(false);
-                          return false;
-                      }
-            );
+            if (status) {
+                setOfflineStateSync(status.status);
+            } else {
+                await statusRepository.addOfflineStatus(false);
+                setOfflineStateSync(false);
+            }
         };
         asyncFunction();
     }, []);
-
-    useEffect(() => {
-        statusRepository.updateStatus(offlineState);
-    }, [offlineState]);
 
     useEffect(() => {
         (async (): Promise<void> => {
@@ -123,6 +119,7 @@ export const McAppContextProvider: React.FC<McAppContextProviderProps> = ({
                 offlineState,
                 setOfflineState,
                 featureFlags,
+                configurationAccessToken,
             }}
         >
             {children}

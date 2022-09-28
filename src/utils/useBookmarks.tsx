@@ -4,6 +4,7 @@ import PlantContext from '../contexts/PlantContext';
 import { SearchType } from '../typings/enums';
 import { Bookmarks } from '../services/apiTypes';
 import useCommonHooks from './useCommonHooks';
+import { syncUpdatesWithBackend } from '../offline/syncUpdatesWithBackend';
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const useBookmarks = () => {
@@ -91,12 +92,17 @@ const useBookmarks = () => {
         try {
             if (currentProject) {
                 await api.putCancelOffline(params.plant, currentProject?.id);
-                setOfflineState(false);
+                await setOfflineState(false);
                 getCurrentBookmarks();
             }
         } catch (error) {
             if (!(error instanceof Error)) return;
         }
+    };
+
+    const finishOffline = async (): Promise<void> => {
+        await setOfflineState(false);
+        await syncUpdatesWithBackend(api);
     };
 
     return {
@@ -105,6 +111,7 @@ const useBookmarks = () => {
         isBookmarked,
         handleBookmarkClicked,
         cancelOffline,
+        finishOffline,
     };
 };
 
