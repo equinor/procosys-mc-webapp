@@ -331,9 +331,9 @@ export interface NewPunch {
     ClearingByOrganizationId: number;
     SortingId?: number;
     PriorityId?: number;
-    ActionByPerson?: number | null;
-    DueDate?: string;
-    Estimate?: number;
+    ActionByPerson: number | null;
+    DueDate: string | null;
+    Estimate: number | null;
     TemporaryFileIds: string[];
 }
 

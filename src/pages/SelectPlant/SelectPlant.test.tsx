@@ -12,9 +12,12 @@ describe('<SelectPlant />', () => {
                 Component: <SelectPlant />,
                 asyncStatus: AsyncStatus.SUCCESS,
                 offlineState: false,
-                setOfflineState: jest.fn(() => {
-                    // Should be empty
-                }),
+                setOfflineState: jest.fn(
+                    (offlineState: boolean): Promise<void> => {
+                        return Promise.resolve();
+                    }
+                ),
+                configurationAccessToken: 'dummy',
             })
         );
         expect(getByText(testPlants[0].title)).toBeInTheDocument();
@@ -26,9 +29,12 @@ describe('<SelectPlant />', () => {
                 asyncStatus: AsyncStatus.SUCCESS,
                 plants: [],
                 offlineState: false,
-                setOfflineState: jest.fn(() => {
-                    // Should be empty
-                }),
+                setOfflineState: jest.fn(
+                    (offlineState: boolean): Promise<void> => {
+                        return Promise.resolve();
+                    }
+                ),
+                configurationAccessToken: 'dummy',
             })
         );
         expect(getByText('No plants to show')).toBeInTheDocument();

@@ -29,6 +29,7 @@ type AppProps = {
     appInsightsReactPlugin: ReactPlugin;
     appConfig: AppConfig;
     featureFlags: FeatureFlags;
+    configurationAccessToken: string;
 };
 
 const App = ({
@@ -37,6 +38,7 @@ const App = ({
     appConfig,
     appInsightsReactPlugin: reactPlugin,
     featureFlags,
+    configurationAccessToken,
 }: AppProps): JSX.Element => {
     return (
         <AppInsightsContext.Provider value={reactPlugin}>
@@ -45,6 +47,7 @@ const App = ({
                 auth={authInstance}
                 appConfig={appConfig}
                 featureFlags={featureFlags}
+                configurationAccessToken={configurationAccessToken}
             >
                 <Router basename={'/mc'}>
                     <ErrorBoundary>
