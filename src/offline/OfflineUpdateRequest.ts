@@ -22,21 +22,28 @@ export class OfflineUpdateRequest {
         const headers = request.headers;
         const contentType = headers.get('Content-Type');
 
+        const url = removeBaseUrlFromUrl(request.url);
+
         let bodyData;
         let type;
 
-        if (
-            request.body &&
-            (contentType == undefined || contentType.includes('json'))
-        ) {
-            bodyData = await request.json();
-            type = RequestType.Json;
-        } else {
-            bodyData = await request.formData(); //attachment
-            type = RequestType.Attachment;
+        if (request.body) {
+            if (contentType == undefined || contentType.includes('json')) {
+                //json
+                bodyData = await request.json();
+                type = RequestType.Json;
+            } else if (contentType.includes('form-data')) {
+                //attachment
+                const formData = await request.formData();
+                bodyData = [];
+                formData.forEach((element) => bodyData.push(element));
+                type = RequestType.Attachment;
+            } else {
+                console.error(
+                    `Not able to add body data with ContentType ${contentType} when building request object for ${url}`
+                );
+            }
         }
-
-        const url = removeBaseUrlFromUrl(request.url);
 
         return new OfflineUpdateRequest(url, request.method, bodyData, type);
     }

@@ -14,7 +14,7 @@ import { precacheAndRoute, createHandlerBoundToURL } from 'workbox-precaching';
 import { registerRoute } from 'workbox-routing';
 import { StaleWhileRevalidate } from 'workbox-strategies';
 import { OfflineContentRepository } from './offline/OfflineContentRepository';
-import { updateOfflineContentDatabase } from './offline/offlineContentUpdates/updateOfflineDatabase';
+import { updateOfflineContentDatabase } from './offline/updateOfflineDatabase';
 import { addUpdateRequestToDatabase } from './offline/addUpdateRequestToDatabase';
 import { OfflineUpdateRequest } from './offline/OfflineUpdateRequest';
 import removeBaseUrlFromUrl from './utils/removeBaseUrlFromUrl';
@@ -120,6 +120,10 @@ const handleFetchUpdate = async (event: FetchEvent): Promise<Response> => {
 
         const offlinePostRequest = await OfflineUpdateRequest.build(
             event.request
+        );
+        console.log(
+            'handleFetchupdaee, offlinepostrequest',
+            offlinePostRequest
         );
         await updateOfflineContentDatabase(offlinePostRequest);
         await addUpdateRequestToDatabase(offlinePostRequest);

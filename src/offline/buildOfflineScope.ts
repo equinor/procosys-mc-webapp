@@ -80,7 +80,7 @@ const buildOfflineScope = async (
         apipath: currentApiPath,
     });
 
-    //auth config
+    //App config
     await fetchAppConfig(
         authConfig.configurationEndpoint,
         configurationAccessToken,
@@ -253,116 +253,121 @@ const buildOfflineScope = async (
         //For all checklists
         for (const checklist of scope) {
             //Checklist
-            const checklistResp: ChecklistResponse = await api.getChecklist(
-                plantId,
-                checklist.id.toString()
-            );
-
-            addEntityToMap({
-                entitytype: EntityType.Checklist,
-                entityid: checklist.id,
-                parententityid: entityId,
-                responseObj: currentResponseObj,
-                apipath: currentApiPath,
-            });
-
-            //Tag
-            await api.getTag(plantId, checklistResp.checkList.tagId);
-
-            addEntityToMap({
-                entitytype: EntityType.Tag,
-                entityid: checklistResp.checkList.tagId,
-                parententityid: entityId,
-                responseObj: currentResponseObj,
-                apipath: currentApiPath,
-            });
-
-            //Checklist punchlist
-            const checklistPunchList: PunchPreview[] =
-                await api.getChecklistPunchList(
+            try {
+                // todo: ta bort try.
+                const checklistResp: ChecklistResponse = await api.getChecklist(
                     plantId,
                     checklist.id.toString()
                 );
 
-            addEntityToMap({
-                entitytype: EntityType.ChecklistPunchlist,
-                entityid: checklist.id,
-                parententityid: entityId,
-                responseObj: currentResponseObj,
-                apipath: currentApiPath,
-            });
-
-            for (const punch of checklistPunchList) {
-                //Punch item
-                await api.getPunchItem(plantId, punch.id.toString());
-
                 addEntityToMap({
-                    entitytype: EntityType.PunchItem,
-                    entityid: punch.id,
-                    parententityid: checklist.id,
+                    entitytype: EntityType.Checklist,
+                    entityid: checklist.id,
+                    parententityid: entityId,
                     responseObj: currentResponseObj,
                     apipath: currentApiPath,
                 });
 
-                //Punch attachments
-                const punchAttachments: Attachment[] =
-                    await api.getPunchAttachments(plantId, punch.id);
+                //Tag
+                await api.getTag(plantId, checklistResp.checkList.tagId);
 
                 addEntityToMap({
-                    entitytype: EntityType.PunchAttachments,
-                    entityid: punch.id,
-                    parententityid: checklist.id,
+                    entitytype: EntityType.Tag,
+                    entityid: checklistResp.checkList.tagId,
+                    parententityid: entityId,
                     responseObj: currentResponseObj,
                     apipath: currentApiPath,
                 });
 
-                for (const attachment of punchAttachments) {
-                    //Checklist attachment
-                    await api.getPunchAttachment(
-                        abortSignal,
+                //Checklist punchlist
+                const checklistPunchList: PunchPreview[] =
+                    await api.getChecklistPunchList(
                         plantId,
-                        punch.id,
+                        checklist.id.toString()
+                    );
+
+                addEntityToMap({
+                    entitytype: EntityType.ChecklistPunchlist,
+                    entityid: checklist.id,
+                    parententityid: entityId,
+                    responseObj: currentResponseObj,
+                    apipath: currentApiPath,
+                });
+
+                for (const punch of checklistPunchList) {
+                    //Punch item
+                    await api.getPunchItem(plantId, punch.id.toString());
+
+                    addEntityToMap({
+                        entitytype: EntityType.PunchItem,
+                        entityid: punch.id,
+                        parententityid: checklist.id,
+                        responseObj: currentResponseObj,
+                        apipath: currentApiPath,
+                    });
+
+                    //Punch attachments
+                    const punchAttachments: Attachment[] =
+                        await api.getPunchAttachments(plantId, punch.id);
+
+                    addEntityToMap({
+                        entitytype: EntityType.PunchAttachments,
+                        entityid: punch.id,
+                        parententityid: checklist.id,
+                        responseObj: currentResponseObj,
+                        apipath: currentApiPath,
+                    });
+
+                    for (const attachment of punchAttachments) {
+                        //Checklist attachment
+                        await api.getPunchAttachment(
+                            abortSignal,
+                            plantId,
+                            punch.id,
+                            attachment.id
+                        );
+                        addEntityToMap({
+                            entitytype: EntityType.PunchAttachment,
+                            entityid: attachment.id,
+                            parententityid: punch.id,
+                            apipath: currentApiPath,
+                            responseObj: currentResponseObj,
+                        });
+                    }
+                }
+                //Checklist attachment list
+                const checklistAttachments: Attachment[] =
+                    await api.getChecklistAttachments(
+                        plantId,
+                        checklist.id.toString()
+                    );
+
+                addEntityToMap({
+                    entitytype: EntityType.ChecklistAttachments,
+                    entityid: checklist.id,
+                    parententityid: entityId,
+                    apipath: currentApiPath,
+                    responseObj: currentResponseObj,
+                });
+
+                for (const attachment of checklistAttachments) {
+                    //Checklist attachment
+                    await api.getChecklistAttachment(
+                        plantId,
+                        checklist.id.toString(),
                         attachment.id
                     );
+
                     addEntityToMap({
-                        entitytype: EntityType.PunchAttachment,
+                        entitytype: EntityType.ChecklistAttachment,
                         entityid: attachment.id,
-                        parententityid: punch.id,
+                        parententityid: checklist.id,
                         apipath: currentApiPath,
                         responseObj: currentResponseObj,
                     });
                 }
-            }
-            //Checklist attachment list
-            const checklistAttachments: Attachment[] =
-                await api.getChecklistAttachments(
-                    plantId,
-                    checklist.id.toString()
-                );
-
-            addEntityToMap({
-                entitytype: EntityType.ChecklistAttachments,
-                entityid: checklist.id,
-                parententityid: entityId,
-                apipath: currentApiPath,
-                responseObj: currentResponseObj,
-            });
-
-            for (const attachment of checklistAttachments) {
-                //Checklist attachment
-                await api.getChecklistAttachment(
-                    plantId,
-                    checklist.id.toString(),
-                    attachment.id
-                );
-
-                addEntityToMap({
-                    entitytype: EntityType.ChecklistAttachment,
-                    entityid: attachment.id,
-                    parententityid: checklist.id,
-                    apipath: currentApiPath,
-                    responseObj: currentResponseObj,
-                });
+            } catch (e) {
+                console.error('Feil med getcheckoust. hopper over.');
             }
         }
     };

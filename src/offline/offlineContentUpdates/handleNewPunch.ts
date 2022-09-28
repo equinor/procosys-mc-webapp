@@ -104,10 +104,10 @@ export const handleNewPunch = async (
         estimate: newPunch.Estimate,
         formularType: '',
         id: newPunchItemId,
-        isRestrictedForUser: false, //??
+        isRestrictedForUser: false,
         materialEta: null,
         materialNo: null,
-        materialRequired: false, //??
+        materialRequired: false,
         priorityCode: priority ? priority.code : null,
         priorityDescription: priority ? priority.description : null,
         priorityId: priority ? priority.id : null,

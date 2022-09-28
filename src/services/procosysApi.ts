@@ -113,8 +113,7 @@ const procosysApiService = (
             },
         };
 
-        //todo: ta bort
-        //console.log('fetch-kall attachment ', url);
+        console.log('fetch-kall attachment ', url);
         const res = await fetch(`${baseURL}/${url}`, GetOperation);
 
         if (res.ok) {
@@ -622,6 +621,7 @@ const procosysApiService = (
             `PunchListItem/Attachment?plantId=PCS$${plantId}&punchItemId=${punchItemId}&attachmentId=${attachmentId}${apiVersion}`,
             abortSignal
         );
+        console.log('Henter punch attachment:', data);
         return data as Blob;
     };
 
