@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import styled from 'styled-components';
 import { Button, Checkbox, Scrim } from '@equinor/eds-core-react';
 import useBookmarks from '../../../utils/useBookmarks';
@@ -8,6 +8,7 @@ import useCommonHooks from '../../../utils/useCommonHooks';
 import AsyncPage from '../../../components/AsyncPage';
 import { COLORS, SHADOW } from '../../../style/GlobalStyles';
 import { AsyncStatus } from '@equinor/procosys-webapp-components';
+import PlantContext from '../../../contexts/PlantContext';
 
 const CancellingPopup = styled.div`
     display: flex;
@@ -34,6 +35,7 @@ const Bookmarks = (): JSX.Element => {
         cancelOffline,
         startOffline,
         isDownloading,
+        finishOffline,
     } = useBookmarks();
     const { offlineState } = useCommonHooks();
     const [isCancelling, setIsCancelling] = useState<boolean>(false);
@@ -89,11 +91,10 @@ const Bookmarks = (): JSX.Element => {
                 <ButtonsWrapper>
                     {offlineState == true ? (
                         <>
-                            <Button>Finish offline</Button>
-                            <Button
-                                color="danger"
-                                onClick={(): void => setIsCancelling(true)}
-                            >
+                            <Button onClick={finishOffline}>
+                                Finish offline
+                            </Button>
+                            <Button onClick={cancelOffline}>
                                 Cancel offline
                             </Button>
                         </>

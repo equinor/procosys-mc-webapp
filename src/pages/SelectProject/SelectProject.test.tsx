@@ -12,9 +12,11 @@ describe('<SelectProject />', () => {
                 Component: <SelectProject />,
                 fetchProjectsAndPermissionsStatus: AsyncStatus.SUCCESS,
                 offlineState: false,
-                setOfflineState: jest.fn(() => {
-                    // Should be empty
-                }),
+                setOfflineState: jest.fn(
+                    (offlineState: boolean): Promise<void> => {
+                        return Promise.resolve();
+                    }
+                ),
             })
         );
         expect(getByText(testProjects[0].title)).toBeInTheDocument();
@@ -49,9 +51,11 @@ describe('<SelectProject />', () => {
                 fetchProjectsAndPermissionsStatus: AsyncStatus.ERROR,
                 availableProjects: [],
                 offlineState: false,
-                setOfflineState: jest.fn(() => {
-                    // Should be empty
-                }),
+                setOfflineState: jest.fn(
+                    (offlineState: boolean): Promise<void> => {
+                        return Promise.resolve();
+                    }
+                ),
             })
         );
         expect(

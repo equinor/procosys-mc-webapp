@@ -4,9 +4,10 @@ import PlantContext from '../contexts/PlantContext';
 import { SearchType } from '../typings/enums';
 import { Bookmarks } from '../services/apiTypes';
 import useCommonHooks from './useCommonHooks';
-import { OfflineContentRepository } from '../database/OfflineContentRepository';
-import buildOfflineScope from '../database/buildOfflineScope';
-import { StatusRepository } from '../database/StatusRepository';
+import { syncUpdatesWithBackend } from '../offline/syncUpdatesWithBackend';
+import buildOfflineScope from '../offline/buildOfflineScope';
+import { OfflineContentRepository } from '../offline/OfflineContentRepository';
+import { OfflineUpdateRepository } from '../offline/OfflineUpdateRepository';
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const useBookmarks = () => {
@@ -97,10 +98,9 @@ const useBookmarks = () => {
         try {
             if (currentProject) {
                 setBookmarksStatus(AsyncStatus.LOADING);
-                await api.putCancelOffline(params.plant, currentProject?.id);
-                setOfflineState(false);
-                setCurrentBookmarks(null);
-                setBookmarksStatus(AsyncStatus.EMPTY_RESPONSE);
+                await api.putCancelOffline(params.plant, currentProject?.id); // TODO: try/catch
+                await setOfflineState(false);
+                getCurrentBookmarks();
             }
         } catch (error) {
             if (!(error instanceof Error)) return;
@@ -108,33 +108,26 @@ const useBookmarks = () => {
     };
 
     const startOffline = async (): Promise<void> => {
-        setBookmarksStatus(AsyncStatus.LOADING);
-        setIsDownloading(true);
         const offlineContentRepository = new OfflineContentRepository();
+        const offlineUpdateRepository = new OfflineUpdateRepository();
+
         await offlineContentRepository.cleanOfflineContent();
-        //Setter til offline false for sikkerhetsskyld. Vi må rydde litt i hvordan status settes gjennom systmet.
-        setOfflineState(false);
-        const statusRepository = new StatusRepository();
-        const statusObj = await statusRepository.getStatus();
-        if (statusObj) {
-            await statusRepository.updateStatus(false);
-        } else {
-            await statusRepository.addOfflineStatus(false);
-        }
+        await offlineUpdateRepository.cleanOfflineUpdates();
+
         if (currentPlant && currentProject) {
             await buildOfflineScope(
-                auth,
                 api,
                 currentPlant.slug,
                 currentProject.id,
                 configurationAccessToken
             );
         }
-        //todo: Denne skal nok bort.
-        await statusRepository.updateStatus(true);
-        setOfflineState(true);
-        setBookmarksStatus(AsyncStatus.SUCCESS);
-        setIsDownloading(false);
+
+        await setOfflineState(true);
+    };
+    const finishOffline = async (): Promise<void> => {
+        await setOfflineState(false);
+        await syncUpdatesWithBackend(api);
     };
 
     return {
@@ -145,6 +138,7 @@ const useBookmarks = () => {
         cancelOffline,
         startOffline,
         isDownloading,
+        finishOffline,
     };
 };
 

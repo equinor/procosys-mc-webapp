@@ -11,6 +11,33 @@ export enum UpdatePunchEndpoint {
     Estimate = 'setEstimate',
 }
 
+export enum EntityType {
+    ChecklistPunchlist = 'ChecklistPunchlist',
+    AuthConfig = 'AuthConfig',
+    AppConfig = 'AppConfig',
+    Bookmarks = 'Bookmarks',
+    Permissions = 'Permissions',
+    Plants = 'Plants',
+    Projects = 'Projects',
+    PunchCategories = 'PunchCategories',
+    PunchOrganization = 'PunchOrganization',
+    PunchPriorities = 'PunchPriorities',
+    PunchSorts = 'PunchSorts',
+    PunchTypes = 'PunchTypes',
+    EntityDetails = 'EntityDetails',
+    Punchlist = 'Punchlist',
+    Checklists = 'Checklists',
+    WorkOrderAttachments = 'WorkOrderAttachments',
+    WorkOrderAttachment = 'WorkOrderAttachment',
+    Checklist = 'Checklist',
+    Tag = 'Tag',
+    PunchItem = 'PunchItem',
+    PunchAttachments = 'PunchAttachments',
+    PunchAttachment = 'PunchAttachment',
+    ChecklistAttachments = 'ChecklistAttachments',
+    ChecklistAttachment = 'ChecklistAttachment',
+}
+
 export enum SavedSearchType {
     CHECKLIST = 'checklist',
     PUNCH = 'punch',
