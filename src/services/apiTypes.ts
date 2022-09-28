@@ -245,6 +245,7 @@ export interface ChecklistDetails {
     isRestrictedForUser: boolean;
     hasElectronicForm: boolean;
     attachmentCount: number;
+    partOfCertificateSentToCommissioning: boolean;
 }
 
 export interface ColumnLabel {
