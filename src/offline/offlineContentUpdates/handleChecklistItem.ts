@@ -13,7 +13,7 @@ type Dto = {
 /**
  * Update offline content database based on a post of set ok on checklist item
  */
-export const handleChecklistPostSetOK = async (dto: Dto): Promise<void> => {
+export const handleChecklistItemPostSetOK = async (dto: Dto): Promise<void> => {
     const checklistEntity: IEntity = await offlineContentRepository.getEntity(
         EntityType.Checklist,
         Number(dto.CheckListId)
@@ -27,14 +27,14 @@ export const handleChecklistPostSetOK = async (dto: Dto): Promise<void> => {
 
     if (checkitem) {
         checkitem.isOk = true;
-        offlineContentRepository.replaceEntity(checklistEntity);
+        await offlineContentRepository.replaceEntity(checklistEntity);
     }
 };
 
 /**
  * Update offline content database based on a post of set ok on checklist item
  */
-export const handleChecklistPostSetNA = async (dto: Dto): Promise<void> => {
+export const handleChecklistItemPostSetNA = async (dto: Dto): Promise<void> => {
     const checklistEntity: IEntity = await offlineContentRepository.getEntity(
         EntityType.Checklist,
         Number(dto.CheckListId)
@@ -48,14 +48,14 @@ export const handleChecklistPostSetNA = async (dto: Dto): Promise<void> => {
 
     if (checkitem) {
         checkitem.isNotApplicable = true;
-        offlineContentRepository.replaceEntity(checklistEntity);
+        await offlineContentRepository.replaceEntity(checklistEntity);
     }
 };
 
 /**
  * Update offline content database based on a post of set ok on checklist item
  */
-export const handleChecklistPostClear = async (dto: Dto): Promise<void> => {
+export const handleChecklistItemPostClear = async (dto: Dto): Promise<void> => {
     const checklistEntity: IEntity = await offlineContentRepository.getEntity(
         EntityType.Checklist,
         Number(dto.CheckListId)
@@ -70,6 +70,6 @@ export const handleChecklistPostClear = async (dto: Dto): Promise<void> => {
     if (checkitem) {
         checkitem.isNotApplicable = false;
         checkitem.isOk = false;
-        offlineContentRepository.replaceEntity(checklistEntity);
+        await offlineContentRepository.replaceEntity(checklistEntity);
     }
 };

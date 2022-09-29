@@ -129,7 +129,7 @@ export const updateObject = (sourceObj: any, targetObj: any): any => {
 };
 
 /**
- * Return the the first string between, based on pre- and post string
+ * Return the the string between, based on pre- and post string
  */
 export const getStringBetween = (
     str: string,
@@ -144,7 +144,7 @@ export const getStringBetween = (
  * Update punchlist and checklist punchlist
  */
 export const updatePunchlists = async (punch: PunchItem): Promise<void> => {
-    const update = (punchlistEntity: Entity): void => {
+    const update = async (punchlistEntity: Entity): Promise<void> => {
         //Get punch review from list
         const punchlist: PunchPreview[] = punchlistEntity.responseObj;
         const storedPunchIndex = punchlist.findIndex((p) => p.id == punch.id);
@@ -161,7 +161,7 @@ export const updatePunchlists = async (punch: PunchItem): Promise<void> => {
             storedPunch.status = punch.status;
 
             //Replace updated object in database
-            offlineContentRepository.replaceEntity(punchlistEntity);
+            await offlineContentRepository.replaceEntity(punchlistEntity);
         }
     };
 
@@ -176,6 +176,6 @@ export const updatePunchlists = async (punch: PunchItem): Promise<void> => {
         mainEntityId
     );
 
-    update(checklistPunchlistEntity);
-    update(punchlistEntity);
+    await update(checklistPunchlistEntity);
+    await update(punchlistEntity);
 };

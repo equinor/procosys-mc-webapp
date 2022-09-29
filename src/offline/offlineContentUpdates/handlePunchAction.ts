@@ -52,7 +52,7 @@ export const handlePunchAction = async (
         }
     }
     punchItemEntity.responseObj = punch;
-    offlineContentRepository.replaceEntity(punchItemEntity);
+    await offlineContentRepository.replaceEntity(punchItemEntity);
 
     updatePunchlists(punch);
 };

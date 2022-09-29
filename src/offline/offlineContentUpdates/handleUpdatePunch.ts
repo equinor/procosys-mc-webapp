@@ -30,8 +30,6 @@ type PunchDto = {
  * Update offline content database based on a post of new punch.
  */
 export const handleUpdatePunch = async (
-    requestUrl: string,
-    params: URLSearchParams,
     updatedPunchDto: PunchDto
 ): Promise<void> => {
     //Get offline punch
@@ -106,6 +104,6 @@ export const handleUpdatePunch = async (
     }
 
     //Update database
-    offlineContentRepository.replaceEntity(punchEntity);
+    await offlineContentRepository.replaceEntity(punchEntity);
     updatePunchlists(punch);
 };

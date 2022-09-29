@@ -5,10 +5,16 @@ import { handlePostPunchAttachment } from './offlineContentUpdates/handlePostPun
 import { handlePunchAction } from './offlineContentUpdates/handlePunchAction';
 import { handleUpdatePunch } from './offlineContentUpdates/handleUpdatePunch';
 import {
-    handleChecklistPostClear,
-    handleChecklistPostSetNA,
-    handleChecklistPostSetOK,
+    handleChecklistItemPostClear,
+    handleChecklistItemPostSetNA,
+    handleChecklistItemPostSetOK,
 } from './offlineContentUpdates/handleChecklistItem';
+import {
+    handleChecklistPostSign,
+    handleChecklistPostUnSign,
+    handleChecklistPostUnVerify,
+    handleChecklistPostVerify,
+} from './offlineContentUpdates/handleChecklist';
 
 //*****************************************************************************
 // The functions here will handle update of offline database, on POST and PUT.
@@ -51,20 +57,24 @@ export const updateOfflineContentDatabase = async (
                 bodyData
             );
         } else if (url.startsWith('CheckList/Item/SetOk')) {
-            await handleChecklistPostSetOK(bodyData);
+            await handleChecklistItemPostSetOK(bodyData);
         } else if (url.startsWith('CheckList/Item/SetNA')) {
-            await handleChecklistPostSetNA(bodyData);
+            await handleChecklistItemPostSetNA(bodyData);
         } else if (url.startsWith('CheckList/Item/Clear')) {
-            await handleChecklistPostClear(bodyData);
+            await handleChecklistItemPostClear(bodyData);
+        } else if (url.startsWith('CheckList/MC/Sign')) {
+            await handleChecklistPostSign(bodyData);
+        } else if (url.startsWith('CheckList/MC/Unsign')) {
+            await handleChecklistPostUnSign(bodyData);
+        } else if (url.startsWith('CheckList/MC/Verify')) {
+            await handleChecklistPostVerify(bodyData);
+        } else if (url.startsWith('CheckList/MC/Unverify')) {
+            await handleChecklistPostUnVerify(bodyData);
         }
     } else if (method == 'PUT') {
         //putUpdatePunch
         if (url.startsWith('PunchListItem/')) {
-            await handleUpdatePunch(
-                offlinePostRequest.url,
-                searchParams,
-                bodyData
-            );
+            await handleUpdatePunch(bodyData);
         }
     } else {
         console.error(

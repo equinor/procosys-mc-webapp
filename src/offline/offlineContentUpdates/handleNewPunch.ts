@@ -178,10 +178,10 @@ export const handleNewPunch = async (
 
     checklistPunchlist.push(newPunchReview);
     checklistPunchlistEntity.responseObj = checklistPunchlist;
-    offlineContentRepository.replaceEntity(checklistPunchlistEntity);
+    await offlineContentRepository.replaceEntity(checklistPunchlistEntity);
 
     //Add the new punch item to the main punchlist and replace the object in the offline content database
     mainPunchList.push(newPunchReview);
     mainPunchlistEntity.responseObj = mainPunchList;
-    offlineContentRepository.replaceEntity(mainPunchlistEntity);
+    await offlineContentRepository.replaceEntity(mainPunchlistEntity);
 };

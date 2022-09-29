@@ -33,7 +33,7 @@ class OfflineContentRepository {
         entityType: EntityType,
         entityId?: number
     ): Promise<Entity> {
-        let result = undefined;
+        let result;
         if (entityId) {
             result = await db.offlineContent
                 .where('entitytype')
