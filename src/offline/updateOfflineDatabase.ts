@@ -4,6 +4,11 @@ import { handleNewPunch } from './offlineContentUpdates/handleNewPunch';
 import { handlePostPunchAttachment } from './offlineContentUpdates/handlePostPunchAttachment';
 import { handlePunchAction } from './offlineContentUpdates/handlePunchAction';
 import { handleUpdatePunch } from './offlineContentUpdates/handleUpdatePunch';
+import {
+    handleChecklistPostClear,
+    handleChecklistPostSetNA,
+    handleChecklistPostSetOK,
+} from './offlineContentUpdates/handleChecklistItem';
 
 //*****************************************************************************
 // The functions here will handle update of offline database, on POST and PUT.
@@ -45,6 +50,12 @@ export const updateOfflineContentDatabase = async (
                 searchParams,
                 bodyData
             );
+        } else if (url.startsWith('CheckList/Item/SetOk')) {
+            await handleChecklistPostSetOK(bodyData);
+        } else if (url.startsWith('CheckList/Item/SetNA')) {
+            await handleChecklistPostSetNA(bodyData);
+        } else if (url.startsWith('CheckList/Item/Clear')) {
+            await handleChecklistPostClear(bodyData);
         }
     } else if (method == 'PUT') {
         //putUpdatePunch

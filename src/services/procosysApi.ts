@@ -2,7 +2,6 @@ import {
     PunchAction,
     UpdatePunchData,
 } from '@equinor/procosys-webapp-components';
-import { Console } from 'console';
 import { SavedSearchType, SearchType } from '../typings/enums';
 import objectToCamelCase from '../utils/objectToCamelCase';
 import {
