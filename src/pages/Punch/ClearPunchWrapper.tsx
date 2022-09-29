@@ -44,7 +44,7 @@ const ClearPunchWrapper = ({
     canEdit,
     canClear,
 }: ClearPunchWrapperProps): JSX.Element => {
-    const { api, params, history, url } = useCommonHooks();
+    const { api, params, history, url, offlineState } = useCommonHooks();
     const { snackbar, setSnackbarText } = useSnackbar();
     const [categories, setCategories] = useState<PunchCategory[]>([]);
     const [types, setTypes] = useState<PunchType[]>([]);
@@ -164,6 +164,7 @@ const ClearPunchWrapper = ({
             query={query}
             setQuery={setQuery}
             abortController={abortController}
+            disablePersonsSearch={offlineState}
         />
     );
 };

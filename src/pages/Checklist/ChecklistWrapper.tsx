@@ -14,7 +14,8 @@ type ChecklistWrapperProps = {
 const ChecklistWrapper = ({
     refreshChecklistStatus,
 }: ChecklistWrapperProps): JSX.Element => {
-    const { auth, params, procosysApiSettings } = useCommonHooks();
+    const { auth, params, procosysApiSettings, offlineState } =
+        useCommonHooks();
     const { snackbar, setSnackbarText } = useSnackbar();
 
     return (
@@ -26,6 +27,7 @@ const ChecklistWrapper = ({
                 getAccessToken={auth.getAccessToken}
                 setSnackbarText={setSnackbarText}
                 refreshChecklistStatus={refreshChecklistStatus}
+                offlineState={offlineState}
             />
             {snackbar}
             <BottomSpacer />

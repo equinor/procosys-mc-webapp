@@ -4,6 +4,7 @@ import SavedSearches from './SavedSearches/SavedSearches';
 import SearchArea from './Searching/SearchArea';
 import styled from 'styled-components';
 import { SearchType } from '../../typings/enums';
+import useCommonHooks from '../../utils/useCommonHooks';
 
 const ButtonsWrapper = styled.div`
     display: flex;
@@ -19,8 +20,10 @@ interface SearchProps {
 
 const Search = ({ setSnackbarText }: SearchProps): JSX.Element => {
     const [searchType, setSearchType] = useState<string>();
+    const { offlineState } = useCommonHooks();
 
     const determineComponent = (): JSX.Element => {
+        if (offlineState === true) return <></>;
         if (searchType === undefined) {
             return <SavedSearches setSnackbarText={setSnackbarText} />;
         }
@@ -35,21 +38,25 @@ const Search = ({ setSnackbarText }: SearchProps): JSX.Element => {
                     searchType={SearchType.PO}
                     currentSearchType={searchType}
                     setCurrentSearchType={setSearchType}
+                    disabled={offlineState}
                 />
                 <SearchTypeButton
                     searchType={SearchType.MC}
                     currentSearchType={searchType}
                     setCurrentSearchType={setSearchType}
+                    disabled={offlineState}
                 />
                 <SearchTypeButton
                     searchType={SearchType.WO}
                     currentSearchType={searchType}
                     setCurrentSearchType={setSearchType}
+                    disabled={offlineState}
                 />
                 <SearchTypeButton
                     searchType={SearchType.Tag}
                     currentSearchType={searchType}
                     setCurrentSearchType={setSearchType}
+                    disabled={offlineState}
                 />
             </ButtonsWrapper>
             {determineComponent()}
