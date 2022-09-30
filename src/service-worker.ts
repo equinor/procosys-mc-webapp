@@ -13,16 +13,13 @@ import { ExpirationPlugin } from 'workbox-expiration';
 import { precacheAndRoute, createHandlerBoundToURL } from 'workbox-precaching';
 import { registerRoute } from 'workbox-routing';
 import { StaleWhileRevalidate } from 'workbox-strategies';
-import { OfflineContentRepository } from './offline/OfflineContentRepository';
-import { updateOfflineContentDatabase } from './offline/updateOfflineDatabase';
-import { addUpdateRequestToDatabase } from './offline/addUpdateRequestToDatabase';
-import { OfflineUpdateRequest } from './offline/OfflineUpdateRequest';
-import removeBaseUrlFromUrl from './utils/removeBaseUrlFromUrl';
-import IsOfflineMode from './utils/isOfflineMode';
+import {
+    handleFetchGET,
+    handleFetchUpdate,
+    handleOtherFetchEvents,
+} from './offline/handleFetchEvents';
 
 declare const self: ServiceWorkerGlobalScope;
-
-const offlineContentRepository = new OfflineContentRepository();
 
 clientsClaim();
 
@@ -85,68 +82,6 @@ self.addEventListener('message', (event) => {
         self.skipWaiting();
     }
 });
-
-const handleFetchGET = async (event: FetchEvent): Promise<any> => {
-    //console.log('handleFetchGET', event.request.url);
-    const url = removeBaseUrlFromUrl(event.request.url);
-
-    if (await IsOfflineMode()) {
-        // Try to get the response from offline content database.
-        const entity = await offlineContentRepository.getByApiPath(url);
-        if (entity) {
-            //todo: Ta bort log
-            // console.log(
-            //     'handleFetchGET: Returnerer objekt fra database. ' +
-            //         event.request.url,
-            //     entity.responseObj
-            // );
-            const blob = new Blob([JSON.stringify(entity.responseObj)]);
-            return new Response(blob);
-        } else {
-            console.error(
-                'Offline-mode. Entity for given url is not found in local database. Will try to fetch.',
-                event.request.url
-            );
-            return await fetch(event.request);
-        }
-    } else {
-        return await fetch(event.request);
-    }
-};
-
-const handleFetchUpdate = async (event: FetchEvent): Promise<Response> => {
-    if (await IsOfflineMode()) {
-        // console.log('handleFetchupdate. Offline mode.', event.request.url);
-
-        const offlinePostRequest = await OfflineUpdateRequest.build(
-            event.request
-        );
-        console.log(
-            'handleFetchupdaee, offlinepostrequest',
-            offlinePostRequest
-        );
-        await updateOfflineContentDatabase(offlinePostRequest);
-        await addUpdateRequestToDatabase(offlinePostRequest);
-
-        return new Response();
-    } else {
-        // console.log('handleFetchUpdate. Online mode', event.request.url);
-        return await fetch(event.request);
-    }
-};
-
-const handleOtherFetchEvents = async (event: FetchEvent): Promise<Response> => {
-    if (await IsOfflineMode()) {
-        console.error(
-            'We are in offline mode, and should not need to perform any fetch.',
-            event.request.url
-        );
-        return await fetch(event.request);
-    } else {
-        // console.log('handleFetchUpdate. Online mode', event.request.url);
-        return await fetch(event.request);
-    }
-};
 
 self.addEventListener('fetch', function (event: FetchEvent) {
     // console.log('Intercept fetch', event.request.url);

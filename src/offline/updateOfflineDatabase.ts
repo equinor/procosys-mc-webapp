@@ -10,11 +10,17 @@ import {
     handleChecklistItemPostSetOK,
 } from './offlineContentUpdates/handleChecklistItem';
 import {
+    handleChecklistPostCustomCheckItem,
     handleChecklistPostSign,
     handleChecklistPostUnSign,
     handleChecklistPostUnVerify,
     handleChecklistPostVerify,
 } from './offlineContentUpdates/handleChecklist';
+import {
+    handleCustomChecklistItemDelete,
+    handleCustomChecklistItemPostClear,
+    handleCustomChecklistItemPostSetOK,
+} from './offlineContentUpdates/handleCustomChecklistItem';
 
 //*****************************************************************************
 // The functions here will handle update of offline database, on POST and PUT.
@@ -70,11 +76,21 @@ export const updateOfflineContentDatabase = async (
             await handleChecklistPostVerify(bodyData);
         } else if (url.startsWith('CheckList/MC/Unverify')) {
             await handleChecklistPostUnVerify(bodyData);
+        } else if (url.startsWith('CheckList/CustomItem?plantId')) {
+            await handleChecklistPostCustomCheckItem(bodyData);
+        } else if (url.startsWith('CheckList/CustomItem/SetOk')) {
+            await handleCustomChecklistItemPostSetOK(bodyData);
+        } else if (url.startsWith('CheckList/CustomItem/Clear')) {
+            await handleCustomChecklistItemPostClear(bodyData);
         }
     } else if (method == 'PUT') {
         //putUpdatePunch
         if (url.startsWith('PunchListItem/')) {
             await handleUpdatePunch(bodyData);
+        }
+    } else if (method == 'DELETE') {
+        if (url.startsWith('CheckList/CustomItem?plantId')) {
+            await handleCustomChecklistItemDelete(bodyData);
         }
     } else {
         console.error(

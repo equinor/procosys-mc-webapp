@@ -2,6 +2,7 @@ import { OfflineContentRepository } from '../OfflineContentRepository';
 import { EntityType } from '../../typings/enums';
 import { ChecklistResponse } from '../../services/apiTypes';
 import { IEntity } from '../IEntity';
+import { generateRandomId } from './utils';
 
 const offlineContentRepository = new OfflineContentRepository();
 
@@ -84,6 +85,39 @@ export const handleChecklistPostUnVerify = async (dto: Dto): Promise<void> => {
         checklist.checkList.verifiedByFirstName = null;
         checklist.checkList.verifiedByLastName = null;
         checklist.checkList.verifiedByUser = null;
+        await offlineContentRepository.replaceEntity(checklistEntity);
+    }
+};
+
+type CustomCheckItemDto = {
+    ItemNo: string;
+    Text: string;
+    IsOk: boolean;
+    ChecklistId: string;
+};
+
+/**
+ * Update offline content database based on a post of custom checkitem
+ */
+export const handleChecklistPostCustomCheckItem = async (
+    dto: CustomCheckItemDto
+): Promise<void> => {
+    const checklistEntity: IEntity = await offlineContentRepository.getEntity(
+        EntityType.Checklist,
+        Number(dto.ChecklistId)
+    );
+
+    const checklist: ChecklistResponse = checklistEntity.responseObj;
+
+    if (checklist) {
+        const newCustomCheckItem = {
+            id: generateRandomId(),
+            itemNo: dto.ItemNo,
+            text: dto.Text,
+            isOk: dto.IsOk,
+        };
+
+        checklist.customCheckItems.push(newCustomCheckItem);
         await offlineContentRepository.replaceEntity(checklistEntity);
     }
 };
