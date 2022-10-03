@@ -1,13 +1,20 @@
 import { PunchAction } from '@equinor/procosys-webapp-components';
 import { OfflineUpdateRequest } from './OfflineUpdateRequest';
 import { handleNewPunch } from './offlineContentUpdates/handleNewPunch';
-import { handlePostPunchAttachment } from './offlineContentUpdates/handlePostPunchAttachment';
+import {
+    handleDeleteCheckListAttachment,
+    handleDeletePunchAttachment,
+    handleDeleteWorkOrderAttachment,
+    handlePostPunchAttachment,
+    handlePostWorkOrderAttachment,
+} from './offlineContentUpdates/handleAttachment';
 import { handlePunchAction } from './offlineContentUpdates/handlePunchAction';
 import { handleUpdatePunch } from './offlineContentUpdates/handleUpdatePunch';
 import {
     handleChecklistItemPostClear,
     handleChecklistItemPostSetNA,
     handleChecklistItemPostSetOK,
+    handleChecklistPutMetaTableCell,
 } from './offlineContentUpdates/handleChecklistItem';
 import {
     handleChecklistPostCustomCheckItem,
@@ -15,6 +22,7 @@ import {
     handleChecklistPostUnSign,
     handleChecklistPostUnVerify,
     handleChecklistPostVerify,
+    handleChecklistPutComment,
 } from './offlineContentUpdates/handleChecklist';
 import {
     handleCustomChecklistItemDelete,
@@ -57,11 +65,7 @@ export const updateOfflineContentDatabase = async (
         ) {
             await handlePunchAction(offlinePostRequest.url, bodyData);
         } else if (url.startsWith('PunchListItem/Attachment')) {
-            await handlePostPunchAttachment(
-                offlinePostRequest.url,
-                searchParams,
-                bodyData
-            );
+            await handlePostPunchAttachment(searchParams, bodyData);
         } else if (url.startsWith('CheckList/Item/SetOk')) {
             await handleChecklistItemPostSetOK(bodyData);
         } else if (url.startsWith('CheckList/Item/SetNA')) {
@@ -82,15 +86,30 @@ export const updateOfflineContentDatabase = async (
             await handleCustomChecklistItemPostSetOK(bodyData);
         } else if (url.startsWith('CheckList/CustomItem/Clear')) {
             await handleCustomChecklistItemPostClear(bodyData);
+        } else if (url.startsWith('WorkOrder/Attachment')) {
+            await handlePostWorkOrderAttachment(searchParams, bodyData);
         }
     } else if (method == 'PUT') {
         //putUpdatePunch
         if (url.startsWith('PunchListItem/')) {
             await handleUpdatePunch(bodyData);
+        } else if (url.startsWith('CheckList/MC/Comment')) {
+            await handleChecklistPutComment(bodyData);
+        } else if (
+            url.startsWith('CheckList/Item/MetaTableCell') ||
+            url.startsWith('CheckList/Item/MetaTableCellDate')
+        ) {
+            await handleChecklistPutMetaTableCell(bodyData);
         }
     } else if (method == 'DELETE') {
         if (url.startsWith('CheckList/CustomItem?plantId')) {
             await handleCustomChecklistItemDelete(bodyData);
+        } else if (url.startsWith('WorkOrder/Attachment')) {
+            await handleDeleteWorkOrderAttachment(bodyData);
+        } else if (url.startsWith('PunchListItem/Attachment')) {
+            await handleDeletePunchAttachment(bodyData);
+        } else if (url.startsWith('CheckList/Attachment')) {
+            await handleDeleteCheckListAttachment(bodyData);
         }
     } else {
         console.error(

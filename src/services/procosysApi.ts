@@ -620,7 +620,6 @@ const procosysApiService = (
             `PunchListItem/Attachment?plantId=PCS$${plantId}&punchItemId=${punchItemId}&attachmentId=${attachmentId}${apiVersion}`,
             abortSignal
         );
-        console.log('Henter punch attachment:', data);
         return data as Blob;
     };
 

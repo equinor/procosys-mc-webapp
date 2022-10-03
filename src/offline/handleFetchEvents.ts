@@ -23,14 +23,19 @@ export const handleFetchGET = async (event: FetchEvent): Promise<any> => {
         // Try to get the response from offline content database.
         const entity = await offlineContentRepository.getByApiPath(url);
         if (entity) {
-            //todo: Ta bort log
+            // todo: Ta bort log
             // console.log(
             //     'handleFetchGET: Returnerer objekt fra database. ' +
             //         event.request.url,
             //     entity.responseObj
             // );
-            const blob = new Blob([JSON.stringify(entity.responseObj)]);
-            return new Response(blob);
+            if (url.includes('/Attachment?')) {
+                const blob = entity.responseObj as Blob;
+                return new Response(blob);
+            } else {
+                const blob = new Blob([JSON.stringify(entity.responseObj)]);
+                return new Response(blob);
+            }
         } else {
             console.error(
                 'Offline-mode. Entity for given url is not found in local database. Will try to fetch.',

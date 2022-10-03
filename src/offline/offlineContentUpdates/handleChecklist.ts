@@ -121,3 +121,27 @@ export const handleChecklistPostCustomCheckItem = async (
         await offlineContentRepository.replaceEntity(checklistEntity);
     }
 };
+
+type ChecklistCommentDto = {
+    CheckListId: number;
+    Comment: string;
+};
+
+/**
+ * Update offline content database based on a put of checklist comment
+ */
+export const handleChecklistPutComment = async (
+    dto: ChecklistCommentDto
+): Promise<void> => {
+    const checklistEntity: IEntity = await offlineContentRepository.getEntity(
+        EntityType.Checklist,
+        Number(dto.CheckListId)
+    );
+
+    const checklist: ChecklistResponse = checklistEntity.responseObj;
+
+    if (checklist) {
+        checklist.checkList.comment = dto.Comment;
+    }
+    await offlineContentRepository.replaceEntity(checklistEntity);
+};

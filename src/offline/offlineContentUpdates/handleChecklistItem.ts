@@ -73,3 +73,71 @@ export const handleChecklistItemPostClear = async (dto: Dto): Promise<void> => {
         await offlineContentRepository.replaceEntity(checklistEntity);
     }
 };
+
+type ChecklistMetatableCell = {
+    CheckListId: number;
+    CheckItemId: number;
+    ColumnId: number;
+    RowId: number;
+    Value: string;
+};
+
+/**
+ * Update offline content database based on a put meta table cell
+ */
+export const handleChecklistPutMetaTableCell = async (
+    dto: ChecklistMetatableCell
+): Promise<void> => {
+    const checklistEntity: IEntity = await offlineContentRepository.getEntity(
+        EntityType.Checklist,
+        Number(dto.CheckListId)
+    );
+
+    const checklist: ChecklistResponse = checklistEntity.responseObj;
+
+    if (checklist) {
+        const checkitem = checklist.checkItems.find(
+            (item) => item.id === dto.CheckItemId
+        );
+        if (checkitem && checkitem.metaTable) {
+            const row = checkitem.metaTable.rows.find(
+                (item) => item.id === dto.RowId
+            );
+            if (row && row.cells) {
+                const cell = row.cells.find(
+                    (item) => item.columnId === dto.ColumnId
+                );
+                if (cell) {
+                    if (cell.isValueDate) {
+                        cell.valueDate = dto.Value;
+                    } else {
+                        cell.value = dto.Value;
+                    }
+                    await offlineContentRepository.replaceEntity(
+                        checklistEntity
+                    );
+                } else {
+                    console.error(
+                        'Was not able to find cell in metatable.',
+                        dto,
+                        checkitem.metaTable
+                    );
+                }
+            } else {
+                console.error(
+                    'Was not able to find row in metatable, or row.cells.',
+                    dto,
+                    checkitem.metaTable
+                );
+            }
+        } else {
+            console.error(
+                'Was not able to find checkitem or checkitem metaTable.',
+                dto,
+                checkitem?.metaTable
+            );
+        }
+    } else {
+        console.error('Was not able to find checklist.', dto.CheckListId);
+    }
+};
