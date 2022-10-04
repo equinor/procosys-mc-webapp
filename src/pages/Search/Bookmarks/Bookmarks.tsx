@@ -70,7 +70,6 @@ const Bookmarks = (): JSX.Element => {
                             />
                             <ButtonsWrapper>
                                 <Button
-                                    variant={'outlined'}
                                     onClick={(): void => setIsCancelling(false)}
                                 >
                                     Don&apos;t cancel
