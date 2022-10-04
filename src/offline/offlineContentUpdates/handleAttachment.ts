@@ -3,8 +3,31 @@ import { EntityType } from '../../typings/enums';
 import { generateRandomId } from './utils';
 import { Attachment } from '@equinor/procosys-webapp-components';
 import { IEntity } from '../IEntity';
+import { isArrayOfType, isOfType } from '../../services/apiTypeGuards';
 
 const offlineContentRepository = new OfflineContentRepository();
+
+const addNewAttachment = async (
+    attachmentListEntity: IEntity,
+    newAttachmentId: number,
+    title: string | null
+): Promise<void> => {
+    const attachmentList: Attachment[] = attachmentListEntity.responseObj;
+
+    const attachment: Attachment = {
+        id: newAttachmentId,
+        uri: '',
+        title: title ? title : '',
+        createdAt: new Date(),
+        classification: '',
+        mimeType: '',
+        thumbnailAsBase64: '',
+        hasFile: true,
+        fileName: title ? title : '',
+    };
+    attachmentList.push(attachment);
+    await offlineContentRepository.replaceEntity(attachmentListEntity);
+};
 
 /**
  * Update offline content database based on a post of new punch attachment.
@@ -39,22 +62,7 @@ export const handlePostPunchAttachment = async (
         EntityType.PunchAttachments,
         Number(punchId)
     );
-    const attachmentList: Attachment[] = attachmentListEntity.responseObj;
-
-    const attachment: Attachment = {
-        id: newAttachmentId,
-        uri: '',
-        title: title ? title : '',
-        createdAt: new Date(),
-        classification: '',
-        mimeType: '',
-        thumbnailAsBase64: '',
-        hasFile: true,
-        fileName: title ? title : '',
-    };
-    attachmentList.push(attachment);
-    await offlineContentRepository.replaceEntity(attachmentListEntity);
-
+    addNewAttachment(attachmentListEntity, newAttachmentId, title);
     //todo: Må oppdatere punch listen også, med attachmentCount
 };
 
@@ -91,22 +99,44 @@ export const handlePostWorkOrderAttachment = async (
         EntityType.WorkOrderAttachments,
         Number(workOrderId)
     );
-    const attachmentList: Attachment[] = attachmentListEntity.responseObj;
+    addNewAttachment(attachmentListEntity, newAttachmentId, title);
+    //todo: Må oppdatere punch listen også, med attachmentCount
+};
 
-    const attachment: Attachment = {
-        id: newAttachmentId,
-        uri: '',
-        title: title ? title : '',
-        createdAt: new Date(),
-        classification: '',
-        mimeType: '',
-        thumbnailAsBase64: '',
-        hasFile: true,
-        fileName: title ? title : '',
+/**
+ * Update offline content database based on a post of new checklist attachment.
+ */
+export const handlePostChecklistAttachment = async (
+    params: URLSearchParams,
+    bodyData: any
+): Promise<void> => {
+    const plantId = params.get('plantId');
+    const title = params.get('title');
+    const checklistId = params.get('checklistId');
+    const blob: Blob = bodyData[0];
+
+    //Construct url for new punch attachment
+    const newAttachmentId = generateRandomId();
+    const apiVersion = 'api-version=4.1'; //hvor får vi denne fra?
+    const apiPath = `CheckList/Attachment?plantId=${plantId}&workOrderId=${checklistId}&attachmentId=${newAttachmentId}&${apiVersion}`;
+
+    //Create entity object and store in database
+    const checklistAttachmentEntity: IEntity = {
+        entitytype: EntityType.PunchAttachment,
+        entityid: newAttachmentId,
+        parententityid: checklistId ? Number(checklistId) : undefined,
+        responseObj: blob,
+        apipath: apiPath,
     };
-    attachmentList.push(attachment);
-    await offlineContentRepository.replaceEntity(attachmentListEntity);
 
+    await offlineContentRepository.add(checklistAttachmentEntity);
+
+    //Update attachment list
+    const attachmentListEntity = await offlineContentRepository.getEntity(
+        EntityType.WorkOrderAttachments,
+        Number(checklistId)
+    );
+    addNewAttachment(attachmentListEntity, newAttachmentId, title);
     //todo: Må oppdatere punch listen også, med attachmentCount
 };
 
@@ -117,17 +147,39 @@ const deleteAttachmentFromList = async (
     attachmentListEntity: IEntity,
     attachmentId: number
 ): Promise<void> => {
+    if (!isOfType<IEntity>(attachmentListEntity, 'responseObj')) {
+        console.error(
+            'Was not able to find checklist attachment list in offline database.',
+            attachmentId
+        );
+        //todo: Må sørge for at bruker for feilmelding.
+        return;
+    }
     const attachmentList: Attachment[] = attachmentListEntity.responseObj;
 
+    if (!isArrayOfType<Attachment>(attachmentList, 'title')) {
+        console.error(
+            'Response object was not array of Attachment.',
+            attachmentListEntity
+        );
+    }
+
     const indexOfAttachment = attachmentList.findIndex(
-        (attachment: Attachment) => {
-            attachment.id == attachmentId;
-        }
+        (attachment) => attachment.id === attachmentId
     );
 
-    attachmentList.splice(indexOfAttachment);
+    if (indexOfAttachment > -1) {
+        attachmentList.splice(indexOfAttachment);
 
-    await offlineContentRepository.replaceEntity(attachmentListEntity);
+        await offlineContentRepository.replaceEntity(attachmentListEntity);
+    } else {
+        console.error(
+            'Did not find the attachment in the checklist attachment list.',
+            attachmentListEntity,
+            attachmentId
+        );
+        //todo: Må sørge for at bruker for feilmelding.
+    }
 };
 
 type DeleteWOAttachmentDto = {
@@ -185,7 +237,7 @@ export const handleDeleteCheckListAttachment = async (
 
     //Update attachment list
     const attachmentListEntity = await offlineContentRepository.getEntity(
-        EntityType.ChecklistAttachment,
+        EntityType.ChecklistAttachments,
         Number(dto.CheckListId)
     );
 

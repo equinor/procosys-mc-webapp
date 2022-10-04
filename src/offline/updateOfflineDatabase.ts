@@ -5,6 +5,7 @@ import {
     handleDeleteCheckListAttachment,
     handleDeletePunchAttachment,
     handleDeleteWorkOrderAttachment,
+    handlePostChecklistAttachment,
     handlePostPunchAttachment,
     handlePostWorkOrderAttachment,
 } from './offlineContentUpdates/handleAttachment';
@@ -86,6 +87,8 @@ export const updateOfflineContentDatabase = async (
             await handleCustomChecklistItemPostSetOK(bodyData);
         } else if (url.startsWith('CheckList/CustomItem/Clear')) {
             await handleCustomChecklistItemPostClear(bodyData);
+        } else if (url.startsWith('CheckList/Attachment')) {
+            await handlePostChecklistAttachment(searchParams, bodyData);
         } else if (url.startsWith('WorkOrder/Attachment')) {
             await handlePostWorkOrderAttachment(searchParams, bodyData);
         }
