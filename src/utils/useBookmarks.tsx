@@ -22,6 +22,7 @@ const useBookmarks = () => {
     );
     const [isDownloading, setIsDownloading] = useState<boolean>(false);
     const abortController = new AbortController();
+    const [isCancelling, setIsCancelling] = useState<boolean>(false);
 
     const getCurrentBookmarks = async (): Promise<void> => {
         if (!currentProject) return;
@@ -40,6 +41,7 @@ const useBookmarks = () => {
                     bookmarksFromApi.bookmarkedWorkOrders.length < 1)
             ) {
                 setBookmarksStatus(AsyncStatus.EMPTY_RESPONSE);
+                setCurrentBookmarks(bookmarksFromApi);
             } else {
                 setBookmarksStatus(AsyncStatus.SUCCESS);
                 setCurrentBookmarks(bookmarksFromApi);
@@ -88,7 +90,7 @@ const useBookmarks = () => {
             } else {
                 await api.postSetBookmark(params.plant, entityType, entityId);
             }
-            getCurrentBookmarks();
+            await getCurrentBookmarks();
         } catch (error) {
             if (!(error instanceof Error)) return;
         }
@@ -98,16 +100,34 @@ const useBookmarks = () => {
         try {
             if (currentProject) {
                 setBookmarksStatus(AsyncStatus.LOADING);
-                await api.putCancelOffline(params.plant, currentProject?.id); // TODO: try/catch
+                await api.putCancelOffline(params.plant, currentProject.id);
                 await setOfflineState(false);
-                getCurrentBookmarks();
+                setIsCancelling(false);
+                setBookmarksStatus(AsyncStatus.SUCCESS);
             }
         } catch (error) {
             if (!(error instanceof Error)) return;
+            // TODO: handle
+        }
+    };
+
+    const deleteBookmarks = async (): Promise<void> => {
+        try {
+            if (currentProject) {
+                setBookmarksStatus(AsyncStatus.LOADING);
+                await api.putCancelOffline(params.plant, currentProject.id);
+                setBookmarksStatus(AsyncStatus.EMPTY_RESPONSE);
+                setCurrentBookmarks(null);
+            }
+        } catch (error) {
+            if (!(error instanceof Error)) return;
+            // TODO: handle
         }
     };
 
     const startOffline = async (): Promise<void> => {
+        setBookmarksStatus(AsyncStatus.LOADING);
+        setIsDownloading(true);
         const offlineContentRepository = new OfflineContentRepository();
         const offlineUpdateRepository = new OfflineUpdateRepository();
 
@@ -124,10 +144,14 @@ const useBookmarks = () => {
         }
 
         await setOfflineState(true);
+        setBookmarksStatus(AsyncStatus.SUCCESS);
+        setIsDownloading(false);
     };
     const finishOffline = async (): Promise<void> => {
+        setBookmarksStatus(AsyncStatus.LOADING);
         await setOfflineState(false);
         await syncUpdatesWithBackend(api);
+        await getCurrentBookmarks();
     };
 
     return {
@@ -139,6 +163,9 @@ const useBookmarks = () => {
         startOffline,
         isDownloading,
         finishOffline,
+        deleteBookmarks,
+        isCancelling,
+        setIsCancelling,
     };
 };
 
