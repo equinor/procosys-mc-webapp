@@ -36,9 +36,11 @@ const Bookmarks = (): JSX.Element => {
         startOffline,
         isDownloading,
         finishOffline,
+        deleteBookmarks,
+        isCancelling,
+        setIsCancelling,
     } = useBookmarks();
     const { offlineState } = useCommonHooks();
-    const [isCancelling, setIsCancelling] = useState<boolean>(false);
     const [isSure, setIsSure] = useState<boolean>(false);
 
     return (
@@ -68,7 +70,6 @@ const Bookmarks = (): JSX.Element => {
                             />
                             <ButtonsWrapper>
                                 <Button
-                                    variant={'outlined'}
                                     onClick={(): void => setIsCancelling(false)}
                                 >
                                     Don&apos;t cancel
@@ -94,7 +95,10 @@ const Bookmarks = (): JSX.Element => {
                             <Button onClick={finishOffline}>
                                 Finish offline
                             </Button>
-                            <Button onClick={cancelOffline}>
+                            <Button
+                                onClick={(): void => setIsCancelling(true)}
+                                color="danger"
+                            >
                                 Cancel offline
                             </Button>
                         </>
@@ -103,7 +107,7 @@ const Bookmarks = (): JSX.Element => {
                             <Button onClick={startOffline}>
                                 Start offline
                             </Button>
-                            <Button onClick={cancelOffline}>
+                            <Button onClick={deleteBookmarks}>
                                 Delete bookmarks
                             </Button>
                         </>
