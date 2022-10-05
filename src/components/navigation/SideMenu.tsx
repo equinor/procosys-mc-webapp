@@ -125,6 +125,7 @@ const SideMenu = (): JSX.Element => {
                             setDrawerIsOpen(false);
                             history.push('/');
                         }}
+                        disabled={offlineState}
                     >
                         Change plant
                         <EdsIcon name="chevron_right" />
@@ -145,6 +146,7 @@ const SideMenu = (): JSX.Element => {
                                     setDrawerIsOpen(false);
                                     history.push(`/${params.plant}`);
                                 }}
+                                disabled={offlineState}
                             >
                                 Change project
                                 <EdsIcon name="chevron_right" />
