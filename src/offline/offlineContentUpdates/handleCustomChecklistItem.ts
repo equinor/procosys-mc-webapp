@@ -16,6 +16,7 @@ type PostDto = {
 export const handleCustomChecklistItemPostSetOK = async (
     dto: any
 ): Promise<void> => {
+    console.log('handleCustomChecklistItemPostSetOK', dto);
     const checklistEntity: IEntity =
         await offlineContentRepository.getEntityByTypeAndId(
             EntityType.Checklist,

@@ -61,10 +61,14 @@ export const handleFetchUpdate = async (
             'handleFetchupdaee, offlinepostrequest',
             offlinePostRequest
         );
-        await updateOfflineContentDatabase(offlinePostRequest);
+        const data = await updateOfflineContentDatabase(offlinePostRequest);
         await addUpdateRequestToDatabase(offlinePostRequest);
 
-        return new Response();
+        if (data) {
+            return new Response(JSON.stringify(data));
+        } else {
+            return new Response();
+        }
     } else {
         // console.log('handleFetchUpdate. Online mode', event.request.url);
         return await fetch(event.request);

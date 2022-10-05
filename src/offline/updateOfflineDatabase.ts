@@ -31,17 +31,21 @@ import {
     handleCustomChecklistItemPostSetOK,
 } from './offlineContentUpdates/handleCustomChecklistItem';
 
-//*****************************************************************************
-// The functions here will handle update of offline database, on POST and PUT.
-//*****************************************************************************
+//************************************************************************************
+// The functions here will handle update of offline database, on POST, PUT and DELETE.
+//************************************************************************************
+
 /**
  * When a POST/PUT/DELETE fetch is intercepted, and we are in offline mode, this method will be called, and will handle
  * necessary updates of the offline content database.
+ *
+ * Most of the update fetches returned void. However there are some fetches that might return e.g. a new generated id on an item.
+ * Whatever json response that needs to be given, must be returned from this function.
  * @param offlinePostRequest  The intercepted fetch request object.
  */
 export const updateOfflineContentDatabase = async (
     offlinePostRequest: OfflineUpdateRequest
-): Promise<void> => {
+): Promise<void | any> => {
     console.log('updateOfflineContentDatabase', offlinePostRequest);
     const dummyUrl = new URL('http://dummy.no' + offlinePostRequest.url); //todo: Better way to find searchParams?
     const searchParams = dummyUrl.searchParams;
@@ -82,7 +86,7 @@ export const updateOfflineContentDatabase = async (
         } else if (url.startsWith('CheckList/MC/Unverify')) {
             await handleChecklistPostUnVerify(bodyData);
         } else if (url.startsWith('CheckList/CustomItem?plantId')) {
-            await handleChecklistPostCustomCheckItem(bodyData);
+            return await handleChecklistPostCustomCheckItem(bodyData);
         } else if (url.startsWith('CheckList/CustomItem/SetOk')) {
             await handleCustomChecklistItemPostSetOK(bodyData);
         } else if (url.startsWith('CheckList/CustomItem/Clear')) {
