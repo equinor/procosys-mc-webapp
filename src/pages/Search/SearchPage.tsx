@@ -27,7 +27,7 @@ const SearchPageWrapper = styled.main`
 
 const SearchPage = (): JSX.Element => {
     const { snackbar, setSnackbarText } = useSnackbar();
-    const { history, url, path } = useCommonHooks();
+    const { history, url, path, offlineState } = useCommonHooks();
 
     return (
         <>
@@ -35,6 +35,7 @@ const SearchPage = (): JSX.Element => {
                 <Navbar
                     leftContent={<ProcosysButton />}
                     rightContent={<SideMenu />}
+                    isOffline={offlineState}
                 />
                 <Switch>
                     <Route

@@ -20,7 +20,7 @@ import {
 import ChecklistDetailsCard from './ChecklistDetailsCard';
 
 const ChecklistPage = (): JSX.Element => {
-    const { history, url, path, api, params } = useCommonHooks();
+    const { history, url, path, api, params, offlineState } = useCommonHooks();
     const [punchList, setPunchList] = useState<PunchPreview[]>();
     const [details, setDetails] = useState<ChecklistResponse>();
     const [fetchPunchListStatus, setFetchPunchListStatus] = useState(
@@ -109,6 +109,7 @@ const ChecklistPage = (): JSX.Element => {
                         </Button>
                     )
                 }
+                isOffline={offlineState}
             />
             <ChecklistDetailsCard
                 fetchDetailsStatus={fetchDetailsStatus}

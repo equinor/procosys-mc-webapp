@@ -20,7 +20,7 @@ Without service worker:  `yarn start`
 
 With service worker: 
 * `yarn build` (optimized production build is needed)
-* `yarn serve -s build`
+* `serve build`
 
 Note: If 'serve' is not installed: `yarn global add serve`
 
