@@ -29,21 +29,30 @@ export const handleNewPunch = async (
     const plantId = params.get('plantId');
 
     //Get checklist punchlist
-    const checklistPunchlistEntity = await offlineContentRepository.getEntity(
-        EntityType.ChecklistPunchlist,
-        newPunch.CheckListId
-    );
+    const checklistPunchlistEntity =
+        await offlineContentRepository.getEntityByTypeAndId(
+            EntityType.ChecklistPunchlist,
+            newPunch.CheckListId
+        );
 
     const checklistPunchlist: PunchPreview[] =
         checklistPunchlistEntity.responseObj;
 
     const mainEntityId = checklistPunchlistEntity.parententityid; //MC,Tag,PO or WO
+    if (mainEntityId === undefined) {
+        console.error(
+            'Not able to find main punchlist based on entity on checklist punchlist.',
+            checklistPunchlist
+        );
+        return;
+    }
 
     //Get main punchlist
-    const mainPunchlistEntity = await offlineContentRepository.getEntity(
-        EntityType.Punchlist,
-        mainEntityId
-    );
+    const mainPunchlistEntity =
+        await offlineContentRepository.getEntityByTypeAndId(
+            EntityType.Punchlist,
+            mainEntityId
+        );
     const mainPunchList: PunchPreview[] = mainPunchlistEntity.responseObj;
 
     //Get some information about tag

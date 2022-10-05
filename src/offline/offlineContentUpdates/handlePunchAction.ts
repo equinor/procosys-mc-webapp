@@ -15,7 +15,7 @@ export const handlePunchAction = async (
 ): Promise<void> => {
     const punchAction = getStringBetween(requestUrl, 'PunchListItem/', '?');
 
-    const punchItemEntity = await offlineContentRepository.getEntity(
+    const punchItemEntity = await offlineContentRepository.getEntityByTypeAndId(
         EntityType.PunchItem,
         Number(punchItemId)
     );

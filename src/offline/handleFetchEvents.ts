@@ -17,7 +17,7 @@ export const handleFetchGET = async (event: FetchEvent): Promise<any> => {
     if (await IsOfflineMode()) {
         if (url.includes('CheckList/CustomItem/NextItemNo')) {
             //Handle special case. Later: We should try to find a better way to handle this, to avoid this special handling.
-            return handleCustomCheckItemNextItemNo(event.request.url);
+            return await handleCustomCheckItemNextItemNo(event.request.url);
         }
 
         // Try to get the response from offline content database.
@@ -95,10 +95,11 @@ const handleCustomCheckItemNextItemNo = async (
     const url = new URL(fullUrlStr);
     const checklistId = url.searchParams.get('checkListId');
 
-    const checklistEntity: IEntity = await offlineContentRepository.getEntity(
-        EntityType.Checklist,
-        Number(checklistId)
-    );
+    const checklistEntity: IEntity =
+        await offlineContentRepository.getEntityByTypeAndId(
+            EntityType.Checklist,
+            Number(checklistId)
+        );
 
     const checklist: ChecklistResponse = checklistEntity.responseObj;
 

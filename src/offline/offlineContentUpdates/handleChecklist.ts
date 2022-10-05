@@ -6,19 +6,17 @@ import { generateRandomId } from './utils';
 
 const offlineContentRepository = new OfflineContentRepository();
 
-type Dto = {
-    CheckListId: string;
-    CheckItemId: number;
-};
-
 /**
  * Update offline content database based on a post of checklist sign
  */
-export const handleChecklistPostSign = async (dto: Dto): Promise<void> => {
-    const checklistEntity: IEntity = await offlineContentRepository.getEntity(
-        EntityType.Checklist,
-        Number(dto.CheckListId)
-    );
+export const handleChecklistPostSign = async (
+    checklistId: number
+): Promise<void> => {
+    const checklistEntity: IEntity =
+        await offlineContentRepository.getEntityByTypeAndId(
+            EntityType.Checklist,
+            checklistId
+        );
 
     const checklist: ChecklistResponse = checklistEntity.responseObj;
 
@@ -34,11 +32,14 @@ export const handleChecklistPostSign = async (dto: Dto): Promise<void> => {
 /**
  * Update offline content database based on a post of checklist unsign
  */
-export const handleChecklistPostUnSign = async (dto: Dto): Promise<void> => {
-    const checklistEntity: IEntity = await offlineContentRepository.getEntity(
-        EntityType.Checklist,
-        Number(dto.CheckListId)
-    );
+export const handleChecklistPostUnSign = async (
+    checklistId: number
+): Promise<void> => {
+    const checklistEntity: IEntity =
+        await offlineContentRepository.getEntityByTypeAndId(
+            EntityType.Checklist,
+            Number(checklistId)
+        );
     const checklist: ChecklistResponse = checklistEntity.responseObj;
 
     if (checklist) {
@@ -53,11 +54,14 @@ export const handleChecklistPostUnSign = async (dto: Dto): Promise<void> => {
 /**
  * Update offline content database based on a post of checklist verify
  */
-export const handleChecklistPostVerify = async (dto: Dto): Promise<void> => {
-    const checklistEntity: IEntity = await offlineContentRepository.getEntity(
-        EntityType.Checklist,
-        Number(dto.CheckListId)
-    );
+export const handleChecklistPostVerify = async (
+    checklistId: number
+): Promise<void> => {
+    const checklistEntity: IEntity =
+        await offlineContentRepository.getEntityByTypeAndId(
+            EntityType.Checklist,
+            Number(checklistId)
+        );
     const checklist: ChecklistResponse = checklistEntity.responseObj;
 
     if (checklist) {
@@ -72,11 +76,14 @@ export const handleChecklistPostVerify = async (dto: Dto): Promise<void> => {
 /**
  * Update offline content database based on a post of checklist unverify
  */
-export const handleChecklistPostUnVerify = async (dto: Dto): Promise<void> => {
-    const checklistEntity: IEntity = await offlineContentRepository.getEntity(
-        EntityType.Checklist,
-        Number(dto.CheckListId)
-    );
+export const handleChecklistPostUnVerify = async (
+    checklistId: number
+): Promise<void> => {
+    const checklistEntity: IEntity =
+        await offlineContentRepository.getEntityByTypeAndId(
+            EntityType.Checklist,
+            Number(checklistId)
+        );
 
     const checklist: ChecklistResponse = checklistEntity.responseObj;
 
@@ -102,10 +109,11 @@ type CustomCheckItemDto = {
 export const handleChecklistPostCustomCheckItem = async (
     dto: CustomCheckItemDto
 ): Promise<void> => {
-    const checklistEntity: IEntity = await offlineContentRepository.getEntity(
-        EntityType.Checklist,
-        Number(dto.ChecklistId)
-    );
+    const checklistEntity: IEntity =
+        await offlineContentRepository.getEntityByTypeAndId(
+            EntityType.Checklist,
+            Number(dto.ChecklistId)
+        );
 
     const checklist: ChecklistResponse = checklistEntity.responseObj;
 
@@ -133,10 +141,11 @@ type ChecklistCommentDto = {
 export const handleChecklistPutComment = async (
     dto: ChecklistCommentDto
 ): Promise<void> => {
-    const checklistEntity: IEntity = await offlineContentRepository.getEntity(
-        EntityType.Checklist,
-        Number(dto.CheckListId)
-    );
+    const checklistEntity: IEntity =
+        await offlineContentRepository.getEntityByTypeAndId(
+            EntityType.Checklist,
+            Number(dto.CheckListId)
+        );
 
     const checklist: ChecklistResponse = checklistEntity.responseObj;
 

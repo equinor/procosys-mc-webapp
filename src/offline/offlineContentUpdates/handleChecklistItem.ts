@@ -14,10 +14,11 @@ type Dto = {
  * Update offline content database based on a post of set ok on checklist item
  */
 export const handleChecklistItemPostSetOK = async (dto: Dto): Promise<void> => {
-    const checklistEntity: IEntity = await offlineContentRepository.getEntity(
-        EntityType.Checklist,
-        Number(dto.CheckListId)
-    );
+    const checklistEntity: IEntity =
+        await offlineContentRepository.getEntityByTypeAndId(
+            EntityType.Checklist,
+            Number(dto.CheckListId)
+        );
 
     const checklist: ChecklistResponse = checklistEntity.responseObj;
 
@@ -35,10 +36,11 @@ export const handleChecklistItemPostSetOK = async (dto: Dto): Promise<void> => {
  * Update offline content database based on a post of set ok on checklist item
  */
 export const handleChecklistItemPostSetNA = async (dto: Dto): Promise<void> => {
-    const checklistEntity: IEntity = await offlineContentRepository.getEntity(
-        EntityType.Checklist,
-        Number(dto.CheckListId)
-    );
+    const checklistEntity: IEntity =
+        await offlineContentRepository.getEntityByTypeAndId(
+            EntityType.Checklist,
+            Number(dto.CheckListId)
+        );
 
     const checklist: ChecklistResponse = checklistEntity.responseObj;
 
@@ -56,10 +58,11 @@ export const handleChecklistItemPostSetNA = async (dto: Dto): Promise<void> => {
  * Update offline content database based on a post of set ok on checklist item
  */
 export const handleChecklistItemPostClear = async (dto: Dto): Promise<void> => {
-    const checklistEntity: IEntity = await offlineContentRepository.getEntity(
-        EntityType.Checklist,
-        Number(dto.CheckListId)
-    );
+    const checklistEntity: IEntity =
+        await offlineContentRepository.getEntityByTypeAndId(
+            EntityType.Checklist,
+            Number(dto.CheckListId)
+        );
 
     const checklist: ChecklistResponse = checklistEntity.responseObj;
 
@@ -88,10 +91,11 @@ type ChecklistMetatableCell = {
 export const handleChecklistPutMetaTableCell = async (
     dto: ChecklistMetatableCell
 ): Promise<void> => {
-    const checklistEntity: IEntity = await offlineContentRepository.getEntity(
-        EntityType.Checklist,
-        Number(dto.CheckListId)
-    );
+    const checklistEntity: IEntity =
+        await offlineContentRepository.getEntityByTypeAndId(
+            EntityType.Checklist,
+            Number(dto.CheckListId)
+        );
 
     const checklist: ChecklistResponse = checklistEntity.responseObj;
 

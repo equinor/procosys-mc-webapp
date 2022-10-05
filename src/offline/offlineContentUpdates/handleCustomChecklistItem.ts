@@ -14,12 +14,13 @@ type PostDto = {
  * Update offline content database based on a post of set ok on custom checklist item
  */
 export const handleCustomChecklistItemPostSetOK = async (
-    dto: PostDto
+    dto: any
 ): Promise<void> => {
-    const checklistEntity: IEntity = await offlineContentRepository.getEntity(
-        EntityType.Checklist,
-        Number(dto.CheckListId)
-    );
+    const checklistEntity: IEntity =
+        await offlineContentRepository.getEntityByTypeAndId(
+            EntityType.Checklist,
+            Number(dto.CheckListId)
+        );
     const checklist: ChecklistResponse = checklistEntity.responseObj;
 
     const customCheckitem = checklist.customCheckItems.find(
@@ -38,10 +39,11 @@ export const handleCustomChecklistItemPostSetOK = async (
 export const handleCustomChecklistItemPostClear = async (
     dto: PostDto
 ): Promise<void> => {
-    const checklistEntity: IEntity = await offlineContentRepository.getEntity(
-        EntityType.Checklist,
-        Number(dto.CheckListId)
-    );
+    const checklistEntity: IEntity =
+        await offlineContentRepository.getEntityByTypeAndId(
+            EntityType.Checklist,
+            Number(dto.CheckListId)
+        );
 
     const checklist: ChecklistResponse = checklistEntity.responseObj;
 
@@ -66,10 +68,11 @@ type DeleteDto = {
 export const handleCustomChecklistItemDelete = async (
     dto: DeleteDto
 ): Promise<void> => {
-    const checklistEntity: IEntity = await offlineContentRepository.getEntity(
-        EntityType.Checklist,
-        Number(dto.ChecklistId)
-    );
+    const checklistEntity: IEntity =
+        await offlineContentRepository.getEntityByTypeAndId(
+            EntityType.Checklist,
+            Number(dto.ChecklistId)
+        );
 
     const checklist: ChecklistResponse = checklistEntity.responseObj;
     const customCheckitemIndex = checklist.customCheckItems.findIndex(

@@ -20,7 +20,7 @@ const offlineContentRepository = new OfflineContentRepository();
 export const getCompletionStatusByCategory = async (
     categoryId: number
 ): Promise<CompletionStatus> => {
-    const entity = await offlineContentRepository.getEntity(
+    const entity = await offlineContentRepository.getEntityByType(
         EntityType.PunchCategories
     );
     const categories: PunchCategory[] = entity.responseObj;
@@ -34,7 +34,7 @@ export const getCompletionStatusByCategory = async (
 export const getPunchOrganizationById = async (
     organizationId: number
 ): Promise<PunchOrganization | null> => {
-    const entity = await offlineContentRepository.getEntity(
+    const entity = await offlineContentRepository.getEntityByType(
         EntityType.PunchOrganization
     );
     const organizations: PunchOrganization[] = entity.responseObj;
@@ -56,7 +56,7 @@ export const getPunchOrganizationById = async (
 export const getPunchPriorityById = async (
     priorityId: number
 ): Promise<PunchPriority | null> => {
-    const entity = await offlineContentRepository.getEntity(
+    const entity = await offlineContentRepository.getEntityByType(
         EntityType.PunchPriorities
     );
     const priorities: PunchPriority[] = entity.responseObj;
@@ -77,7 +77,7 @@ export const getPunchPriorityById = async (
 export const getPunchSortingById = async (
     sortingId: number
 ): Promise<PunchSort | null> => {
-    const entity = await offlineContentRepository.getEntity(
+    const entity = await offlineContentRepository.getEntityByType(
         EntityType.PunchSorts
     );
     const sortings: PunchSort[] = entity.responseObj;
@@ -98,7 +98,7 @@ export const getPunchSortingById = async (
 export const getPunchTypeById = async (
     typeId: number
 ): Promise<PunchType | null> => {
-    const entity = await offlineContentRepository.getEntity(
+    const entity = await offlineContentRepository.getEntityByType(
         EntityType.PunchTypes
     );
 
@@ -165,13 +165,22 @@ export const updatePunchlists = async (punch: PunchItem): Promise<void> => {
         }
     };
 
-    const checklistPunchlistEntity = await offlineContentRepository.getEntity(
-        EntityType.ChecklistPunchlist,
-        punch.checklistId
-    );
+    const checklistPunchlistEntity =
+        await offlineContentRepository.getEntityByTypeAndId(
+            EntityType.ChecklistPunchlist,
+            punch.checklistId
+        );
     const mainEntityId = checklistPunchlistEntity.parententityid; //MC,Tag,PO or WO
 
-    const punchlistEntity = await offlineContentRepository.getEntity(
+    if (mainEntityId === undefined) {
+        console.error(
+            'Not able to find main punch list based on checklist punchlist entity.',
+            checklistPunchlistEntity
+        );
+        return;
+    }
+
+    const punchlistEntity = await offlineContentRepository.getEntityByTypeAndId(
         EntityType.Punchlist,
         mainEntityId
     );

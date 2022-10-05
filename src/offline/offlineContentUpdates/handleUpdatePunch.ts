@@ -33,7 +33,7 @@ export const handleUpdatePunch = async (
     updatedPunchDto: PunchDto
 ): Promise<void> => {
     //Get offline punch
-    const punchEntity = await offlineContentRepository.getEntity(
+    const punchEntity = await offlineContentRepository.getEntityByTypeAndId(
         EntityType.PunchItem,
         updatedPunchDto.PunchItemId
     );
