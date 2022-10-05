@@ -80,7 +80,7 @@ const PlantInfo = styled.div`
 `;
 
 const SideMenu = (): JSX.Element => {
-    const { auth, history, params } = useCommonHooks();
+    const { auth, history, params, offlineState } = useCommonHooks();
     const { currentPlant, currentProject } = useContext(PlantContext);
     const [drawerIsOpen, setDrawerIsOpen] = useState(false);
 
@@ -107,7 +107,11 @@ const SideMenu = (): JSX.Element => {
                 <UserInfo>
                     <p>Signed in as:</p>
                     <UserNameText>{auth.getUserName()}</UserNameText>
-                    <Button variant="outlined" onClick={auth.logout}>
+                    <Button
+                        variant="outlined"
+                        onClick={auth.logout}
+                        disabled={offlineState}
+                    >
                         Sign out
                     </Button>
                 </UserInfo>
