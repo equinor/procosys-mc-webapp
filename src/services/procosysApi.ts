@@ -238,12 +238,12 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
         ) {
             if (ipoDetails.type == 'DP') {
                 const mcPkgNo = ipoDetails.mcPkgScope.map(
-                    (mcPkg) => mcPkg.mcPkgNo
+                    (mcPkg) => mcPkg.mcPkgNo + '&mcPkgNos='
                 );
                 url = `McPkgs/CheckLists?plantId=PCS$${plantId}&projectName=${ipoDetails.projectName}&mcPkgNos=${mcPkgNo}${apiVersion}`;
             } else {
                 const commPkgNo = ipoDetails.commPkgScope.map(
-                    (commPkg) => commPkg.commPkgNo
+                    (commPkg) => commPkg.commPkgNo + '&commPkgNos='
                 );
                 url = `CommPkgs/CheckLists?plantId=PCS$${plantId}&projectName=${ipoDetails.projectName}&commPkgNos=${commPkgNo}${apiVersion}`;
             }
@@ -312,12 +312,12 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
         ) {
             if (ipoDetails.type == 'DP') {
                 const mcPkgNo = ipoDetails.mcPkgScope.map(
-                    (mcPkg) => mcPkg.mcPkgNo
+                    (mcPkg) => mcPkg.mcPkgNo + '&mcPkgNos='
                 );
                 url = `McPkgs/PunchLists?plantId=PCS$${plantId}&projectName=${ipoDetails.projectName}&mcPkgNos=${mcPkgNo}${apiVersion}`;
             } else {
                 const commPkgNo = ipoDetails.commPkgScope.map(
-                    (commPkg) => commPkg.commPkgNo
+                    (commPkg) => commPkg.commPkgNo + '&commPkgNos='
                 );
                 url = `CommPkgs/PunchLists?plantId=PCS$${plantId}&projectName=${ipoDetails.projectName}&commPkgNos=${commPkgNo}${apiVersion}`;
             }
