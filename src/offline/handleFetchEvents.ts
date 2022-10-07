@@ -11,7 +11,7 @@ import { updateOfflineContentDatabase } from './updateOfflineDatabase';
 const offlineContentRepository = new OfflineContentRepository();
 
 export const handleFetchGET = async (event: FetchEvent): Promise<any> => {
-    //console.log('handleFetchGET', event.request.url);
+    //console.log('handleFetchGET', event);
     const url = removeBaseUrlFromUrl(event.request.url);
 
     if (await IsOfflineMode()) {
@@ -57,10 +57,7 @@ export const handleFetchUpdate = async (
         const offlinePostRequest = await OfflineUpdateRequest.build(
             event.request
         );
-        console.log(
-            'handleFetchupdaee, offlinepostrequest',
-            offlinePostRequest
-        );
+        console.log('handleFetchUpdate, offlineRequest', offlinePostRequest);
         const data = await updateOfflineContentDatabase(offlinePostRequest);
         await addUpdateRequestToDatabase(offlinePostRequest);
 
@@ -70,7 +67,7 @@ export const handleFetchUpdate = async (
             return new Response();
         }
     } else {
-        // console.log('handleFetchUpdate. Online mode', event.request.url);
+        console.log('handleFetchUpdate. Online mode', event.request.url);
         return await fetch(event.request);
     }
 };
@@ -78,6 +75,7 @@ export const handleFetchUpdate = async (
 export const handleOtherFetchEvents = async (
     event: FetchEvent
 ): Promise<Response> => {
+    console.log('handleOtherFetchEvents', event);
     if (await IsOfflineMode()) {
         console.error(
             'We are in offline mode, and should not need to perform any fetch.',

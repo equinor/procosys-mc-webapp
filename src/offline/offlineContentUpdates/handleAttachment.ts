@@ -4,6 +4,7 @@ import { generateRandomId } from './utils';
 import { Attachment } from '@equinor/procosys-webapp-components';
 import { IEntity } from '../IEntity';
 import { isArrayOfType, isOfType } from '../../services/apiTypeGuards';
+import { PunchItem, PunchPreview } from '../../services/apiTypes';
 
 const offlineContentRepository = new OfflineContentRepository();
 
@@ -53,8 +54,16 @@ export const handlePostPunchAttachment = async (
 ): Promise<void> => {
     const plantId = params.get('plantId');
     const title = params.get('title');
-    const punchId = params.get('punchItemId');
+    const punchIdStr = params.get('punchItemId');
     const blob: Blob = bodyData[0];
+
+    if (punchIdStr === null) {
+        console.error('The request parameters does not contain a punchId.');
+        return;
+        //todo: Hva gjør vi her?
+    }
+
+    const punchId = Number(punchIdStr);
 
     //Construct url for new punch attachment
     const newAttachmentId = generateRandomId();
@@ -65,7 +74,7 @@ export const handlePostPunchAttachment = async (
     const punchAttachmentEntity: IEntity = {
         entitytype: EntityType.PunchAttachment,
         entityid: newAttachmentId,
-        parententityid: punchId ? Number(punchId) : undefined,
+        parententityid: punchId,
         responseObj: blob,
         apipath: apiPath,
     };
@@ -76,10 +85,63 @@ export const handlePostPunchAttachment = async (
     const attachmentListEntity =
         await offlineContentRepository.getEntityByTypeAndId(
             EntityType.PunchAttachments,
-            Number(punchId)
+            punchId
         );
+
     await addNewAttachment(attachmentListEntity, newAttachmentId, title);
-    //todo: Må oppdatere punch listen også, med attachmentCount
+
+    //Update attachment count on punch
+    const punchEntity = await offlineContentRepository.getEntityByTypeAndId(
+        EntityType.PunchItem,
+        punchId
+    );
+    const punch: PunchItem = punchEntity.responseObj;
+    punch.attachmentCount++;
+    await offlineContentRepository.replaceEntity(punchEntity);
+
+    //Update attachment count on checklist punchlist
+    const checklistPunchlistEntity =
+        await offlineContentRepository.getEntityByTypeAndId(
+            EntityType.ChecklistPunchlist,
+            punch.checklistId
+        );
+
+    const checklistPunchlist: PunchPreview[] =
+        checklistPunchlistEntity.responseObj;
+
+    const punchReview = checklistPunchlist.find(
+        (punch) => punch.id === punchId
+    );
+    if (!isOfType<PunchPreview>(punchReview, 'attachmentCount')) {
+        console.error('Not able to find punch preview.');
+        return;
+    }
+    punchReview.attachmentCount++;
+    await offlineContentRepository.replaceEntity(checklistPunchlistEntity);
+
+    //Update count on main punchlist
+    const punchlistEntity = await offlineContentRepository.getEntityByTypeAndId(
+        EntityType.Punchlist,
+        Number(checklistPunchlistEntity.parententityid)
+    );
+    if (!punchlistEntity) {
+        console.error(
+            'Was not able to find punchlist for entity in offline database.',
+            attachmentListEntity.parententityid
+        );
+        return;
+    }
+    const punchlist: PunchPreview[] = punchlistEntity.responseObj;
+
+    const punchlistPunchReview = punchlist.find(
+        (punch) => punch.id === punchId
+    );
+    if (!isOfType<PunchPreview>(punchlistPunchReview, 'attachmentCount')) {
+        console.error('Not able to find punch preview in punchlist.');
+        return;
+    }
+    punchlistPunchReview.attachmentCount++;
+    await offlineContentRepository.replaceEntity(punchlistEntity);
 };
 
 /**
