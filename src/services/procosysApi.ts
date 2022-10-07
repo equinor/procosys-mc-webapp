@@ -238,14 +238,14 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
         ) {
             if (ipoDetails.type == 'DP') {
                 const mcPkgNo = ipoDetails.mcPkgScope.map(
-                    (mcPkg) => mcPkg.mcPkgNo + '&mcPkgNos='
+                    (mcPkg) => '&mcPkgNos=' + mcPkg.mcPkgNo
                 );
-                url = `McPkgs/CheckLists?plantId=PCS$${plantId}&projectName=${ipoDetails.projectName}&mcPkgNos=${mcPkgNo}${apiVersion}`;
+                url = `McPkgs/CheckLists?plantId=PCS$${plantId}&projectName=${ipoDetails.projectName}${mcPkgNo}${apiVersion}`;
             } else {
                 const commPkgNo = ipoDetails.commPkgScope.map(
-                    (commPkg) => commPkg.commPkgNo + '&commPkgNos='
+                    (commPkg) => '&commPkgNos=' + commPkg.commPkgNo
                 );
-                url = `CommPkgs/CheckLists?plantId=PCS$${plantId}&projectName=${ipoDetails.projectName}&commPkgNos=${commPkgNo}${apiVersion}`;
+                url = `CommPkgs/CheckLists?plantId=PCS$${plantId}&projectName=${ipoDetails.projectName}${commPkgNo}${apiVersion}`;
             }
         } else {
             throw new Error('The chosen scope type is not supported.');
@@ -312,14 +312,14 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
         ) {
             if (ipoDetails.type == 'DP') {
                 const mcPkgNo = ipoDetails.mcPkgScope.map(
-                    (mcPkg) => mcPkg.mcPkgNo + '&mcPkgNos='
+                    (mcPkg) => '&mcPkgNos=' + mcPkg.mcPkgNo
                 );
-                url = `McPkgs/PunchLists?plantId=PCS$${plantId}&projectName=${ipoDetails.projectName}&mcPkgNos=${mcPkgNo}${apiVersion}`;
+                url = `McPkgs/PunchLists?plantId=PCS$${plantId}&projectName=${ipoDetails.projectName}${mcPkgNo}${apiVersion}`;
             } else {
                 const commPkgNo = ipoDetails.commPkgScope.map(
-                    (commPkg) => commPkg.commPkgNo + '&commPkgNos='
+                    (commPkg) => '&commPkgNos=' + commPkg.commPkgNo
                 );
-                url = `CommPkgs/PunchLists?plantId=PCS$${plantId}&projectName=${ipoDetails.projectName}&commPkgNos=${commPkgNo}${apiVersion}`;
+                url = `CommPkgs/PunchLists?plantId=PCS$${plantId}&projectName=${ipoDetails.projectName}${commPkgNo}${apiVersion}`;
             }
         } else {
             throw new Error('The chosen scope type is not supported.');
