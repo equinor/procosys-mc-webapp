@@ -3,7 +3,7 @@ import withAccessControl from '../../services/withAccessControl';
 import styled from 'styled-components';
 import SearchArea from './Searching/SearchArea';
 import SavedSearches from './SavedSearches/SavedSearches';
-import OutstandingIpo from '../../components/OutstandingIpo';
+import OutstandingIpo from '../../components/OutstandingIpos';
 
 import {
     Navbar,

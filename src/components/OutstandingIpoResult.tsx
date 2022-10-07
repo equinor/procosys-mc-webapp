@@ -10,14 +10,16 @@ const IconWrapper = styled.div`
     margin-right: 16px;
 `;
 
-const OutstandingIpoWrapper = styled.article`
-    cursor: pointer;
+const OutstandingIpoWrapper = styled.article<{ clickable: boolean }>`
+    cursor: ${(props): string => (props.clickable ? 'pointer' : 'default')};
     display: flex;
     padding: 16px 0px;
     margin: 0;
     text-decoration: none;
+    background-color: ${(props): string =>
+        props.clickable ? COLORS.white : COLORS.fadedBlue};
     &:hover {
-        opacity: 0.7;
+        opacity: ${(props): number => (props.clickable ? 0.7 : 1)};
     }
 `;
 
@@ -34,22 +36,28 @@ const ContentWrapper = styled.div`
     }
 `;
 
-export enum SavedSearchType {
-    CHECKLIST = 'checklist',
-    PUNCH = 'punch',
-}
-
 type OutstandingIPOsProps = {
     ipo: OutstandingIpo;
+    isDetailsCard?: boolean;
+    clickable?: boolean;
 };
 
-const OutstandingIpoResult = ({ ipo }: OutstandingIPOsProps): JSX.Element => {
+const OutstandingIpoResult = ({
+    ipo,
+    clickable = true,
+}: OutstandingIPOsProps): JSX.Element => {
     const { history, url } = useCommonHooks();
 
     return (
         <OutstandingIpoWrapper
+            clickable={clickable}
+            as={clickable ? 'a' : 'article'}
             role="link"
-            onClick={(): void => history.push(`${url}/IPO/${ipo.invitationId}`)}
+            onClick={(): void => {
+                if (clickable) {
+                    history.push(`${url}/IPO/${ipo.invitationId}`);
+                }
+            }}
         >
             <IconWrapper>
                 <TextIcon color={COLORS.ipoIcon} text="IPO" />

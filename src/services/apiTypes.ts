@@ -118,7 +118,7 @@ export interface PunchItemSavedSearchResult {
 
 // IPO
 
-export interface OutstandingIpos {
+export interface OutstandingIposType {
     items: OutstandingIpo[];
 }
 

@@ -7,19 +7,18 @@ import {
 import styled from 'styled-components';
 import useCommonHooks from '../utils/useCommonHooks';
 import { AsyncStatus } from '../contexts/McAppContext';
-import { OutstandingIpos } from '../services/apiTypes';
+import { OutstandingIposType } from '../services/apiTypes';
 import OutstandingIpoResult from './OutstandingIpoResult';
 
 const OutstandingIpoWrapper = styled.div`
     margin: 16px 0;
 `;
 
-const OutstandingIpo = (): JSX.Element => {
+const OutstandingIpos = (): JSX.Element => {
     const { params, ipoApi } = useCommonHooks();
-    const [outstandingIpos, setOutstandingIpos] = useState<OutstandingIpos>();
-    const [fetchSearchesStatus, setFetchSearchesStatus] = useState(
-        AsyncStatus.LOADING
-    );
+    const [outstandingIpos, setOutstandingIpos] =
+        useState<OutstandingIposType>();
+    const [fetchIpoStatus, setFetchIpoStatus] = useState(AsyncStatus.LOADING);
 
     useEffect(() => {
         const source = Axios.CancelToken.source();
@@ -30,12 +29,12 @@ const OutstandingIpo = (): JSX.Element => {
                 );
                 if (outstandingIposFromApi.items.length > 0) {
                     setOutstandingIpos(outstandingIposFromApi);
-                    setFetchSearchesStatus(AsyncStatus.SUCCESS);
+                    setFetchIpoStatus(AsyncStatus.SUCCESS);
                 } else {
-                    setFetchSearchesStatus(AsyncStatus.EMPTY_RESPONSE);
+                    setFetchIpoStatus(AsyncStatus.EMPTY_RESPONSE);
                 }
             } catch {
-                setFetchSearchesStatus(AsyncStatus.ERROR);
+                setFetchIpoStatus(AsyncStatus.ERROR);
             }
         })();
         return (): void => {
@@ -45,7 +44,7 @@ const OutstandingIpo = (): JSX.Element => {
 
     const determineContent = (): JSX.Element => {
         if (
-            fetchSearchesStatus === AsyncStatus.SUCCESS &&
+            fetchIpoStatus === AsyncStatus.SUCCESS &&
             outstandingIpos != undefined
         ) {
             return (
@@ -60,7 +59,7 @@ const OutstandingIpo = (): JSX.Element => {
                     })}
                 </div>
             );
-        } else if (fetchSearchesStatus === AsyncStatus.ERROR) {
+        } else if (fetchIpoStatus === AsyncStatus.ERROR) {
             return (
                 <p>
                     <i>
@@ -69,7 +68,7 @@ const OutstandingIpo = (): JSX.Element => {
                     </i>
                 </p>
             );
-        } else if (fetchSearchesStatus === AsyncStatus.EMPTY_RESPONSE) {
+        } else if (fetchIpoStatus === AsyncStatus.EMPTY_RESPONSE) {
             return (
                 <p>
                     <i> No outstanding IPOs in ProCoSys.</i>
@@ -89,4 +88,4 @@ const OutstandingIpo = (): JSX.Element => {
     );
 };
 
-export default OutstandingIpo;
+export default OutstandingIpos;
