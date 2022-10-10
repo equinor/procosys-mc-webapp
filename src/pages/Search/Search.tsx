@@ -3,7 +3,7 @@ import withAccessControl from '../../services/withAccessControl';
 import styled from 'styled-components';
 import SearchArea from './Searching/SearchArea';
 import SavedSearches from './SavedSearches/SavedSearches';
-import OutstandingIpo from '../../components/OutstandingIpos';
+import OutstandingIpos from '../../components/OutstandingIpos';
 
 import {
     Navbar,
@@ -47,7 +47,7 @@ const Search = (): JSX.Element => {
             return (
                 <>
                     <SavedSearches setSnackbarText={setSnackbarText} />{' '}
-                    <OutstandingIpo />{' '}
+                    <OutstandingIpos />{' '}
                 </>
             );
         }

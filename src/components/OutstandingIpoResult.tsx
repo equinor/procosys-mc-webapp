@@ -36,7 +36,6 @@ const ContentWrapper = styled.div`
 
 type OutstandingIPOsProps = {
     ipo: OutstandingIpo;
-    isDetailsCard?: boolean;
 };
 
 const OutstandingIpoResult = ({ ipo }: OutstandingIPOsProps): JSX.Element => {
