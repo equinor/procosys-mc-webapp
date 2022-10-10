@@ -1,20 +1,16 @@
 import { DotProgress } from '@equinor/eds-core-react';
 import {
     EntityDetails,
-    InfoItem,
     isOfType,
     TextIcon,
 } from '@equinor/procosys-webapp-components';
-import { title } from 'process';
 import React from 'react';
 import styled from 'styled-components';
 import McDetails from '../../components/detailCards/McDetails';
-import OutstandingIpoResult from '../../components/OutstandingIpoResult';
 import { AsyncStatus } from '../../contexts/McAppContext';
 import {
     IpoDetails,
     McPkgPreview,
-    OutstandingIpo,
     PoPreview,
     Tag,
     WoPreview,

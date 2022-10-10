@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { IpoDetails, OutstandingIpo } from '../services/apiTypes';
+import { OutstandingIpo } from '../services/apiTypes';
 import { COLORS, Caption } from '../style/GlobalStyles';
 import { TextIcon } from '@equinor/procosys-webapp-components';
 import useCommonHooks from '../utils/useCommonHooks';
