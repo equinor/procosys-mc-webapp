@@ -5,6 +5,7 @@ import {
     isOfType,
     TextIcon,
 } from '@equinor/procosys-webapp-components';
+import { title } from 'process';
 import React from 'react';
 import styled from 'styled-components';
 import McDetails from '../../components/detailCards/McDetails';
@@ -79,10 +80,12 @@ const EntityPageDetailsCard = ({
             isOfType<IpoDetails>(details, 'location')
         ) {
             return (
-                <InfoItem
+                <EntityDetails
                     isDetailsCard={true}
                     headerText={params.entityId}
                     description={details.description}
+                    details={[details.title]}
+                    icon={<TextIcon color={COLORS.ipoIcon} text="IPO" />}
                 />
             );
         } else if (

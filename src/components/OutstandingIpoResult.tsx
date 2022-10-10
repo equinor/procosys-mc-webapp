@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { OutstandingIpo } from '../services/apiTypes';
+import { IpoDetails, OutstandingIpo } from '../services/apiTypes';
 import { COLORS, Caption } from '../style/GlobalStyles';
 import { TextIcon } from '@equinor/procosys-webapp-components';
 import useCommonHooks from '../utils/useCommonHooks';
@@ -10,17 +10,11 @@ const IconWrapper = styled.div`
     margin-right: 16px;
 `;
 
-const OutstandingIpoWrapper = styled.article<{ clickable: boolean }>`
-    cursor: ${(props): string => (props.clickable ? 'pointer' : 'default')};
+const OutstandingIpoWrapper = styled.article`
     display: flex;
     padding: 16px 0px;
     margin: 0;
     text-decoration: none;
-    background-color: ${(props): string =>
-        props.clickable ? COLORS.white : COLORS.fadedBlue};
-    &:hover {
-        opacity: ${(props): number => (props.clickable ? 0.7 : 1)};
-    }
 `;
 
 const ContentWrapper = styled.div`
@@ -39,24 +33,15 @@ const ContentWrapper = styled.div`
 type OutstandingIPOsProps = {
     ipo: OutstandingIpo;
     isDetailsCard?: boolean;
-    clickable?: boolean;
 };
 
-const OutstandingIpoResult = ({
-    ipo,
-    clickable = true,
-}: OutstandingIPOsProps): JSX.Element => {
+const OutstandingIpoResult = ({ ipo }: OutstandingIPOsProps): JSX.Element => {
     const { history, url } = useCommonHooks();
 
     return (
         <OutstandingIpoWrapper
-            clickable={clickable}
-            as={clickable ? 'a' : 'article'}
-            role="link"
             onClick={(): void => {
-                if (clickable) {
-                    history.push(`${url}/IPO/${ipo.invitationId}`);
-                }
+                history.push(`${url}/IPO/${ipo.invitationId}`);
             }}
         >
             <IconWrapper>
