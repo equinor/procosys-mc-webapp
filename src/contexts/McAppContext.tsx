@@ -66,16 +66,6 @@ export const McAppContextProvider: React.FC<McAppContextProviderProps> = ({
         })();
     }, [api]);
 
-    useEffect(() => {
-        (async (): Promise<void> => {
-            try {
-                const isAlive = await ipoApi.isAlive();
-            } catch (error) {
-                console.log(error);
-            }
-        })();
-    }, [ipoApi]);
-
     if (fetchPlantsStatus === AsyncStatus.LOADING) {
         return <LoadingPage loadingText={'Loading available plants'} />;
     }
