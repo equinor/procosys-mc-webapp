@@ -15,6 +15,10 @@ const OutstandingIpoWrapper = styled.article`
     padding: 16px 0px;
     margin: 0;
     text-decoration: none;
+    cursor: pointer;
+    &:hover {
+        opacity: 0.7;
+    }
 `;
 
 const ContentWrapper = styled.div`
