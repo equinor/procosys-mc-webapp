@@ -240,12 +240,16 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
                 const mcPkgNo = ipoDetails.mcPkgScope.map(
                     (mcPkg) => '&mcPkgNos=' + mcPkg.mcPkgNo
                 );
-                url = `McPkgs/CheckLists?plantId=PCS$${plantId}&projectName=${ipoDetails.projectName}${mcPkgNo}${apiVersion}`;
+                url = `McPkgs/CheckLists?plantId=PCS$${plantId}&projectName=${
+                    ipoDetails.projectName
+                }${mcPkgNo.join('')}${apiVersion}`;
             } else {
                 const commPkgNo = ipoDetails.commPkgScope.map(
                     (commPkg) => '&commPkgNos=' + commPkg.commPkgNo
                 );
-                url = `CommPkgs/CheckLists?plantId=PCS$${plantId}&projectName=${ipoDetails.projectName}${commPkgNo}${apiVersion}`;
+                url = `CommPkgs/CheckLists?plantId=PCS$${plantId}&projectName=${
+                    ipoDetails.projectName
+                }${commPkgNo.join('')}${apiVersion}`;
             }
         } else {
             throw new Error('The chosen scope type is not supported.');
@@ -314,12 +318,16 @@ const procosysApiService = ({ axios, apiVersion }: ProcosysApiServiceProps) => {
                 const mcPkgNo = ipoDetails.mcPkgScope.map(
                     (mcPkg) => '&mcPkgNos=' + mcPkg.mcPkgNo
                 );
-                url = `McPkgs/PunchLists?plantId=PCS$${plantId}&projectName=${ipoDetails.projectName}${mcPkgNo}${apiVersion}`;
+                url = `McPkgs/PunchLists?plantId=PCS$${plantId}&projectName=${
+                    ipoDetails.projectName
+                }${mcPkgNo.join('')}${apiVersion}`;
             } else {
                 const commPkgNo = ipoDetails.commPkgScope.map(
                     (commPkg) => '&commPkgNos=' + commPkg.commPkgNo
                 );
-                url = `CommPkgs/PunchLists?plantId=PCS$${plantId}&projectName=${ipoDetails.projectName}${commPkgNo}${apiVersion}`;
+                url = `CommPkgs/PunchLists?plantId=PCS$${plantId}&projectName=${
+                    ipoDetails.projectName
+                }${commPkgNo.join('')}${apiVersion}`;
             }
         } else {
             throw new Error('The chosen scope type is not supported.');
