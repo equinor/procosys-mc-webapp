@@ -24,7 +24,7 @@ import PlantContext from '../../contexts/PlantContext';
 import { DetailsWrapper } from '../Entity/EntityPageDetailsCard';
 
 const PunchPage = (): JSX.Element => {
-    const { api, params, path, history, url } = useCommonHooks();
+    const { api, params, path, history, url, offlineState } = useCommonHooks();
     const [punch, setPunch] = useState<PunchItem>();
     const [fetchPunchStatus, setFetchPunchStatus] = useState<AsyncStatus>(
         AsyncStatus.LOADING
@@ -119,6 +119,7 @@ const PunchPage = (): JSX.Element => {
                     />
                 }
                 midContent="Punch Item"
+                isOffline={offlineState}
             />
             {determineDetailsCard()}
             <AsyncPage

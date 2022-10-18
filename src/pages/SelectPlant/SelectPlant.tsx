@@ -45,7 +45,7 @@ export const SelectorButton = styled(Link)`
 
 const SelectPlant = (): JSX.Element => {
     const { availablePlants } = useContext(CommAppContext);
-    const { auth } = useCommonHooks();
+    const { auth, offlineState } = useCommonHooks();
 
     const content = (): JSX.Element => {
         if (availablePlants.length < 1) {
@@ -84,6 +84,7 @@ const SelectPlant = (): JSX.Element => {
             <Navbar
                 leftContent={<ProcosysButton />}
                 rightContent={<SideMenu />}
+                isOffline={offlineState}
             />
             <SelectPlantWrapper>{content()}</SelectPlantWrapper>
         </>

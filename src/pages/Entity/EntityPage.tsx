@@ -34,7 +34,7 @@ const ContentWrapper = styled.div`
 `;
 
 const EntityPage = (): JSX.Element => {
-    const { api, params, path, history, url } = useCommonHooks();
+    const { api, params, path, history, url, offlineState } = useCommonHooks();
     const [scope, setScope] = useState<ChecklistPreview[]>();
     const [punchList, setPunchList] = useState<PunchPreview[]>();
     const [details, setDetails] = useState<
@@ -130,6 +130,7 @@ const EntityPage = (): JSX.Element => {
                         ? 'MC Package'
                         : params.searchType
                 }
+                isOffline={offlineState}
             />
             <EntityPageDetailsCard
                 fetchDetailsStatus={fetchDetailsStatus}
