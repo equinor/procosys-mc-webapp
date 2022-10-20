@@ -25,6 +25,7 @@ export const isOfType = <T>(
     varToBeChecked: unknown,
     propertyToCheckFor: keyof T
 ): varToBeChecked is T => {
+    if (varToBeChecked === undefined) return false;
     return (varToBeChecked as T)[propertyToCheckFor] !== undefined;
 };
 

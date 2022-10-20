@@ -129,7 +129,7 @@ export const FakerMcPkgPreview = (id: number): McPkgPreview => {
         id: id,
         mcPkgNo: FakerMcPkgNo(5),
         description: FakerDescription(),
-        status: FakerRandomEnum(apiTypes.CompletionStatus),
+        status: apiTypes.CompletionStatus.OK, //FakerRandomEnum(apiTypes.CompletionStatus),
         commPkgNo: FakerCommPkgNo(5),
         phaseCode: PickRandomFromList(FakerDataLists.PhaseCodes()),
         phaseDescription: FakerDescription(),
@@ -187,7 +187,7 @@ export const FakerChecklistSavedSearchResult =
             tagNo: FakerTagNo(5),
             tagDescription: FakerDescription(),
             responsibleCode: FakerResponsibleCode(5),
-            status: FakerRandomEnum(apiTypes.CompletionStatus),
+            status: apiTypes.CompletionStatus.OK, //FakerRandomEnum(apiTypes.CompletionStatus),
             projectDescription: FakerDescription(),
             formularType: FakerAlphaCode(10),
             formularGroup: FakerAlphaCode(4),
@@ -208,7 +208,7 @@ export const FakerPunchItemSavedSearchResult =
     (): PunchItemSavedSearchResult => {
         return {
             id: FakerId(),
-            status: FakerRandomEnum(apiTypes.CompletionStatus),
+            status: apiTypes.CompletionStatus.OK, // FakerRandomEnum(apiTypes.CompletionStatus),
             description: FakerDescription(),
             tagNo: FakerTagNo(5),
             tagId: FakerTagId(),
@@ -226,8 +226,8 @@ export const FakeCommPkg = (): CommPkg => {
         id: FakerId(),
         commPkgNo: FakerCommPkgNo(5),
         description: FakerDescription(),
-        commStatus: FakerRandomEnum(apiTypes.CompletionStatus),
-        mcStatus: FakerRandomEnum(apiTypes.CompletionStatus),
+        commStatus: apiTypes.CompletionStatus.OK, //FakerRandomEnum(apiTypes.CompletionStatus),
+        mcStatus: apiTypes.CompletionStatus.OK, //FakerRandomEnum(apiTypes.CompletionStatus),
         mcPkgCount: 100,
         mcPkgsAcceptedByCommissioning: 100,
         mcPkgsAcceptedByOperation: 200,
@@ -248,7 +248,7 @@ export const FakerChecklistPreview = (): ChecklistPreview => {
         tagNo: FakerTagNo(5),
         tagDescription: FakerDescription(),
         responsibleCode: FakerResponsibleCode(5),
-        status: FakerRandomEnum(apiTypes.CompletionStatus),
+        status: apiTypes.CompletionStatus.OK, //FakerRandomEnum(apiTypes.CompletionStatus),
         formularType: FakerFormularType(10),
         formularGroup: FakerFormularType(4),
         sheetNo: 100,
@@ -272,7 +272,7 @@ export const FakerListChecklistPreview = (
 export const FakePunchPreview = (): PunchPreview => {
     return {
         id: FakerId(),
-        status: FakerRandomEnum(apiTypes.CompletionStatus),
+        status: apiTypes.CompletionStatus.OK, //FakerRandomEnum(apiTypes.CompletionStatus),
         description: FakerDescription(),
         systemModule: FakerSystemModule(5),
         tagDescription: FakerDescription(),
@@ -398,7 +398,7 @@ export const FakerChecklistResponse = (id: number): ChecklistResponse => {
 export const FakerPunchCategory = (): PunchCategory => {
     return {
         id: FakerId(),
-        code: FakerRandomEnum(apiTypes.CompletionStatus),
+        code: apiTypes.CompletionStatus.OK, //FakerRandomEnum(apiTypes.CompletionStatus),
         description: FakerTitle(),
     };
 };
@@ -494,7 +494,7 @@ export const FakerPunchItem = (): PunchItem => {
         id: FakerId(),
         checklistId: FakerId(),
         formularType: FakerFormularType(10),
-        status: FakerRandomEnum(apiTypes.CompletionStatus),
+        status: apiTypes.CompletionStatus.OK, //FakerRandomEnum(apiTypes.CompletionStatus),
         description: FakerDescription(),
         typeCode: FakerTypeCode(),
         typeDescription: FakerDescription(),
@@ -564,7 +564,7 @@ export const FakeChecklistDetails = (id: number): ChecklistDetails => {
         mcPkgNo: FakerMcPkgNo(5),
         responsibleCode: FakerResponsibleCode(5),
         responsibleDescription: FakerDescription(),
-        status: FakerRandomEnum(apiTypes.CompletionStatus),
+        status: apiTypes.CompletionStatus.OK, //FakerRandomEnum(apiTypes.CompletionStatus),
         systemModule: FakerSystemModule(5),
         formularType: FakerFormularType(10),
         formularGroup: FakerFormularGroup(5),
