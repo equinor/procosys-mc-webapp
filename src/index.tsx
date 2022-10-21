@@ -1,5 +1,5 @@
 import GlobalStyles from './style/GlobalStyles';
-import React from 'react';
+import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
 import authService from './services/authService';
@@ -14,6 +14,7 @@ import {
 } from '@equinor/procosys-webapp-components';
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 import isOfflineMode from './utils/isOfflineMode';
+import OfflinePin from './OfflinePin';
 
 serviceWorkerRegistration.register();
 
@@ -32,7 +33,6 @@ const render = (content: JSX.Element): void => {
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const initialize = async () => {
     await navigator.serviceWorker.ready; //wait until service worker is active
-
     // Get auth config, setup auth client and handle login
     const {
         clientSettings,
@@ -94,29 +94,44 @@ const initialize = async () => {
         configurationAccessToken,
     };
 };
+let userPin = 0;
+const setUserPin = (pin: number): void => {
+    userPin = pin;
+    console.log(userPin);
+};
+
+const renderApp = async (): Promise<void> => {
+    if (userPin == 0) {
+        setTimeout(renderApp, 50);
+        return;
+    }
+    const {
+        authInstance,
+        procosysApiInstance,
+        appInsightsReactPlugin,
+        appConfig,
+        featureFlags,
+        configurationAccessToken,
+    } = await initialize();
+
+    render(
+        <App
+            authInstance={authInstance}
+            procosysApiInstance={procosysApiInstance}
+            appInsightsReactPlugin={appInsightsReactPlugin}
+            appConfig={appConfig}
+            featureFlags={featureFlags}
+            configurationAccessToken={configurationAccessToken}
+        />
+    );
+};
 
 (async (): Promise<void> => {
     render(<LoadingPage loadingText={'Initializing...'} />);
     try {
-        const {
-            authInstance,
-            procosysApiInstance,
-            appInsightsReactPlugin,
-            appConfig,
-            featureFlags,
-            configurationAccessToken,
-        } = await initialize();
-
-        render(
-            <App
-                authInstance={authInstance}
-                procosysApiInstance={procosysApiInstance}
-                appInsightsReactPlugin={appInsightsReactPlugin}
-                appConfig={appConfig}
-                featureFlags={featureFlags}
-                configurationAccessToken={configurationAccessToken}
-            />
-        );
+        console.log('trying');
+        render(<OfflinePin setUserPin={setUserPin} />);
+        renderApp();
     } catch (error) {
         console.log(error);
         if (error === 'redirecting') {
