@@ -1,3 +1,4 @@
+import { db } from './offline/db';
 import GlobalStyles from './style/GlobalStyles';
 import React from 'react';
 import ReactDOM from 'react-dom';
@@ -13,7 +14,7 @@ import {
     LoadingPage,
 } from '@equinor/procosys-webapp-components';
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
-import isOfflineMode from './utils/isOfflineMode';
+import { getOfflineStatus } from './offline/OfflineStatus';
 
 serviceWorkerRegistration.register();
 
@@ -33,6 +34,37 @@ const render = (content: JSX.Element): void => {
 const initialize = async () => {
     await navigator.serviceWorker.ready; //wait until service worker is active
 
+    if ('serviceWorker' in navigator) {
+        console.log('SERVICE WORKER ER I NAVIGATOR');
+    } else {
+        console.log('SERVICE WORKER ER IKKE I NAVIGATOR');
+        alert('Vi har ikke navigator');
+    }
+
+    const pin = '6535';
+
+    const isOffline = getOfflineStatus();
+
+    //Send message to service worker about offline status
+    if (isOffline) {
+        navigator.serviceWorker.controller?.postMessage({
+            type: 'SET_OFFLINE',
+        });
+        navigator.serviceWorker.controller?.postMessage({
+            type: 'USER_PIN',
+            data: { UserPin: pin },
+        });
+    } else {
+        navigator.serviceWorker.controller?.postMessage({
+            type: 'SET_ONLINE',
+        });
+    }
+
+    //Initilize database if offline
+    //if (isOffline) {
+    await db.init(pin);
+    //}
+
     // Get auth config, setup auth client and handle login
     const {
         clientSettings,
@@ -48,11 +80,9 @@ const initialize = async () => {
         scopes: scopes,
     });
 
-    const offlineMode = await isOfflineMode();
-
     let configurationAccessToken = '';
 
-    if (!offlineMode) {
+    if (!isOffline) {
         const isRedirecting = await authInstance.handleLogin();
         if (isRedirecting) return Promise.reject('redirecting');
         configurationAccessToken = await authInstance.getAccessToken(
@@ -67,7 +97,7 @@ const initialize = async () => {
     );
 
     let accessToken = '';
-    if (!offlineMode) {
+    if (!isOffline) {
         accessToken = await authInstance.getAccessToken(
             appConfig.procosysWebApi.scope
         );

@@ -13,6 +13,7 @@ import { ExpirationPlugin } from 'workbox-expiration';
 import { precacheAndRoute, createHandlerBoundToURL } from 'workbox-precaching';
 import { registerRoute } from 'workbox-routing';
 import { StaleWhileRevalidate } from 'workbox-strategies';
+import { db } from './offline/db';
 import {
     handleFetchGET,
     handleFetchUpdate,
@@ -75,28 +76,52 @@ registerRoute(
     })
 );
 
+let isOffline = false;
+
+type UserPin = {
+    UserPin: string;
+};
+
 // This allows the web app to trigger skipWaiting via
 // registration.waiting.postMessage({type: 'SKIP_WAITING'})
-self.addEventListener('message', (event) => {
-    if (event.data && event.data.type === 'SKIP_WAITING') {
-        self.skipWaiting();
+self.addEventListener('message', async (event: MessageEventInit) => {
+    console.log('ADDEVENTLISTENER message.', event);
+    const message: MessageEvent = event.data;
+    if (message) {
+        if (message.type === 'SKIP_WAITING') {
+            self.skipWaiting();
+        } else if (message.type === 'SET_OFFLINE') {
+            console.log('SET_OFFLINE', event);
+            isOffline = true;
+        } else if (message.type === 'SET_ONLINE') {
+            console.log('SET_ONLINE', event);
+            isOffline = false;
+        } else if (message.type === 'USER_PIN') {
+            const userPin: UserPin = message.data;
+            await db.init(userPin.UserPin);
+        }
     }
 });
 
 self.addEventListener('fetch', function (event: FetchEvent) {
     // console.log('Intercept fetch', event.request.url);
-    const url = event.request.url;
-    const method = event.request.method;
-    if (method == 'GET' && url.includes('/api/')) {
-        //todo: We should find a better way to identify these requests!
-        event.respondWith(handleFetchGET(event));
-        return;
-    } else if (
-        (method == 'POST' || method == 'PUT' || method == 'DELETE') &&
-        url.includes('/api/')
-    ) {
-        event.respondWith(handleFetchUpdate(event));
-        return;
+    if (isOffline) {
+        const url = event.request.url;
+        const method = event.request.method;
+        if (method == 'GET' && url.includes('/api/')) {
+            //todo: We should find a better way to identify these requests!
+            event.respondWith(handleFetchGET(event));
+            return;
+        } else if (
+            (method == 'POST' || method == 'PUT' || method == 'DELETE') &&
+            url.includes('/api/')
+        ) {
+            event.respondWith(handleFetchUpdate(event));
+            return;
+        }
+        event.respondWith(handleOtherFetchEvents(event));
+    } else {
+        console.log('handleFetch. Online mode', event.request.url);
+        event.respondWith(fetch(event.request));
     }
-    event.respondWith(handleOtherFetchEvents(event));
 });
