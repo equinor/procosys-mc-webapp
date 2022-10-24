@@ -129,7 +129,7 @@ const renderApp = async (): Promise<void> => {
 (async (): Promise<void> => {
     render(<LoadingPage loadingText={'Initializing...'} />);
     try {
-        console.log('trying');
+        // TODO: add a check for offline mode. If not offline, don't render OfflinePin
         render(<OfflinePin setUserPin={setUserPin} />);
         renderApp();
     } catch (error) {
