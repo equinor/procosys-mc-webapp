@@ -13,7 +13,6 @@ interface OfflinePinProps {
 
 const OfflinePin = ({ setUserPin }: OfflinePinProps): JSX.Element => {
     const [enteredPin, setEnteredPin] = useState<string>('');
-    const;
 
     const testUserPin = (): void => {
         // TODO: call init of db with enteded pin
@@ -27,7 +26,7 @@ const OfflinePin = ({ setUserPin }: OfflinePinProps): JSX.Element => {
         <>
             <Navbar leftContent={<ProcosysButton />} isOffline={true} />
             <ContentWrapper>
-                <p>Input your offline pin</p>
+                <h3>Input your offline pin</h3>
                 <Input
                     type="number"
                     value={enteredPin}

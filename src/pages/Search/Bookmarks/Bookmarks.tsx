@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react';
 import styled from 'styled-components';
-import { Button, Checkbox, Scrim } from '@equinor/eds-core-react';
+import { Button, Checkbox, Input, Scrim } from '@equinor/eds-core-react';
 import useBookmarks from '../../../utils/useBookmarks';
 import BookmarkableEntityInfoList from '../BookmarkableEntityInfoList';
 import { SearchType } from '../../../typings/enums';
@@ -39,9 +39,12 @@ const Bookmarks = (): JSX.Element => {
         deleteBookmarks,
         isCancelling,
         setIsCancelling,
+        isStarting,
+        setIsStarting,
     } = useBookmarks();
     const { offlineState } = useCommonHooks();
     const [isSure, setIsSure] = useState<boolean>(false);
+    const [enteredPin, setEnteredPin] = useState<number>(0);
 
     return (
         <AsyncPage
@@ -57,6 +60,49 @@ const Bookmarks = (): JSX.Element => {
             }
         >
             <div>
+                {isStarting ? (
+                    <Scrim
+                        isDismissable
+                        onClose={(): void => setIsStarting(false)}
+                    >
+                        <CancellingPopup>
+                            <h3>
+                                Input a code to use as your offline password
+                            </h3>
+                            <Input
+                                type="number"
+                                value={enteredPin}
+                                onChange={(
+                                    e: React.ChangeEvent<HTMLInputElement>
+                                ): void => {
+                                    setEnteredPin(parseInt(e.target.value));
+                                }}
+                            />
+                            <Checkbox
+                                label="I understand that forgetting my pin will result in my offline changes being deleted forever"
+                                onClick={(): void => setIsSure(true)}
+                            />
+                            <ButtonsWrapper>
+                                <Button
+                                    onClick={(): void => {
+                                        startOffline();
+                                        setIsSure(false);
+                                    }}
+                                >
+                                    Start offline
+                                </Button>
+                                <Button
+                                    onClick={(): void => {
+                                        setIsCancelling(false);
+                                        setIsSure(false);
+                                    }}
+                                >
+                                    Cancel
+                                </Button>
+                            </ButtonsWrapper>
+                        </CancellingPopup>
+                    </Scrim>
+                ) : null}
                 {isCancelling ? (
                     <Scrim
                         isDismissable
@@ -70,7 +116,10 @@ const Bookmarks = (): JSX.Element => {
                             />
                             <ButtonsWrapper>
                                 <Button
-                                    onClick={(): void => setIsCancelling(false)}
+                                    onClick={(): void => {
+                                        setIsCancelling(false);
+                                        setIsSure(false);
+                                    }}
                                 >
                                     Don&apos;t cancel
                                 </Button>
@@ -80,7 +129,10 @@ const Bookmarks = (): JSX.Element => {
                                         bookmarksStatus ===
                                             AsyncStatus.LOADING || !isSure
                                     }
-                                    onClick={cancelOffline}
+                                    onClick={(): void => {
+                                        cancelOffline();
+                                        setIsSure(false);
+                                    }}
                                     aria-label="Delete"
                                 >
                                     Yes, cancel offline
@@ -104,7 +156,7 @@ const Bookmarks = (): JSX.Element => {
                         </>
                     ) : (
                         <>
-                            <Button onClick={startOffline}>
+                            <Button onClick={(): void => setIsStarting(true)}>
                                 Start offline
                             </Button>
                             <Button onClick={deleteBookmarks}>
