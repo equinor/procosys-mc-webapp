@@ -799,6 +799,56 @@ const procosysApiService = (
         );
     };
 
+    /**
+     * This endpoint need to be called when a synchronization of a project is done (after being offline)
+     */
+    const putOfflineScopeSynchronized = async (
+        plantId: string,
+        projectId: number
+    ): Promise<void> => {
+        const dto = { ProjectId: projectId };
+        await putByFetch(
+            `OfflineScope/Synchronized?plantId=PCS$${plantId}${apiVersion}`,
+            dto,
+            { 'Content-Type': 'application/json' }
+        );
+    };
+
+    /**
+     * This endpoint must be called during offline synchronization, when all updates on a checklist is done.
+     */
+    const putOfflineScopeChecklistSynchronized = async (
+        plantId: string,
+        checklistId: number
+    ): Promise<void> => {
+        const dto = { CheckListId: checklistId };
+        await putByFetch(
+            `OfflineScope/CheckList/Synchronized?plantId=PCS$${plantId}${apiVersion}`,
+            dto,
+            { 'Content-Type': 'application/json' }
+        );
+    };
+
+    /**
+     * This endpoint must be called during offline synchronization, when all updates on a punchlist item is done.
+     */
+    const putOfflineScopePunchlistItemSynchronized = async (
+        plantId: string,
+        punchlistItemId: number,
+        addedOffline: boolean
+    ): Promise<void> => {
+        const dto = {
+            PunchListItemId: punchlistItemId,
+            AddedOffline: addedOffline,
+        };
+
+        await putByFetch(
+            `OfflineScope/PunchListItem/Synchronized?plantId=PCS$${plantId}${apiVersion}`,
+            dto,
+            { 'Content-Type': 'application/json' }
+        );
+    };
+
     return {
         getTag,
         deletePunchAttachment,
@@ -846,6 +896,9 @@ const procosysApiService = (
         postAttachmentByFetch,
         deleteByFetch,
         putByFetch,
+        putOfflineScopeSynchronized,
+        putOfflineScopeChecklistSynchronized,
+        putOfflineScopePunchlistItemSynchronized,
     };
 };
 
