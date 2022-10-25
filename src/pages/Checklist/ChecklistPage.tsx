@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import EdsIcon from '../../components/icons/EdsIcon';
 import withAccessControl from '../../services/withAccessControl';
 import useCommonHooks from '../../utils/useCommonHooks';
@@ -19,6 +19,7 @@ import {
 } from '@equinor/procosys-webapp-components';
 import ChecklistDetailsCard from './ChecklistDetailsCard';
 import styled from 'styled-components';
+import PlantContext from '../../contexts/PlantContext';
 
 const ContentWrapper = styled.div`
     padding-bottom: 66px;
@@ -26,6 +27,7 @@ const ContentWrapper = styled.div`
 
 const ChecklistPage = (): JSX.Element => {
     const { history, url, path, api, params, offlineState } = useCommonHooks();
+    const { permissions } = useContext(PlantContext);
     const [punchList, setPunchList] = useState<PunchPreview[]>();
     const [details, setDetails] = useState<ChecklistResponse>();
     const [fetchPunchListStatus, setFetchPunchListStatus] = useState(
@@ -108,6 +110,9 @@ const ChecklistPage = (): JSX.Element => {
                             variant="ghost"
                             onClick={(): void =>
                                 history.push(`${url}/punch-list/new-punch`)
+                            }
+                            disabled={
+                                !permissions.includes('PUNCHLISTITEM/CREATE')
                             }
                         >
                             New punch
