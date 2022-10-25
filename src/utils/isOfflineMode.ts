@@ -12,6 +12,7 @@ async function IsOfflineMode(): Promise<boolean | undefined> {
         }
     } catch (err) {
         console.error(err);
+        await statusRepository.addOfflineStatus(false); // TODO: remove (is temp)
     }
     console.error(
         'Not able to get offline status. Will continue in online mode.'
