@@ -1,6 +1,6 @@
-import React, { useContext, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { Button, Checkbox, Input, Scrim } from '@equinor/eds-core-react';
+import { Button, Checkbox, Input, Label, Scrim } from '@equinor/eds-core-react';
 import useBookmarks from '../../../utils/useBookmarks';
 import BookmarkableEntityInfoList from '../BookmarkableEntityInfoList';
 import { SearchType } from '../../../typings/enums';
@@ -8,7 +8,6 @@ import useCommonHooks from '../../../utils/useCommonHooks';
 import AsyncPage from '../../../components/AsyncPage';
 import { COLORS, SHADOW } from '../../../style/GlobalStyles';
 import { AsyncStatus } from '@equinor/procosys-webapp-components';
-import PlantContext from '../../../contexts/PlantContext';
 
 const CancellingPopup = styled.div`
     display: flex;
@@ -26,6 +25,10 @@ const ButtonsWrapper = styled.div`
     padding-top: 16px;
 `;
 
+const Spacer = styled.div`
+    height: 16px;
+`;
+
 const Bookmarks = (): JSX.Element => {
     const {
         currentBookmarks,
@@ -41,10 +44,25 @@ const Bookmarks = (): JSX.Element => {
         setIsCancelling,
         isStarting,
         setIsStarting,
+        setUserPin,
     } = useBookmarks();
     const { offlineState } = useCommonHooks();
     const [isSure, setIsSure] = useState<boolean>(false);
-    const [enteredPin, setEnteredPin] = useState<number>(0);
+    const [enteredPin, setEnteredPin] = useState<string>('');
+    const [enteredPinIsValid, setEnteredPinIsValid] = useState(false);
+
+    useEffect(() => {
+        try {
+            const pin = parseInt(enteredPin);
+            if (!isNaN(pin) && enteredPin.length == 4) {
+                setEnteredPinIsValid(true);
+            } else {
+                setEnteredPinIsValid(false);
+            }
+        } catch {
+            setEnteredPinIsValid(false);
+        }
+    }, [enteredPin]);
 
     return (
         <AsyncPage
@@ -67,34 +85,45 @@ const Bookmarks = (): JSX.Element => {
                     >
                         <CancellingPopup>
                             <h3>
-                                Input a code to use as your offline password
+                                Input a code to use as your offline pin number
                             </h3>
+                            <Label label="Input a 4-digit number" />
                             <Input
                                 type="number"
                                 value={enteredPin}
                                 onChange={(
                                     e: React.ChangeEvent<HTMLInputElement>
                                 ): void => {
-                                    setEnteredPin(parseInt(e.target.value));
+                                    setEnteredPin(e.target.value);
                                 }}
+                                variant={
+                                    enteredPin && !enteredPinIsValid
+                                        ? 'error'
+                                        : 'default'
+                                }
                             />
+                            <Spacer />
                             <Checkbox
                                 label="I understand that forgetting my pin will result in my offline changes being deleted forever"
-                                onClick={(): void => setIsSure(true)}
+                                onClick={(): void => setIsSure((prev) => !prev)}
                             />
                             <ButtonsWrapper>
                                 <Button
+                                    disabled={!isSure || !enteredPinIsValid}
                                     onClick={(): void => {
-                                        startOffline();
+                                        setUserPin(parseInt(enteredPin));
                                         setIsSure(false);
+                                        setIsStarting(false);
+                                        startOffline();
                                     }}
                                 >
-                                    Start offline
+                                    Create pin
                                 </Button>
                                 <Button
                                     onClick={(): void => {
-                                        setIsCancelling(false);
+                                        setIsStarting(false);
                                         setIsSure(false);
+                                        setEnteredPin('');
                                     }}
                                 >
                                     Cancel
@@ -112,7 +141,7 @@ const Bookmarks = (): JSX.Element => {
                             <h3>Do you really wish to cancel offline mode?</h3>
                             <Checkbox
                                 label="I understand that cancelling offline mode deletes all my offline changes"
-                                onClick={(): void => setIsSure(true)}
+                                onClick={(): void => setIsSure((prev) => !prev)}
                             />
                             <ButtonsWrapper>
                                 <Button
@@ -130,8 +159,8 @@ const Bookmarks = (): JSX.Element => {
                                             AsyncStatus.LOADING || !isSure
                                     }
                                     onClick={(): void => {
-                                        cancelOffline();
                                         setIsSure(false);
+                                        cancelOffline();
                                     }}
                                     aria-label="Delete"
                                 >
