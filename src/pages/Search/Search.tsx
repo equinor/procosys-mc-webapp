@@ -5,9 +5,7 @@ import styled from 'styled-components';
 import { SearchType } from '../../typings/enums';
 import useCommonHooks from '../../utils/useCommonHooks';
 import OutstandingIpos from '../../components/OutstandingIpos';
-import {
-    SearchTypeButton,
-} from '@equinor/procosys-webapp-components';
+import { SearchTypeButton } from '@equinor/procosys-webapp-components';
 
 const ButtonsWrapper = styled.div`
     display: flex;

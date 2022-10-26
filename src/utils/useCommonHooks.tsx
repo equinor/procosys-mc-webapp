@@ -12,7 +12,7 @@ const useCommonHooks = () => {
         offlineState,
         setOfflineState,
         configurationAccessToken,
-        ipoApi
+        ipoApi,
     } = useContext(McAppContext);
     const params = useParams<McParams>();
     const history = useHistory();

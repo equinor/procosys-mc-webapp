@@ -35,7 +35,8 @@ const ContentWrapper = styled.div`
 `;
 
 const EntityPage = (): JSX.Element => {
-    const { api, ipoApi, params, path, history, url, offlineState } = useCommonHooks();
+    const { api, ipoApi, params, path, history, url, offlineState } =
+        useCommonHooks();
     const [scope, setScope] = useState<ChecklistPreview[]>();
     const [punchList, setPunchList] = useState<PunchPreview[]>();
     const [details, setDetails] = useState<
