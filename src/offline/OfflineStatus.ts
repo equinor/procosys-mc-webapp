@@ -1,27 +1,27 @@
-export const getOfflineStatus = (): boolean => {
-    const isOffline = localStorage.getItem('offline');
-    if (isOffline === 'true') {
+export const getOfflineStatusfromLocalStorage = (): boolean => {
+    const offline = localStorage.getItem('offline');
+    if (offline === 'true') {
         return true;
-    } else if (isOffline === 'false') {
-        return false;
     } else {
-        //insert offline status, if it is missing
-        setOfflineStatus(false);
         return false;
     }
 };
 
-export const setOfflineStatus = (offlineStatus: boolean): void => {
-    localStorage.setItem('offline', String(offlineStatus));
+/**
+ * Update offline statue on local storage and service worker
+ */
+export const updateOfflineStatus = (
+    isOffline: boolean,
+    userPin: string
+): void => {
+    localStorage.setItem('offline', String(isOffline));
 
     //Send message to service worker about offline status
-    if (offlineStatus) {
-        navigator.serviceWorker.controller?.postMessage({
-            type: 'SET_OFFLINE',
-        });
-    } else {
-        navigator.serviceWorker.controller?.postMessage({
-            type: 'SET_ONLINE',
-        });
-    }
+    navigator.serviceWorker.controller?.postMessage({
+        type: 'SET_OFFLINE_STATUS',
+        data: {
+            isOffline: isOffline,
+            userPin: userPin,
+        },
+    });
 };

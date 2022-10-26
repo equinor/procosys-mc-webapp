@@ -78,8 +78,9 @@ registerRoute(
 
 let isOffline = false;
 
-type UserPin = {
-    UserPin: string;
+type OfflineStatus = {
+    isOffline: boolean;
+    userPin: string;
 };
 
 // This allows the web app to trigger skipWaiting via
@@ -90,15 +91,28 @@ self.addEventListener('message', async (event: MessageEventInit) => {
     if (message) {
         if (message.type === 'SKIP_WAITING') {
             self.skipWaiting();
-        } else if (message.type === 'SET_OFFLINE') {
-            console.log('SET_OFFLINE', event);
-            isOffline = true;
-        } else if (message.type === 'SET_ONLINE') {
-            console.log('SET_ONLINE', event);
-            isOffline = false;
-        } else if (message.type === 'USER_PIN') {
-            const userPin: UserPin = message.data;
-            await db.init(userPin.UserPin);
+        } else if (message.type === 'SET_OFFLINE_STATUS') {
+            const offlineStatus: OfflineStatus = message.data;
+            isOffline = offlineStatus.isOffline;
+            if (isOffline) {
+                if (
+                    !offlineStatus.userPin ||
+                    offlineStatus.userPin.length != 4
+                ) {
+                    console.error(
+                        'Trying to update offline status for service worker, but pin is missing.'
+                    );
+                    return;
+                }
+                const suksess = await db.reInitAndVerifyPin(
+                    offlineStatus.userPin
+                );
+                if (!suksess) {
+                    console.error(
+                        'Service worker is not able to reinitiate database and verify pin.'
+                    );
+                }
+            }
         }
     }
 });

@@ -417,7 +417,9 @@ const procosysApiService = (
         } else if (searchType === SearchType.WO) {
             url = `WorkOrder/CheckLists?plantId=PCS$${plantId}&workOrderId=${entityId}${apiVersion}`;
         } else if (searchType === SearchType.Tag) {
-            url = `Tag/CheckLists?plantId=PCS$${plantId}&tagId=${entityId}${apiVersion}`;
+            url = `Tag/CheckLists?plantId=PCS$${plantId}&tagId=${entityId}&formularGroupsFilter=${[
+                'MCCR',
+            ]}${apiVersion}`;
         } else if (searchType === SearchType.PO) {
             url = `PurchaseOrder/CheckLists?plantId=PCS$${plantId}&callOffId=${entityId}${apiVersion}`;
         } else {

@@ -9,7 +9,7 @@ import { Plant } from '../services/apiTypes';
 import { AppConfig, FeatureFlags } from '../services/appConfiguration';
 import { IAuthService } from '../services/authService';
 import { ProcosysApiService } from '../services/procosysApi';
-import { getOfflineStatus, setOfflineStatus } from '../offline/OfflineStatus';
+import { getOfflineStatusfromLocalStorage } from '../offline/OfflineStatus';
 
 type McAppContextProps = {
     availablePlants: Plant[];
@@ -55,18 +55,11 @@ export const McAppContextProvider: React.FC<McAppContextProviderProps> = ({
         AsyncStatus.LOADING
     );
 
-    const [offlineState, setOfflineStateLocal] = useState(false);
-
-    const setOfflineState = (offlineState: boolean): void => {
-        console.log('SETTER OFFLINE STATE ' + offlineState);
-        setOfflineStatus(offlineState);
-        setOfflineStateLocal(offlineState);
-    };
+    const [offlineState, setOfflineState] = useState(false);
 
     useEffect(() => {
-        console.log('use effekt offline status');
-        const offlineStatus = getOfflineStatus();
-        setOfflineStateLocal(offlineStatus);
+        const offlineStatus = getOfflineStatusfromLocalStorage();
+        setOfflineState(offlineStatus);
     }, []);
 
     useEffect(() => {

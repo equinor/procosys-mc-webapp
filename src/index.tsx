@@ -1,6 +1,5 @@
-import { db } from './offline/db';
 import GlobalStyles from './style/GlobalStyles';
-import React from 'react';
+import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
 import authService from './services/authService';
@@ -14,7 +13,11 @@ import {
     LoadingPage,
 } from '@equinor/procosys-webapp-components';
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
-import { getOfflineStatus } from './offline/OfflineStatus';
+import OfflinePin from './OfflinePin';
+import {
+    getOfflineStatusfromLocalStorage,
+    updateOfflineStatus,
+} from './offline/OfflineStatus';
 
 serviceWorkerRegistration.register();
 
@@ -41,29 +44,9 @@ const initialize = async () => {
         alert('Vi har ikke navigator');
     }
 
-    const pin = '6535';
+    const offline = getOfflineStatusfromLocalStorage();
 
-    const isOffline = getOfflineStatus();
-
-    //Send message to service worker about offline status
-    if (isOffline) {
-        navigator.serviceWorker.controller?.postMessage({
-            type: 'SET_OFFLINE',
-        });
-        navigator.serviceWorker.controller?.postMessage({
-            type: 'USER_PIN',
-            data: { UserPin: pin },
-        });
-    } else {
-        navigator.serviceWorker.controller?.postMessage({
-            type: 'SET_ONLINE',
-        });
-    }
-
-    //Initilize database if offline
-    //if (isOffline) {
-    await db.init(pin);
-    //}
+    await updateOfflineStatus(offline, userPin);
 
     // Get auth config, setup auth client and handle login
     const {
@@ -82,7 +65,7 @@ const initialize = async () => {
 
     let configurationAccessToken = '';
 
-    if (!isOffline) {
+    if (!offline) {
         const isRedirecting = await authInstance.handleLogin();
         if (isRedirecting) return Promise.reject('redirecting');
         configurationAccessToken = await authInstance.getAccessToken(
@@ -97,7 +80,7 @@ const initialize = async () => {
     );
 
     let accessToken = '';
-    if (!isOffline) {
+    if (!offline) {
         accessToken = await authInstance.getAccessToken(
             appConfig.procosysWebApi.scope
         );
@@ -124,29 +107,45 @@ const initialize = async () => {
         configurationAccessToken,
     };
 };
+let userPin = '';
+const setUserPin = (pin: string): void => {
+    userPin = pin;
+    console.log(userPin);
+};
+
+const renderApp = async (): Promise<void> => {
+    if (getOfflineStatusfromLocalStorage() && userPin == '') {
+        setTimeout(renderApp, 1000);
+        return;
+    }
+    const {
+        authInstance,
+        procosysApiInstance,
+        appInsightsReactPlugin,
+        appConfig,
+        featureFlags,
+        configurationAccessToken,
+    } = await initialize();
+
+    render(
+        <App
+            authInstance={authInstance}
+            procosysApiInstance={procosysApiInstance}
+            appInsightsReactPlugin={appInsightsReactPlugin}
+            appConfig={appConfig}
+            featureFlags={featureFlags}
+            configurationAccessToken={configurationAccessToken}
+        />
+    );
+};
 
 (async (): Promise<void> => {
     render(<LoadingPage loadingText={'Initializing...'} />);
     try {
-        const {
-            authInstance,
-            procosysApiInstance,
-            appInsightsReactPlugin,
-            appConfig,
-            featureFlags,
-            configurationAccessToken,
-        } = await initialize();
-
-        render(
-            <App
-                authInstance={authInstance}
-                procosysApiInstance={procosysApiInstance}
-                appInsightsReactPlugin={appInsightsReactPlugin}
-                appConfig={appConfig}
-                featureFlags={featureFlags}
-                configurationAccessToken={configurationAccessToken}
-            />
-        );
+        if (getOfflineStatusfromLocalStorage()) {
+            render(<OfflinePin setUserPin={setUserPin} />);
+        }
+        renderApp();
     } catch (error) {
         console.log(error);
         if (error === 'redirecting') {
