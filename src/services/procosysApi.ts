@@ -113,8 +113,7 @@ const procosysApiService = (
             },
         };
 
-        //todo: ta bort
-        //console.log('fetch-kall attachment ', url);
+        console.log('fetch-kall attachment ', url);
         const res = await fetch(`${baseURL}/${url}`, GetOperation);
 
         if (res.ok) {
@@ -140,16 +139,12 @@ const procosysApiService = (
         await fetch(`${baseURL}/${url}`, DeleteOperation);
     };
 
-    const postByFetch = async (
-        url: string,
-        bodyData?: any,
-        additionalHeaders?: any
-    ): Promise<any> => {
+    const postByFetch = async (url: string, bodyData?: any): Promise<any> => {
         const PostOperation = {
             method: 'POST',
             headers: {
                 Authorization: `Bearer ${token}`,
-                ...additionalHeaders,
+                'Content-Type': 'application/json',
             },
             body: JSON.stringify(bodyData),
         };
@@ -426,7 +421,9 @@ const procosysApiService = (
         } else if (searchType === SearchType.WO) {
             url = `WorkOrder/CheckLists?plantId=PCS$${plantId}&workOrderId=${entityId}${apiVersion}`;
         } else if (searchType === SearchType.Tag) {
-            url = `Tag/CheckLists?plantId=PCS$${plantId}&tagId=${entityId}${apiVersion}`;
+            url = `Tag/CheckLists?plantId=PCS$${plantId}&tagId=${entityId}&formularGroupsFilter=${[
+                'MCCR',
+            ]}${apiVersion}`;
         } else if (searchType === SearchType.PO) {
             url = `PurchaseOrder/CheckLists?plantId=PCS$${plantId}&callOffId=${entityId}${apiVersion}`;
         } else if (
@@ -612,8 +609,7 @@ const procosysApiService = (
     ): Promise<void> => {
         await postByFetch(
             `PunchListItem?plantId=PCS$${plantId}${apiVersion}`,
-            newPunchData,
-            { 'Content-Type': 'application/json' }
+            newPunchData
         );
     };
 
@@ -629,6 +625,7 @@ const procosysApiService = (
         if (!isOfType<PunchItem>(data, 'raisedByCode')) {
             throw new Error(typeGuardErrorMessage('punchItem'));
         }
+        console.log('har hentet punch: ', data);
         return data;
     };
 
@@ -654,8 +651,7 @@ const procosysApiService = (
     ): Promise<void> => {
         await postByFetch(
             `PunchListItem/${punchAction}?plantId=PCS$${plantId}${apiVersion}`,
-            punchItemId,
-            { 'Content-Type': 'application/json' }
+            punchItemId
         );
     };
 

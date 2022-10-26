@@ -21,8 +21,10 @@ const useBookmarks = () => {
         AsyncStatus.LOADING
     );
     const [isDownloading, setIsDownloading] = useState<boolean>(false);
-    const abortController = new AbortController();
     const [isCancelling, setIsCancelling] = useState<boolean>(false);
+    const [isStarting, setIsStarting] = useState<boolean>(false);
+    const [userPin, setUserPin] = useState<number>(0);
+    const abortController = new AbortController();
 
     const getCurrentBookmarks = async (): Promise<void> => {
         if (!currentProject) return;
@@ -147,6 +149,7 @@ const useBookmarks = () => {
         setBookmarksStatus(AsyncStatus.SUCCESS);
         setIsDownloading(false);
     };
+
     const finishOffline = async (): Promise<void> => {
         setBookmarksStatus(AsyncStatus.LOADING);
         await setOfflineState(false);
@@ -166,6 +169,9 @@ const useBookmarks = () => {
         deleteBookmarks,
         isCancelling,
         setIsCancelling,
+        isStarting,
+        setIsStarting,
+        setUserPin,
     };
 };
 
