@@ -15,36 +15,39 @@ const baseIPOApiService = ({
 }: baseIPOApiProps): AxiosInstance => {
     const plantInStorage = window.localStorage.getItem(StorageKey.PLANT);
     const axiosInstance = axios.create();
-    axiosInstance.defaults.baseURL = baseURL;
-    axiosInstance.interceptors.request.use(async (request) => {
-        try {
-            const token = await authInstance.getAccessToken(scope);
-            if (request.headers) {
-                request.headers['Authorization'] = `Bearer ${token}`;
-                if (plantInStorage !== 'undefined')
-                    request.headers['x-plant'] = `PCS$${plantInStorage}`;
+    const offlineMode = true; // TODO: get actual once the change from indexedDB=>localStorage has been merged to offline-mode
+    if (!offlineMode) {
+        axiosInstance.defaults.baseURL = baseURL;
+        axiosInstance.interceptors.request.use(async (request) => {
+            try {
+                const token = await authInstance.getAccessToken(scope);
+                if (request.headers) {
+                    request.headers['Authorization'] = `Bearer ${token}`;
+                    if (plantInStorage !== 'undefined')
+                        request.headers['x-plant'] = `PCS$${plantInStorage}`;
+                }
+                return request;
+            } catch (error) {
+                const pcsError = error as Error;
+                throw new Error(pcsError.message);
             }
-            return request;
-        } catch (error) {
-            const pcsError = error as Error;
-            throw new Error(pcsError.message);
-        }
-    });
-    axiosInstance.interceptors.response.use(
-        (response) => {
-            return response;
-        },
-        (error) => {
-            if (axios.isCancel(error)) {
-                throw error;
+        });
+        axiosInstance.interceptors.response.use(
+            (response) => {
+                return response;
+            },
+            (error) => {
+                if (axios.isCancel(error)) {
+                    throw error;
+                }
+                if (error.response) {
+                    throw new Error(error.response.data);
+                } else {
+                    throw new Error(error.message);
+                }
             }
-            if (error.response) {
-                throw new Error(error.response.data);
-            } else {
-                throw new Error(error.message);
-            }
-        }
-    );
+        );
+    }
     return axiosInstance;
 };
 
