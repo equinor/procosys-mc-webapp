@@ -11,7 +11,12 @@ import authService from '../services/__mocks__/authService';
 import { testProjects, testPlants, dummyPermissions } from './dummyData';
 import { IAuthService } from '../services/authService';
 import { baseURL } from './setupServer';
-import { AppConfig, FeatureFlags } from '../services/appConfiguration';
+import {
+    AppConfig,
+    FeatureFlags,
+} from '../services/appConfiguration';
+import baseIPOApiService from '../services/baseIPOApi';
+import procosysIPOApiService, { ProcosysIPOApiService } from '../services/procosysIPOApi';
 
 const client = new Msal.PublicClientApplication({
     auth: { clientId: 'testId', authority: 'testAuthority' },
@@ -27,6 +32,11 @@ const dummyAppConfig: AppConfig = {
         instrumentationKey: '',
     },
     ocrFunctionEndpoint: 'https://dummy-org-endpoint.com',
+    ipoApi: {
+        baseUrl: 'testUrl',
+        apiVersion: '',
+        scope: ['']
+    }
 };
 
 const dummyFeatureFlags: FeatureFlags = {
@@ -45,12 +55,23 @@ const procosysApiInstance = procosysApiService(
 
 const dummyConfigurationAccessToken = 'dummytoken';
 
+const baseIPOApiInstance = baseIPOApiService({
+    authInstance,
+    baseURL: baseURL,
+    scope: ['testscope']
+});
+
+const ipoApiInstance = procosysIPOApiService({
+    axios: baseIPOApiInstance
+});
+
 type WithMcAppContextProps = {
     Component: JSX.Element;
     asyncStatus?: AsyncStatus;
     plants?: Plant[];
     auth?: IAuthService;
     api?: ProcosysApiService;
+    ipoApi?: ProcosysIPOApiService;
     offlineState?: boolean;
     setOfflineState: (offlineState: boolean) => Promise<void>;
     configurationAccessToken: string;
@@ -62,6 +83,7 @@ export const withMcAppContext = ({
     plants = testPlants,
     auth = authInstance,
     api = procosysApiInstance,
+    ipoApi = ipoApiInstance,
     offlineState = false,
     setOfflineState,
     configurationAccessToken,
@@ -74,11 +96,12 @@ export const withMcAppContext = ({
                     fetchPlantsStatus: asyncStatus,
                     auth: auth,
                     api: api,
+                    ipoApi: ipoApi,
                     appConfig: dummyAppConfig,
                     featureFlags: dummyFeatureFlags,
                     offlineState: offlineState,
                     setOfflineState: setOfflineState,
-                    configurationAccessToken: configurationAccessToken,
+                    configurationAccessToken: configurationAccessToken
                 }}
             >
                 {Component}

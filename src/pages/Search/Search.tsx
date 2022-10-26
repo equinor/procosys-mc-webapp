@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
-import { SearchTypeButton } from '@equinor/procosys-webapp-components';
 import SavedSearches from './SavedSearches/SavedSearches';
 import SearchArea from './Searching/SearchArea';
 import styled from 'styled-components';
 import { SearchType } from '../../typings/enums';
 import useCommonHooks from '../../utils/useCommonHooks';
+import OutstandingIpos from '../../components/OutstandingIpos';
+import {
+    SearchTypeButton,
+} from '@equinor/procosys-webapp-components';
 
 const ButtonsWrapper = styled.div`
     display: flex;
@@ -25,7 +28,12 @@ const Search = ({ setSnackbarText }: SearchProps): JSX.Element => {
     const determineComponent = (): JSX.Element => {
         if (offlineState === true) return <></>;
         if (searchType === undefined) {
-            return <SavedSearches setSnackbarText={setSnackbarText} />;
+            return (
+                <>
+                    <SavedSearches setSnackbarText={setSnackbarText} />{' '}
+                    <OutstandingIpos />{' '}
+                </>
+            );
         }
         return <SearchArea searchType={searchType} />;
     };

@@ -14,6 +14,7 @@ import { AsyncStatus } from '../../contexts/McAppContext';
 import { isOfType } from '../../services/apiTypeGuards';
 import {
     Attachment,
+    IpoDetails,
     McPkgPreview,
     PoPreview,
     Tag,
@@ -36,7 +37,7 @@ const Description = styled.p`
 `;
 
 type WorkOrderInfoProps = {
-    workOrder?: WoPreview | McPkgPreview | Tag | PoPreview;
+    workOrder?: WoPreview | McPkgPreview | Tag | PoPreview | IpoDetails;
     fetchWorkOrderStatus: AsyncStatus;
 };
 

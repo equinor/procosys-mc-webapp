@@ -14,6 +14,8 @@ import {
 } from '@equinor/procosys-webapp-components';
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 import isOfflineMode from './utils/isOfflineMode';
+import procosysIPOApiService from './services/procosysIPOApi';
+import baseIPOApiService from './services/baseIPOApi';
 
 serviceWorkerRegistration.register();
 
@@ -81,6 +83,16 @@ const initialize = async () => {
         accessToken
     );
 
+    const baseIpoApiInstance = baseIPOApiService({
+        authInstance,
+        baseURL: appConfig.ipoApi.baseUrl,
+        scope: appConfig.ipoApi.scope,
+    });
+
+    const procosysIPOApiInstance = procosysIPOApiService({
+        axios: baseIpoApiInstance,
+    });
+
     const { appInsightsReactPlugin } = initializeAppInsights(
         appConfig.appInsights.instrumentationKey
     );
@@ -92,6 +104,7 @@ const initialize = async () => {
         appConfig,
         featureFlags,
         configurationAccessToken,
+        procosysIPOApiInstance,
     };
 };
 
@@ -105,6 +118,7 @@ const initialize = async () => {
             appConfig,
             featureFlags,
             configurationAccessToken,
+            procosysIPOApiInstance,
         } = await initialize();
 
         render(
@@ -115,6 +129,7 @@ const initialize = async () => {
                 appConfig={appConfig}
                 featureFlags={featureFlags}
                 configurationAccessToken={configurationAccessToken}
+                procosysIPOApiInstance={procosysIPOApiInstance}
             />
         );
     } catch (error) {
