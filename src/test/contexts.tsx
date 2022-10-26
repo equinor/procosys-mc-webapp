@@ -11,12 +11,11 @@ import authService from '../services/__mocks__/authService';
 import { testProjects, testPlants, dummyPermissions } from './dummyData';
 import { IAuthService } from '../services/authService';
 import { baseURL } from './setupServer';
-import {
-    AppConfig,
-    FeatureFlags,
-} from '../services/appConfiguration';
+import { AppConfig, FeatureFlags } from '../services/appConfiguration';
 import baseIPOApiService from '../services/baseIPOApi';
-import procosysIPOApiService, { ProcosysIPOApiService } from '../services/procosysIPOApi';
+import procosysIPOApiService, {
+    ProcosysIPOApiService,
+} from '../services/procosysIPOApi';
 
 const client = new Msal.PublicClientApplication({
     auth: { clientId: 'testId', authority: 'testAuthority' },
@@ -35,8 +34,8 @@ const dummyAppConfig: AppConfig = {
     ipoApi: {
         baseUrl: 'testUrl',
         apiVersion: '',
-        scope: ['']
-    }
+        scope: [''],
+    },
 };
 
 const dummyFeatureFlags: FeatureFlags = {
@@ -58,11 +57,11 @@ const dummyConfigurationAccessToken = 'dummytoken';
 const baseIPOApiInstance = baseIPOApiService({
     authInstance,
     baseURL: baseURL,
-    scope: ['testscope']
+    scope: ['testscope'],
 });
 
 const ipoApiInstance = procosysIPOApiService({
-    axios: baseIPOApiInstance
+    axios: baseIPOApiInstance,
 });
 
 type WithMcAppContextProps = {
@@ -101,7 +100,7 @@ export const withMcAppContext = ({
                     featureFlags: dummyFeatureFlags,
                     offlineState: offlineState,
                     setOfflineState: setOfflineState,
-                    configurationAccessToken: configurationAccessToken
+                    configurationAccessToken: configurationAccessToken,
                 }}
             >
                 {Component}

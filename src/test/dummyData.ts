@@ -660,6 +660,5 @@ export const dummyTagResponse = {
 
 export const dummyIPOIsAliveResponse = {
     isAlive: true,
-    timeStamp:'2022-08-09 13:11:18 UTC'
+    timeStamp: '2022-08-09 13:11:18 UTC',
 };
-

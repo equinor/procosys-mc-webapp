@@ -339,7 +339,10 @@ export const server = setupServer(
 
     //IPO
     rest.get(ENDPOINTS.isAlive, (_, response, context) => {
-        return response(context.json(dummyIPOIsAliveResponse), context.status(200));
+        return response(
+            context.json(dummyIPOIsAliveResponse),
+            context.status(200)
+        );
     })
 );
 
