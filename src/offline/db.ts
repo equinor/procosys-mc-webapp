@@ -3,12 +3,7 @@ import { Entity } from './Entity';
 import { EntityIndexes } from './EntityIndexes';
 import { IEntity } from './IEntity';
 import { OfflineUpdateRequest } from './OfflineUpdateRequest';
-import {
-    applyEncryptionMiddleware,
-    cryptoOptions,
-    clearEncryptedTables,
-    clearAllTables,
-} from 'dexie-encrypted';
+import { applyEncryptionMiddleware, cryptoOptions } from 'dexie-encrypted';
 
 const nacl = require('tweetnacl');
 
@@ -20,6 +15,13 @@ export default class OfflineStorage extends Dexie {
     constructor() {
         super('ProCoSysMcAppDB');
         console.log('NÅ OPPRETTES DATABASE -construkctur');
+    }
+
+    notAbleToDecrypt<T extends Dexie>(db: T): Promise<void[]> {
+        console.log(
+            'Was not able to decrypt the offline database with the given user pin'
+        );
+        return Promise.resolve([]);
     }
 
     /**
@@ -49,7 +51,7 @@ export default class OfflineStorage extends Dexie {
                 offlineContent: cryptoOptions.NON_INDEXED_FIELDS,
                 offlineUpdates: cryptoOptions.NON_INDEXED_FIELDS,
             },
-            clearEncryptedTables
+            this.notAbleToDecrypt
         );
 
         if (!this.isOpen()) {
@@ -58,19 +60,23 @@ export default class OfflineStorage extends Dexie {
     }
 
     public async reInitAndVerifyPin(userPin: string): Promise<boolean> {
-        this.init(userPin);
+        await this.init(userPin);
 
         //Check that we are able to encrypt data from the database
-        const testEntity = await db.offlineContent
-            .where('entitytype')
-            .equals('test')
-            .first();
-
-        if (testEntity && testEntity.responseObj == 'test') {
-            return true;
-        } else {
-            return false;
+        try {
+            const testEntity = await db.offlineContent
+                .where('entitytype')
+                .equals('test')
+                .first();
+            if (testEntity && (await testEntity.responseObj) == 'test') {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (error) {
+            console.error('Not able to fetch data from encrypted database.');
         }
+        return false;
     }
 
     /**

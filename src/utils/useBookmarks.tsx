@@ -146,6 +146,7 @@ const useBookmarks = () => {
 
         updateOfflineStatus(true, userPin);
         setOfflineState(true);
+        localStorage.removeItem('loginTries'); //just to be sure...
         setBookmarksStatus(AsyncStatus.SUCCESS);
         setIsDownloading(false);
     };

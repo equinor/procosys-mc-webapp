@@ -26,6 +26,7 @@ const OfflinePin = ({ setUserPin }: OfflinePinProps): JSX.Element => {
     const testUserPin = async (): Promise<void> => {
         const suksess = await db.reInitAndVerifyPin(enteredPin);
         if (suksess) {
+            localStorage.removeItem('loginTries');
             setUserPin(enteredPin);
             return;
         }
@@ -39,15 +40,12 @@ const OfflinePin = ({ setUserPin }: OfflinePinProps): JSX.Element => {
         }
         const loginTriesNum = parseInt(loginTries);
         if (!isNaN(loginTriesNum) && loginTriesNum < 2) {
-            console.log(
-                'har nå tasatet feil pin  antall ganger: ' + loginTriesNum + 1
-            );
             setFailedPin(true);
             localStorage.setItem('loginTries', `${loginTriesNum + 1}`);
         } else {
             db.clearTables();
             updateOfflineStatus(false, '');
-            //todo: må sette global variabel
+            localStorage.removeItem('loginTries');
         }
     };
 
