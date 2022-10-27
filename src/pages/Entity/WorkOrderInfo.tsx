@@ -45,7 +45,7 @@ const WorkOrderInfo = ({
     workOrder,
     fetchWorkOrderStatus,
 }: WorkOrderInfoProps): JSX.Element => {
-    const { history, url, api, params } = useCommonHooks();
+    const { history, url, api, params, offlineState } = useCommonHooks();
     const { permissions } = useContext(PlantContext);
     const { snackbar, setSnackbarText } = useSnackbar();
     const abortController = new AbortController();
@@ -108,7 +108,10 @@ const WorkOrderInfo = ({
                             )
                         }
                         setSnackbarText={setSnackbarText}
-                        readOnly={!permissions.includes('WO/ATTACHFILE')} // TODO: disable when offline
+                        readOnly={
+                            !permissions.includes('WO/ATTACHFILE') ||
+                            offlineState
+                        }
                         abortController={abortController}
                     />
                     {snackbar}
