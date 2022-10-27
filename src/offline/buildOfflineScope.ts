@@ -180,7 +180,11 @@ const buildOfflineScope = async (
         searchType: SearchType
     ): Promise<void> => {
         //Entity details
-        await api.getEntityDetails(plantId, searchType, entityId.toString());
+        const entityDetails = await api.getEntityDetails(
+            plantId,
+            searchType,
+            entityId.toString()
+        );
 
         addEntityToMap({
             entityid: entityId,
@@ -190,7 +194,12 @@ const buildOfflineScope = async (
         });
 
         //Punch list
-        await api.getPunchList(plantId, searchType, entityId.toString());
+        await api.getPunchList(
+            plantId,
+            searchType,
+            entityId.toString(),
+            entityDetails
+        );
 
         addEntityToMap({
             entityid: entityId,
@@ -203,7 +212,8 @@ const buildOfflineScope = async (
         const scope = await api.getScope(
             plantId,
             searchType,
-            entityId.toString()
+            entityId.toString(),
+            entityDetails
         );
 
         addEntityToMap({
