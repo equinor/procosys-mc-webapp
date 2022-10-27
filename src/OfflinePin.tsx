@@ -59,7 +59,7 @@ const OfflinePin = ({ setUserPin }: OfflinePinProps): JSX.Element => {
                     variant={failedPin ? 'error' : 'default'}
                 />
                 <Spacer />
-                <Button onClick={testUserPin}>Change</Button>
+                <Button onClick={testUserPin}>Submit</Button>
             </ContentWrapper>
         </>
     );
