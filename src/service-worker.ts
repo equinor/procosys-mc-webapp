@@ -13,6 +13,7 @@ import { ExpirationPlugin } from 'workbox-expiration';
 import { precacheAndRoute, createHandlerBoundToURL } from 'workbox-precaching';
 import { registerRoute } from 'workbox-routing';
 import { StaleWhileRevalidate } from 'workbox-strategies';
+import { db } from './offline/db';
 import {
     handleFetchGET,
     handleFetchUpdate,
@@ -75,28 +76,66 @@ registerRoute(
     })
 );
 
+let isOffline = false;
+
+type OfflineStatus = {
+    isOffline: boolean;
+    userPin: string;
+};
+
 // This allows the web app to trigger skipWaiting via
 // registration.waiting.postMessage({type: 'SKIP_WAITING'})
-self.addEventListener('message', (event) => {
-    if (event.data && event.data.type === 'SKIP_WAITING') {
-        self.skipWaiting();
+self.addEventListener('message', async (event: MessageEventInit) => {
+    console.log('ADDEVENTLISTENER message.', event);
+    const message: MessageEvent = event.data;
+    if (message) {
+        if (message.type === 'SKIP_WAITING') {
+            self.skipWaiting();
+        } else if (message.type === 'SET_OFFLINE_STATUS') {
+            const offlineStatus: OfflineStatus = message.data;
+            isOffline = offlineStatus.isOffline;
+            if (isOffline) {
+                if (
+                    !offlineStatus.userPin ||
+                    offlineStatus.userPin.length != 4
+                ) {
+                    console.error(
+                        'Trying to update offline status for service worker, but pin is missing.'
+                    );
+                    return;
+                }
+                const suksess = await db.reInitAndVerifyPin(
+                    offlineStatus.userPin
+                );
+                if (!suksess) {
+                    console.error(
+                        'Service worker is not able to reinitiate database and verify pin.'
+                    );
+                }
+            }
+        }
     }
 });
 
 self.addEventListener('fetch', function (event: FetchEvent) {
     // console.log('Intercept fetch', event.request.url);
-    const url = event.request.url;
-    const method = event.request.method;
-    if (method == 'GET' && url.includes('/api/')) {
-        //todo: We should find a better way to identify these requests!
-        event.respondWith(handleFetchGET(event));
-        return;
-    } else if (
-        (method == 'POST' || method == 'PUT' || method == 'DELETE') &&
-        url.includes('/api/')
-    ) {
-        event.respondWith(handleFetchUpdate(event));
-        return;
+    if (isOffline) {
+        const url = event.request.url;
+        const method = event.request.method;
+        if (method == 'GET' && url.includes('/api/')) {
+            //todo: We should find a better way to identify these requests!
+            event.respondWith(handleFetchGET(event));
+            return;
+        } else if (
+            (method == 'POST' || method == 'PUT' || method == 'DELETE') &&
+            url.includes('/api/')
+        ) {
+            event.respondWith(handleFetchUpdate(event));
+            return;
+        }
+        event.respondWith(handleOtherFetchEvents(event));
+    } else {
+        console.log('handleFetch. Online mode', event.request.url);
+        event.respondWith(fetch(event.request));
     }
-    event.respondWith(handleOtherFetchEvents(event));
 });

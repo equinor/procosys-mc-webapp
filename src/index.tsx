@@ -13,8 +13,11 @@ import {
     LoadingPage,
 } from '@equinor/procosys-webapp-components';
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
-import isOfflineMode from './utils/isOfflineMode';
 import OfflinePin from './OfflinePin';
+import {
+    getOfflineStatusfromLocalStorage,
+    updateOfflineStatus,
+} from './offline/OfflineStatus';
 
 serviceWorkerRegistration.register();
 
@@ -33,6 +36,18 @@ const render = (content: JSX.Element): void => {
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const initialize = async () => {
     await navigator.serviceWorker.ready; //wait until service worker is active
+
+    if ('serviceWorker' in navigator) {
+        console.log('SERVICE WORKER ER I NAVIGATOR');
+    } else {
+        console.log('SERVICE WORKER ER IKKE I NAVIGATOR');
+        alert('Vi har ikke navigator');
+    }
+
+    const offline = getOfflineStatusfromLocalStorage();
+
+    await updateOfflineStatus(offline, userPin);
+
     // Get auth config, setup auth client and handle login
     const {
         clientSettings,
@@ -48,11 +63,9 @@ const initialize = async () => {
         scopes: scopes,
     });
 
-    const offlineMode = await isOfflineMode();
-
     let configurationAccessToken = '';
 
-    if (!offlineMode) {
+    if (!offline) {
         const isRedirecting = await authInstance.handleLogin();
         if (isRedirecting) return Promise.reject('redirecting');
         configurationAccessToken = await authInstance.getAccessToken(
@@ -67,7 +80,7 @@ const initialize = async () => {
     );
 
     let accessToken = '';
-    if (!offlineMode) {
+    if (!offline) {
         accessToken = await authInstance.getAccessToken(
             appConfig.procosysWebApi.scope
         );
@@ -94,15 +107,15 @@ const initialize = async () => {
         configurationAccessToken,
     };
 };
-let userPin = 0;
-const setUserPin = (pin: number): void => {
+let userPin = '';
+const setUserPin = (pin: string): void => {
     userPin = pin;
     console.log(userPin);
 };
 
 const renderApp = async (): Promise<void> => {
-    if (userPin == 0) {
-        setTimeout(renderApp, 50);
+    if (getOfflineStatusfromLocalStorage() && userPin == '') {
+        setTimeout(renderApp, 1000);
         return;
     }
     const {
@@ -129,8 +142,9 @@ const renderApp = async (): Promise<void> => {
 (async (): Promise<void> => {
     render(<LoadingPage loadingText={'Initializing...'} />);
     try {
-        // TODO: add a check for offline mode. If not offline, don't render OfflinePin
-        render(<OfflinePin setUserPin={setUserPin} />);
+        if (getOfflineStatusfromLocalStorage()) {
+            render(<OfflinePin setUserPin={setUserPin} />);
+        }
         renderApp();
     } catch (error) {
         console.log(error);
