@@ -1476,6 +1476,15 @@
     "@microsoft/applicationinsights-shims" "2.0.1"
     "@microsoft/dynamicproto-js" "^1.1.4"
 
+"@microsoft/applicationinsights-common@^2.8.5":
+  version "2.8.9"
+  resolved "https://registry.yarnpkg.com/@microsoft/applicationinsights-common/-/applicationinsights-common-2.8.9.tgz#a75e4a3143a7fd797687830c0ddd2069fd900827"
+  integrity sha512-mObn1moElyxZaGIRF/IU3cOaeKMgxghXnYEoHNUCA2e+rNwBIgxjyKkblFIpmGuHf4X7Oz3o3yBWpaC6AoMpig==
+  dependencies:
+    "@microsoft/applicationinsights-core-js" "2.8.9"
+    "@microsoft/applicationinsights-shims" "2.0.2"
+    "@microsoft/dynamicproto-js" "^1.1.7"
+
 "@microsoft/applicationinsights-core-js@2.7.4":
   version "2.7.4"
   resolved "https://registry.yarnpkg.com/@microsoft/applicationinsights-core-js/-/applicationinsights-core-js-2.7.4.tgz#9271fadf01863b3f28bfc45aaa630229ee28a0f4"
@@ -1483,6 +1492,14 @@
   dependencies:
     "@microsoft/applicationinsights-shims" "2.0.1"
     "@microsoft/dynamicproto-js" "^1.1.4"
+
+"@microsoft/applicationinsights-core-js@2.8.9", "@microsoft/applicationinsights-core-js@^2.8.5":
+  version "2.8.9"
+  resolved "https://registry.yarnpkg.com/@microsoft/applicationinsights-core-js/-/applicationinsights-core-js-2.8.9.tgz#0e5d207acfae6986a6fc97249eeb6117e523bf1b"
+  integrity sha512-HRuIuZ6aOWezcg/G5VyFDDWGL8hDNe/ljPP01J7ImH2kRPEgbtcfPSUMjkamGMefgdq81GZsSoC/NNGTP4pp2w==
+  dependencies:
+    "@microsoft/applicationinsights-shims" "2.0.2"
+    "@microsoft/dynamicproto-js" "^1.1.7"
 
 "@microsoft/applicationinsights-dependencies-js@2.7.4":
   version "2.7.4"
@@ -1504,20 +1521,25 @@
     "@microsoft/applicationinsights-shims" "2.0.1"
     "@microsoft/dynamicproto-js" "^1.1.4"
 
-"@microsoft/applicationinsights-react-js@^3.2.2":
-  version "3.2.4"
-  resolved "https://registry.yarnpkg.com/@microsoft/applicationinsights-react-js/-/applicationinsights-react-js-3.2.4.tgz#f1658a5ee5830e72906047e1f605c189ba474b19"
-  integrity sha512-v0WdLHlDe0EITayPzuf5ypC62M0Cr8GlbMKA4fjAK1SYV6VuaqwTpVtY95zoj0ca4BhfjZLVax+9BDqw+QnJoA==
+"@microsoft/applicationinsights-react-js@^3.4.0":
+  version "3.4.0"
+  resolved "https://registry.yarnpkg.com/@microsoft/applicationinsights-react-js/-/applicationinsights-react-js-3.4.0.tgz#20f135c5fd3316adf8d072dec89daf23ceb81eae"
+  integrity sha512-digniwtei4TRUGnbwOQ40aaA8in52R4tp6OUyWGDNGw9V9i9VJUeckys4yR4dUDk03dxtcKksW52pN7xFT6H1g==
   dependencies:
-    "@microsoft/applicationinsights-common" "2.7.4"
-    "@microsoft/applicationinsights-core-js" "2.7.4"
-    "@microsoft/applicationinsights-shims" "2.0.1"
-    "@microsoft/dynamicproto-js" "^1.1.4"
+    "@microsoft/applicationinsights-common" "^2.8.5"
+    "@microsoft/applicationinsights-core-js" "^2.8.5"
+    "@microsoft/applicationinsights-shims" "^2.0.1"
+    "@microsoft/dynamicproto-js" "^1.1.6"
 
 "@microsoft/applicationinsights-shims@2.0.1":
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/@microsoft/applicationinsights-shims/-/applicationinsights-shims-2.0.1.tgz#5d72fb7aaf4056c4fda54f9d7c93ccf8ca9bcbfd"
   integrity sha512-G0MXf6R6HndRbDy9BbEj0zrLeuhwt2nsXk2zKtF0TnYo39KgYqhYC2ayIzKPTm2KAE+xzD7rgyLdZnrcRvt9WQ==
+
+"@microsoft/applicationinsights-shims@2.0.2", "@microsoft/applicationinsights-shims@^2.0.1":
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/@microsoft/applicationinsights-shims/-/applicationinsights-shims-2.0.2.tgz#92b36a09375e2d9cb2b4203383b05772be837085"
+  integrity sha512-PoHEgsnmcqruLNHZ/amACqdJ6YYQpED0KSRe6J7gIJTtpZC1FfFU9b1fmDKDKtFoUSrPzEh1qzO3kmRZP0betg==
 
 "@microsoft/applicationinsights-web@^2.7.2":
   version "2.7.4"
@@ -1537,6 +1559,11 @@
   version "1.1.4"
   resolved "https://registry.yarnpkg.com/@microsoft/dynamicproto-js/-/dynamicproto-js-1.1.4.tgz#40e1c0ad20743fcee1604a7df2c57faf0aa1af87"
   integrity sha512-Ot53G927ykMF8cQ3/zq4foZtdk+Tt1YpX7aUTHxBU7UHNdkEiBvBfZSq+rnlUmKCJ19VatwPG4mNzvcGpBj4og==
+
+"@microsoft/dynamicproto-js@^1.1.6", "@microsoft/dynamicproto-js@^1.1.7":
+  version "1.1.7"
+  resolved "https://registry.yarnpkg.com/@microsoft/dynamicproto-js/-/dynamicproto-js-1.1.7.tgz#ede48dd3f85af14ee369c805e5ed5b84222b9fe2"
+  integrity sha512-SK3D3aVt+5vOOccKPnGaJWB5gQ8FuKfjboUJHedMP7gu54HqSCXX5iFXhktGD8nfJb0Go30eDvs/UDoTnR2kOA==
 
 "@mswjs/cookies@^0.1.6":
   version "0.1.7"
