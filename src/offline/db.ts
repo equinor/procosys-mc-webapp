@@ -31,7 +31,7 @@ export default class OfflineStorage extends Dexie {
         if (this.isOpen()) {
             this.close();
         }
-        this.version(1).stores({
+        this.version(40).stores({
             offlineContent: 'apipath, parententityid, entityid, entitytype',
             offlineUpdates: 'seqno++',
         });
