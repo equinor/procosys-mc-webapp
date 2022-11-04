@@ -158,18 +158,19 @@ const BookmarksPopUps = ({
                     <CancellingPopup>
                         <h3>You don&apos;t have an internet connection</h3>
                         <p>
-                            Please connect to a wifi or similar before retrying
+                            Please establish an internet connection before
+                            retrying
                         </p>
                         <ButtonsWrapper>
                             <Button onClick={startSync}>
-                                Retry ending offline
+                                Retry Finish Offline
                             </Button>
                             <Button
                                 onClick={(): void =>
                                     setNoNetworkConnection(false)
                                 }
                             >
-                                Cancel ending offline
+                                Cancel Finish Offline
                             </Button>
                         </ButtonsWrapper>
                     </CancellingPopup>
