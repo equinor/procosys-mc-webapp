@@ -23,8 +23,8 @@ const Spacer = styled.div`
 interface BookmarksPopUpsProps {
     isStarting: boolean;
     setIsStarting: React.Dispatch<React.SetStateAction<boolean>>;
-    setUserPin: React.Dispatch<React.SetStateAction<number>>;
-    startOffline: () => Promise<void>;
+    setUserPin: React.Dispatch<React.SetStateAction<string>>;
+    startOffline: (userPin: string) => Promise<void>;
     isCancelling: boolean;
     setIsCancelling: React.Dispatch<React.SetStateAction<boolean>>;
     bookmarksStatus: AsyncStatus;
@@ -94,10 +94,10 @@ const BookmarksPopUps = ({
                             <Button
                                 disabled={!isSure || !enteredPinIsValid}
                                 onClick={(): void => {
-                                    setUserPin(parseInt(enteredPin));
+                                    setUserPin(enteredPin);
                                     setIsSure(false);
                                     setIsStarting(false);
-                                    startOffline();
+                                    startOffline(enteredPin);
                                 }}
                             >
                                 Create pin

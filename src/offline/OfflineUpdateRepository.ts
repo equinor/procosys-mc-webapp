@@ -2,10 +2,6 @@ import { db } from './db';
 import { OfflineUpdateRequest } from './OfflineUpdateRequest';
 
 class OfflineUpdateRepository {
-    async cleanOfflineUpdates(): Promise<void> {
-        db.offlineUpdates.clear();
-    }
-
     async getAllRequests(): Promise<OfflineUpdateRequest[]> {
         const result = await db.offlineUpdates.toArray();
         return result as OfflineUpdateRequest[];

@@ -31,6 +31,7 @@ const Bookmarks = (): JSX.Element => {
         isStarting,
         setIsStarting,
         startOffline,
+        userPin,
         setUserPin,
     } = useBookmarks();
     const { offlineState } = useCommonHooks();
@@ -40,7 +41,7 @@ const Bookmarks = (): JSX.Element => {
     const startSync = (): void => {
         if (navigator.onLine) {
             setNoNetworkConnection(false);
-            startOffline();
+            startOffline(userPin);
         } else {
             setNoNetworkConnection(true);
         }

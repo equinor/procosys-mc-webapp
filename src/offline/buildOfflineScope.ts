@@ -267,7 +267,6 @@ const buildOfflineScope = async (
                     responseObj: currentResponseObj,
                     apipath: currentApiPath,
                 });
-
                 //Tag
                 await api.getTag(plantId, checklistResp.checkList.tagId);
 
