@@ -120,6 +120,7 @@ self.addEventListener('message', async (event: MessageEventInit) => {
 self.addEventListener('fetch', function (event: FetchEvent) {
     // console.log('Intercept fetch', event.request.url);
     if (isOffline) {
+        //User is in offline mode.  Data must be fetched from offline database
         const url = event.request.url;
         const method = event.request.method;
         if (method == 'GET' && url.includes('/api/')) {
@@ -135,7 +136,11 @@ self.addEventListener('fetch', function (event: FetchEvent) {
         }
         event.respondWith(handleOtherFetchEvents(event));
     } else {
-        console.log('handleFetch. Online mode', event.request.url);
+        //User is in online mode. The requests will be done the normal way.
+        console.log(
+            'service-worker - handleFetch. Online mode',
+            event.request.url
+        );
         event.respondWith(fetch(event.request));
     }
 });

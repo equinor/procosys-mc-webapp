@@ -1,12 +1,7 @@
 import { IEntity } from '../IEntity';
 import { OfflineContentRepository } from '../OfflineContentRepository';
 import { EntityType } from '../../typings/enums';
-import {
-    Attachment,
-    NewPunch,
-    PunchItem,
-    PunchPreview,
-} from '../../services/apiTypes';
+import { Attachment, PunchItem, PunchPreview } from '../../services/apiTypes';
 import {
     generateRandomId,
     getCompletionStatusByCategory,
@@ -15,6 +10,8 @@ import {
     getPunchSortingById,
     getPunchTypeById,
 } from './utils';
+import { OfflineUpdateRequest } from '../OfflineUpdateRequest';
+import { addRequestToOfflineUpdatesDb } from '../addUpdateRequestToDatabase';
 
 const offlineContentRepository = new OfflineContentRepository();
 
@@ -22,10 +19,11 @@ const offlineContentRepository = new OfflineContentRepository();
  * Update offline content database based on a post of new punch.
  */
 export const handleNewPunch = async (
-    requestUrl: string,
-    params: URLSearchParams,
-    newPunch: NewPunch
+    offlinePostRequest: OfflineUpdateRequest,
+    params: URLSearchParams
 ): Promise<void> => {
+    const newPunch = offlinePostRequest.bodyData;
+
     const plantId = params.get('plantId');
 
     //Get checklist punchlist
@@ -53,7 +51,7 @@ export const handleNewPunch = async (
             EntityType.Punchlist,
             mainEntityId
         );
-    const mainPunchList: PunchPreview[] = mainPunchlistEntity.responseObj;
+    const mainPunchList: PunchPreview[] = await mainPunchlistEntity.responseObj;
 
     //Get some information about tag
     let tagNo = '';
@@ -193,4 +191,7 @@ export const handleNewPunch = async (
     mainPunchList.push(newPunchReview);
     mainPunchlistEntity.responseObj = mainPunchList;
     await offlineContentRepository.replaceEntity(mainPunchlistEntity);
+
+    offlinePostRequest.responseIsNewEntityId = true;
+    await addRequestToOfflineUpdatesDb(newPunchItemId, offlinePostRequest);
 };

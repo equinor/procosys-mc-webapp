@@ -2,6 +2,8 @@ import { OfflineContentRepository } from '../OfflineContentRepository';
 import { EntityType } from '../../typings/enums';
 import { ChecklistResponse } from '../../services/apiTypes';
 import { IEntity } from '../IEntity';
+import { OfflineUpdateRequest } from '../OfflineUpdateRequest';
+import { addRequestToOfflineUpdatesDb } from '../addUpdateRequestToDatabase';
 
 const offlineContentRepository = new OfflineContentRepository();
 
@@ -13,7 +15,11 @@ type Dto = {
 /**
  * Update offline content database based on a post of set ok on checklist item
  */
-export const handleChecklistItemPostSetOK = async (dto: Dto): Promise<void> => {
+export const handleChecklistItemPostSetOK = async (
+    offlinePostRequest: OfflineUpdateRequest
+): Promise<void> => {
+    const dto: Dto = offlinePostRequest.bodyData;
+
     const checklistEntity: IEntity =
         await offlineContentRepository.getEntityByTypeAndId(
             EntityType.Checklist,
@@ -30,12 +36,18 @@ export const handleChecklistItemPostSetOK = async (dto: Dto): Promise<void> => {
         checkitem.isOk = true;
         await offlineContentRepository.replaceEntity(checklistEntity);
     }
+
+    await addRequestToOfflineUpdatesDb(dto.CheckItemId, offlinePostRequest);
 };
 
 /**
  * Update offline content database based on a post of set ok on checklist item
  */
-export const handleChecklistItemPostSetNA = async (dto: Dto): Promise<void> => {
+export const handleChecklistItemPostSetNA = async (
+    offlinePostRequest: OfflineUpdateRequest
+): Promise<void> => {
+    const dto: Dto = offlinePostRequest.bodyData;
+
     const checklistEntity: IEntity =
         await offlineContentRepository.getEntityByTypeAndId(
             EntityType.Checklist,
@@ -52,12 +64,17 @@ export const handleChecklistItemPostSetNA = async (dto: Dto): Promise<void> => {
         checkitem.isNotApplicable = true;
         await offlineContentRepository.replaceEntity(checklistEntity);
     }
+    await addRequestToOfflineUpdatesDb(dto.CheckItemId, offlinePostRequest);
 };
 
 /**
  * Update offline content database based on a post of set ok on checklist item
  */
-export const handleChecklistItemPostClear = async (dto: Dto): Promise<void> => {
+export const handleChecklistItemPostClear = async (
+    offlinePostRequest: OfflineUpdateRequest
+): Promise<void> => {
+    const dto: Dto = await offlinePostRequest.bodyData;
+
     const checklistEntity: IEntity =
         await offlineContentRepository.getEntityByTypeAndId(
             EntityType.Checklist,
@@ -75,6 +92,8 @@ export const handleChecklistItemPostClear = async (dto: Dto): Promise<void> => {
         checkitem.isOk = false;
         await offlineContentRepository.replaceEntity(checklistEntity);
     }
+
+    await addRequestToOfflineUpdatesDb(dto.CheckItemId, offlinePostRequest);
 };
 
 type ChecklistMetatableCell = {
@@ -89,8 +108,10 @@ type ChecklistMetatableCell = {
  * Update offline content database based on a put meta table cell
  */
 export const handleChecklistPutMetaTableCell = async (
-    dto: ChecklistMetatableCell
+    offlinePostRequest: OfflineUpdateRequest
 ): Promise<void> => {
+    const dto: ChecklistMetatableCell = offlinePostRequest.bodyData;
+
     const checklistEntity: IEntity =
         await offlineContentRepository.getEntityByTypeAndId(
             EntityType.Checklist,
@@ -119,6 +140,10 @@ export const handleChecklistPutMetaTableCell = async (
                     }
                     await offlineContentRepository.replaceEntity(
                         checklistEntity
+                    );
+                    await addRequestToOfflineUpdatesDb(
+                        dto.CheckItemId,
+                        offlinePostRequest
                     );
                 } else {
                     console.error(

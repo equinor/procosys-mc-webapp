@@ -4,7 +4,6 @@ import PlantContext from '../contexts/PlantContext';
 import { SearchType } from '../typings/enums';
 import { Bookmarks } from '../services/apiTypes';
 import useCommonHooks from './useCommonHooks';
-import { syncUpdatesWithBackend } from '../offline/syncUpdatesWithBackend';
 import buildOfflineScope from '../offline/buildOfflineScope';
 import { db } from '../offline/db';
 import { updateOfflineStatus } from '../offline/OfflineStatus';
@@ -153,10 +152,10 @@ const useBookmarks = () => {
 
     const finishOffline = async (): Promise<void> => {
         setBookmarksStatus(AsyncStatus.LOADING);
-        setOfflineState(false);
-        await syncUpdatesWithBackend(api);
-        updateOfflineStatus(false, '');
-        await getCurrentBookmarks();
+        localStorage.setItem('status', 'sync');
+        //After reloading, the application will be reauthenticated, and
+        //syncronization will be started.
+        location.reload();
     };
 
     return {

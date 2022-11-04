@@ -112,13 +112,15 @@ const procosysApiService = (
             },
         };
 
-        console.log('fetch-kall attachment ', url);
         const res = await fetch(`${baseURL}/${url}`, GetOperation);
 
         if (res.ok) {
-            const resultObj = await res.blob();
-            callback(resultObj, res.url);
-            return resultObj;
+            const blob = await res.blob();
+
+            //ArrayBuffer must be used for storing in indexeddb (blob not supported by all browser, and not supported by Dexie-encrypted)
+            const arrayBuffer = await blob.arrayBuffer();
+            callback(arrayBuffer, res.url);
+            return blob;
         } else {
             //alert('HTTP-Error: ' + res.status);
             console.error(res.status);
@@ -138,7 +140,14 @@ const procosysApiService = (
         await fetch(`${baseURL}/${url}`, DeleteOperation);
     };
 
-    const postByFetch = async (url: string, bodyData?: any): Promise<any> => {
+    type EntityId = {
+        Id: number;
+    };
+
+    const postByFetch = async (
+        url: string,
+        bodyData?: any
+    ): Promise<EntityId> => {
         const PostOperation = {
             method: 'POST',
             headers: {
@@ -147,7 +156,14 @@ const procosysApiService = (
             },
             body: JSON.stringify(bodyData),
         };
-        await fetch(`${baseURL}/${url}`, PostOperation);
+
+        const response = await fetch(`${baseURL}/${url}`, PostOperation);
+
+        if (response.ok) {
+            const entityId = await response.json();
+            return entityId;
+        }
+        throw Error('Post request not successfull. ' + response.statusText);
     };
 
     const postAttachmentByFetch = async (
@@ -559,15 +575,15 @@ const procosysApiService = (
         }
         return data;
     };
-
     const postNewPunch = async (
         plantId: string,
         newPunchData: NewPunch
-    ): Promise<void> => {
-        await postByFetch(
+    ): Promise<EntityId> => {
+        const punchId = await postByFetch(
             `PunchListItem?plantId=PCS$${plantId}${apiVersion}`,
             newPunchData
         );
+        return punchId;
     };
 
     const getPunchItem = async (

@@ -3,6 +3,8 @@ import { EntityType } from '../../typings/enums';
 import { PunchItem } from '../../services/apiTypes';
 import { PunchAction } from '@equinor/procosys-webapp-components';
 import { getStringBetween, updatePunchlists } from './utils';
+import { OfflineUpdateRequest } from '../OfflineUpdateRequest';
+import { addRequestToOfflineUpdatesDb } from '../addUpdateRequestToDatabase';
 
 const offlineContentRepository = new OfflineContentRepository();
 
@@ -10,10 +12,15 @@ const offlineContentRepository = new OfflineContentRepository();
  * Update offline content database based on a post of punch action.
  */
 export const handlePunchAction = async (
-    requestUrl: string,
-    punchItemId: string
+    offlinePostRequest: OfflineUpdateRequest
 ): Promise<void> => {
-    const punchAction = getStringBetween(requestUrl, 'PunchListItem/', '?');
+    const punchItemId = offlinePostRequest.bodyData;
+
+    const punchAction = getStringBetween(
+        offlinePostRequest.url,
+        'PunchListItem/',
+        '?'
+    );
 
     const punchItemEntity = await offlineContentRepository.getEntityByTypeAndId(
         EntityType.PunchItem,
@@ -53,6 +60,6 @@ export const handlePunchAction = async (
     }
     punchItemEntity.responseObj = punch;
     await offlineContentRepository.replaceEntity(punchItemEntity);
-
-    updatePunchlists(punch);
+    await updatePunchlists(punch);
+    await addRequestToOfflineUpdatesDb(punchItemId, offlinePostRequest);
 };

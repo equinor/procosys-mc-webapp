@@ -118,7 +118,7 @@ export const getPunchTypeById = async (
  * We will get a floating number between 0 and 1. This should ensure that we don't get an id already in use.
  */
 export const generateRandomId = (): number => {
-    return Math.random();
+    return -Math.floor(Math.random() * 10000000);
 };
 
 /**

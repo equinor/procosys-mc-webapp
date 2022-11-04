@@ -47,21 +47,11 @@ class OfflineContentRepository {
         entityType: EntityType,
         entityId: number
     ): Promise<Entity> {
-        let result;
-        if (entityId > -1) {
-            result = await db.offlineContent
-                .where('entitytype')
-                .equals(entityType)
-                .and((entity) => entity.entityid == entityId)
-                .first();
-        } else {
-            console.error(
-                'Was not able to find entity in offline content database.',
-                entityType,
-                entityId
-            );
-            //todo: exception?
-        }
+        const result = await db.offlineContent
+            .where('entitytype')
+            .equals(entityType)
+            .and((entity) => entity.entityid == entityId)
+            .first();
 
         return result as Entity;
     }
