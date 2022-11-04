@@ -8,6 +8,7 @@ export const syncUpdatesWithBackend = async (
     console.log('SyncUpdatesWithBackend');
     const offlineUpdateRepository = new OfflineUpdateRepository();
     const allOfflineUpdates = await offlineUpdateRepository.getAllRequests();
+
     allOfflineUpdates.forEach((updateRequest: OfflineUpdateRequest) => {
         console.log('syncUpdatesWithBackend: ', updateRequest);
         if (updateRequest.method.toLowerCase() == 'post') {

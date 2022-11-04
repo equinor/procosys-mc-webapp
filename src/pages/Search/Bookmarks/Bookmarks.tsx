@@ -111,10 +111,13 @@ const Bookmarks = (): JSX.Element => {
                                 <Button
                                     disabled={!isSure || !enteredPinIsValid}
                                     onClick={(): void => {
-                                        setUserPin(parseInt(enteredPin));
+                                        console.log(
+                                            'HER HAR JEG VEL PIN? ' + enteredPin
+                                        );
+                                        setUserPin(enteredPin);
                                         setIsSure(false);
                                         setIsStarting(false);
-                                        startOffline();
+                                        startOffline(enteredPin);
                                     }}
                                 >
                                     Create pin

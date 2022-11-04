@@ -4,6 +4,9 @@ export enum RequestType {
     Json = 'json',
     Attachment = 'attachment',
 }
+/**
+ * This class holds an offline update request.
+ */
 export class OfflineUpdateRequest {
     //seqno: number;
     url: string;
@@ -18,6 +21,9 @@ export class OfflineUpdateRequest {
         this.type = type;
     }
 
+    /**
+     * Build object based on request
+     */
     static async build(request: Request): Promise<OfflineUpdateRequest> {
         const headers = request.headers;
         const contentType = headers.get('Content-Type');

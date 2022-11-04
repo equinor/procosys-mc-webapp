@@ -4,10 +4,6 @@ import { Entity } from './Entity';
 import { EntityIndexes } from './EntityIndexes';
 
 class OfflineContentRepository {
-    async cleanOfflineContent(): Promise<void> {
-        db.offlineContent.clear();
-    }
-
     async getById(id: number): Promise<Entity> {
         const result = await db.offlineContent.where('id').equals(id).first();
         return result as Entity;

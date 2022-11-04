@@ -1,6 +1,5 @@
 import { ChecklistResponse } from '../services/apiTypes';
 import { EntityType } from '../typings/enums';
-import IsOfflineMode from '../utils/isOfflineMode';
 import removeBaseUrlFromUrl from '../utils/removeBaseUrlFromUrl';
 import { addUpdateRequestToDatabase } from './addUpdateRequestToDatabase';
 import { IEntity } from './IEntity';
@@ -14,36 +13,32 @@ export const handleFetchGET = async (event: FetchEvent): Promise<any> => {
     //console.log('handleFetchGET', event);
     const url = removeBaseUrlFromUrl(event.request.url);
 
-    if (await IsOfflineMode()) {
-        if (url.includes('CheckList/CustomItem/NextItemNo')) {
-            //Handle special case. Later: We should try to find a better way to handle this, to avoid this special handling.
-            return await handleCustomCheckItemNextItemNo(event.request.url);
-        }
+    if (url.includes('CheckList/CustomItem/NextItemNo')) {
+        //Handle special case. Later: We should try to find a better way to handle this, to avoid this special handling.
+        return await handleCustomCheckItemNextItemNo(event.request.url);
+    }
 
-        // Try to get the response from offline content database.
-        const entity = await offlineContentRepository.getByApiPath(url);
-        if (entity) {
-            // todo: Ta bort log
-            // console.log(
-            //     'handleFetchGET: Returnerer objekt fra database. ' +
-            //         event.request.url,
-            //     entity.responseObj
-            // );
-            if (url.includes('/Attachment?')) {
-                const blob = entity.responseObj as Blob;
-                return new Response(blob);
-            } else {
-                const blob = new Blob([JSON.stringify(entity.responseObj)]);
-                return new Response(blob);
-            }
+    // Try to get the response from offline content database.
+    const entity = await offlineContentRepository.getByApiPath(url);
+    if (entity) {
+        // todo: Ta bort log
+        // console.log(
+        //     'handleFetchGET: Returnerer objekt fra database. ' +
+        //         event.request.url,
+        //     entity.responseObj
+        // );
+        if (url.includes('/Attachment?')) {
+            const blob = entity.responseObj as Blob;
+            return new Response(blob);
         } else {
-            console.error(
-                'Offline-mode. Entity for given url is not found in local database. Will try to fetch.',
-                event.request.url
-            );
-            return await fetch(event.request);
+            const blob = new Blob([JSON.stringify(entity.responseObj)]);
+            return new Response(blob);
         }
     } else {
+        console.error(
+            'Offline-mode. Entity for given url is not found in local database. Will try to fetch.',
+            event.request.url
+        );
         return await fetch(event.request);
     }
 };
@@ -51,41 +46,29 @@ export const handleFetchGET = async (event: FetchEvent): Promise<any> => {
 export const handleFetchUpdate = async (
     event: FetchEvent
 ): Promise<Response> => {
-    if (await IsOfflineMode()) {
-        // console.log('handleFetchupdate. Offline mode.', event.request.url);
+    // console.log('handleFetchupdate. Offline mode.', event.request.url);
 
-        const offlinePostRequest = await OfflineUpdateRequest.build(
-            event.request
-        );
-        console.log('handleFetchUpdate, offlineRequest', offlinePostRequest);
-        const data = await updateOfflineContentDatabase(offlinePostRequest);
-        await addUpdateRequestToDatabase(offlinePostRequest);
+    const offlinePostRequest = await OfflineUpdateRequest.build(event.request);
+    console.log('handleFetchUpdate, offlineRequest', offlinePostRequest);
+    const data = await updateOfflineContentDatabase(offlinePostRequest);
+    await addUpdateRequestToDatabase(offlinePostRequest);
 
-        if (data) {
-            return new Response(JSON.stringify(data));
-        } else {
-            return new Response();
-        }
+    if (data) {
+        return new Response(JSON.stringify(data));
     } else {
-        console.log('handleFetchUpdate. Online mode', event.request.url);
-        return await fetch(event.request);
+        return new Response();
     }
 };
 
 export const handleOtherFetchEvents = async (
     event: FetchEvent
 ): Promise<Response> => {
-    console.log('handleOtherFetchEvents', event);
-    if (await IsOfflineMode()) {
-        console.error(
-            'We are in offline mode, and should not need to perform any fetch.',
-            event.request.url
-        );
-        return await fetch(event.request);
-    } else {
-        // console.log('handleFetchUpdate. Online mode', event.request.url);
-        return await fetch(event.request);
-    }
+    //console.log('handleOtherFetchEvents', event);
+    console.error(
+        'We are in offline mode, and should not need to perform any fetch.',
+        event.request.url
+    );
+    return await fetch(event.request);
 };
 
 /**
