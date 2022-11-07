@@ -176,6 +176,7 @@ const useBookmarks = () => {
         startOffline,
         finishOffline,
         deleteBookmarks,
+        userPin,
         setUserPin,
         offlineAction,
         setOfflineAction,

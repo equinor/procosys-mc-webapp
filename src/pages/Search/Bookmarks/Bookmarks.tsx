@@ -8,25 +8,12 @@ import useCommonHooks from '../../../utils/useCommonHooks';
 import AsyncPage from '../../../components/AsyncPage';
 import { COLORS, SHADOW } from '../../../style/GlobalStyles';
 import { AsyncStatus } from '@equinor/procosys-webapp-components';
+import BookmarksPopUps from './BookmarksPopups';
 
-const CancellingPopup = styled.div`
-    display: flex;
-    flex-direction: column;
-    border-radius: 5px;
-    background-color: ${COLORS.white};
-    padding: 16px;
-    margin: 0 16px;
-    box-shadow: ${SHADOW};
-`;
-
-const ButtonsWrapper = styled.div`
+export const ButtonsWrapper = styled.div`
     display: flex;
     justify-content: space-between;
     padding-top: 16px;
-`;
-
-const Spacer = styled.div`
-    height: 16px;
 `;
 
 const Bookmarks = (): JSX.Element => {
@@ -44,22 +31,17 @@ const Bookmarks = (): JSX.Element => {
         setOfflineAction,
     } = useBookmarks();
     const { offlineState } = useCommonHooks();
-    const [isSure, setIsSure] = useState<boolean>(false);
-    const [enteredPin, setEnteredPin] = useState<string>('');
-    const [enteredPinIsValid, setEnteredPinIsValid] = useState(false);
+    const [noNetworkConnection, setNoNetworkConnection] =
+        useState<boolean>(false);
 
-    useEffect(() => {
-        try {
-            const pin = parseInt(enteredPin);
-            if (!isNaN(pin) && enteredPin.length == 4) {
-                setEnteredPinIsValid(true);
-            } else {
-                setEnteredPinIsValid(false);
-            }
-        } catch {
-            setEnteredPinIsValid(false);
+    const startSync = (): void => {
+        if (navigator.onLine) {
+            setNoNetworkConnection(false);
+            finishOffline();
+        } else {
+            setNoNetworkConnection(true);
         }
-    }, [enteredPin]);
+    };
 
     return (
         <AsyncPage
@@ -75,107 +57,23 @@ const Bookmarks = (): JSX.Element => {
             }
         >
             <div>
-                {isStarting ? (
-                    <Scrim
-                        isDismissable
-                        onClose={(): void => setIsStarting(false)}
-                    >
-                        <CancellingPopup>
-                            <h3>
-                                Input a code to use as your offline pin number
-                            </h3>
-                            <Label label="Input a 4-digit number" />
-                            <Input
-                                type="number"
-                                value={enteredPin}
-                                onChange={(
-                                    e: React.ChangeEvent<HTMLInputElement>
-                                ): void => {
-                                    setEnteredPin(e.target.value);
-                                }}
-                                variant={
-                                    enteredPin && !enteredPinIsValid
-                                        ? 'error'
-                                        : 'default'
-                                }
-                            />
-                            <Spacer />
-                            <Checkbox
-                                label="I understand that forgetting my pin will result in my offline changes being deleted forever"
-                                onClick={(): void => setIsSure((prev) => !prev)}
-                            />
-                            <ButtonsWrapper>
-                                <Button
-                                    disabled={!isSure || !enteredPinIsValid}
-                                    onClick={(): void => {
-                                        console.log(
-                                            'HER HAR JEG VEL PIN? ' + enteredPin
-                                        );
-                                        setUserPin(enteredPin);
-                                        setIsSure(false);
-                                        setIsStarting(false);
-                                        startOffline(enteredPin);
-                                    }}
-                                >
-                                    Create pin
-                                </Button>
-                                <Button
-                                    onClick={(): void => {
-                                        setIsStarting(false);
-                                        setIsSure(false);
-                                        setEnteredPin('');
-                                    }}
-                                >
-                                    Cancel
-                                </Button>
-                            </ButtonsWrapper>
-                        </CancellingPopup>
-                    </Scrim>
-                ) : null}
-                {isCancelling ? (
-                    <Scrim
-                        isDismissable
-                        onClose={(): void => setIsCancelling(false)}
-                    >
-                        <CancellingPopup>
-                            <h3>Do you really wish to cancel offline mode?</h3>
-                            <Checkbox
-                                label="I understand that cancelling offline mode deletes all my offline changes"
-                                onClick={(): void => setIsSure((prev) => !prev)}
-                            />
-                            <ButtonsWrapper>
-                                <Button
-                                    onClick={(): void => {
-                                        setIsCancelling(false);
-                                        setIsSure(false);
-                                    }}
-                                >
-                                    Don&apos;t cancel
-                                </Button>
-                                <Button
-                                    color={'danger'}
-                                    disabled={
-                                        bookmarksStatus ===
-                                            AsyncStatus.LOADING || !isSure
-                                    }
-                                    onClick={(): void => {
-                                        setIsSure(false);
-                                        cancelOffline();
-                                    }}
-                                    aria-label="Delete"
-                                >
-                                    Yes, cancel offline
-                                </Button>
-                            </ButtonsWrapper>
-                        </CancellingPopup>
-                    </Scrim>
-                ) : null}
+                <BookmarksPopUps
+                    isStarting={isStarting}
+                    setIsStarting={setIsStarting}
+                    setUserPin={setUserPin}
+                    startOffline={startOffline}
+                    isCancelling={isCancelling}
+                    setIsCancelling={setIsCancelling}
+                    bookmarksStatus={bookmarksStatus}
+                    cancelOffline={cancelOffline}
+                    noNetworkConnection={noNetworkConnection}
+                    setNoNetworkConnection={setNoNetworkConnection}
+                    startSync={startSync}
+                />
                 <ButtonsWrapper>
                     {offlineState == true ? (
                         <>
-                            <Button onClick={finishOffline}>
-                                Finish offline
-                            </Button>
+                            <Button onClick={startSync}>Finish offline</Button>
                             <Button
                                 onClick={(): void => setIsCancelling(true)}
                                 color="danger"
