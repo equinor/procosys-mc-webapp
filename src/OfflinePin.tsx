@@ -25,8 +25,8 @@ const OfflinePin = ({ setUserPin }: OfflinePinProps): JSX.Element => {
     const [loginTriesLeft, setLoginTriesLeft] = useState<number>(3);
 
     const testUserPin = async (): Promise<void> => {
-        const suksess = await db.reInitAndVerifyPin(enteredPin);
-        if (suksess) {
+        const succsess = await db.reInitAndVerifyPin(enteredPin);
+        if (succsess) {
             localStorage.removeItem('loginTries');
             setUserPin(enteredPin);
             return;
@@ -67,7 +67,7 @@ const OfflinePin = ({ setUserPin }: OfflinePinProps): JSX.Element => {
                 ) : null}
                 <Input
                     id="pin-input"
-                    type="number"
+                    type="password"
                     value={enteredPin}
                     onChange={(
                         e: React.ChangeEvent<HTMLInputElement>
