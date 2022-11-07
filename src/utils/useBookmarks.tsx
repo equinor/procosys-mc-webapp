@@ -173,6 +173,7 @@ const useBookmarks = () => {
         setIsCancelling,
         isStarting,
         setIsStarting,
+        userPin,
         setUserPin,
     };
 };
