@@ -33,6 +33,7 @@ const Bookmarks = (): JSX.Element => {
         useState<boolean>(false);
 
     const startSync = (): void => {
+        console.log(navigator.onLine);
         if (navigator.onLine) {
             setNoNetworkConnection(false);
             finishOffline();

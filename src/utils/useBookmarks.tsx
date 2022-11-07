@@ -161,10 +161,13 @@ const useBookmarks = () => {
 
     const finishOffline = async (): Promise<void> => {
         setBookmarksStatus(AsyncStatus.LOADING);
+        setOfflineAction(OfflineAction.SYNCHING);
         setOfflineState(false);
         await syncUpdatesWithBackend(api);
         updateOfflineStatus(false, '');
-        await getCurrentBookmarks();
+        setCurrentBookmarks(null);
+        setBookmarksStatus(AsyncStatus.SUCCESS);
+        setOfflineAction(OfflineAction.INACTIVE);
     };
 
     return {
