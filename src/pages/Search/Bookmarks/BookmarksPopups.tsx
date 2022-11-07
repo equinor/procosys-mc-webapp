@@ -4,7 +4,7 @@ import { AsyncStatus } from '@equinor/procosys-webapp-components';
 import styled from 'styled-components';
 import { COLORS, SHADOW } from '../../../style/GlobalStyles';
 import { ButtonsWrapper } from './Bookmarks';
-import useBookmarks from '../../../utils/useBookmarks';
+import useBookmarks, { OfflineAction } from '../../../utils/useBookmarks';
 
 const CancellingPopup = styled.div`
     display: flex;
@@ -21,12 +21,10 @@ const Spacer = styled.div`
 `;
 
 interface BookmarksPopUpsProps {
-    isStarting: boolean;
-    setIsStarting: React.Dispatch<React.SetStateAction<boolean>>;
+    offlineAction: OfflineAction;
+    setOfflineAction: React.Dispatch<React.SetStateAction<OfflineAction>>;
     setUserPin: React.Dispatch<React.SetStateAction<string>>;
     startOffline: (userPin: string) => Promise<void>;
-    isCancelling: boolean;
-    setIsCancelling: React.Dispatch<React.SetStateAction<boolean>>;
     bookmarksStatus: AsyncStatus;
     cancelOffline: () => Promise<void>;
     noNetworkConnection: boolean;
@@ -35,12 +33,10 @@ interface BookmarksPopUpsProps {
 }
 
 const BookmarksPopUps = ({
-    isStarting,
-    setIsStarting,
+    offlineAction,
+    setOfflineAction,
     setUserPin,
     startOffline,
-    isCancelling,
-    setIsCancelling,
     bookmarksStatus,
     cancelOffline,
     noNetworkConnection,
@@ -66,8 +62,13 @@ const BookmarksPopUps = ({
 
     return (
         <>
-            {isStarting ? (
-                <Scrim isDismissable onClose={(): void => setIsStarting(false)}>
+            {offlineAction == OfflineAction.STARTING ? (
+                <Scrim
+                    isDismissable
+                    onClose={(): void =>
+                        setOfflineAction(OfflineAction.INACTIVE)
+                    }
+                >
                     <CancellingPopup>
                         <h3>Input a code to use as your offline pin number</h3>
                         <Label label="Input a 4-digit number" />
@@ -96,7 +97,7 @@ const BookmarksPopUps = ({
                                 onClick={(): void => {
                                     setUserPin(enteredPin);
                                     setIsSure(false);
-                                    setIsStarting(false);
+                                    setOfflineAction(OfflineAction.INACTIVE);
                                     startOffline(enteredPin);
                                 }}
                             >
@@ -104,7 +105,7 @@ const BookmarksPopUps = ({
                             </Button>
                             <Button
                                 onClick={(): void => {
-                                    setIsStarting(false);
+                                    setOfflineAction(OfflineAction.INACTIVE);
                                     setIsSure(false);
                                     setEnteredPin('');
                                 }}
@@ -115,10 +116,12 @@ const BookmarksPopUps = ({
                     </CancellingPopup>
                 </Scrim>
             ) : null}
-            {isCancelling ? (
+            {offlineAction == OfflineAction.CANCELLING ? (
                 <Scrim
                     isDismissable
-                    onClose={(): void => setIsCancelling(false)}
+                    onClose={(): void =>
+                        setOfflineAction(OfflineAction.INACTIVE)
+                    }
                 >
                     <CancellingPopup>
                         <h3>Do you really wish to cancel offline mode?</h3>
@@ -143,7 +146,7 @@ const BookmarksPopUps = ({
                             </Button>
                             <Button
                                 onClick={(): void => {
-                                    setIsCancelling(false);
+                                    setOfflineAction(OfflineAction.INACTIVE);
                                     setIsSure(false);
                                 }}
                             >
