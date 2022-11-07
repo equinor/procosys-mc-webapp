@@ -59,12 +59,14 @@ const OfflinePin = ({ setUserPin }: OfflinePinProps): JSX.Element => {
                 <h3>Input your offline pin</h3>
                 {failedPin ? (
                     <Label
+                        htmlFor="pin-input"
                         label={`You have ${loginTriesLeft} login ${
                             loginTriesLeft < 2 ? 'try' : 'tries'
                         } left before offline data is deleted`}
                     />
                 ) : null}
                 <Input
+                    id="pin-input"
                     type="number"
                     value={enteredPin}
                     onChange={(
