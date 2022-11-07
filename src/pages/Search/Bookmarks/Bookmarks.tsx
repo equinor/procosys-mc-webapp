@@ -37,14 +37,11 @@ const Bookmarks = (): JSX.Element => {
         handleBookmarkClicked,
         cancelOffline,
         startOffline,
-        isDownloading,
         finishOffline,
         deleteBookmarks,
-        isCancelling,
-        setIsCancelling,
-        isStarting,
-        setIsStarting,
         setUserPin,
+        offlineAction,
+        setOfflineAction,
     } = useBookmarks();
     const { offlineState } = useCommonHooks();
     const [isSure, setIsSure] = useState<boolean>(false);
