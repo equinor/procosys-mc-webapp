@@ -106,7 +106,7 @@ const BookmarksPopUps = ({
                         <Spacer />
                         <Label
                             label={
-                                enteredPin1 == enteredPin2
+                                enteredPin2 == '' || enteredPin1 == enteredPin2
                                     ? 'Enter pin again to confirm'
                                     : 'Pins do not match'
                             }

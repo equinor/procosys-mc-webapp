@@ -140,6 +140,7 @@ const useBookmarks = () => {
     const startOffline = async (userPin: string): Promise<void> => {
         setBookmarksStatus(AsyncStatus.LOADING);
         setOfflineAction(OfflineAction.DOWNLOADING);
+        // TODO: delete old database
 
         db.create(userPin);
 
@@ -160,8 +161,8 @@ const useBookmarks = () => {
     };
 
     const finishOffline = async (): Promise<void> => {
-        setBookmarksStatus(AsyncStatus.LOADING);
         setOfflineAction(OfflineAction.SYNCHING);
+        setBookmarksStatus(AsyncStatus.LOADING);
         setOfflineState(false);
         await syncUpdatesWithBackend(api);
         updateOfflineStatus(false, '');
