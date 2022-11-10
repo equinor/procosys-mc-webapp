@@ -28,8 +28,8 @@ export const handleFetchGET = async (event: FetchEvent): Promise<any> => {
         // );
         if (url.includes('/Attachment?')) {
             const arrayBuffer = entity.responseObj as ArrayBuffer;
+            //const blob = new Blob([arrayBuffer], { type: 'image/jpeg' });
             const blob = new Blob([arrayBuffer]);
-
             return new Response(blob);
         } else {
             const blob = new Blob([JSON.stringify(entity.responseObj)]);
@@ -47,10 +47,11 @@ export const handleFetchGET = async (event: FetchEvent): Promise<any> => {
 export const handleFetchUpdate = async (
     event: FetchEvent
 ): Promise<Response> => {
-    const offlinePostRequest = await OfflineUpdateRequest.build(event.request);
+    const offlinePostRequest =
+        await OfflineUpdateRequest.buildOfflineRequestObject(event.request);
+
     console.log('handleFetchUpdate, offlineRequest', offlinePostRequest);
     const data = await updateOfflineDatabase(offlinePostRequest);
-
     if (data) {
         return new Response(JSON.stringify(data));
     } else {

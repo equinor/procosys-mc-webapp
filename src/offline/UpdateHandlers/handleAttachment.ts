@@ -57,8 +57,8 @@ export const handlePostPunchAttachment = async (
     const plantId = params.get('plantId');
     const title = params.get('title');
     const punchIdStr = params.get('punchItemId');
-    const blob: Blob = offlinePostRequest.bodyData[0];
-    const arrayBuffer = await blob.arrayBuffer();
+    //const blob: Blob = offlinePostRequest.bodyData[0];
+    const arrayBuffer = offlinePostRequest.blob; //await blob.arrayBuffer();
 
     if (punchIdStr === null) {
         console.error('The request parameters does not contain a punchId.');

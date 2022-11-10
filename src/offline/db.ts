@@ -80,22 +80,10 @@ export default class OfflineStorage extends Dexie {
     }
 
     /**
-     * Clear tables if they exists.
-     */
-    public async clearTables(): Promise<void> {
-        if (this.offlineContent) {
-            await this.offlineContent.clear();
-        }
-        if (this.offlineUpdates) {
-            await this.offlineUpdates.clear();
-        }
-    }
-
-    /**
      * Creates new database. Must be called when a new database is to be created.
      */
     public async create(userPin: string): Promise<void> {
-        this.clearTables();
+        await this.delete();
 
         this.init(userPin);
 

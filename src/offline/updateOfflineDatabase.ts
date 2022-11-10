@@ -49,14 +49,14 @@ export const updateOfflineDatabase = async (
     console.log('updateOfflineDatabase', offlinePostRequest);
     const dummyUrl = new URL('http://dummy.no' + offlinePostRequest.url); //todo: Better way to find searchParams?
     const searchParams = dummyUrl.searchParams;
-    const bodyData = offlinePostRequest.bodyData;
+    //const bodyData = offlinePostRequest.bodyData;
 
     const method = offlinePostRequest.method.toUpperCase();
     const url = offlinePostRequest.url;
 
     if (method == 'POST') {
         if (url.startsWith('PunchListItem?plantId')) {
-            await handleNewPunch(offlinePostRequest, searchParams);
+            return await handleNewPunch(offlinePostRequest, searchParams);
         } else if (
             url.startsWith(`PunchListItem/${PunchAction.CLEAR}`) ||
             url.startsWith(`PunchListItem/${PunchAction.REJECT}`) ||

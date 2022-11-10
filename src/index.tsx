@@ -19,6 +19,7 @@ import {
     updateOfflineStatus,
 } from './offline/OfflineStatus';
 import { syncronizeOfflineUpdatesWithBackend } from './offline/syncUpdatesWithBackend';
+import { db } from './offline/db';
 
 serviceWorkerRegistration.register();
 
@@ -135,7 +136,13 @@ const renderApp = async (): Promise<void> => {
             configurationAccessToken,
         } = await initialize();
 
-        await syncronizeOfflineUpdatesWithBackend(procosysApiInstance);
+        try {
+            await syncronizeOfflineUpdatesWithBackend(procosysApiInstance);
+            await db.delete();
+            localStorage.removeItem('status'); //todo: erstatt
+        } catch (error) {
+            //todo: feilhåndtering
+        }
 
         render(
             <App

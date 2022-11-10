@@ -37,6 +37,7 @@ import {
     ChecklistSavedSearchResult,
     isPlants,
     Bookmarks,
+    EntityId,
 } from './apiTypes';
 
 type ProcosysApiServiceProps = {
@@ -71,6 +72,9 @@ const procosysApiService = (
         return apiVersion;
     };
 
+    /**
+     * Generic method for doing a GET call. Should be used by all GET calls with json string (or blank) as respons.
+     */
     const getByFetch = async (
         url: string,
         abortSignal?: AbortSignal
@@ -98,6 +102,9 @@ const procosysApiService = (
         }
     };
 
+    /**
+     * Generic method for doing a GET call with attachment blob as response.
+     */
     const getAttachmentByFetch = async (
         url: string,
         abortSignal?: AbortSignal
@@ -128,6 +135,9 @@ const procosysApiService = (
         }
     };
 
+    /**
+     * Generic method for doing a DELETE call. Should be used by all DELETE calls.
+     */
     const deleteByFetch = async (url: string, data?: any): Promise<any> => {
         const DeleteOperation = {
             method: 'DELETE',
@@ -140,14 +150,10 @@ const procosysApiService = (
         await fetch(`${baseURL}/${url}`, DeleteOperation);
     };
 
-    type EntityId = {
-        Id: number;
-    };
-
-    const postByFetch = async (
-        url: string,
-        bodyData?: any
-    ): Promise<EntityId> => {
+    /**
+     * Generic method for doing a POST call with json as body data.
+     */
+    const postByFetch = async (url: string, bodyData?: any): Promise<any> => {
         const PostOperation = {
             method: 'POST',
             headers: {
@@ -160,12 +166,19 @@ const procosysApiService = (
         const response = await fetch(`${baseURL}/${url}`, PostOperation);
 
         if (response.ok) {
-            const entityId = await response.json();
-            return entityId;
+            const contentType = response.headers.get('content-type');
+            if (contentType && contentType.indexOf('application/json') !== -1) {
+                return await response.json();
+            } else {
+                return;
+            }
         }
         throw Error('Post request not successfull. ' + response.statusText);
     };
 
+    /**
+     * Generic method for posting attachment with form data as body data.
+     */
     const postAttachmentByFetch = async (
         url: string,
         file: FormData
@@ -180,6 +193,9 @@ const procosysApiService = (
         await fetch(`${baseURL}/${url}`, PostOperation);
     };
 
+    /**
+     * Generic method for doing a PUT call.
+     */
     const putByFetch = async (
         url: string,
         bodyData: any,

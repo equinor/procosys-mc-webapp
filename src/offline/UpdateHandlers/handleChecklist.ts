@@ -148,6 +148,8 @@ export const handleChecklistPostCustomCheckItem = async (
         checklist.customCheckItems.push(newCustomCheckItem);
         await offlineContentRepository.replaceEntity(checklistEntity);
 
+        offlinePostRequest.responseIsNewEntityId = true;
+
         await addRequestToOfflineUpdatesDb(
             Number(dto.ChecklistId),
             offlinePostRequest
