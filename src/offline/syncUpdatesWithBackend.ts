@@ -2,28 +2,175 @@ import { ProcosysApiService } from '../services/procosysApi';
 import { OfflineUpdateRepository } from './OfflineUpdateRepository';
 import { OfflineUpdateRequest, RequestType } from './OfflineUpdateRequest';
 
-export const syncUpdatesWithBackend = async (
+/**
+ * This function is called when offline mode is to be finished.
+ * All updates made in offline mode will be sent to the main procosys-api.
+ * All updates will be grouped by entityId, but will be executed in the same sequence as they where posted.
+ */
+export const syncronizeOfflineUpdatesWithBackend = async (
     api: ProcosysApiService
 ): Promise<void> => {
+    /**
+     * Syncronize an update
+     */
+    const syncronizeOfflineUpdate = async (
+        offlineUpdate: OfflineUpdateRequest
+    ): Promise<any> => {
+        console.log('syncronizeOfflineUpdate', offlineUpdate);
+        let response: Response | null = null;
+
+        const method = offlineUpdate.method.toUpperCase();
+
+        let newEntityId;
+        try {
+            if (method == 'POST') {
+                //Handle POST
+                console.log('syncronizeOfflineUpdate - POST');
+                if (offlineUpdate.type == RequestType.Json) {
+                    newEntityId = await api.postByFetch(
+                        offlineUpdate.url,
+                        offlineUpdate.bodyData
+                    );
+                } else if (offlineUpdate.type == RequestType.Attachment) {
+                    const bodyData = offlineUpdate.bodyData as Map<
+                        string,
+                        ArrayBuffer
+                    >;
+                    const fd = new FormData();
+
+                    for (const [key, value] of bodyData) {
+                        const blob = new Blob([value]); // , { type: 'image/jpeg' }); //todo: type
+                        fd.append(key, blob);
+                    }
+
+                    response = await api.postAttachmentByFetch(
+                        offlineUpdate.url,
+                        fd
+                    );
+                } else {
+                    console.error(
+                        'Not able to syncronize offline update with type ' +
+                            offlineUpdate.type
+                    );
+                }
+            } else if (method == 'PUT') {
+                //Handle PUT
+                console.log('syncronizeOfflineUpdate - PUT ');
+                response = await api.putByFetch(
+                    offlineUpdate.url,
+                    offlineUpdate.bodyData,
+                    { 'Content-Type': 'application/json' }
+                );
+            } else if (method == 'DELETE') {
+                //Handle DELETE
+                response = await api.deleteByFetch(
+                    offlineUpdate.url,
+                    offlineUpdate.bodyData
+                );
+            } else {
+                console.error(
+                    'Not able to handle update request. Method is ' + method
+                );
+                return;
+            }
+        } catch (error) {
+            console.error('Not able to syncronize entity.', error);
+            //todo: feilhåndtering
+            return;
+        }
+
+        //Response is ok
+        //Set offline update to be syncronized
+        offlineUpdate.syncronized = true;
+        offlineUpdateRepository.updateOfflineUpdate(offlineUpdate);
+
+        if (offlineUpdate.responseIsNewEntityId) {
+            //todo: Her kan vi ha litt feilhådntering. Vi må ha en reposnse.id her.
+            console.log('offlineupadte har new entity id: ', newEntityId);
+            return newEntityId;
+        }
+    };
+
+    /**
+     * Update entityId for remaining updates for entity.
+     * This is necessary when backend has generated a new id for the entity (a new entity was created offline).
+     * The specific PUT operation must be identified, and the specific variable in the body must be updated.
+     */
+    const updateEntityId = (
+        newEntityId: number,
+        offlineUpdate: OfflineUpdateRequest
+    ): void => {
+        const method = offlineUpdate.method.toUpperCase();
+
+        if (method == 'PUT') {
+            if (offlineUpdate.url.startsWith('PunchListItem/')) {
+                //putUpdatePunch
+                offlineUpdate.bodyData.PunchItemId = newEntityId.toString();
+                return;
+            }
+        }
+
+        if (method == 'POST') {
+            if (
+                offlineUpdate.url.startsWith('CheckList/CustomItem/SetOk') ||
+                offlineUpdate.url.startsWith('CheckList/CustomItem/Clear')
+            ) {
+                //postCustomClear and postCustomSetOK
+                offlineUpdate.bodyData.CustomCheckItemId =
+                    newEntityId.toString();
+                return;
+            }
+        }
+
+        console.error(
+            'Not able to update entityId for PUT (new entity where new id has been generated by server).',
+            offlineUpdate.url
+        );
+    };
+
+    //----------------------------------------
+    // Syncronize all updates with backend.
+    //----------------------------------------
     console.log('SyncUpdatesWithBackend');
     const offlineUpdateRepository = new OfflineUpdateRepository();
-    const allOfflineUpdates = await offlineUpdateRepository.getAllRequests();
 
-    allOfflineUpdates.forEach((updateRequest: OfflineUpdateRequest) => {
-        console.log('syncUpdatesWithBackend: ', updateRequest);
-        if (updateRequest.method.toLowerCase() == 'post') {
-            if (updateRequest.type == RequestType.Json) {
-                api.postByFetch(updateRequest.url, updateRequest.bodyData);
-            } else if (updateRequest.type == RequestType.Attachment) {
-                api.postAttachmentByFetch(
-                    updateRequest.url,
-                    updateRequest.bodyData
+    const offlineUpdates =
+        await offlineUpdateRepository.getRequestsOrderedByEntityAndSeq();
+
+    //Get a distinct set of entities to syncronize
+    const entitiesToUpdate = new Set<number>();
+    for (const offlineUpdate of offlineUpdates) {
+        entitiesToUpdate.add(offlineUpdate.entityid ?? 0);
+    }
+
+    for (const entityIdToUpdate of entitiesToUpdate) {
+        //Syncronize updates for the specific entity
+
+        //Find all updates for the current entity
+        const updatesForEntity = offlineUpdates.filter(
+            (offlineUpdate) => offlineUpdate.entityid == entityIdToUpdate
+        );
+
+        let newEntityId;
+
+        for (const offlineUpdate of updatesForEntity) {
+            if (!offlineUpdate.syncronized) {
+                if (newEntityId) {
+                    //A previous POST for the entity returned an new entityId generated by backend.
+                    //The id for the update request for this entity must be updated.
+                    updateEntityId(newEntityId, offlineUpdate);
+                }
+                const id = await syncronizeOfflineUpdate(offlineUpdate);
+                if (id) {
+                    //If id is returned it means that backend has created a new ID, that must be used for subsequent updates for this entity.
+                    newEntityId = id.Id;
+                }
+            } else {
+                console.log(
+                    'Offline update already syncronized for entity ' +
+                        offlineUpdate.entityid
                 );
             }
-        } else if (updateRequest.method.toLowerCase() == 'put') {
-            api.putByFetch(updateRequest.url, updateRequest.bodyData);
-        } else if (updateRequest.method.toLowerCase() == 'delete') {
-            api.deleteByFetch(updateRequest.url, updateRequest.bodyData);
         }
-    });
+    }
 };

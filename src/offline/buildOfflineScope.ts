@@ -12,6 +12,11 @@ import { IEntity } from './IEntity';
 import { fetchAppConfig, fetchAuthConfig } from '../services/appConfiguration';
 import removeBaseUrlFromUrl from '../utils/removeBaseUrlFromUrl';
 
+/**
+ * This function will be called when user want to go offline with given bookmarks.
+ * All relevant data will be fetched from main-api, and store in browser database (indexeddb).
+ * When the user is offline, all calls to main-api will be intercepted, and data will be fetched from indexeddb instead.
+ */
 const buildOfflineScope = async (
     api: ProcosysApiService,
     plantId: string,

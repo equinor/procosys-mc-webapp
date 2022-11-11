@@ -1,11 +1,10 @@
 import { ChecklistResponse } from '../services/apiTypes';
 import { EntityType } from '../typings/enums';
 import removeBaseUrlFromUrl from '../utils/removeBaseUrlFromUrl';
-import { addUpdateRequestToDatabase } from './addUpdateRequestToDatabase';
 import { IEntity } from './IEntity';
 import { OfflineContentRepository } from './OfflineContentRepository';
 import { OfflineUpdateRequest } from './OfflineUpdateRequest';
-import { updateOfflineContentDatabase } from './updateOfflineDatabase';
+import { updateOfflineDatabase as updateOfflineDatabase } from './updateOfflineDatabase';
 
 const offlineContentRepository = new OfflineContentRepository();
 
@@ -28,7 +27,9 @@ export const handleFetchGET = async (event: FetchEvent): Promise<any> => {
         //     entity.responseObj
         // );
         if (url.includes('/Attachment?')) {
-            const blob = entity.responseObj as Blob;
+            const arrayBuffer = entity.responseObj as ArrayBuffer;
+            //const blob = new Blob([arrayBuffer], { type: 'image/jpeg' });
+            const blob = new Blob([arrayBuffer]);
             return new Response(blob);
         } else {
             const blob = new Blob([JSON.stringify(entity.responseObj)]);
@@ -46,13 +47,11 @@ export const handleFetchGET = async (event: FetchEvent): Promise<any> => {
 export const handleFetchUpdate = async (
     event: FetchEvent
 ): Promise<Response> => {
-    // console.log('handleFetchupdate. Offline mode.', event.request.url);
+    const offlinePostRequest =
+        await OfflineUpdateRequest.buildOfflineRequestObject(event.request);
 
-    const offlinePostRequest = await OfflineUpdateRequest.build(event.request);
     console.log('handleFetchUpdate, offlineRequest', offlinePostRequest);
-    const data = await updateOfflineContentDatabase(offlinePostRequest);
-    await addUpdateRequestToDatabase(offlinePostRequest);
-
+    const data = await updateOfflineDatabase(offlinePostRequest);
     if (data) {
         return new Response(JSON.stringify(data));
     } else {
@@ -60,6 +59,9 @@ export const handleFetchUpdate = async (
     }
 };
 
+/**
+ * Handle fetch events that are not calls to procosys apis.
+ */
 export const handleOtherFetchEvents = async (
     event: FetchEvent
 ): Promise<Response> => {

@@ -1,10 +1,9 @@
-import { AsyncStatus } from '@equinor/procosys-webapp-components';
+import { AsyncStatus, isOfType } from '@equinor/procosys-webapp-components';
 import { useContext, useEffect, useState } from 'react';
 import PlantContext from '../contexts/PlantContext';
 import { SearchType } from '../typings/enums';
 import { Bookmarks } from '../services/apiTypes';
 import useCommonHooks from './useCommonHooks';
-import { syncUpdatesWithBackend } from '../offline/syncUpdatesWithBackend';
 import buildOfflineScope from '../offline/buildOfflineScope';
 import { db } from '../offline/db';
 import { updateOfflineStatus } from '../offline/OfflineStatus';
@@ -104,7 +103,7 @@ const useBookmarks = () => {
                 setBookmarksStatus(AsyncStatus.LOADING);
                 await api.putCancelOffline(params.plant, currentProject.id);
                 updateOfflineStatus(false, '');
-                db.clearTables();
+                await db.delete();
                 setOfflineState(false);
                 setIsCancelling(false);
                 setBookmarksStatus(AsyncStatus.SUCCESS);
@@ -153,10 +152,13 @@ const useBookmarks = () => {
 
     const finishOffline = async (): Promise<void> => {
         setBookmarksStatus(AsyncStatus.LOADING);
-        setOfflineState(false);
-        await syncUpdatesWithBackend(api);
-        updateOfflineStatus(false, '');
-        await getCurrentBookmarks();
+        localStorage.setItem('status', 'sync');
+        //After reloading, the application will be reauthenticated, and
+        //syncronization will be started.
+        //Note: When running tests, location object does not have 'reload'.
+        if (isOfType<Location>(location, 'reload')) {
+            location.reload();
+        }
     };
 
     return {
