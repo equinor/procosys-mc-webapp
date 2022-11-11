@@ -1,4 +1,4 @@
-import { AsyncStatus } from '@equinor/procosys-webapp-components';
+import { AsyncStatus, isOfType } from '@equinor/procosys-webapp-components';
 import { useContext, useEffect, useState } from 'react';
 import PlantContext from '../contexts/PlantContext';
 import { SearchType } from '../typings/enums';
@@ -155,7 +155,10 @@ const useBookmarks = () => {
         localStorage.setItem('status', 'sync');
         //After reloading, the application will be reauthenticated, and
         //syncronization will be started.
-        location.reload();
+        //Note: When running tests, location object does not have 'reload'.
+        if (isOfType<Location>(location, 'reload')) {
+            location.reload();
+        }
     };
 
     return {
