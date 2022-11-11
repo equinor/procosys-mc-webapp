@@ -24,6 +24,7 @@ class OfflineUpdateRepository {
             );
         }
     }
+
     /**
      * Update the offline update request.
      *
@@ -34,21 +35,26 @@ class OfflineUpdateRepository {
         offlineUpdateRequest: OfflineUpdateRequest
     ): Promise<void> {
         if (db.offlineUpdates !== undefined) {
-            //const oldEntity = await this.get( seqno);
-            //     if (!oldEntity) {
-            //         console.error('The entity to replace does not exist.', entity);
-            //         throw Error(
-            //             `The entity to replace does not exist. urlPath: ${entity.apipath}`
-            //         );
-            //     }
-            //     return await db.offlineContent.put(entity);
-            // }
-            // console.error(
-            //     `Entity ${entity} not updated in database. Offline content database not available.`
-            // );
-            // throw Error(`Entity ${entity} not updated in database.`);
+            const oldOfflineUpdate = db.offlineUpdates
+                .where('uniqueId')
+                .equals(offlineUpdateRequest.uniqueId);
+
+            if (!oldOfflineUpdate) {
+                console.error(
+                    'The offline update request to update does not exist.',
+                    offlineUpdateRequest
+                );
+                throw Error(
+                    `The offline update request to update does not exist. urlPath: ${offlineUpdateRequest.url}`
+                );
+            }
+
+            //return await db.offlineUpdates.put(offlineUpdateRequest);
         }
+        console.error(
+            `Entity ${offlineUpdateRequest} not updated in database. Offline content database not available.`
+        );
+        throw Error(`Entity ${offlineUpdateRequest} not updated in database.`);
     }
 }
-
 export { OfflineUpdateRepository };

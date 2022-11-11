@@ -10,7 +10,7 @@ import { addRequestToOfflineUpdatesDb } from '../addUpdateRequestToDatabase';
 
 const offlineContentRepository = new OfflineContentRepository();
 
-const addNewAttachment = async (
+const addAttachmentToAttachmentList = async (
     attachmentListEntity: IEntity,
     newAttachmentId: number,
     title: string | null
@@ -91,7 +91,11 @@ export const handlePostPunchAttachment = async (
             punchId
         );
 
-    await addNewAttachment(attachmentListEntity, newAttachmentId, title);
+    await addAttachmentToAttachmentList(
+        attachmentListEntity,
+        newAttachmentId,
+        title
+    );
 
     //Update attachment count on punch
     const punchEntity = await offlineContentRepository.getEntityByTypeAndId(
@@ -183,7 +187,11 @@ export const handlePostWorkOrderAttachment = async (
             EntityType.WorkOrderAttachments,
             Number(workOrderId)
         );
-    await addNewAttachment(attachmentListEntity, newAttachmentId, title);
+    await addAttachmentToAttachmentList(
+        attachmentListEntity,
+        newAttachmentId,
+        title
+    );
     await addRequestToOfflineUpdatesDb(Number(workOrderId), offlinePostRequest);
 
     //todo: Må oppdatere punch listen også, med attachmentCount
@@ -224,7 +232,11 @@ export const handlePostChecklistAttachment = async (
             EntityType.ChecklistAttachments,
             Number(checklistId)
         );
-    await addNewAttachment(attachmentListEntity, newAttachmentId, title);
+    await addAttachmentToAttachmentList(
+        attachmentListEntity,
+        newAttachmentId,
+        title
+    );
     await addRequestToOfflineUpdatesDb(Number(checklistId), offlinePostRequest);
     //todo: Må oppdatere punch listen også, med attachmentCount
 };

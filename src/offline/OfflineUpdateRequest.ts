@@ -1,3 +1,4 @@
+import generateUniqueId from '../utils/generateUniqueId';
 import removeBaseUrlFromUrl from '../utils/removeBaseUrlFromUrl';
 
 export enum RequestType {
@@ -5,10 +6,11 @@ export enum RequestType {
     Attachment = 'attachment',
 }
 export class OfflineUpdateRequest {
+    uniqueId: string;
     url: string;
     method: string;
     bodyData: any;
-    blob: ArrayBuffer | null; //attachment object for offline content db
+    blob?: ArrayBuffer; //attachment object for offline content db
     type: RequestType;
     entityid: number | null;
     timestamp: number;
@@ -19,18 +21,19 @@ export class OfflineUpdateRequest {
         url: string,
         method: string,
         bodyData: any,
-        blob: ArrayBuffer | null,
         type: any,
         entityid: number | null,
-        timestamp: number
+        timestamp: number,
+        blob?: ArrayBuffer
     ) {
+        this.uniqueId = generateUniqueId();
         this.url = url;
         this.method = method;
         this.bodyData = bodyData;
-        this.blob = blob;
         this.type = type;
         this.entityid = entityid;
         this.timestamp = timestamp;
+        this.blob = blob;
     }
 
     /**
@@ -45,7 +48,7 @@ export class OfflineUpdateRequest {
         const url = removeBaseUrlFromUrl(request.url);
 
         let bodyData;
-        let blob: ArrayBuffer | null = null;
+        let blob;
         let type;
 
         if (request.body) {
@@ -59,7 +62,7 @@ export class OfflineUpdateRequest {
                 const formData = await request.formData();
 
                 const tempData = new Map();
-                let arrayBuffer: ArrayBuffer | null = null;
+                let arrayBuffer;
                 for (const [key, value] of formData) {
                     const tempBlob = value as File;
                     arrayBuffer = await tempBlob.arrayBuffer();
@@ -81,10 +84,10 @@ export class OfflineUpdateRequest {
             url,
             request.method,
             bodyData,
-            blob,
             type,
             null,
-            Date.now()
+            Date.now(),
+            blob
         );
     }
 }

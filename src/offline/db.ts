@@ -33,7 +33,7 @@ export default class OfflineStorage extends Dexie {
         }
         this.version(1).stores({
             offlineContent: 'apipath, parententityid, entityid, entitytype',
-            offlineUpdates: 'seqno++, entityid',
+            offlineUpdates: 'seqno++, entityid, uniqueId',
         });
 
         this?.offlineContent.mapToClass(Entity);

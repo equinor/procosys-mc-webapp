@@ -77,7 +77,9 @@ class OfflineContentRepository {
         if (db.offlineContent !== undefined) {
             const oldEntity = await this.getByApiPath(entity.apipath);
             if (!oldEntity) {
-                console.error('The entity to replace does not exist.', entity);
+                console.error(
+                    `The entity to replace does not exist. urlPath: ${entity.apipath}`
+                );
                 throw Error(
                     `The entity to replace does not exist. urlPath: ${entity.apipath}`
                 );
@@ -86,9 +88,11 @@ class OfflineContentRepository {
             return await db.offlineContent.put(entity);
         }
         console.error(
-            `Entity ${entity} not updated in database. Offline content database not available.`
+            `Entity ${entity.entityid} not updated in database. Offline content database not available. Url path: ${entity.apipath}`
         );
-        throw Error(`Entity ${entity} not updated in database.`);
+        throw Error(
+            `Entity ${entity.entityid} not updated in database. Offline content database not available. Url path: ${entity.apipath}`
+        );
     }
 }
 
