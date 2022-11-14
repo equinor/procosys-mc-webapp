@@ -13,16 +13,14 @@ import { ExpirationPlugin } from 'workbox-expiration';
 import { precacheAndRoute, createHandlerBoundToURL } from 'workbox-precaching';
 import { registerRoute } from 'workbox-routing';
 import { StaleWhileRevalidate } from 'workbox-strategies';
-import { OfflineContentRepository } from './offline/OfflineContentRepository';
-import { updateOfflineContentDatabase } from './offline/offlineContentUpdates/updateOfflineDatabase';
-import { addUpdateRequestToDatabase } from './offline/addUpdateRequestToDatabase';
-import { OfflineUpdateRequest } from './offline/OfflineUpdateRequest';
-import removeBaseUrlFromUrl from './utils/removeBaseUrlFromUrl';
-import IsOfflineMode from './utils/isOfflineMode';
+import { db } from './offline/db';
+import {
+    handleFetchGET,
+    handleFetchUpdate,
+    handleOtherFetchEvents,
+} from './offline/handleFetchEvents';
 
 declare const self: ServiceWorkerGlobalScope;
-
-const offlineContentRepository = new OfflineContentRepository();
 
 clientsClaim();
 
@@ -78,86 +76,71 @@ registerRoute(
     })
 );
 
+let isOffline = false;
+
+type OfflineStatus = {
+    isOffline: boolean;
+    userPin: string;
+};
+
 // This allows the web app to trigger skipWaiting via
 // registration.waiting.postMessage({type: 'SKIP_WAITING'})
-self.addEventListener('message', (event) => {
-    if (event.data && event.data.type === 'SKIP_WAITING') {
-        self.skipWaiting();
+self.addEventListener('message', async (event: MessageEventInit) => {
+    console.log('ADDEVENTLISTENER message.', event);
+    const message: MessageEvent = event.data;
+    if (message) {
+        if (message.type === 'SKIP_WAITING') {
+            self.skipWaiting();
+        } else if (message.type === 'SET_OFFLINE_STATUS') {
+            const offlineStatus: OfflineStatus = message.data;
+            isOffline = offlineStatus.isOffline;
+            if (isOffline) {
+                if (
+                    !offlineStatus.userPin ||
+                    offlineStatus.userPin.length != 4
+                ) {
+                    console.error(
+                        'Trying to update offline status for service worker, but pin is missing.'
+                    );
+                    return;
+                }
+                const suksess = await db.reInitAndVerifyPin(
+                    offlineStatus.userPin
+                );
+                if (!suksess) {
+                    console.error(
+                        'Service worker is not able to reinitiate database and verify pin.'
+                    );
+                }
+            }
+        }
     }
 });
 
-const handleFetchGET = async (event: FetchEvent): Promise<any> => {
-    //console.log('handleFetchGET', event.request.url);
-    const url = removeBaseUrlFromUrl(event.request.url);
-
-    if (await IsOfflineMode()) {
-        // Try to get the response from offline content database.
-        const entity = await offlineContentRepository.getByApiPath(url);
-        if (entity) {
-            //todo: Ta bort log
-            // console.log(
-            //     'handleFetchGET: Returnerer objekt fra database. ' +
-            //         event.request.url,
-            //     entity.responseObj
-            // );
-            const blob = new Blob([JSON.stringify(entity.responseObj)]);
-            return new Response(blob);
-        } else {
-            console.error(
-                'Offline-mode. Entity for given url is not found in local database. Will try to fetch.',
-                event.request.url
-            );
-            return await fetch(event.request);
-        }
-    } else {
-        return await fetch(event.request);
-    }
-};
-
-const handleFetchUpdate = async (event: FetchEvent): Promise<Response> => {
-    if (await IsOfflineMode()) {
-        // console.log('handleFetchupdate. Offline mode.', event.request.url);
-
-        const offlinePostRequest = await OfflineUpdateRequest.build(
-            event.request
-        );
-        await updateOfflineContentDatabase(offlinePostRequest);
-        await addUpdateRequestToDatabase(offlinePostRequest);
-
-        return new Response();
-    } else {
-        // console.log('handleFetchUpdate. Online mode', event.request.url);
-        return await fetch(event.request);
-    }
-};
-
-const handleOtherFetchEvents = async (event: FetchEvent): Promise<Response> => {
-    if (await IsOfflineMode()) {
-        console.error(
-            'We are in offline mode, and should not need to perform any fetch.',
-            event.request.url
-        );
-        return await fetch(event.request);
-    } else {
-        // console.log('handleFetchUpdate. Online mode', event.request.url);
-        return await fetch(event.request);
-    }
-};
-
 self.addEventListener('fetch', function (event: FetchEvent) {
     // console.log('Intercept fetch', event.request.url);
-    const url = event.request.url;
-    const method = event.request.method;
-    if (method == 'GET' && url.includes('/api/')) {
-        //todo: We should find a better way to identify these requests!
-        event.respondWith(handleFetchGET(event));
-        return;
-    } else if (
-        (method == 'POST' || method == 'PUT' || method == 'DELETE') &&
-        url.includes('/api/')
-    ) {
-        event.respondWith(handleFetchUpdate(event));
-        return;
+    if (isOffline) {
+        //User is in offline mode.  Data must be fetched from offline database
+        const url = event.request.url;
+        const method = event.request.method;
+        if (method == 'GET' && url.includes('/api/')) {
+            //todo: We should find a better way to identify these requests!
+            event.respondWith(handleFetchGET(event));
+            return;
+        } else if (
+            (method == 'POST' || method == 'PUT' || method == 'DELETE') &&
+            url.includes('/api/')
+        ) {
+            event.respondWith(handleFetchUpdate(event));
+            return;
+        }
+        event.respondWith(handleOtherFetchEvents(event));
+    } else {
+        //User is in online mode. The requests will be done the normal way.
+        console.log(
+            'service-worker - handleFetch. Online mode',
+            event.request.url
+        );
+        event.respondWith(fetch(event.request));
     }
-    event.respondWith(handleOtherFetchEvents(event));
 });

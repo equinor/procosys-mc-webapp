@@ -1,5 +1,5 @@
 import GlobalStyles from './style/GlobalStyles';
-import React from 'react';
+import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
 import authService from './services/authService';
@@ -13,7 +13,13 @@ import {
     LoadingPage,
 } from '@equinor/procosys-webapp-components';
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
-import isOfflineMode from './utils/isOfflineMode';
+import OfflinePin from './OfflinePin';
+import {
+    getOfflineStatusfromLocalStorage,
+    updateOfflineStatus,
+} from './offline/OfflineStatus';
+import { syncronizeOfflineUpdatesWithBackend } from './offline/syncUpdatesWithBackend';
+import { db } from './offline/db';
 
 serviceWorkerRegistration.register();
 
@@ -33,6 +39,15 @@ const render = (content: JSX.Element): void => {
 const initialize = async () => {
     await navigator.serviceWorker.ready; //wait until service worker is active
 
+    if (!('serviceWorker' in navigator)) {
+        console.log('The service worker is not active.');
+        alert('Service worker is not ready.');
+    }
+
+    const offline = getOfflineStatusfromLocalStorage();
+
+    updateOfflineStatus(offline, userPin);
+
     // Get auth config, setup auth client and handle login
     const {
         clientSettings,
@@ -48,11 +63,9 @@ const initialize = async () => {
         scopes: scopes,
     });
 
-    const offlineMode = await isOfflineMode();
-
     let configurationAccessToken = '';
 
-    if (!offlineMode) {
+    if (!offline) {
         const isRedirecting = await authInstance.handleLogin();
         if (isRedirecting) return Promise.reject('redirecting');
         configurationAccessToken = await authInstance.getAccessToken(
@@ -67,7 +80,7 @@ const initialize = async () => {
     );
 
     let accessToken = '';
-    if (!offlineMode) {
+    if (!offline) {
         accessToken = await authInstance.getAccessToken(
             appConfig.procosysWebApi.scope
         );
@@ -94,10 +107,55 @@ const initialize = async () => {
         configurationAccessToken,
     };
 };
+let userPin = '';
+const setUserPin = (pin: string): void => {
+    userPin = pin;
+    console.log(userPin);
+};
 
-(async (): Promise<void> => {
-    render(<LoadingPage loadingText={'Initializing...'} />);
-    try {
+const renderApp = async (): Promise<void> => {
+    //If user is offline, the rendering of the app will be stalled, until pin is provided.
+    if (getOfflineStatusfromLocalStorage() && userPin == '') {
+        setTimeout(renderApp, 1000);
+        return;
+    }
+
+    const status = localStorage.getItem('status');
+    if (status == 'sync') {
+        //The user has selected to finish Offline,
+        //so the synchronization with backend must be started.
+        //We need to go online before initialization of the application.
+        updateOfflineStatus(false, '');
+
+        const {
+            authInstance,
+            procosysApiInstance,
+            appInsightsReactPlugin,
+            appConfig,
+            featureFlags,
+            configurationAccessToken,
+        } = await initialize();
+
+        try {
+            await syncronizeOfflineUpdatesWithBackend(procosysApiInstance);
+            await db.delete();
+            localStorage.removeItem('status'); //todo: erstatt
+        } catch (error) {
+            //todo: feilhåndtering
+        }
+
+        render(
+            <App
+                authInstance={authInstance}
+                procosysApiInstance={procosysApiInstance}
+                appInsightsReactPlugin={appInsightsReactPlugin}
+                appConfig={appConfig}
+                featureFlags={featureFlags}
+                configurationAccessToken={configurationAccessToken}
+            />
+        );
+    } else {
+        //We are either in online or offline mode, and will render the application
         const {
             authInstance,
             procosysApiInstance,
@@ -117,6 +175,16 @@ const initialize = async () => {
                 configurationAccessToken={configurationAccessToken}
             />
         );
+    }
+};
+
+(async (): Promise<void> => {
+    render(<LoadingPage loadingText={'Initializing...'} />);
+    try {
+        if (getOfflineStatusfromLocalStorage()) {
+            render(<OfflinePin setUserPin={setUserPin} />);
+        }
+        renderApp();
     } catch (error) {
         console.log(error);
         if (error === 'redirecting') {

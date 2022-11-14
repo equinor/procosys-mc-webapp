@@ -9,7 +9,7 @@ import { Plant } from '../services/apiTypes';
 import { AppConfig, FeatureFlags } from '../services/appConfiguration';
 import { IAuthService } from '../services/authService';
 import { ProcosysApiService } from '../services/procosysApi';
-import { StatusRepository } from '../offline/StatusRepository';
+import { getOfflineStatusfromLocalStorage } from '../offline/OfflineStatus';
 
 type McAppContextProps = {
     availablePlants: Plant[];
@@ -18,7 +18,7 @@ type McAppContextProps = {
     auth: IAuthService;
     appConfig: AppConfig;
     offlineState: boolean;
-    setOfflineState: (offlineState: boolean) => Promise<void>;
+    setOfflineState: (offlineState: boolean) => void;
     featureFlags: FeatureFlags;
     configurationAccessToken: string;
 };
@@ -55,25 +55,11 @@ export const McAppContextProvider: React.FC<McAppContextProviderProps> = ({
         AsyncStatus.LOADING
     );
 
-    const [offlineState, setOfflineStateSync] = useState(false);
-    const statusRepository = new StatusRepository();
-
-    const setOfflineState = async (offlineState: boolean): Promise<void> => {
-        await statusRepository.updateStatus(offlineState);
-        setOfflineStateSync(offlineState);
-    };
+    const [offlineState, setOfflineState] = useState(false);
 
     useEffect(() => {
-        const asyncFunction = async (): Promise<void> => {
-            const status = await statusRepository.getStatus();
-            if (status) {
-                setOfflineStateSync(status.status);
-            } else {
-                await statusRepository.addOfflineStatus(false);
-                setOfflineStateSync(false);
-            }
-        };
-        asyncFunction();
+        const offlineStatus = getOfflineStatusfromLocalStorage();
+        setOfflineState(offlineStatus);
     }, []);
 
     useEffect(() => {

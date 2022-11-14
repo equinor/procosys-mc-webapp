@@ -1,6 +1,6 @@
-import React, { useContext, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { Button, Checkbox, Scrim } from '@equinor/eds-core-react';
+import { Button, Checkbox, Input, Label, Scrim } from '@equinor/eds-core-react';
 import useBookmarks from '../../../utils/useBookmarks';
 import BookmarkableEntityInfoList from '../BookmarkableEntityInfoList';
 import { SearchType } from '../../../typings/enums';
@@ -8,19 +8,9 @@ import useCommonHooks from '../../../utils/useCommonHooks';
 import AsyncPage from '../../../components/AsyncPage';
 import { COLORS, SHADOW } from '../../../style/GlobalStyles';
 import { AsyncStatus } from '@equinor/procosys-webapp-components';
-import PlantContext from '../../../contexts/PlantContext';
+import BookmarksPopUps from './BookmarksPopups';
 
-const CancellingPopup = styled.div`
-    display: flex;
-    flex-direction: column;
-    border-radius: 5px;
-    background-color: ${COLORS.white};
-    padding: 16px;
-    margin: 0 16px;
-    box-shadow: ${SHADOW};
-`;
-
-const ButtonsWrapper = styled.div`
+export const ButtonsWrapper = styled.div`
     display: flex;
     justify-content: space-between;
     padding-top: 16px;
@@ -32,16 +22,29 @@ const Bookmarks = (): JSX.Element => {
         bookmarksStatus,
         isBookmarked,
         handleBookmarkClicked,
-        cancelOffline,
-        startOffline,
         isDownloading,
         finishOffline,
         deleteBookmarks,
         isCancelling,
         setIsCancelling,
+        cancelOffline,
+        isStarting,
+        setIsStarting,
+        startOffline,
+        setUserPin,
     } = useBookmarks();
     const { offlineState } = useCommonHooks();
-    const [isSure, setIsSure] = useState<boolean>(false);
+    const [noNetworkConnection, setNoNetworkConnection] =
+        useState<boolean>(false);
+
+    const startSync = (): void => {
+        if (navigator.onLine) {
+            setNoNetworkConnection(false);
+            finishOffline();
+        } else {
+            setNoNetworkConnection(true);
+        }
+    };
 
     return (
         <AsyncPage
@@ -57,44 +60,23 @@ const Bookmarks = (): JSX.Element => {
             }
         >
             <div>
-                {isCancelling ? (
-                    <Scrim
-                        isDismissable
-                        onClose={(): void => setIsCancelling(false)}
-                    >
-                        <CancellingPopup>
-                            <h3>Do you really wish to cancel offline mode?</h3>
-                            <Checkbox
-                                label="I understand that cancelling offline mode deletes all my offline changes"
-                                onClick={(): void => setIsSure(true)}
-                            />
-                            <ButtonsWrapper>
-                                <Button
-                                    onClick={(): void => setIsCancelling(false)}
-                                >
-                                    Don&apos;t cancel
-                                </Button>
-                                <Button
-                                    color={'danger'}
-                                    disabled={
-                                        bookmarksStatus ===
-                                            AsyncStatus.LOADING || !isSure
-                                    }
-                                    onClick={cancelOffline}
-                                    aria-label="Delete"
-                                >
-                                    Yes, cancel offline
-                                </Button>
-                            </ButtonsWrapper>
-                        </CancellingPopup>
-                    </Scrim>
-                ) : null}
+                <BookmarksPopUps
+                    isStarting={isStarting}
+                    setIsStarting={setIsStarting}
+                    setUserPin={setUserPin}
+                    startOffline={startOffline}
+                    isCancelling={isCancelling}
+                    setIsCancelling={setIsCancelling}
+                    bookmarksStatus={bookmarksStatus}
+                    cancelOffline={cancelOffline}
+                    noNetworkConnection={noNetworkConnection}
+                    setNoNetworkConnection={setNoNetworkConnection}
+                    startSync={startSync}
+                />
                 <ButtonsWrapper>
                     {offlineState == true ? (
                         <>
-                            <Button onClick={finishOffline}>
-                                Finish offline
-                            </Button>
+                            <Button onClick={startSync}>Finish offline</Button>
                             <Button
                                 onClick={(): void => setIsCancelling(true)}
                                 color="danger"
@@ -104,7 +86,7 @@ const Bookmarks = (): JSX.Element => {
                         </>
                     ) : (
                         <>
-                            <Button onClick={startOffline}>
+                            <Button onClick={(): void => setIsStarting(true)}>
                                 Start offline
                             </Button>
                             <Button onClick={deleteBookmarks}>

@@ -1,39 +1,64 @@
 import { IEntity } from '../IEntity';
 import { OfflineContentRepository } from '../OfflineContentRepository';
-import { EntityType, SearchType } from '../../typings/enums';
+import { EntityType } from '../../typings/enums';
 import {
     Attachment,
-    NewPunch,
+    EntityId,
     PunchItem,
     PunchPreview,
 } from '../../services/apiTypes';
 import {
     generateRandomId,
     getCompletionStatusByCategory,
-    getOrganizationById,
+    getPunchOrganizationById,
+    getPunchPriorityById,
+    getPunchSortingById,
+    getPunchTypeById,
 } from './utils';
+import { OfflineUpdateRequest } from '../OfflineUpdateRequest';
+import { addRequestToOfflineUpdatesDb } from '../addUpdateRequestToDatabase';
 
 const offlineContentRepository = new OfflineContentRepository();
 
+/**
+ * Update offline content database based on a post of new punch.
+ */
 export const handleNewPunch = async (
-    requestUrl: string,
-    params: URLSearchParams,
-    bodyData: any
-): Promise<void> => {
-    console.log('HandleNewPunch');
+    offlinePostRequest: OfflineUpdateRequest,
+    params: URLSearchParams
+): Promise<EntityId> => {
+    const newPunch = offlinePostRequest.bodyData;
 
     const plantId = params.get('plantId');
-    const newPunch = bodyData as NewPunch;
 
-    //Get punchlist and get some information about tag
-    const checklistPunchlistEntity = await offlineContentRepository.getEntity(
-        EntityType.ChecklistPunchlist,
-        newPunch.CheckListId
-    );
+    //Get checklist punchlist
+    const checklistPunchlistEntity =
+        await offlineContentRepository.getEntityByTypeAndId(
+            EntityType.ChecklistPunchlist,
+            newPunch.CheckListId
+        );
 
     const checklistPunchlist: PunchPreview[] =
         checklistPunchlistEntity.responseObj;
 
+    const mainEntityId = checklistPunchlistEntity.parententityid; //MC,Tag,PO or WO
+    if (mainEntityId === undefined) {
+        console.error(
+            'Not able to find main punchlist based on entity on checklist punchlist.',
+            checklistPunchlist
+        );
+        return { Id: 0 }; // todo: feilhåndtering.
+    }
+
+    //Get main punchlist
+    const mainPunchlistEntity =
+        await offlineContentRepository.getEntityByTypeAndId(
+            EntityType.Punchlist,
+            mainEntityId
+        );
+    const mainPunchList: PunchPreview[] = mainPunchlistEntity.responseObj;
+
+    //Get some information about tag
     let tagNo = '';
     let tagDescription = '';
     let tagId = 0;
@@ -52,18 +77,27 @@ export const handleNewPunch = async (
     //const host = 'https://pcs-main-api-dev.azurewebsites.net';
     const newPunchItemUrl = `PunchListItem?plantId=${plantId}&punchItemId=${newPunchItemId}&${apiVersion}`;
 
-    //Create respons object and add punch to database
+    //Create respons object and add new punch item to database
     const completionStatus = await getCompletionStatusByCategory(
         newPunch.CategoryId
     );
 
-    const raisedByOrganization = await getOrganizationById(
+    const raisedByOrganization = await getPunchOrganizationById(
         newPunch.RaisedByOrganizationId
     );
 
-    const clearingByOrganization = await getOrganizationById(
+    const clearingByOrganization = await getPunchOrganizationById(
         newPunch.ClearingByOrganizationId
     );
+    const type = newPunch.TypeId
+        ? await getPunchTypeById(newPunch.TypeId)
+        : null;
+    const priority = newPunch.PriorityId
+        ? await getPunchPriorityById(newPunch.PriorityId)
+        : null;
+    const sorting = newPunch.SortingId
+        ? await getPunchSortingById(newPunch.SortingId)
+        : null;
 
     const responseObj: PunchItem = {
         actionByPerson: newPunch.ActionByPerson,
@@ -82,13 +116,13 @@ export const handleNewPunch = async (
         estimate: newPunch.Estimate,
         formularType: '',
         id: newPunchItemId,
-        isRestrictedForUser: false, //??
+        isRestrictedForUser: false,
         materialEta: null,
         materialNo: null,
-        materialRequired: false, //??
-        priorityCode: null,
-        priorityDescription: null,
-        priorityId: null,
+        materialRequired: false,
+        priorityCode: priority ? priority.code : null,
+        priorityDescription: priority ? priority.description : null,
+        priorityId: priority ? priority.id : null,
         raisedByCode: raisedByOrganization?.code ?? '',
         raisedByDescription: raisedByOrganization?.description ?? '',
         rejectedAt: null,
@@ -97,14 +131,14 @@ export const handleNewPunch = async (
         rejectedByUser: null,
         responsibleCode: '',
         responsibleDescription: '',
-        sorting: null,
+        sorting: sorting ? sorting.description : null,
         status: completionStatus,
         statusControlledBySwcr: false,
         systemModule: '',
         tagDescription: tagDescription,
         tagId: tagId,
         tagNo: tagNo,
-        typeCode: '',
+        typeCode: type ? type.code : '',
         typeDescription: '',
         verifiedAt: null,
         verifiedByFirstName: null,
@@ -122,7 +156,7 @@ export const handleNewPunch = async (
 
     await offlineContentRepository.add(punchEntity);
 
-    // Add empty attachment list for the punch item
+    // Add empty attachment list for the new punch item
     const punchAttachmentsUrl = `PunchListItem/Attachments?plantId=${plantId}&punchItemId=${newPunchItemId}&thumbnailSize=128&${apiVersion}`;
     const attachmentsResponseObj: Attachment[] = [];
     const attachmentsEntity: IEntity = {
@@ -134,7 +168,7 @@ export const handleNewPunch = async (
     };
     await offlineContentRepository.add(attachmentsEntity);
 
-    // Add the new punchitem to the punchlist and replace the object in the offline content database.
+    // Add the new punch item to the checklist punchlist and replace the object in the offline content database.
     const newPunchReview = {
         id: responseObj.id,
         status: completionStatus,
@@ -156,6 +190,14 @@ export const handleNewPunch = async (
 
     checklistPunchlist.push(newPunchReview);
     checklistPunchlistEntity.responseObj = checklistPunchlist;
+    await offlineContentRepository.replaceEntity(checklistPunchlistEntity);
 
-    offlineContentRepository.replaceEntity(checklistPunchlistEntity);
+    //Add the new punch item to the main punchlist and replace the object in the offline content database
+    mainPunchList.push(newPunchReview);
+    mainPunchlistEntity.responseObj = mainPunchList;
+    await offlineContentRepository.replaceEntity(mainPunchlistEntity);
+
+    offlinePostRequest.responseIsNewEntityId = true;
+    await addRequestToOfflineUpdatesDb(newPunchItemId, offlinePostRequest);
+    return { Id: newPunchItemId };
 };
