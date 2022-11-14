@@ -37,6 +37,7 @@ import {
     ChecklistSavedSearchResult,
     isPlants,
     Bookmarks,
+    IpoDetails,
     EntityId,
 } from './apiTypes';
 
@@ -345,6 +346,8 @@ const procosysApiService = (
             url = `Tag?plantId=PCS$${plantId}&tagId=${entityId}${apiVersion}`;
         } else if (searchType === SearchType.PO) {
             url = `PurchaseOrder?plantId=PCS$${plantId}&callOffId=${entityId}${apiVersion}`;
+        } else if (searchType === SearchType.IPO) {
+            url = `IPO?plantId=PCS$${plantId}&invitationId=${entityId}${apiVersion}`;
         } else {
             throw new Error('The chosen scope type is not supported.');
         }
@@ -441,6 +444,7 @@ const procosysApiService = (
         plantId: string,
         searchType: SearchType,
         entityId: string,
+        ipoDetails: McPkgPreview | WoPreview | Tag | PoPreview | IpoDetails,
         abortSignal?: AbortSignal
     ): Promise<ChecklistPreview[]> => {
         let url = '';
@@ -456,6 +460,25 @@ const procosysApiService = (
             url = `PurchaseOrder/CheckLists?plantId=PCS$${plantId}&callOffId=${entityId}&formularGroupsFilter${[
                 'MCCR',
             ]}${apiVersion}`;
+        } else if (
+            searchType === SearchType.IPO &&
+            isOfType<IpoDetails>(ipoDetails, 'location')
+        ) {
+            if (ipoDetails.type == 'DP') {
+                const mcPkgNo = ipoDetails.mcPkgScope.map(
+                    (mcPkg) => '&mcPkgNos=' + mcPkg.mcPkgNo
+                );
+                url = `McPkgs/CheckLists?plantId=PCS$${plantId}&projectName=${
+                    ipoDetails.projectName
+                }${mcPkgNo.join('')}${apiVersion}`;
+            } else {
+                const commPkgNo = ipoDetails.commPkgScope.map(
+                    (commPkg) => '&commPkgNos=' + commPkg.commPkgNo
+                );
+                url = `CommPkgs/CheckLists?plantId=PCS$${plantId}&projectName=${
+                    ipoDetails.projectName
+                }${commPkgNo.join('')}${apiVersion}`;
+            }
         } else {
             throw new Error('The chosen scope type is not supported.');
         }
@@ -504,6 +527,7 @@ const procosysApiService = (
         plantId: string,
         searchType: SearchType,
         entityId: string,
+        ipoDetails: McPkgPreview | WoPreview | Tag | PoPreview | IpoDetails,
         abortSignal?: AbortSignal
     ): Promise<PunchPreview[]> => {
         let url = '';
@@ -515,6 +539,25 @@ const procosysApiService = (
             url = `Tag/PunchList?plantId=PCS$${plantId}&tagId=${entityId}${apiVersion}`;
         } else if (searchType === SearchType.PO) {
             url = `PurchaseOrder/PunchList?plantId=PCS$${plantId}&callOffId=${entityId}${apiVersion}`;
+        } else if (
+            searchType === SearchType.IPO &&
+            isOfType<IpoDetails>(ipoDetails, 'location')
+        ) {
+            if (ipoDetails.type == 'DP') {
+                const mcPkgNo = ipoDetails.mcPkgScope.map(
+                    (mcPkg) => '&mcPkgNos=' + mcPkg.mcPkgNo
+                );
+                url = `McPkgs/PunchLists?plantId=PCS$${plantId}&projectName=${
+                    ipoDetails.projectName
+                }${mcPkgNo.join('')}${apiVersion}`;
+            } else {
+                const commPkgNo = ipoDetails.commPkgScope.map(
+                    (commPkg) => '&commPkgNos=' + commPkg.commPkgNo
+                );
+                url = `CommPkgs/PunchLists?plantId=PCS$${plantId}&projectName=${
+                    ipoDetails.projectName
+                }${commPkgNo.join('')}${apiVersion}`;
+            }
         } else {
             throw new Error('The chosen scope type is not supported.');
         }

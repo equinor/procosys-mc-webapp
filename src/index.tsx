@@ -1,5 +1,5 @@
 import GlobalStyles from './style/GlobalStyles';
-import React, { useState } from 'react';
+import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
 import authService from './services/authService';
@@ -13,6 +13,8 @@ import {
     LoadingPage,
 } from '@equinor/procosys-webapp-components';
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
+import procosysIPOApiService from './services/procosysIPOApi';
+import baseIPOApiService from './services/baseIPOApi';
 import OfflinePin from './OfflinePin';
 import {
     getOfflineStatusfromLocalStorage,
@@ -94,6 +96,16 @@ const initialize = async () => {
         accessToken
     );
 
+    const baseIpoApiInstance = baseIPOApiService({
+        authInstance,
+        baseURL: appConfig.ipoApi.baseUrl,
+        scope: appConfig.ipoApi.scope,
+    });
+
+    const procosysIPOApiInstance = procosysIPOApiService({
+        axios: baseIpoApiInstance,
+    });
+
     const { appInsightsReactPlugin } = initializeAppInsights(
         appConfig.appInsights.instrumentationKey
     );
@@ -105,6 +117,7 @@ const initialize = async () => {
         appConfig,
         featureFlags,
         configurationAccessToken,
+        procosysIPOApiInstance,
     };
 };
 let userPin = '';
@@ -134,6 +147,7 @@ const renderApp = async (): Promise<void> => {
             appConfig,
             featureFlags,
             configurationAccessToken,
+            procosysIPOApiInstance,
         } = await initialize();
 
         try {
@@ -152,6 +166,7 @@ const renderApp = async (): Promise<void> => {
                 appConfig={appConfig}
                 featureFlags={featureFlags}
                 configurationAccessToken={configurationAccessToken}
+                procosysIPOApiInstance={procosysIPOApiInstance}
             />
         );
     } else {
@@ -163,6 +178,7 @@ const renderApp = async (): Promise<void> => {
             appConfig,
             featureFlags,
             configurationAccessToken,
+            procosysIPOApiInstance,
         } = await initialize();
 
         render(
@@ -173,6 +189,7 @@ const renderApp = async (): Promise<void> => {
                 appConfig={appConfig}
                 featureFlags={featureFlags}
                 configurationAccessToken={configurationAccessToken}
+                procosysIPOApiInstance={procosysIPOApiInstance}
             />
         );
     }

@@ -10,6 +10,7 @@ import {
     WoPreview,
     Tag,
     PoPreview,
+    IpoDetails,
 } from '../../services/apiTypes';
 import withAccessControl from '../../services/withAccessControl';
 import EdsIcon from '../../components/icons/EdsIcon';
@@ -34,11 +35,12 @@ const ContentWrapper = styled.div`
 `;
 
 const EntityPage = (): JSX.Element => {
-    const { api, params, path, history, url, offlineState } = useCommonHooks();
+    const { api, ipoApi, params, path, history, url, offlineState } =
+        useCommonHooks();
     const [scope, setScope] = useState<ChecklistPreview[]>();
     const [punchList, setPunchList] = useState<PunchPreview[]>();
     const [details, setDetails] = useState<
-        McPkgPreview | WoPreview | Tag | PoPreview
+        McPkgPreview | WoPreview | Tag | PoPreview | IpoDetails
     >();
     const [fetchScopeStatus, setFetchScopeStatus] = useState(
         AsyncStatus.LOADING
@@ -66,50 +68,63 @@ const EntityPage = (): JSX.Element => {
     useEffect(() => {
         (async (): Promise<void> => {
             try {
-                const [punchListFromApi, scopeFromApi] = await Promise.all([
-                    api.getPunchList(
-                        params.plant,
-                        params.searchType,
-                        params.entityId,
-                        abortSignal
-                    ),
-                    api.getScope(
-                        params.plant,
-                        params.searchType,
-                        params.entityId,
-                        abortSignal
-                    ),
-                ]);
-                setPunchList(punchListFromApi);
-                if (punchListFromApi.length > 0) {
-                    setFetchPunchListStatus(AsyncStatus.SUCCESS);
-                } else {
-                    setFetchPunchListStatus(AsyncStatus.EMPTY_RESPONSE);
+                if (details) {
+                    const [punchListFromApi, scopeFromApi] = await Promise.all([
+                        api.getPunchList(
+                            params.plant,
+                            params.searchType,
+                            params.entityId,
+                            details,
+                            abortSignal
+                        ),
+                        api.getScope(
+                            params.plant,
+                            params.searchType,
+                            params.entityId,
+                            details,
+                            abortSignal
+                        ),
+                    ]);
+
+                    setPunchList(punchListFromApi);
+                    if (punchListFromApi.length > 0) {
+                        setFetchPunchListStatus(AsyncStatus.SUCCESS);
+                    } else {
+                        setFetchPunchListStatus(AsyncStatus.EMPTY_RESPONSE);
+                    }
+                    setScope(scopeFromApi);
+                    if (scopeFromApi.length > 0) {
+                        setFetchScopeStatus(AsyncStatus.SUCCESS);
+                    } else {
+                        setFetchScopeStatus(AsyncStatus.EMPTY_RESPONSE);
+                    }
+                    setFetchFooterStatus(AsyncStatus.SUCCESS);
                 }
-                setScope(scopeFromApi);
-                if (scopeFromApi.length > 0) {
-                    setFetchScopeStatus(AsyncStatus.SUCCESS);
-                } else {
-                    setFetchScopeStatus(AsyncStatus.EMPTY_RESPONSE);
-                }
-                setFetchFooterStatus(AsyncStatus.SUCCESS);
             } catch {
                 setFetchPunchListStatus(AsyncStatus.ERROR);
                 setFetchScopeStatus(AsyncStatus.ERROR);
                 setFetchFooterStatus(AsyncStatus.ERROR);
             }
         })();
-    }, [api, params]);
+    }, [api, params, details]);
 
     useEffect(() => {
         (async (): Promise<void> => {
             try {
-                const detailsFromApi = await api.getEntityDetails(
-                    params.plant,
-                    params.searchType,
-                    params.entityId,
-                    abortSignal
-                );
+                let detailsFromApi;
+                if (params.searchType !== SearchType.IPO) {
+                    detailsFromApi = await api.getEntityDetails(
+                        params.plant,
+                        params.searchType,
+                        params.entityId,
+                        abortSignal
+                    );
+                } else {
+                    detailsFromApi = await ipoApi.getIpoDetails(
+                        params.plant,
+                        params.entityId
+                    );
+                }
                 setDetails(detailsFromApi);
                 setFetchDetailsStatus(AsyncStatus.SUCCESS);
             } catch {
@@ -153,6 +168,9 @@ const EntityPage = (): JSX.Element => {
                                 isPoScope={history.location.pathname.includes(
                                     '/PO/'
                                 )}
+                                isIpoScope={history.location.pathname.includes(
+                                    '/IPO/'
+                                )}
                             />
                         )}
                     />
@@ -172,6 +190,9 @@ const EntityPage = (): JSX.Element => {
                                 punchList={punchList}
                                 isPoPunchList={history.location.pathname.includes(
                                     '/PO/'
+                                )}
+                                isIpoPunchList={history.location.pathname.includes(
+                                    '/IPO/'
                                 )}
                             />
                         )}

@@ -11,6 +11,7 @@ import {
 } from '@microsoft/applicationinsights-react-js';
 import { AppConfig, FeatureFlags } from './services/appConfiguration';
 import { SavedSearchType, SearchType } from './typings/enums';
+import { ProcosysIPOApiService } from './services/procosysIPOApi';
 
 export type McParams = {
     plant: string;
@@ -30,6 +31,7 @@ type AppProps = {
     appConfig: AppConfig;
     featureFlags: FeatureFlags;
     configurationAccessToken: string;
+    procosysIPOApiInstance: ProcosysIPOApiService;
 };
 
 const App = ({
@@ -39,6 +41,7 @@ const App = ({
     appInsightsReactPlugin: reactPlugin,
     featureFlags,
     configurationAccessToken,
+    procosysIPOApiInstance,
 }: AppProps): JSX.Element => {
     return (
         <AppInsightsContext.Provider value={reactPlugin}>
@@ -48,6 +51,7 @@ const App = ({
                 appConfig={appConfig}
                 featureFlags={featureFlags}
                 configurationAccessToken={configurationAccessToken}
+                ipoApi={procosysIPOApiInstance}
             >
                 <Router basename={'/mc'}>
                     <ErrorBoundary>
