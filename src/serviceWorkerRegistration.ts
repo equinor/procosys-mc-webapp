@@ -63,13 +63,16 @@ function registerValidSW(swUrl: string, config?: Config): void {
     navigator.serviceWorker
         .register(swUrl)
         .then((registration) => {
-            console.log('Service worker is registered.');
+            console.log('Service worker is registered.', swUrl);
             registration.onupdatefound = (): void => {
+                console.log('on update found');
                 const installingWorker = registration.installing;
                 if (installingWorker == null) {
+                    console.log('installingworker == null');
                     return;
                 }
                 installingWorker.onstatechange = (): void => {
+                    console.log('on state change');
                     if (installingWorker.state === 'installed') {
                         if (navigator.serviceWorker.controller) {
                             // At this point, the updated precached content has been fetched,
@@ -82,6 +85,7 @@ function registerValidSW(swUrl: string, config?: Config): void {
 
                             // Execute callback
                             if (config && config.onUpdate) {
+                                console.log('on update');
                                 config.onUpdate(registration);
                             }
                         } else {
@@ -92,7 +96,9 @@ function registerValidSW(swUrl: string, config?: Config): void {
 
                             // Execute callback
                             if (config && config.onSuccess) {
+                                console.log('on success');
                                 config.onSuccess(registration);
+                                console.log('after on success');
                             }
                         }
                     }
@@ -102,9 +108,11 @@ function registerValidSW(swUrl: string, config?: Config): void {
         .catch((error) => {
             console.error('Error during service worker registration:', error);
         });
+    console.log('register done');
 }
 
 function checkValidServiceWorker(swUrl: string, config?: Config): void {
+    console.log('check valis service worker', swUrl);
     // Check if the service worker can be found. If it can't reload the page.
     fetch(swUrl, {
         headers: { 'Service-Worker': 'script' },
@@ -117,6 +125,7 @@ function checkValidServiceWorker(swUrl: string, config?: Config): void {
                 (contentType != null &&
                     contentType.indexOf('javascript') === -1)
             ) {
+                console.log('service worker not found');
                 // No service worker found. Probably a different app. Reload the page.
                 navigator.serviceWorker.ready.then((registration) => {
                     registration.unregister().then(() => {
@@ -125,6 +134,7 @@ function checkValidServiceWorker(swUrl: string, config?: Config): void {
                 });
             } else {
                 // Service worker found. Proceed as normal.
+                console.log('register valid in check valid');
                 registerValidSW(swUrl, config);
             }
         })
