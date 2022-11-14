@@ -9,6 +9,8 @@ import {
     getPunchTypeById,
     updatePunchlists,
 } from './utils';
+import { OfflineUpdateRequest } from '../OfflineUpdateRequest';
+import { addRequestToOfflineUpdatesDb } from '../addUpdateRequestToDatabase';
 
 const offlineContentRepository = new OfflineContentRepository();
 
@@ -30,8 +32,10 @@ type PunchDto = {
  * Update offline content database based on a post of new punch.
  */
 export const handleUpdatePunch = async (
-    updatedPunchDto: PunchDto
+    offlinePostRequest: OfflineUpdateRequest
 ): Promise<void> => {
+    const updatedPunchDto: PunchDto = offlinePostRequest.bodyData;
+
     //Get offline punch
     const punchEntity = await offlineContentRepository.getEntityByTypeAndId(
         EntityType.PunchItem,
@@ -103,7 +107,13 @@ export const handleUpdatePunch = async (
         }
     }
 
-    //Update database
+    //Update databases
     await offlineContentRepository.replaceEntity(punchEntity);
-    updatePunchlists(punch);
+
+    await updatePunchlists(punch);
+
+    await addRequestToOfflineUpdatesDb(
+        updatedPunchDto.PunchItemId,
+        offlinePostRequest
+    );
 };

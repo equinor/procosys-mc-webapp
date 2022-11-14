@@ -1,13 +1,12 @@
-import { AsyncStatus } from '@equinor/procosys-webapp-components';
+import { AsyncStatus, isOfType } from '@equinor/procosys-webapp-components';
 import { useContext, useEffect, useState } from 'react';
 import PlantContext from '../contexts/PlantContext';
 import { SearchType } from '../typings/enums';
 import { Bookmarks } from '../services/apiTypes';
 import useCommonHooks from './useCommonHooks';
-import { syncUpdatesWithBackend } from '../offline/syncUpdatesWithBackend';
 import buildOfflineScope from '../offline/buildOfflineScope';
-import { OfflineContentRepository } from '../offline/OfflineContentRepository';
-import { OfflineUpdateRepository } from '../offline/OfflineUpdateRepository';
+import { db } from '../offline/db';
+import { updateOfflineStatus } from '../offline/OfflineStatus';
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const useBookmarks = () => {
@@ -23,7 +22,7 @@ const useBookmarks = () => {
     const [isDownloading, setIsDownloading] = useState<boolean>(false);
     const [isCancelling, setIsCancelling] = useState<boolean>(false);
     const [isStarting, setIsStarting] = useState<boolean>(false);
-    const [userPin, setUserPin] = useState<number>(0);
+    const [userPin, setUserPin] = useState<string>('');
     const abortController = new AbortController();
 
     const getCurrentBookmarks = async (): Promise<void> => {
@@ -103,7 +102,9 @@ const useBookmarks = () => {
             if (currentProject) {
                 setBookmarksStatus(AsyncStatus.LOADING);
                 await api.putCancelOffline(params.plant, currentProject.id);
-                await setOfflineState(false);
+                updateOfflineStatus(false, '');
+                await db.delete();
+                setOfflineState(false);
                 setIsCancelling(false);
                 setBookmarksStatus(AsyncStatus.SUCCESS);
             }
@@ -127,14 +128,11 @@ const useBookmarks = () => {
         }
     };
 
-    const startOffline = async (): Promise<void> => {
+    const startOffline = async (userPin: string): Promise<void> => {
         setBookmarksStatus(AsyncStatus.LOADING);
         setIsDownloading(true);
-        const offlineContentRepository = new OfflineContentRepository();
-        const offlineUpdateRepository = new OfflineUpdateRepository();
 
-        await offlineContentRepository.cleanOfflineContent();
-        await offlineUpdateRepository.cleanOfflineUpdates();
+        db.create(userPin);
 
         if (currentPlant && currentProject) {
             await buildOfflineScope(
@@ -145,16 +143,22 @@ const useBookmarks = () => {
             );
         }
 
-        await setOfflineState(true);
+        updateOfflineStatus(true, userPin);
+        setOfflineState(true);
+        localStorage.removeItem('loginTries'); //just to be sure...
         setBookmarksStatus(AsyncStatus.SUCCESS);
         setIsDownloading(false);
     };
 
     const finishOffline = async (): Promise<void> => {
         setBookmarksStatus(AsyncStatus.LOADING);
-        await setOfflineState(false);
-        await syncUpdatesWithBackend(api);
-        await getCurrentBookmarks();
+        localStorage.setItem('status', 'sync');
+        //After reloading, the application will be reauthenticated, and
+        //syncronization will be started.
+        //Note: When running tests, location object does not have 'reload'.
+        if (isOfType<Location>(location, 'reload')) {
+            location.reload();
+        }
     };
 
     return {
@@ -171,6 +175,7 @@ const useBookmarks = () => {
         setIsCancelling,
         isStarting,
         setIsStarting,
+        userPin,
         setUserPin,
     };
 };

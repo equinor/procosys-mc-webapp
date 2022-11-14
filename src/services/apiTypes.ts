@@ -588,3 +588,7 @@ export interface Bookmarks {
     bookmarkedTags: TagBookmark[];
     bookmarkedWorkOrders: WoPreview[];
 }
+
+export interface EntityId {
+    Id: number;
+}

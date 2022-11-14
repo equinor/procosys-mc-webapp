@@ -4,10 +4,6 @@ import { Entity } from './Entity';
 import { EntityIndexes } from './EntityIndexes';
 
 class OfflineContentRepository {
-    async cleanOfflineContent(): Promise<void> {
-        db.offlineContent.clear();
-    }
-
     async getById(id: number): Promise<Entity> {
         const result = await db.offlineContent.where('id').equals(id).first();
         return result as Entity;
@@ -51,21 +47,11 @@ class OfflineContentRepository {
         entityType: EntityType,
         entityId: number
     ): Promise<Entity> {
-        let result;
-        if (entityId > -1) {
-            result = await db.offlineContent
-                .where('entitytype')
-                .equals(entityType)
-                .and((entity) => entity.entityid == entityId)
-                .first();
-        } else {
-            console.error(
-                'Was not able to find entity in offline content database.',
-                entityType,
-                entityId
-            );
-            //todo: exception?
-        }
+        const result = await db.offlineContent
+            .where('entitytype')
+            .equals(entityType)
+            .and((entity) => entity.entityid == entityId)
+            .first();
 
         return result as Entity;
     }
@@ -91,7 +77,9 @@ class OfflineContentRepository {
         if (db.offlineContent !== undefined) {
             const oldEntity = await this.getByApiPath(entity.apipath);
             if (!oldEntity) {
-                console.error('The entity to replace does not exist.', entity);
+                console.error(
+                    `The entity to replace does not exist. urlPath: ${entity.apipath}`
+                );
                 throw Error(
                     `The entity to replace does not exist. urlPath: ${entity.apipath}`
                 );
@@ -100,9 +88,11 @@ class OfflineContentRepository {
             return await db.offlineContent.put(entity);
         }
         console.error(
-            `Entity ${entity} not updated in database. Offline content database not available.`
+            `Entity ${entity.entityid} not updated in database. Offline content database not available. Url path: ${entity.apipath}`
         );
-        throw Error(`Entity ${entity} not updated in database.`);
+        throw Error(
+            `Entity ${entity.entityid} not updated in database. Offline content database not available. Url path: ${entity.apipath}`
+        );
     }
 }
 

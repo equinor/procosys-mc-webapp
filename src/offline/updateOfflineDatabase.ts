@@ -1,6 +1,6 @@
 import { PunchAction } from '@equinor/procosys-webapp-components';
 import { OfflineUpdateRequest } from './OfflineUpdateRequest';
-import { handleNewPunch } from './offlineContentUpdates/handleNewPunch';
+import { handleNewPunch } from './UpdateHandlers/handleNewPunch';
 import {
     handleDeleteCheckListAttachment,
     handleDeletePunchAttachment,
@@ -8,15 +8,15 @@ import {
     handlePostChecklistAttachment,
     handlePostPunchAttachment,
     handlePostWorkOrderAttachment,
-} from './offlineContentUpdates/handleAttachment';
-import { handlePunchAction } from './offlineContentUpdates/handlePunchAction';
-import { handleUpdatePunch } from './offlineContentUpdates/handleUpdatePunch';
+} from './UpdateHandlers/handleAttachment';
+import { handlePunchAction } from './UpdateHandlers/handlePunchAction';
+import { handleUpdatePunch } from './UpdateHandlers/handleUpdatePunch';
 import {
     handleChecklistItemPostClear,
     handleChecklistItemPostSetNA,
     handleChecklistItemPostSetOK,
     handleChecklistPutMetaTableCell,
-} from './offlineContentUpdates/handleChecklistItem';
+} from './UpdateHandlers/handleChecklistItem';
 import {
     handleChecklistPostCustomCheckItem,
     handleChecklistPostSign,
@@ -24,43 +24,39 @@ import {
     handleChecklistPostUnVerify,
     handleChecklistPostVerify,
     handleChecklistPutComment,
-} from './offlineContentUpdates/handleChecklist';
+} from './UpdateHandlers/handleChecklist';
 import {
     handleCustomChecklistItemDelete,
     handleCustomChecklistItemPostClear,
     handleCustomChecklistItemPostSetOK,
-} from './offlineContentUpdates/handleCustomChecklistItem';
+} from './UpdateHandlers/handleCustomChecklistItem';
 
 //************************************************************************************
 // The functions here will handle update of offline database, on POST, PUT and DELETE.
 //************************************************************************************
 
 /**
- * When a POST/PUT/DELETE fetch is intercepted, and we are in offline mode, this method will be called, and will handle
- * necessary updates of the offline content database.
+ * When a POST/PUT/DELETE fetch is intercepted, and we are in offline mode, this method will be called.
+ * Necessary updates to the offline content database will done, and the request will be added to offlineUpdatesDatabase.
  *
- * Most of the update fetches returned void. However there are some fetches that might return e.g. a new generated id on an item.
+ * Most of the update-fetches are implemented to return void. However there are some fetches that might return e.g. a new generated id on an item.
  * Whatever json response that needs to be given, must be returned from this function.
  * @param offlinePostRequest  The intercepted fetch request object.
  */
-export const updateOfflineContentDatabase = async (
+export const updateOfflineDatabase = async (
     offlinePostRequest: OfflineUpdateRequest
 ): Promise<void | any> => {
-    console.log('updateOfflineContentDatabase', offlinePostRequest);
+    console.log('updateOfflineDatabase', offlinePostRequest);
     const dummyUrl = new URL('http://dummy.no' + offlinePostRequest.url); //todo: Better way to find searchParams?
     const searchParams = dummyUrl.searchParams;
-    const bodyData = offlinePostRequest.bodyData;
+    //const bodyData = offlinePostRequest.bodyData;
 
     const method = offlinePostRequest.method.toUpperCase();
     const url = offlinePostRequest.url;
 
     if (method == 'POST') {
         if (url.startsWith('PunchListItem?plantId')) {
-            await handleNewPunch(
-                offlinePostRequest.url,
-                searchParams,
-                bodyData
-            );
+            return await handleNewPunch(offlinePostRequest, searchParams);
         } else if (
             url.startsWith(`PunchListItem/${PunchAction.CLEAR}`) ||
             url.startsWith(`PunchListItem/${PunchAction.REJECT}`) ||
@@ -68,55 +64,61 @@ export const updateOfflineContentDatabase = async (
             url.startsWith(`PunchListItem/${PunchAction.UNVERIFY}`) ||
             url.startsWith(`PunchListItem/${PunchAction.VERIFY}`)
         ) {
-            await handlePunchAction(offlinePostRequest.url, bodyData);
+            await handlePunchAction(offlinePostRequest);
         } else if (url.startsWith('PunchListItem/Attachment')) {
-            await handlePostPunchAttachment(searchParams, bodyData);
+            await handlePostPunchAttachment(offlinePostRequest, searchParams);
         } else if (url.startsWith('CheckList/Item/SetOk')) {
-            await handleChecklistItemPostSetOK(bodyData);
+            await handleChecklistItemPostSetOK(offlinePostRequest);
         } else if (url.startsWith('CheckList/Item/SetNA')) {
-            await handleChecklistItemPostSetNA(bodyData);
+            await handleChecklistItemPostSetNA(offlinePostRequest);
         } else if (url.startsWith('CheckList/Item/Clear')) {
-            await handleChecklistItemPostClear(bodyData);
+            await handleChecklistItemPostClear(offlinePostRequest);
         } else if (url.startsWith('CheckList/MC/Sign')) {
-            await handleChecklistPostSign(bodyData);
+            await handleChecklistPostSign(offlinePostRequest);
         } else if (url.startsWith('CheckList/MC/Unsign')) {
-            await handleChecklistPostUnSign(bodyData);
+            await handleChecklistPostUnSign(offlinePostRequest);
         } else if (url.startsWith('CheckList/MC/Verify')) {
-            await handleChecklistPostVerify(bodyData);
+            await handleChecklistPostVerify(offlinePostRequest);
         } else if (url.startsWith('CheckList/MC/Unverify')) {
-            await handleChecklistPostUnVerify(bodyData);
+            await handleChecklistPostUnVerify(offlinePostRequest);
         } else if (url.startsWith('CheckList/CustomItem?plantId')) {
-            return await handleChecklistPostCustomCheckItem(bodyData);
+            return await handleChecklistPostCustomCheckItem(offlinePostRequest);
         } else if (url.startsWith('CheckList/CustomItem/SetOk')) {
-            await handleCustomChecklistItemPostSetOK(bodyData);
+            await handleCustomChecklistItemPostSetOK(offlinePostRequest);
         } else if (url.startsWith('CheckList/CustomItem/Clear')) {
-            await handleCustomChecklistItemPostClear(bodyData);
+            await handleCustomChecklistItemPostClear(offlinePostRequest);
         } else if (url.startsWith('CheckList/Attachment')) {
-            await handlePostChecklistAttachment(searchParams, bodyData);
+            await handlePostChecklistAttachment(
+                offlinePostRequest,
+                searchParams
+            );
         } else if (url.startsWith('WorkOrder/Attachment')) {
-            await handlePostWorkOrderAttachment(searchParams, bodyData);
+            await handlePostWorkOrderAttachment(
+                offlinePostRequest,
+                searchParams
+            );
         }
     } else if (method == 'PUT') {
         //putUpdatePunch
         if (url.startsWith('PunchListItem/')) {
-            await handleUpdatePunch(bodyData);
+            await handleUpdatePunch(offlinePostRequest);
         } else if (url.startsWith('CheckList/MC/Comment')) {
-            await handleChecklistPutComment(bodyData);
+            await handleChecklistPutComment(offlinePostRequest);
         } else if (
             url.startsWith('CheckList/Item/MetaTableCell') ||
             url.startsWith('CheckList/Item/MetaTableCellDate')
         ) {
-            await handleChecklistPutMetaTableCell(bodyData);
+            await handleChecklistPutMetaTableCell(offlinePostRequest);
         }
     } else if (method == 'DELETE') {
         if (url.startsWith('CheckList/CustomItem?plantId')) {
-            await handleCustomChecklistItemDelete(bodyData);
+            await handleCustomChecklistItemDelete(offlinePostRequest);
         } else if (url.startsWith('WorkOrder/Attachment')) {
-            await handleDeleteWorkOrderAttachment(bodyData);
+            await handleDeleteWorkOrderAttachment(offlinePostRequest);
         } else if (url.startsWith('PunchListItem/Attachment')) {
-            await handleDeletePunchAttachment(bodyData);
+            await handleDeletePunchAttachment(offlinePostRequest);
         } else if (url.startsWith('CheckList/Attachment')) {
-            await handleDeleteCheckListAttachment(bodyData);
+            await handleDeleteCheckListAttachment(offlinePostRequest);
         }
     } else {
         console.error(

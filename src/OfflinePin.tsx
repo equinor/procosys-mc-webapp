@@ -2,6 +2,8 @@ import { Button, Input } from '@equinor/eds-core-react';
 import { Navbar, ProcosysButton } from '@equinor/procosys-webapp-components';
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import { db } from './offline/db';
+import { updateOfflineStatus } from './offline/OfflineStatus';
 
 const ContentWrapper = styled.main`
     margin: 16px;
@@ -14,20 +16,22 @@ const Spacer = styled.div`
 `;
 
 interface OfflinePinProps {
-    setUserPin: (pin: number) => void;
+    setUserPin: (pin: string) => void;
 }
 
 const OfflinePin = ({ setUserPin }: OfflinePinProps): JSX.Element => {
     const [enteredPin, setEnteredPin] = useState<string>('');
     const [failedPin, setFailedPin] = useState<boolean>(false);
 
-    const testUserPin = (): void => {
-        // TODO: call init of db with enteded pin
-        // TODO: test if db can be accessed
-        // if db can be accessed:
-        setUserPin(parseInt(enteredPin));
-        //return;
-        // if db can't be accessed
+    const testUserPin = async (): Promise<void> => {
+        const suksess = await db.reInitAndVerifyPin(enteredPin);
+        if (suksess) {
+            localStorage.removeItem('loginTries');
+            setUserPin(enteredPin);
+            return;
+        }
+
+        //Not able to initialize database. Probably wrong pin.
         const loginTries = localStorage.getItem('loginTries');
         if (loginTries == null) {
             localStorage.setItem('loginTries', '1');
@@ -39,7 +43,9 @@ const OfflinePin = ({ setUserPin }: OfflinePinProps): JSX.Element => {
             setFailedPin(true);
             localStorage.setItem('loginTries', `${loginTriesNum + 1}`);
         } else {
-            // TODO: delete DB & then call cancel offline endpoint
+            await db.delete();
+            updateOfflineStatus(false, '');
+            localStorage.removeItem('loginTries');
         }
     };
 
