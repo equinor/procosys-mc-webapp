@@ -39,7 +39,9 @@ const render = (content: JSX.Element): void => {
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const initialize = async () => {
+    console.log('initialize');
     await navigator.serviceWorker.ready; //wait until service worker is active
+    console.log('ready');
 
     if (!('serviceWorker' in navigator)) {
         console.log('The service worker is not active.');
@@ -129,12 +131,14 @@ const setUserPin = (pin: string): void => {
 const renderApp = async (): Promise<void> => {
     //If user is offline, the rendering of the app will be stalled, until pin is provided.
     if (getOfflineStatusfromLocalStorage() && userPin == '') {
+        console.log('setting timeout');
         setTimeout(renderApp, 1000);
         return;
     }
 
     const status = localStorage.getItem('status');
     if (status == 'sync') {
+        console.log('status == sync');
         //The user has selected to finish Offline,
         //so the synchronization with backend must be started.
         //We need to go online before initialization of the application.
@@ -170,6 +174,7 @@ const renderApp = async (): Promise<void> => {
             />
         );
     } else {
+        console.log('state not sync');
         //We are either in online or offline mode, and will render the application
         const {
             authInstance,
@@ -198,6 +203,7 @@ const renderApp = async (): Promise<void> => {
 (async (): Promise<void> => {
     render(<LoadingPage loadingText={'Initializing...'} />);
     try {
+        console.log('getting offline status');
         if (getOfflineStatusfromLocalStorage()) {
             render(<OfflinePin setUserPin={setUserPin} />);
         }

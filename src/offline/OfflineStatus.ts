@@ -8,6 +8,7 @@ export const getOfflineStatusfromLocalStorage = (): boolean => {
     if (offline === 'true') {
         return true;
     } else {
+        console.log('returning false');
         return false;
     }
 };
