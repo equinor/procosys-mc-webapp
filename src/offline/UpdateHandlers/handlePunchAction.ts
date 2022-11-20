@@ -4,9 +4,10 @@ import { PunchItem } from '../../services/apiTypes';
 import { PunchAction } from '@equinor/procosys-webapp-components';
 import { getStringBetween, updatePunchlists } from './utils';
 import { OfflineUpdateRequest } from '../OfflineUpdateRequest';
-import { addRequestToOfflineUpdatesDb } from '../addUpdateRequestToDatabase';
+import { OfflineUpdateRepository } from '../OfflineUpdateRepository';
 
 const offlineContentRepository = new OfflineContentRepository();
+const offlineUpdateRepository = new OfflineUpdateRepository();
 
 /**
  * Update offline content database based on a post of punch action.
@@ -61,5 +62,9 @@ export const handlePunchAction = async (
     punchItemEntity.responseObj = punch;
     await offlineContentRepository.replaceEntity(punchItemEntity);
     await updatePunchlists(punch);
-    await addRequestToOfflineUpdatesDb(punchItemId, offlinePostRequest);
+    await offlineUpdateRepository.addUpdateRequest(
+        punchItemId,
+        EntityType.PunchItem,
+        offlinePostRequest
+    );
 };

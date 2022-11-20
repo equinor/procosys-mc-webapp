@@ -592,3 +592,17 @@ export interface Bookmarks {
 export interface EntityId {
     Id: number;
 }
+
+export interface OfflineSynchronizationError {
+    Id: number;
+    Url: string;
+    Method: string;
+    ErrorMsg: string;
+    ErrorCode: number;
+}
+
+export interface OfflineSynchronizationErrors {
+    ProjectId: number;
+    CheckListErrors: OfflineSynchronizationError[];
+    PunchListItemErrors: OfflineSynchronizationError[];
+}

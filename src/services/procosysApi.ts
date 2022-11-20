@@ -39,7 +39,9 @@ import {
     Bookmarks,
     IpoDetails,
     EntityId,
+    OfflineSynchronizationErrors,
 } from './apiTypes';
+import { HTTPError } from './HTTPError';
 
 type ProcosysApiServiceProps = {
     baseURL: string;
@@ -87,9 +89,6 @@ const procosysApiService = (
                 Authorization: `Bearer ${token}`,
             },
         };
-
-        //todo: ta bort log
-        //console.log('fetch-kall ' + url);
         const res = await fetch(`${baseURL}/${url}`, GetOperation);
         if (res.ok) {
             const jsonResult = await res.json();
@@ -97,9 +96,8 @@ const procosysApiService = (
             callback(resultObj, res.url);
             return resultObj;
         } else {
-            //alert('HTTP-Error: ' + res.status);
-            console.error('Error occured on fetch call', res.status);
-            return res;
+            console.error('Get by fetch failed. Url=' + url, res);
+            throw new HTTPError(res.status, res.statusText);
         }
     };
 
@@ -130,9 +128,8 @@ const procosysApiService = (
             callback(arrayBuffer, res.url);
             return blob;
         } else {
-            //alert('HTTP-Error: ' + res.status);
-            console.error(res.status);
-            return res.blob();
+            console.error('Get attachment by fetch failed. Url=' + url, res);
+            throw new HTTPError(res.status, res.statusText);
         }
     };
 
@@ -148,11 +145,17 @@ const procosysApiService = (
             },
             body: data ? JSON.stringify(data) : null,
         };
-        await fetch(`${baseURL}/${url}`, DeleteOperation);
+        const res = await fetch(`${baseURL}/${url}`, DeleteOperation);
+        if (!res.ok) {
+            console.error('Delete by fetch failed. Url=' + url, res);
+            throw new HTTPError(res.status, res.statusText);
+        }
     };
 
     /**
      * Generic method for doing a POST call with json as body data.
+     * If the request fails because of http error code from server, HTTPError will be thrown.
+     * If the request fails because of network issues etc, Error will be thrown.
      */
     const postByFetch = async (url: string, bodyData?: any): Promise<any> => {
         const PostOperation = {
@@ -164,7 +167,32 @@ const procosysApiService = (
             body: JSON.stringify(bodyData),
         };
 
-        const response = await fetch(`${baseURL}/${url}`, PostOperation);
+        //------KODE FOR Å TESTE FEILHÅNDTERING
+        // if (url.includes('PunchListItem?')) {
+        //     console.log('HAR URL:', url);
+        //     //url = url.replace('PunchListItem', 'PunchListIteeem');
+
+        //     PostOperation = {
+        //         method: 'POST',
+        //         headers: {
+        //             Authorization: `Bearer ${token}`,
+        //             'Content-Type': 'application/json',
+        //         },
+        //         body: 'hallo i luken',
+        //     };
+        // }
+        //------------
+
+        let response = new Response();
+        try {
+            response = await fetch(`${baseURL}/${url}`, PostOperation);
+        } catch (error) {
+            console.error(
+                'Something went wrong when accessing the server.',
+                error
+            );
+            throw new Error('Something went wrong when accessing the server.');
+        }
 
         if (response.ok) {
             const contentType = response.headers.get('content-type');
@@ -173,8 +201,13 @@ const procosysApiService = (
             } else {
                 return;
             }
+        } else {
+            console.error('Server responded with error.', response);
+            throw new HTTPError(
+                response.status,
+                `Server responded with http error code ${response.status}. ${response.statusText}`
+            );
         }
-        throw Error('Post request not successfull. ' + response.statusText);
     };
 
     /**
@@ -191,7 +224,11 @@ const procosysApiService = (
             },
             body: file,
         };
-        await fetch(`${baseURL}/${url}`, PostOperation);
+        const res = await fetch(`${baseURL}/${url}`, PostOperation);
+        if (!res.ok) {
+            console.error('Post attachment failed. Url=' + url, res);
+            throw new HTTPError(res.status, res.statusText);
+        }
     };
 
     /**
@@ -210,25 +247,25 @@ const procosysApiService = (
             },
             body: JSON.stringify(bodyData),
         };
-        await fetch(`${baseURL}/${url}`, PutOperation);
+        const res = await fetch(`${baseURL}/${url}`, PutOperation);
+        if (!res.ok) {
+            console.error('Put by fetch failed. Url=' + url, res);
+            throw new HTTPError(res.status, res.statusText);
+        }
     };
 
     const getPlants = async (): Promise<Plant[]> => {
         const plants = await getByFetch(
             `Plants?includePlantsWithoutAccess=false${apiVersion}`
         );
-        if (plants instanceof Array && isPlants(plants)) {
-            try {
-                const plantsWithSlug: Plant[] = plants.map((plant: Plant) => ({
-                    ...plant,
-                    slug: plant.id.substring(4),
-                }));
-                return plantsWithSlug;
-            } catch (error) {
-                console.error(error);
-            }
+        if (!isArrayOfType<Plant>(plants, 'title')) {
+            throw new Error(typeGuardErrorMessage('plants'));
         }
-        return plants;
+        const plantsWithSlug: Plant[] = plants.map((plant: Plant) => ({
+            ...plant,
+            slug: plant.id.substring(4),
+        }));
+        return plantsWithSlug;
     };
 
     const getProjectsForPlant = async (plantId: string): Promise<Project[]> => {
@@ -401,8 +438,6 @@ const procosysApiService = (
             `OfflineScope?plantId=PCS$${plantId}&projectId=${projectId}${apiVersion}`,
             abortSignal
         );
-
-        //todo: Feilhåndtering. Hva om vi ikke har noen bookmarks?
         return data;
     };
 
@@ -428,7 +463,7 @@ const procosysApiService = (
         plantId: string,
         projectId: number
     ): Promise<void> => {
-        putByFetch(
+        await putByFetch(
             `OfflineScope/Cancel?plantId=PCS$${plantId}${apiVersion}`,
             {
                 ProjectId: projectId,
@@ -792,7 +827,7 @@ const procosysApiService = (
         attachmentId: number,
         abortSignal: AbortSignal
     ): Promise<Blob> => {
-        const data = getAttachmentByFetch(
+        const data = await getAttachmentByFetch(
             `WorkOrder/Attachment?plantId=PCS$${plantId}&workOrderId=${workOrderId}&attachmentId=${attachmentId}${apiVersion}`,
             abortSignal
         );
@@ -881,6 +916,28 @@ const procosysApiService = (
     /**
      * This endpoint need to be called when a synchronization of a project is done (after being offline)
      */
+    const putOfflineScopeOffline = async (
+        plantId: string,
+        projectId: number,
+        checkListIds: number[],
+        punchListItemIds: number[]
+    ): Promise<void> => {
+        const dto = {
+            CheckListIds: checkListIds,
+            PunchListItemIds: punchListItemIds,
+            ProjectId: projectId,
+        };
+
+        await putByFetch(
+            `OfflineScope/Offline?plantId=PCS$${plantId}${apiVersion}`,
+            dto,
+            { 'Content-Type': 'application/json' }
+        );
+    };
+
+    /**
+     * This endpoint need to be called when a synchronization of a project is done (after being offline)
+     */
     const putOfflineScopeSynchronized = async (
         plantId: string,
         projectId: number
@@ -924,6 +981,20 @@ const procosysApiService = (
         await putByFetch(
             `OfflineScope/PunchListItem/Synchronized?plantId=PCS$${plantId}${apiVersion}`,
             dto,
+            { 'Content-Type': 'application/json' }
+        );
+    };
+
+    /**
+     * This endpoint must be called after offline synchronization, if there were errors during synchronization.
+     */
+    const postOfflineScopeSynchronizeErrors = async (
+        plantId: string,
+        offlineSynchronizationErrors: OfflineSynchronizationErrors
+    ): Promise<void> => {
+        await putByFetch(
+            `OfflineScope/SynchronizeErrors/plantId=PCS$${plantId}${apiVersion}`,
+            offlineSynchronizationErrors,
             { 'Content-Type': 'application/json' }
         );
     };
@@ -978,6 +1049,8 @@ const procosysApiService = (
         putOfflineScopeSynchronized,
         putOfflineScopeChecklistSynchronized,
         putOfflineScopePunchlistItemSynchronized,
+        postOfflineScopeSynchronizeErrors,
+        putOfflineScopeOffline,
     };
 };
 

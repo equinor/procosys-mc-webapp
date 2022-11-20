@@ -1,3 +1,4 @@
+import { EntityDetails } from '@equinor/procosys-webapp-components';
 import { EntityType } from '../typings/enums';
 import { db } from './db';
 import { Entity } from './Entity';
@@ -23,6 +24,27 @@ class OfflineContentRepository {
             .equals(apiPath)
             .first();
         return result as Entity;
+    }
+
+    /**
+     * Return entity ids for all entities of a specific type.
+     */
+    async getEntityIdsByType(entityType: EntityType): Promise<number[]> {
+        let entitites: Entity[] = [];
+        if (entityType) {
+            entitites = await db.offlineContent
+                .where('entitytype')
+                .equals(entityType)
+                .toArray();
+        }
+
+        const entityIds: number[] = [];
+        entitites.forEach((entity) => {
+            if (entity.entityid) {
+                entityIds.push(entity.entityid);
+            }
+        });
+        return entityIds;
     }
 
     async getEntityByType(entityType: EntityType): Promise<Entity> {

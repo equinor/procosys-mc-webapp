@@ -6,8 +6,9 @@ import { IEntity } from '../IEntity';
 import { isArrayOfType, isOfType } from '../../services/apiTypeGuards';
 import { PunchItem, PunchPreview } from '../../services/apiTypes';
 import { OfflineUpdateRequest } from '../OfflineUpdateRequest';
-import { addRequestToOfflineUpdatesDb } from '../addUpdateRequestToDatabase';
+import { OfflineUpdateRepository } from '../OfflineUpdateRepository';
 
+const offlineUpdateRepository = new OfflineUpdateRepository();
 const offlineContentRepository = new OfflineContentRepository();
 
 const addAttachmentToAttachmentList = async (
@@ -149,7 +150,11 @@ export const handlePostPunchAttachment = async (
     }
     punchlistPunchReview.attachmentCount++;
     await offlineContentRepository.replaceEntity(punchlistEntity);
-    await addRequestToOfflineUpdatesDb(punchId, offlinePostRequest);
+    await offlineUpdateRepository.addUpdateRequest(
+        punchId,
+        EntityType.PunchItem,
+        offlinePostRequest
+    );
 };
 
 /**
@@ -192,7 +197,11 @@ export const handlePostWorkOrderAttachment = async (
         newAttachmentId,
         title
     );
-    await addRequestToOfflineUpdatesDb(Number(workOrderId), offlinePostRequest);
+    await offlineUpdateRepository.addUpdateRequest(
+        Number(workOrderId),
+        EntityType.WorkOrder,
+        offlinePostRequest
+    );
 
     //todo: Må oppdatere punch listen også, med attachmentCount
 };
@@ -237,7 +246,11 @@ export const handlePostChecklistAttachment = async (
         newAttachmentId,
         title
     );
-    await addRequestToOfflineUpdatesDb(Number(checklistId), offlinePostRequest);
+    await offlineUpdateRepository.addUpdateRequest(
+        Number(checklistId),
+        EntityType.Checklist,
+        offlinePostRequest
+    );
     //todo: Må oppdatere punch listen også, med attachmentCount
 };
 
@@ -304,7 +317,11 @@ export const handleDeleteWorkOrderAttachment = async (
         );
 
     await deleteAttachmentFromList(attachmentListEntity, dto.AttachmentId);
-    await addRequestToOfflineUpdatesDb(dto.workOrderId, offlinePostRequest);
+    await offlineUpdateRepository.addUpdateRequest(
+        dto.workOrderId,
+        EntityType.WorkOrder,
+        offlinePostRequest
+    );
 };
 
 type DeletePunchAttachmentDto = {
@@ -327,7 +344,11 @@ export const handleDeletePunchAttachment = async (
             Number(dto.PunchItemId)
         );
     await deleteAttachmentFromList(attachmentListEntity, dto.AttachmentId);
-    await addRequestToOfflineUpdatesDb(dto.PunchItemId, offlinePostRequest);
+    await offlineUpdateRepository.addUpdateRequest(
+        dto.PunchItemId,
+        EntityType.PunchItem,
+        offlinePostRequest
+    );
 };
 
 type DeleteChecklistAttachmentDto = {
@@ -348,5 +369,9 @@ export const handleDeleteCheckListAttachment = async (
         );
 
     await deleteAttachmentFromList(attachmentListEntity, dto.AttachmentId);
-    await addRequestToOfflineUpdatesDb(dto.CheckListId, offlinePostRequest);
+    await offlineUpdateRepository.addUpdateRequest(
+        dto.CheckListId,
+        EntityType.Checklist,
+        offlinePostRequest
+    );
 };

@@ -1,22 +1,32 @@
+import { EntityType } from '../typings/enums';
 import { db } from './db';
 import { OfflineUpdateRequest } from './OfflineUpdateRequest';
 
 class OfflineUpdateRepository {
-    async getRequestsOrderedByEntityAndSeq(): Promise<OfflineUpdateRequest[]> {
+    async getUpdateRequests(): Promise<OfflineUpdateRequest[]> {
         const result = await db.offlineUpdates.toArray();
-        db.offlineUpdates.orderBy(['entityid', 'seqno']);
+        db.offlineUpdates.orderBy(['seqno']);
         return result as OfflineUpdateRequest[];
     }
 
     /**
-     * Add new update request
+     * Add new update request.
+     * The entityId should be id for either checklist, punch or work order.
+     * When the updates later are sent to main-api, they will be grouped by entityid.
      */
-    async add(offlineUpdateRequest: OfflineUpdateRequest): Promise<void> {
+    async addUpdateRequest(
+        entityId: number,
+        entityType: EntityType,
+        offlineUpdateRequest: OfflineUpdateRequest
+    ): Promise<void> {
+        console.log(
+            'addUpdateRequest - lagrer i database',
+            offlineUpdateRequest
+        );
+        offlineUpdateRequest.entityId = Number(entityId);
+        offlineUpdateRequest.entityType = entityType;
+
         if (db.offlineUpdates !== undefined) {
-            console.log(
-                'Injector: Legger til post request i db',
-                offlineUpdateRequest
-            );
             await db.offlineUpdates.add(offlineUpdateRequest);
         } else {
             throw Error(
@@ -27,34 +37,28 @@ class OfflineUpdateRepository {
 
     /**
      * Update the offline update request.
-     *
-     * todo: må ha en unik nøkkel, jeg må ha en get metode, og en replace metode.
-     * Må oppdatere sync f.eks.
      */
-    async updateOfflineUpdate(
+    async updateOfflineUpdateRequest(
         offlineUpdateRequest: OfflineUpdateRequest
     ): Promise<void> {
         if (db.offlineUpdates !== undefined) {
-            const oldOfflineUpdate = db.offlineUpdates
+            const oldOfflineUpdate = await db.offlineUpdates
                 .where('uniqueId')
-                .equals(offlineUpdateRequest.uniqueId);
+                .equals(offlineUpdateRequest.uniqueId)
+                .first();
 
             if (!oldOfflineUpdate) {
-                console.error(
-                    'The offline update request to update does not exist.',
-                    offlineUpdateRequest
-                );
                 throw Error(
-                    `The offline update request to update does not exist. urlPath: ${offlineUpdateRequest.url}`
+                    `The offline update request to update was not found. UniqueId=${offlineUpdateRequest.uniqueId}, url path=${offlineUpdateRequest.url}`
                 );
             }
 
-            //return await db.offlineUpdates.put(offlineUpdateRequest);
+            await db.offlineUpdates.put(offlineUpdateRequest);
+        } else {
+            throw Error(
+                `Entity ${offlineUpdateRequest.entityId} - ${offlineUpdateRequest.description}  not updated in database. Offline content database not available.`
+            );
         }
-        console.error(
-            `Entity ${offlineUpdateRequest} not updated in database. Offline content database not available.`
-        );
-        throw Error(`Entity ${offlineUpdateRequest} not updated in database.`);
     }
 }
 export { OfflineUpdateRepository };
