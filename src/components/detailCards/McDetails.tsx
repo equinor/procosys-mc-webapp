@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Caption, COLORS } from '../../style/GlobalStyles';
 import { McPkgBookmark, McPkgPreview } from '../../services/apiTypes';
 import useCommonHooks from '../../utils/useCommonHooks';
 import { McPackageStatusIcon } from '../icons/McPackageStatusIcon';
-import { Button } from '@equinor/eds-core-react';
+import { Button, Progress } from '@equinor/eds-core-react';
 import EdsIcon from '../icons/EdsIcon';
 
 const McDetailsWrapper = styled.article<{ clickable: boolean }>`
@@ -88,6 +88,11 @@ const McDetails = ({
     clickable = true,
 }: McDetailsProps): JSX.Element => {
     const { history, url } = useCommonHooks();
+    const [loadingBookmark, setLoadingBookmark] = useState<boolean>(false);
+
+    useEffect(() => {
+        setLoadingBookmark(false);
+    }, [isBookmarked]);
 
     return (
         <McDetailsWrapper
@@ -141,17 +146,22 @@ const McDetails = ({
                         variant="ghost_icon"
                         onClick={(e: React.MouseEvent<HTMLElement>): void => {
                             e.stopPropagation();
+                            setLoadingBookmark(true);
                             handleBookmarkClicked();
                         }}
                     >
-                        <EdsIcon
-                            color={COLORS.mossGreen}
-                            name={
-                                isBookmarked
-                                    ? 'bookmark_filled'
-                                    : 'bookmark_outlined'
-                            }
-                        />
+                        {loadingBookmark ? (
+                            <Progress.Circular size={16} />
+                        ) : (
+                            <EdsIcon
+                                color={COLORS.mossGreen}
+                                name={
+                                    isBookmarked
+                                        ? 'bookmark_filled'
+                                        : 'bookmark_outlined'
+                                }
+                            />
+                        )}
                     </Button>
                 </BookmarkWrapper>
             )}
