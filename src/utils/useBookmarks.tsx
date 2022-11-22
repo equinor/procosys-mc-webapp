@@ -8,6 +8,7 @@ import buildOfflineScope from '../offline/buildOfflineScope';
 import { db } from '../offline/db';
 import { updateOfflineStatus } from '../offline/OfflineStatus';
 import { OfflineContentRepository } from '../offline/OfflineContentRepository';
+import { config } from 'process';
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const useBookmarks = () => {
@@ -130,7 +131,7 @@ const useBookmarks = () => {
         }
     };
 
-    const sendOfflineContentToBackend = async (): Promise<void> => {
+    const sendOfflineStatusToBackend = async (): Promise<void> => {
         if (!currentProject || !currentPlant) {
             return;
         }
@@ -163,10 +164,8 @@ const useBookmarks = () => {
                 configurationAccessToken
             );
         }
-
+        await sendOfflineStatusToBackend();
         updateOfflineStatus(true, userPin, currentProject?.id);
-
-        sendOfflineContentToBackend();
 
         setOfflineState(true);
         localStorage.removeItem('loginTries'); //just to be sure...

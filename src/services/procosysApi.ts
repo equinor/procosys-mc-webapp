@@ -247,6 +247,7 @@ const procosysApiService = (
             },
             body: JSON.stringify(bodyData),
         };
+        console.log('SKAL LAGE PUT: ', PutOperation);
         const res = await fetch(`${baseURL}/${url}`, PutOperation);
         if (!res.ok) {
             console.error('Put by fetch failed. Url=' + url, res);

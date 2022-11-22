@@ -139,7 +139,8 @@ self.addEventListener('fetch', function (event: FetchEvent) {
         //User is in online mode. The requests will be done the normal way.
         console.log(
             'service-worker - handleFetch. Online mode',
-            event.request.url
+            event.request.url,
+            event.request
         );
         event.respondWith(fetch(event.request));
     }
