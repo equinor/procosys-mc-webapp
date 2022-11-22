@@ -117,14 +117,14 @@ export const handlePostPunchAttachment = async (
     const checklistPunchlist: PunchPreview[] =
         checklistPunchlistEntity.responseObj;
 
-    const punchReview = checklistPunchlist.find(
+    const punchPreview = checklistPunchlist.find(
         (punch) => punch.id === punchId
     );
-    if (!isOfType<PunchPreview>(punchReview, 'attachmentCount')) {
+    if (!isOfType<PunchPreview>(punchPreview, 'attachmentCount')) {
         console.error('Not able to find punch preview.');
         return;
     }
-    punchReview.attachmentCount++;
+    punchPreview.attachmentCount++;
     await offlineContentRepository.replaceEntity(checklistPunchlistEntity);
 
     //Update count on main punchlist
@@ -141,14 +141,14 @@ export const handlePostPunchAttachment = async (
     }
     const punchlist: PunchPreview[] = punchlistEntity.responseObj;
 
-    const punchlistPunchReview = punchlist.find(
+    const punchlistPunchPreview = punchlist.find(
         (punch) => punch.id === punchId
     );
-    if (!isOfType<PunchPreview>(punchlistPunchReview, 'attachmentCount')) {
+    if (!isOfType<PunchPreview>(punchlistPunchPreview, 'attachmentCount')) {
         console.error('Not able to find punch preview in punchlist.');
         return;
     }
-    punchlistPunchReview.attachmentCount++;
+    punchlistPunchPreview.attachmentCount++;
     await offlineContentRepository.replaceEntity(punchlistEntity);
     await offlineUpdateRepository.addUpdateRequest(
         punchId,

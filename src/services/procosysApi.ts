@@ -937,7 +937,7 @@ const procosysApiService = (
     };
 
     /**
-     * This endpoint need to be called when a synchronization of a project is done (after being offline)
+     * This endpoint need to be called to finish offline mode for a project. Synchronization must be done first.
      */
     const putOfflineScopeSynchronized = async (
         plantId: string,

@@ -1,4 +1,3 @@
-import { EntityDetails } from '@equinor/procosys-webapp-components';
 import { EntityType } from '../typings/enums';
 import { db } from './db';
 import { Entity } from './Entity';
@@ -10,35 +9,33 @@ class OfflineContentRepository {
         return result as Entity;
     }
 
-    async getByEntityId(entityId: number): Promise<Entity> {
-        const result = await db.offlineContent
-            .where('entityid')
-            .equals(entityId)
-            .first();
-        return result as Entity;
-    }
-
-    async getByApiPath(apiPath: string): Promise<Entity> {
+    /**
+     * Return entity by api path. Null is returned, if not found.
+     */
+    async getByApiPath(apiPath: string): Promise<Entity | null> {
         const result = await db.offlineContent
             .where('apipath')
             .equals(apiPath)
             .first();
-        return result as Entity;
+
+        if (result) {
+            return result as Entity;
+        } else {
+            return null;
+        }
     }
 
     /**
-     * Return entity ids for all entities of a specific type.
+     * Return entity ids for all entities of a specific type. If no entities are found, an empty array is returned.
      */
     async getEntityIdsByType(entityType: EntityType): Promise<number[]> {
-        let entitites: Entity[] = [];
-        if (entityType) {
-            entitites = await db.offlineContent
-                .where('entitytype')
-                .equals(entityType)
-                .toArray();
-        }
+        const entitites = await db.offlineContent
+            .where('entitytype')
+            .equals(entityType)
+            .toArray();
 
         const entityIds: number[] = [];
+
         entitites.forEach((entity) => {
             if (entity.entityid) {
                 entityIds.push(entity.entityid);
@@ -47,24 +44,26 @@ class OfflineContentRepository {
         return entityIds;
     }
 
+    /**
+     * Entity with given entity type is returned. The first entity found will be returned.
+     */
     async getEntityByType(entityType: EntityType): Promise<Entity> {
-        let result;
-        if (entityType) {
-            result = await db.offlineContent
-                .where('entitytype')
-                .equals(entityType)
-                .first();
+        const result = await db.offlineContent
+            .where('entitytype')
+            .equals(entityType)
+            .first();
+        if (result) {
+            return result;
         } else {
-            console.error(
-                'Was not able to find entity in offline content database.',
-                entityType
+            throw Error(
+                `Entity with entity type ${entityType} was not found in offline database.`
             );
-            //todo: exception?
         }
-
-        return result as Entity;
     }
 
+    /**
+     * Return entity by type and id. If not found, error is thrown.
+     */
     async getEntityByTypeAndId(
         entityType: EntityType,
         entityId: number
@@ -74,16 +73,28 @@ class OfflineContentRepository {
             .equals(entityType)
             .and((entity) => entity.entityid == entityId)
             .first();
-
-        return result as Entity;
+        if (result) {
+            return result;
+        } else {
+            throw Error(
+                `Entity by type ${entityType} and id ${entityId} not found in offline database.`
+            );
+        }
     }
 
+    /**
+     * Add entity
+     */
     async add(entity: Entity): Promise<EntityIndexes> {
         if (db.offlineContent !== undefined) {
             return await db.offlineContent.add(entity);
         }
         throw Error(`Entity ${entity.entityid} not added to database`);
     }
+
+    /**
+     * Add entities in a bulk operation.
+     */
 
     async bulkAdd(entities: Entity[]): Promise<EntityIndexes> {
         if (db.offlineContent !== undefined) {
@@ -100,10 +111,10 @@ class OfflineContentRepository {
             const oldEntity = await this.getByApiPath(entity.apipath);
             if (!oldEntity) {
                 console.error(
-                    `The entity to replace does not exist. urlPath: ${entity.apipath}`
+                    `The entity to replace does not exist in offline database. urlPath: ${entity.apipath}`
                 );
                 throw Error(
-                    `The entity to replace does not exist. urlPath: ${entity.apipath}`
+                    `The entity to replace does not exist in offline database. urlPath: ${entity.apipath}`
                 );
             }
 

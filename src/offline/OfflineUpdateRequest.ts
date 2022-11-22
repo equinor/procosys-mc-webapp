@@ -21,7 +21,11 @@ export class OfflineUpdateRequest {
     bodyData: any;
     type: RequestType;
     entityId: number | null; //This will be id for checklist, punch or work order. All updates will belong to either of these.
-    entityType: EntityType | null; //checklist, punch or work order.
+    entityType:
+        | EntityType.Checklist
+        | EntityType.PunchItem
+        | EntityType.WorkOrder
+        | null;
     plantId: string;
     timestamp: number;
     responseIsNewEntityId = false;

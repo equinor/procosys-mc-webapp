@@ -1,11 +1,11 @@
 import { isOfType } from '@equinor/procosys-webapp-components';
 
 const OFFLINE_PROJECT_ID = 'offlineProjectId';
-const OFFLINE_STATUS = 'offline';
+const OFFLINE_STATUS = 'offlineStatus';
 
 export const getOfflineStatusfromLocalStorage = (): boolean => {
-    const offline = localStorage.getItem(OFFLINE_STATUS);
-    if (offline === 'true') {
+    const offlineStatus = localStorage.getItem(OFFLINE_STATUS);
+    if (offlineStatus === 'true') {
         return true;
     } else {
         console.log('returning false');

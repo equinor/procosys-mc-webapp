@@ -16,7 +16,10 @@ class OfflineUpdateRepository {
      */
     async addUpdateRequest(
         entityId: number,
-        entityType: EntityType,
+        entityType:
+            | EntityType.Checklist
+            | EntityType.PunchItem
+            | EntityType.WorkOrder,
         offlineUpdateRequest: OfflineUpdateRequest
     ): Promise<void> {
         console.log(

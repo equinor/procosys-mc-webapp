@@ -137,7 +137,9 @@ export const syncronizeOfflineUpdatesWithBackend = async (
         }
     }
 
-    await reportErrors(currentPlant, currentProject, api);
+    await reportErrorsIfExists(currentPlant, currentProject, api);
+
+    //Note: Currently the offline scope will be set to synchronized, regardless of any errors.
     await api.putOfflineScopeSynchronized(currentPlant, currentProject);
 };
 
@@ -154,7 +156,7 @@ const handleFailedUpdateRequest = async (
 /**
  * This function will collect all errors reported during synchronization, and send to server.
  */
-const reportErrors = async (
+const reportErrorsIfExists = async (
     plantId: string,
     projectId: number,
     api: ProcosysApiService
@@ -179,7 +181,7 @@ const reportErrors = async (
                 offlineSynchronizationErrors.PunchListItemErrors.push(
                     offlineUpdate.getErrorObject()
                 );
-            } //todo: skal vi håndtere work order?
+            } //todo: Work order is not yet handled.
         }
     }
 
@@ -187,12 +189,17 @@ const reportErrors = async (
 
     if (
         offlineSynchronizationErrors.CheckListErrors.length > 0 ||
-        offlineSynchronizationErrors.CheckListErrors.length > 0
+        offlineSynchronizationErrors.PunchListItemErrors.length > 0
     ) {
         console.log('send errors to server');
         await api.postOfflineScopeSynchronizeErrors(
             plantId,
             offlineSynchronizationErrors
+        );
+
+        localStorage.setItem(
+            'SynchErrors',
+            JSON.stringify(offlineSynchronizationErrors)
         );
     }
 };
@@ -272,7 +279,7 @@ const synchronizeOfflineUpdate = async (
         offlineUpdateRepository.updateOfflineUpdateRequest(offlineUpdate);
 
         if (offlineUpdate.entityId) {
-            if (offlineUpdate.entityType == EntityType.Checklists) {
+            if (offlineUpdate.entityType == EntityType.Checklist) {
                 await api.putOfflineScopeChecklistSynchronized(
                     offlineUpdate.plantId,
                     offlineUpdate.entityId
