@@ -93,7 +93,7 @@ stages:
 - stage: test
   displayName: 'Deploy to Test'
   dependsOn: 'dev'
-  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/Offline-mode'))
   variables:
     envName: 'test'
     envLabel: 'non-prod'

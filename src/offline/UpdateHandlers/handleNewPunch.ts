@@ -3,7 +3,7 @@ import { OfflineContentRepository } from '../OfflineContentRepository';
 import { EntityType } from '../../typings/enums';
 import {
     Attachment,
-    NewPunch,
+    EntityId,
     PunchItem,
     PunchPreview,
 } from '../../services/apiTypes';
@@ -15,6 +15,8 @@ import {
     getPunchSortingById,
     getPunchTypeById,
 } from './utils';
+import { OfflineUpdateRequest } from '../OfflineUpdateRequest';
+import { addRequestToOfflineUpdatesDb } from '../addUpdateRequestToDatabase';
 
 const offlineContentRepository = new OfflineContentRepository();
 
@@ -22,10 +24,11 @@ const offlineContentRepository = new OfflineContentRepository();
  * Update offline content database based on a post of new punch.
  */
 export const handleNewPunch = async (
-    requestUrl: string,
-    params: URLSearchParams,
-    newPunch: NewPunch
-): Promise<void> => {
+    offlinePostRequest: OfflineUpdateRequest,
+    params: URLSearchParams
+): Promise<EntityId> => {
+    const newPunch = offlinePostRequest.bodyData;
+
     const plantId = params.get('plantId');
 
     //Get checklist punchlist
@@ -44,7 +47,7 @@ export const handleNewPunch = async (
             'Not able to find main punchlist based on entity on checklist punchlist.',
             checklistPunchlist
         );
-        return;
+        return { Id: 0 }; // todo: feilhåndtering.
     }
 
     //Get main punchlist
@@ -193,4 +196,8 @@ export const handleNewPunch = async (
     mainPunchList.push(newPunchReview);
     mainPunchlistEntity.responseObj = mainPunchList;
     await offlineContentRepository.replaceEntity(mainPunchlistEntity);
+
+    offlinePostRequest.responseIsNewEntityId = true;
+    await addRequestToOfflineUpdatesDb(newPunchItemId, offlinePostRequest);
+    return { Id: newPunchItemId };
 };

@@ -1,5 +1,4 @@
 import React, { useContext, useEffect, useReducer, useState } from 'react';
-import axios, { CancelToken } from 'axios';
 import {
     SearchResult,
     SearchState,

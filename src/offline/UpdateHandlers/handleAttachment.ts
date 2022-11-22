@@ -5,10 +5,12 @@ import { Attachment } from '@equinor/procosys-webapp-components';
 import { IEntity } from '../IEntity';
 import { isArrayOfType, isOfType } from '../../services/apiTypeGuards';
 import { PunchItem, PunchPreview } from '../../services/apiTypes';
+import { OfflineUpdateRequest } from '../OfflineUpdateRequest';
+import { addRequestToOfflineUpdatesDb } from '../addUpdateRequestToDatabase';
 
 const offlineContentRepository = new OfflineContentRepository();
 
-const addNewAttachment = async (
+const addAttachmentToAttachmentList = async (
     attachmentListEntity: IEntity,
     newAttachmentId: number,
     title: string | null
@@ -49,13 +51,14 @@ const addNewAttachment = async (
  * Update offline content database based on a post of new punch attachment.
  */
 export const handlePostPunchAttachment = async (
-    params: URLSearchParams,
-    bodyData: any
+    offlinePostRequest: OfflineUpdateRequest,
+    params: URLSearchParams
 ): Promise<void> => {
     const plantId = params.get('plantId');
     const title = params.get('title');
     const punchIdStr = params.get('punchItemId');
-    const blob: Blob = bodyData[0];
+    //const blob: Blob = offlinePostRequest.bodyData[0];
+    const arrayBuffer = offlinePostRequest.blob; //await blob.arrayBuffer();
 
     if (punchIdStr === null) {
         console.error('The request parameters does not contain a punchId.');
@@ -75,7 +78,7 @@ export const handlePostPunchAttachment = async (
         entitytype: EntityType.PunchAttachment,
         entityid: newAttachmentId,
         parententityid: punchId,
-        responseObj: blob,
+        responseObj: arrayBuffer,
         apipath: apiPath,
     };
 
@@ -88,7 +91,11 @@ export const handlePostPunchAttachment = async (
             punchId
         );
 
-    await addNewAttachment(attachmentListEntity, newAttachmentId, title);
+    await addAttachmentToAttachmentList(
+        attachmentListEntity,
+        newAttachmentId,
+        title
+    );
 
     //Update attachment count on punch
     const punchEntity = await offlineContentRepository.getEntityByTypeAndId(
@@ -142,19 +149,21 @@ export const handlePostPunchAttachment = async (
     }
     punchlistPunchReview.attachmentCount++;
     await offlineContentRepository.replaceEntity(punchlistEntity);
+    await addRequestToOfflineUpdatesDb(punchId, offlinePostRequest);
 };
 
 /**
  * Update offline content database based on a post of new work order attachment.
  */
 export const handlePostWorkOrderAttachment = async (
-    params: URLSearchParams,
-    bodyData: any
+    offlinePostRequest: OfflineUpdateRequest,
+    params: URLSearchParams
 ): Promise<void> => {
     const plantId = params.get('plantId');
     const title = params.get('title');
     const workOrderId = params.get('workOrderId');
-    const blob: Blob = bodyData[0];
+    const blob: Blob = offlinePostRequest.bodyData[0];
+    const arrayBuffer = await blob.arrayBuffer();
 
     //Construct url for new punch attachment
     const newAttachmentId = generateRandomId();
@@ -166,7 +175,7 @@ export const handlePostWorkOrderAttachment = async (
         entitytype: EntityType.WorkOrderAttachment,
         entityid: newAttachmentId,
         parententityid: workOrderId ? Number(workOrderId) : undefined,
-        responseObj: blob,
+        responseObj: arrayBuffer,
         apipath: apiPath,
     };
 
@@ -178,7 +187,13 @@ export const handlePostWorkOrderAttachment = async (
             EntityType.WorkOrderAttachments,
             Number(workOrderId)
         );
-    await addNewAttachment(attachmentListEntity, newAttachmentId, title);
+    await addAttachmentToAttachmentList(
+        attachmentListEntity,
+        newAttachmentId,
+        title
+    );
+    await addRequestToOfflineUpdatesDb(Number(workOrderId), offlinePostRequest);
+
     //todo: Må oppdatere punch listen også, med attachmentCount
 };
 
@@ -186,13 +201,14 @@ export const handlePostWorkOrderAttachment = async (
  * Update offline content database based on a post of new checklist attachment.
  */
 export const handlePostChecklistAttachment = async (
-    params: URLSearchParams,
-    bodyData: any
+    offlinePostRequest: OfflineUpdateRequest,
+    params: URLSearchParams
 ): Promise<void> => {
     const plantId = params.get('plantId');
     const title = params.get('title');
     const checklistId = params.get('checkListId');
-    const blob: Blob = bodyData[0];
+    const blob: Blob = offlinePostRequest.bodyData[0];
+    const arrayBuffer = await blob.arrayBuffer();
 
     //Construct url for new punch attachment
     const newAttachmentId = generateRandomId();
@@ -204,7 +220,7 @@ export const handlePostChecklistAttachment = async (
         entitytype: EntityType.ChecklistAttachment,
         entityid: newAttachmentId,
         parententityid: checklistId ? Number(checklistId) : undefined,
-        responseObj: blob,
+        responseObj: arrayBuffer,
         apipath: apiPath,
     };
 
@@ -216,7 +232,12 @@ export const handlePostChecklistAttachment = async (
             EntityType.ChecklistAttachments,
             Number(checklistId)
         );
-    await addNewAttachment(attachmentListEntity, newAttachmentId, title);
+    await addAttachmentToAttachmentList(
+        attachmentListEntity,
+        newAttachmentId,
+        title
+    );
+    await addRequestToOfflineUpdatesDb(Number(checklistId), offlinePostRequest);
     //todo: Må oppdatere punch listen også, med attachmentCount
 };
 
@@ -271,9 +292,9 @@ type DeleteWOAttachmentDto = {
  * Update offline content database based on delete of work order attachment.
  */
 export const handleDeleteWorkOrderAttachment = async (
-    bodyData: any
+    offlinePostRequest: OfflineUpdateRequest
 ): Promise<void> => {
-    const dto: DeleteWOAttachmentDto = bodyData;
+    const dto: DeleteWOAttachmentDto = offlinePostRequest.bodyData;
 
     //Update attachment list
     const attachmentListEntity =
@@ -283,6 +304,7 @@ export const handleDeleteWorkOrderAttachment = async (
         );
 
     await deleteAttachmentFromList(attachmentListEntity, dto.AttachmentId);
+    await addRequestToOfflineUpdatesDb(dto.workOrderId, offlinePostRequest);
 };
 
 type DeletePunchAttachmentDto = {
@@ -294,9 +316,9 @@ type DeletePunchAttachmentDto = {
  * Update offline content database based on a delete of punch attachment.
  */
 export const handleDeletePunchAttachment = async (
-    bodyData: any
+    offlinePostRequest: OfflineUpdateRequest
 ): Promise<void> => {
-    const dto: DeletePunchAttachmentDto = bodyData;
+    const dto: DeletePunchAttachmentDto = offlinePostRequest.bodyData;
 
     //Update attachment list on punch
     const attachmentListEntity =
@@ -305,6 +327,7 @@ export const handleDeletePunchAttachment = async (
             Number(dto.PunchItemId)
         );
     await deleteAttachmentFromList(attachmentListEntity, dto.AttachmentId);
+    await addRequestToOfflineUpdatesDb(dto.PunchItemId, offlinePostRequest);
 };
 
 type DeleteChecklistAttachmentDto = {
@@ -313,9 +336,9 @@ type DeleteChecklistAttachmentDto = {
 };
 
 export const handleDeleteCheckListAttachment = async (
-    bodyData: any
+    offlinePostRequest: OfflineUpdateRequest
 ): Promise<void> => {
-    const dto: DeleteChecklistAttachmentDto = bodyData;
+    const dto: DeleteChecklistAttachmentDto = offlinePostRequest.bodyData;
 
     //Update attachment list
     const attachmentListEntity =
@@ -325,4 +348,5 @@ export const handleDeleteCheckListAttachment = async (
         );
 
     await deleteAttachmentFromList(attachmentListEntity, dto.AttachmentId);
+    await addRequestToOfflineUpdatesDb(dto.CheckListId, offlinePostRequest);
 };

@@ -37,6 +37,8 @@ import {
     ChecklistSavedSearchResult,
     isPlants,
     Bookmarks,
+    IpoDetails,
+    EntityId,
 } from './apiTypes';
 
 type ProcosysApiServiceProps = {
@@ -71,6 +73,9 @@ const procosysApiService = (
         return apiVersion;
     };
 
+    /**
+     * Generic method for doing a GET call. Should be used by all GET calls with json string (or blank) as respons.
+     */
     const getByFetch = async (
         url: string,
         abortSignal?: AbortSignal
@@ -98,6 +103,9 @@ const procosysApiService = (
         }
     };
 
+    /**
+     * Generic method for doing a GET call with attachment blob as response.
+     */
     const getAttachmentByFetch = async (
         url: string,
         abortSignal?: AbortSignal
@@ -112,13 +120,15 @@ const procosysApiService = (
             },
         };
 
-        console.log('fetch-kall attachment ', url);
         const res = await fetch(`${baseURL}/${url}`, GetOperation);
 
         if (res.ok) {
-            const resultObj = await res.blob();
-            callback(resultObj, res.url);
-            return resultObj;
+            const blob = await res.blob();
+
+            //ArrayBuffer must be used for storing in indexeddb (blob not supported by all browser, and not supported by Dexie-encrypted)
+            const arrayBuffer = await blob.arrayBuffer();
+            callback(arrayBuffer, res.url);
+            return blob;
         } else {
             //alert('HTTP-Error: ' + res.status);
             console.error(res.status);
@@ -126,6 +136,9 @@ const procosysApiService = (
         }
     };
 
+    /**
+     * Generic method for doing a DELETE call. Should be used by all DELETE calls.
+     */
     const deleteByFetch = async (url: string, data?: any): Promise<any> => {
         const DeleteOperation = {
             method: 'DELETE',
@@ -138,6 +151,9 @@ const procosysApiService = (
         await fetch(`${baseURL}/${url}`, DeleteOperation);
     };
 
+    /**
+     * Generic method for doing a POST call with json as body data.
+     */
     const postByFetch = async (url: string, bodyData?: any): Promise<any> => {
         const PostOperation = {
             method: 'POST',
@@ -147,9 +163,23 @@ const procosysApiService = (
             },
             body: JSON.stringify(bodyData),
         };
-        await fetch(`${baseURL}/${url}`, PostOperation);
+
+        const response = await fetch(`${baseURL}/${url}`, PostOperation);
+
+        if (response.ok) {
+            const contentType = response.headers.get('content-type');
+            if (contentType && contentType.indexOf('application/json') !== -1) {
+                return await response.json();
+            } else {
+                return;
+            }
+        }
+        throw Error('Post request not successfull. ' + response.statusText);
     };
 
+    /**
+     * Generic method for posting attachment with form data as body data.
+     */
     const postAttachmentByFetch = async (
         url: string,
         file: FormData
@@ -164,6 +194,9 @@ const procosysApiService = (
         await fetch(`${baseURL}/${url}`, PostOperation);
     };
 
+    /**
+     * Generic method for doing a PUT call.
+     */
     const putByFetch = async (
         url: string,
         bodyData: any,
@@ -313,6 +346,8 @@ const procosysApiService = (
             url = `Tag?plantId=PCS$${plantId}&tagId=${entityId}${apiVersion}`;
         } else if (searchType === SearchType.PO) {
             url = `PurchaseOrder?plantId=PCS$${plantId}&callOffId=${entityId}${apiVersion}`;
+        } else if (searchType === SearchType.IPO) {
+            url = `IPO?plantId=PCS$${plantId}&invitationId=${entityId}${apiVersion}`;
         } else {
             throw new Error('The chosen scope type is not supported.');
         }
@@ -409,6 +444,7 @@ const procosysApiService = (
         plantId: string,
         searchType: SearchType,
         entityId: string,
+        ipoDetails: McPkgPreview | WoPreview | Tag | PoPreview | IpoDetails,
         abortSignal?: AbortSignal
     ): Promise<ChecklistPreview[]> => {
         let url = '';
@@ -421,7 +457,28 @@ const procosysApiService = (
                 'MCCR',
             ]}${apiVersion}`;
         } else if (searchType === SearchType.PO) {
-            url = `PurchaseOrder/CheckLists?plantId=PCS$${plantId}&callOffId=${entityId}${apiVersion}`;
+            url = `PurchaseOrder/CheckLists?plantId=PCS$${plantId}&callOffId=${entityId}&formularGroupsFilter${[
+                'MCCR',
+            ]}${apiVersion}`;
+        } else if (
+            searchType === SearchType.IPO &&
+            isOfType<IpoDetails>(ipoDetails, 'location')
+        ) {
+            if (ipoDetails.type == 'DP') {
+                const mcPkgNo = ipoDetails.mcPkgScope.map(
+                    (mcPkg) => '&mcPkgNos=' + mcPkg.mcPkgNo
+                );
+                url = `McPkgs/CheckLists?plantId=PCS$${plantId}&projectName=${
+                    ipoDetails.projectName
+                }${mcPkgNo.join('')}${apiVersion}`;
+            } else {
+                const commPkgNo = ipoDetails.commPkgScope.map(
+                    (commPkg) => '&commPkgNos=' + commPkg.commPkgNo
+                );
+                url = `CommPkgs/CheckLists?plantId=PCS$${plantId}&projectName=${
+                    ipoDetails.projectName
+                }${commPkgNo.join('')}${apiVersion}`;
+            }
         } else {
             throw new Error('The chosen scope type is not supported.');
         }
@@ -470,6 +527,7 @@ const procosysApiService = (
         plantId: string,
         searchType: SearchType,
         entityId: string,
+        ipoDetails: McPkgPreview | WoPreview | Tag | PoPreview | IpoDetails,
         abortSignal?: AbortSignal
     ): Promise<PunchPreview[]> => {
         let url = '';
@@ -481,6 +539,25 @@ const procosysApiService = (
             url = `Tag/PunchList?plantId=PCS$${plantId}&tagId=${entityId}${apiVersion}`;
         } else if (searchType === SearchType.PO) {
             url = `PurchaseOrder/PunchList?plantId=PCS$${plantId}&callOffId=${entityId}${apiVersion}`;
+        } else if (
+            searchType === SearchType.IPO &&
+            isOfType<IpoDetails>(ipoDetails, 'location')
+        ) {
+            if (ipoDetails.type == 'DP') {
+                const mcPkgNo = ipoDetails.mcPkgScope.map(
+                    (mcPkg) => '&mcPkgNos=' + mcPkg.mcPkgNo
+                );
+                url = `McPkgs/PunchLists?plantId=PCS$${plantId}&projectName=${
+                    ipoDetails.projectName
+                }${mcPkgNo.join('')}${apiVersion}`;
+            } else {
+                const commPkgNo = ipoDetails.commPkgScope.map(
+                    (commPkg) => '&commPkgNos=' + commPkg.commPkgNo
+                );
+                url = `CommPkgs/PunchLists?plantId=PCS$${plantId}&projectName=${
+                    ipoDetails.projectName
+                }${commPkgNo.join('')}${apiVersion}`;
+            }
         } else {
             throw new Error('The chosen scope type is not supported.');
         }
@@ -559,15 +636,15 @@ const procosysApiService = (
         }
         return data;
     };
-
     const postNewPunch = async (
         plantId: string,
         newPunchData: NewPunch
-    ): Promise<void> => {
-        await postByFetch(
+    ): Promise<EntityId> => {
+        const punchId = await postByFetch(
             `PunchListItem?plantId=PCS$${plantId}${apiVersion}`,
             newPunchData
         );
+        return punchId;
     };
 
     const getPunchItem = async (
@@ -801,6 +878,56 @@ const procosysApiService = (
         );
     };
 
+    /**
+     * This endpoint need to be called when a synchronization of a project is done (after being offline)
+     */
+    const putOfflineScopeSynchronized = async (
+        plantId: string,
+        projectId: number
+    ): Promise<void> => {
+        const dto = { ProjectId: projectId };
+        await putByFetch(
+            `OfflineScope/Synchronized?plantId=PCS$${plantId}${apiVersion}`,
+            dto,
+            { 'Content-Type': 'application/json' }
+        );
+    };
+
+    /**
+     * This endpoint must be called during offline synchronization, when all updates on a checklist is done.
+     */
+    const putOfflineScopeChecklistSynchronized = async (
+        plantId: string,
+        checklistId: number
+    ): Promise<void> => {
+        const dto = { CheckListId: checklistId };
+        await putByFetch(
+            `OfflineScope/CheckList/Synchronized?plantId=PCS$${plantId}${apiVersion}`,
+            dto,
+            { 'Content-Type': 'application/json' }
+        );
+    };
+
+    /**
+     * This endpoint must be called during offline synchronization, when all updates on a punchlist item is done.
+     */
+    const putOfflineScopePunchlistItemSynchronized = async (
+        plantId: string,
+        punchlistItemId: number,
+        addedOffline: boolean
+    ): Promise<void> => {
+        const dto = {
+            PunchListItemId: punchlistItemId,
+            AddedOffline: addedOffline,
+        };
+
+        await putByFetch(
+            `OfflineScope/PunchListItem/Synchronized?plantId=PCS$${plantId}${apiVersion}`,
+            dto,
+            { 'Content-Type': 'application/json' }
+        );
+    };
+
     return {
         getTag,
         deletePunchAttachment,
@@ -848,6 +975,9 @@ const procosysApiService = (
         postAttachmentByFetch,
         deleteByFetch,
         putByFetch,
+        putOfflineScopeSynchronized,
+        putOfflineScopeChecklistSynchronized,
+        putOfflineScopePunchlistItemSynchronized,
     };
 };
 

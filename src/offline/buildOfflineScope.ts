@@ -12,6 +12,11 @@ import { IEntity } from './IEntity';
 import { fetchAppConfig, fetchAuthConfig } from '../services/appConfiguration';
 import removeBaseUrlFromUrl from '../utils/removeBaseUrlFromUrl';
 
+/**
+ * This function will be called when user want to go offline with given bookmarks.
+ * All relevant data will be fetched from main-api, and store in browser database (indexeddb).
+ * When the user is offline, all calls to main-api will be intercepted, and data will be fetched from indexeddb instead.
+ */
 const buildOfflineScope = async (
     api: ProcosysApiService,
     plantId: string,
@@ -180,7 +185,11 @@ const buildOfflineScope = async (
         searchType: SearchType
     ): Promise<void> => {
         //Entity details
-        await api.getEntityDetails(plantId, searchType, entityId.toString());
+        const entityDetails = await api.getEntityDetails(
+            plantId,
+            searchType,
+            entityId.toString()
+        );
 
         addEntityToMap({
             entityid: entityId,
@@ -190,7 +199,12 @@ const buildOfflineScope = async (
         });
 
         //Punch list
-        await api.getPunchList(plantId, searchType, entityId.toString());
+        await api.getPunchList(
+            plantId,
+            searchType,
+            entityId.toString(),
+            entityDetails
+        );
 
         addEntityToMap({
             entityid: entityId,
@@ -203,7 +217,8 @@ const buildOfflineScope = async (
         const scope = await api.getScope(
             plantId,
             searchType,
-            entityId.toString()
+            entityId.toString(),
+            entityDetails
         );
 
         addEntityToMap({

@@ -46,7 +46,7 @@ const OfflinePin = ({ setUserPin }: OfflinePinProps): JSX.Element => {
             localStorage.setItem('loginTries', `${loginTriesNum + 1}`);
             setLoginTriesLeft((prev) => prev - 1);
         } else {
-            db.clearTables();
+            await db.delete();
             updateOfflineStatus(false, '');
             localStorage.removeItem('loginTries');
         }

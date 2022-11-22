@@ -18,6 +18,7 @@ export const COLORS = {
     workOrderIcon: '#990025',
     tagIcon: '#007079',
     purchaseOrderIcon: '#879199',
+    ipoIcon: '#a740a1',
     disabledText: tokens.colors.interactive.disabled__text.hex,
 };
 

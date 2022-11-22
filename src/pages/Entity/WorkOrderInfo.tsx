@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Button } from '@equinor/eds-core-react';
 import {
     Attachments,
@@ -14,6 +14,7 @@ import { AsyncStatus } from '../../contexts/McAppContext';
 import { isOfType } from '../../services/apiTypeGuards';
 import {
     Attachment,
+    IpoDetails,
     McPkgPreview,
     PoPreview,
     Tag,
@@ -21,6 +22,7 @@ import {
 } from '../../services/apiTypes';
 import { removeHtmlFromText } from '../../utils/removeHtmlFromText';
 import useCommonHooks from '../../utils/useCommonHooks';
+import PlantContext from '../../contexts/PlantContext';
 
 const TagInfoWrapper = styled.main`
     min-height: 0px;
@@ -36,7 +38,7 @@ const Description = styled.p`
 `;
 
 type WorkOrderInfoProps = {
-    workOrder?: WoPreview | McPkgPreview | Tag | PoPreview;
+    workOrder?: WoPreview | McPkgPreview | Tag | PoPreview | IpoDetails;
     fetchWorkOrderStatus: AsyncStatus;
 };
 
@@ -44,7 +46,8 @@ const WorkOrderInfo = ({
     workOrder,
     fetchWorkOrderStatus,
 }: WorkOrderInfoProps): JSX.Element => {
-    const { history, url, api, params } = useCommonHooks();
+    const { history, url, api, params, offlineState } = useCommonHooks();
+    const { permissions } = useContext(PlantContext);
     const { snackbar, setSnackbarText } = useSnackbar();
     const abortController = new AbortController();
     const abortSignal = abortController.signal;
@@ -106,7 +109,10 @@ const WorkOrderInfo = ({
                             )
                         }
                         setSnackbarText={setSnackbarText}
-                        readOnly={false}
+                        readOnly={
+                            !permissions.includes('WO/ATTACHFILE') ||
+                            offlineState
+                        }
                         abortController={abortController}
                     />
                     {snackbar}

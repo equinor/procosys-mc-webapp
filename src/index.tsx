@@ -1,5 +1,5 @@
 import GlobalStyles from './style/GlobalStyles';
-import React, { useState } from 'react';
+import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
 import authService from './services/authService';
@@ -13,11 +13,15 @@ import {
     LoadingPage,
 } from '@equinor/procosys-webapp-components';
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
+import procosysIPOApiService from './services/procosysIPOApi';
+import baseIPOApiService from './services/baseIPOApi';
 import OfflinePin from './OfflinePin';
 import {
     getOfflineStatusfromLocalStorage,
     updateOfflineStatus,
 } from './offline/OfflineStatus';
+import { syncronizeOfflineUpdatesWithBackend } from './offline/syncUpdatesWithBackend';
+import { db } from './offline/db';
 
 serviceWorkerRegistration.register();
 
@@ -35,18 +39,18 @@ const render = (content: JSX.Element): void => {
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const initialize = async () => {
+    console.log('initialize');
     await navigator.serviceWorker.ready; //wait until service worker is active
+    console.log('ready');
 
-    if ('serviceWorker' in navigator) {
-        console.log('SERVICE WORKER ER I NAVIGATOR');
-    } else {
-        console.log('SERVICE WORKER ER IKKE I NAVIGATOR');
-        alert('Vi har ikke navigator');
+    if (!('serviceWorker' in navigator)) {
+        console.log('The service worker is not active.');
+        alert('Service worker is not ready.');
     }
 
     const offline = getOfflineStatusfromLocalStorage();
 
-    await updateOfflineStatus(offline, userPin);
+    updateOfflineStatus(offline, userPin);
 
     // Get auth config, setup auth client and handle login
     const {
@@ -94,6 +98,16 @@ const initialize = async () => {
         accessToken
     );
 
+    const baseIpoApiInstance = baseIPOApiService({
+        authInstance,
+        baseURL: appConfig.ipoApi.baseUrl,
+        scope: appConfig.ipoApi.scope,
+    });
+
+    const procosysIPOApiInstance = procosysIPOApiService({
+        axios: baseIpoApiInstance,
+    });
+
     const { appInsightsReactPlugin } = initializeAppInsights(
         appConfig.appInsights.instrumentationKey
     );
@@ -105,6 +119,7 @@ const initialize = async () => {
         appConfig,
         featureFlags,
         configurationAccessToken,
+        procosysIPOApiInstance,
     };
 };
 let userPin = '';
@@ -114,34 +129,81 @@ const setUserPin = (pin: string): void => {
 };
 
 const renderApp = async (): Promise<void> => {
+    //If user is offline, the rendering of the app will be stalled, until pin is provided.
     if (getOfflineStatusfromLocalStorage() && userPin == '') {
+        console.log('setting timeout');
         setTimeout(renderApp, 1000);
         return;
     }
-    const {
-        authInstance,
-        procosysApiInstance,
-        appInsightsReactPlugin,
-        appConfig,
-        featureFlags,
-        configurationAccessToken,
-    } = await initialize();
 
-    render(
-        <App
-            authInstance={authInstance}
-            procosysApiInstance={procosysApiInstance}
-            appInsightsReactPlugin={appInsightsReactPlugin}
-            appConfig={appConfig}
-            featureFlags={featureFlags}
-            configurationAccessToken={configurationAccessToken}
-        />
-    );
+    const status = localStorage.getItem('status');
+    if (status == 'sync') {
+        console.log('status == sync');
+        //The user has selected to finish Offline,
+        //so the synchronization with backend must be started.
+        //We need to go online before initialization of the application.
+        updateOfflineStatus(false, '');
+
+        const {
+            authInstance,
+            procosysApiInstance,
+            appInsightsReactPlugin,
+            appConfig,
+            featureFlags,
+            configurationAccessToken,
+            procosysIPOApiInstance,
+        } = await initialize();
+
+        try {
+            await syncronizeOfflineUpdatesWithBackend(procosysApiInstance);
+            await db.delete();
+            localStorage.removeItem('status'); //todo: erstatt
+        } catch (error) {
+            //todo: feilhåndtering
+        }
+
+        render(
+            <App
+                authInstance={authInstance}
+                procosysApiInstance={procosysApiInstance}
+                appInsightsReactPlugin={appInsightsReactPlugin}
+                appConfig={appConfig}
+                featureFlags={featureFlags}
+                configurationAccessToken={configurationAccessToken}
+                procosysIPOApiInstance={procosysIPOApiInstance}
+            />
+        );
+    } else {
+        console.log('state not sync');
+        //We are either in online or offline mode, and will render the application
+        const {
+            authInstance,
+            procosysApiInstance,
+            appInsightsReactPlugin,
+            appConfig,
+            featureFlags,
+            configurationAccessToken,
+            procosysIPOApiInstance,
+        } = await initialize();
+
+        render(
+            <App
+                authInstance={authInstance}
+                procosysApiInstance={procosysApiInstance}
+                appInsightsReactPlugin={appInsightsReactPlugin}
+                appConfig={appConfig}
+                featureFlags={featureFlags}
+                configurationAccessToken={configurationAccessToken}
+                procosysIPOApiInstance={procosysIPOApiInstance}
+            />
+        );
+    }
 };
 
 (async (): Promise<void> => {
     render(<LoadingPage loadingText={'Initializing...'} />);
     try {
+        console.log('getting offline status');
         if (getOfflineStatusfromLocalStorage()) {
             render(<OfflinePin setUserPin={setUserPin} />);
         }

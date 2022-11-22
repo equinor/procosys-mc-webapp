@@ -34,6 +34,7 @@ export type AppConfig = {
     procosysWebApi: ProcosysApiSettings;
     appInsights: AppInsightsConfig;
     ocrFunctionEndpoint: string;
+    ipoApi: ProcosysApiSettings;
 };
 
 type AppConfigResponse = {
@@ -57,6 +58,7 @@ export const fetchAuthConfig = async (
 };
 
 export const getAuthConfig = async () => {
+    console.log('get auth config');
     const authConfigResp = await fetchAuthConfig(null);
 
     // Todo: TypeGuard authsettings

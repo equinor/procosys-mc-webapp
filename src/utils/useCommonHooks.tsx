@@ -12,12 +12,14 @@ const useCommonHooks = () => {
         offlineState,
         setOfflineState,
         configurationAccessToken,
+        ipoApi,
     } = useContext(McAppContext);
     const params = useParams<McParams>();
     const history = useHistory();
     const { url, path } = useRouteMatch();
     return {
         api,
+        ipoApi,
         auth,
         params,
         history,
@@ -27,6 +29,7 @@ const useCommonHooks = () => {
         offlineState,
         setOfflineState,
         procosysApiSettings: appConfig.procosysWebApi,
+        ipoApiSettings: appConfig.ipoApi,
         configurationAccessToken,
     };
 };

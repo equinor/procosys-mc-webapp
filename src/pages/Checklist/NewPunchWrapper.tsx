@@ -54,9 +54,9 @@ const NewPunchWrapper = (): JSX.Element => {
     );
     const { snackbar, setSnackbarText } = useSnackbar();
     const [tempIds, setTempIds] = useState<string[]>([]);
+    const { hits, searchStatus, query, setQuery } = usePersonsSearchFacade();
     const controller = new AbortController();
     const abortSignal = controller.signal;
-    const { hits, searchStatus, query, setQuery } = usePersonsSearchFacade();
 
     useEffect(() => {
         (async (): Promise<void> => {
