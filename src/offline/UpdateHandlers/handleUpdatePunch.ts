@@ -10,9 +10,10 @@ import {
     updatePunchlists,
 } from './utils';
 import { OfflineUpdateRequest } from '../OfflineUpdateRequest';
-import { addRequestToOfflineUpdatesDb } from '../addUpdateRequestToDatabase';
+import { OfflineUpdateRepository } from '../OfflineUpdateRepository';
 
 const offlineContentRepository = new OfflineContentRepository();
+const offlineUpdateRepository = new OfflineUpdateRepository();
 
 type PunchDto = {
     PunchItemId: number;
@@ -112,8 +113,9 @@ export const handleUpdatePunch = async (
 
     await updatePunchlists(punch);
 
-    await addRequestToOfflineUpdatesDb(
+    await offlineUpdateRepository.addUpdateRequest(
         updatedPunchDto.PunchItemId,
+        EntityType.PunchItem,
         offlinePostRequest
     );
 };

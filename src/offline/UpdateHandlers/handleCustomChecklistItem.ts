@@ -2,10 +2,10 @@ import { OfflineContentRepository } from '../OfflineContentRepository';
 import { EntityType } from '../../typings/enums';
 import { ChecklistResponse } from '../../services/apiTypes';
 import { IEntity } from '../IEntity';
-import { DotProgress } from '@equinor/eds-core-react';
 import { OfflineUpdateRequest } from '../OfflineUpdateRequest';
-import { addRequestToOfflineUpdatesDb } from '../addUpdateRequestToDatabase';
+import { OfflineUpdateRepository } from '../OfflineUpdateRepository';
 
+const offlineUpdateRepository = new OfflineUpdateRepository();
 const offlineContentRepository = new OfflineContentRepository();
 
 type PostDto = {
@@ -36,7 +36,11 @@ export const handleCustomChecklistItemPostSetOK = async (
     if (customCheckitem) {
         customCheckitem.isOk = true;
         await offlineContentRepository.replaceEntity(checklistEntity);
-        await addRequestToOfflineUpdatesDb(dto.CheckListId, offlinePostRequest);
+        await offlineUpdateRepository.addUpdateRequest(
+            dto.CheckListId,
+            EntityType.Checklist,
+            offlinePostRequest
+        );
     }
 };
 
@@ -63,7 +67,11 @@ export const handleCustomChecklistItemPostClear = async (
     if (customCheckitem) {
         customCheckitem.isOk = false;
         await offlineContentRepository.replaceEntity(checklistEntity);
-        await addRequestToOfflineUpdatesDb(dto.CheckListId, offlinePostRequest);
+        await offlineUpdateRepository.addUpdateRequest(
+            dto.CheckListId,
+            EntityType.Checklist,
+            offlinePostRequest
+        );
     }
 };
 
@@ -94,8 +102,9 @@ export const handleCustomChecklistItemDelete = async (
     if (customCheckitemIndex > -1) {
         checklist.customCheckItems.splice(customCheckitemIndex, 1);
         await offlineContentRepository.replaceEntity(checklistEntity);
-        await addRequestToOfflineUpdatesDb(
+        await offlineUpdateRepository.addUpdateRequest(
             Number(dto.ChecklistId),
+            EntityType.Checklist,
             offlinePostRequest
         );
     }

@@ -3,8 +3,9 @@ import { EntityType } from '../../typings/enums';
 import { ChecklistResponse } from '../../services/apiTypes';
 import { IEntity } from '../IEntity';
 import { OfflineUpdateRequest } from '../OfflineUpdateRequest';
-import { addRequestToOfflineUpdatesDb } from '../addUpdateRequestToDatabase';
+import { OfflineUpdateRepository } from '../OfflineUpdateRepository';
 
+const offlineUpdateRepository = new OfflineUpdateRepository();
 const offlineContentRepository = new OfflineContentRepository();
 
 type Dto = {
@@ -37,7 +38,11 @@ export const handleChecklistItemPostSetOK = async (
         await offlineContentRepository.replaceEntity(checklistEntity);
     }
 
-    await addRequestToOfflineUpdatesDb(dto.CheckItemId, offlinePostRequest);
+    await offlineUpdateRepository.addUpdateRequest(
+        dto.CheckItemId,
+        EntityType.Checklist,
+        offlinePostRequest
+    );
 };
 
 /**
@@ -64,7 +69,11 @@ export const handleChecklistItemPostSetNA = async (
         checkitem.isNotApplicable = true;
         await offlineContentRepository.replaceEntity(checklistEntity);
     }
-    await addRequestToOfflineUpdatesDb(dto.CheckItemId, offlinePostRequest);
+    await offlineUpdateRepository.addUpdateRequest(
+        dto.CheckItemId,
+        EntityType.Checklist,
+        offlinePostRequest
+    );
 };
 
 /**
@@ -93,7 +102,11 @@ export const handleChecklistItemPostClear = async (
         await offlineContentRepository.replaceEntity(checklistEntity);
     }
 
-    await addRequestToOfflineUpdatesDb(dto.CheckItemId, offlinePostRequest);
+    await offlineUpdateRepository.addUpdateRequest(
+        dto.CheckItemId,
+        EntityType.Checklist,
+        offlinePostRequest
+    );
 };
 
 type ChecklistMetatableCell = {
@@ -141,8 +154,9 @@ export const handleChecklistPutMetaTableCell = async (
                     await offlineContentRepository.replaceEntity(
                         checklistEntity
                     );
-                    await addRequestToOfflineUpdatesDb(
+                    await offlineUpdateRepository.addUpdateRequest(
                         dto.CheckItemId,
+                        EntityType.Checklist,
                         offlinePostRequest
                     );
                 } else {

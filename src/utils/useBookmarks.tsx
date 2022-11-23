@@ -1,12 +1,14 @@
 import { AsyncStatus, isOfType } from '@equinor/procosys-webapp-components';
 import { useContext, useEffect, useState } from 'react';
 import PlantContext from '../contexts/PlantContext';
-import { SearchType } from '../typings/enums';
+import { EntityType, SearchType } from '../typings/enums';
 import { Bookmarks } from '../services/apiTypes';
 import useCommonHooks from './useCommonHooks';
 import buildOfflineScope from '../offline/buildOfflineScope';
 import { db } from '../offline/db';
 import { updateOfflineStatus } from '../offline/OfflineStatus';
+import { OfflineContentRepository } from '../offline/OfflineContentRepository';
+import { config } from 'process';
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const useBookmarks = () => {
@@ -24,6 +26,7 @@ const useBookmarks = () => {
     const [isStarting, setIsStarting] = useState<boolean>(false);
     const [userPin, setUserPin] = useState<string>('');
     const abortController = new AbortController();
+    const offlineContentRepository = new OfflineContentRepository();
 
     const getCurrentBookmarks = async (): Promise<void> => {
         if (!currentProject) return;
@@ -128,6 +131,25 @@ const useBookmarks = () => {
         }
     };
 
+    const sendOfflineStatusToBackend = async (): Promise<void> => {
+        if (!currentProject || !currentPlant) {
+            return;
+        }
+        const checklistIds = await offlineContentRepository.getEntityIdsByType(
+            EntityType.Checklist
+        );
+        const punchItemIds = await offlineContentRepository.getEntityIdsByType(
+            EntityType.PunchItem
+        );
+
+        await api.putOfflineScopeOffline(
+            currentPlant.slug,
+            currentProject.id,
+            checklistIds,
+            punchItemIds
+        );
+    };
+
     const startOffline = async (userPin: string): Promise<void> => {
         setBookmarksStatus(AsyncStatus.LOADING);
         setIsDownloading(true);
@@ -142,8 +164,9 @@ const useBookmarks = () => {
                 configurationAccessToken
             );
         }
+        await sendOfflineStatusToBackend();
+        updateOfflineStatus(true, userPin, currentProject?.id);
 
-        updateOfflineStatus(true, userPin);
         setOfflineState(true);
         localStorage.removeItem('loginTries'); //just to be sure...
         setBookmarksStatus(AsyncStatus.SUCCESS);

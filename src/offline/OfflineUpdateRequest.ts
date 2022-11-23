@@ -1,3 +1,5 @@
+import { OfflineSynchronizationError } from '../services/apiTypes';
+import { EntityType } from '../typings/enums';
 import generateUniqueId from '../utils/generateUniqueId';
 import removeBaseUrlFromUrl from '../utils/removeBaseUrlFromUrl';
 
@@ -5,35 +7,78 @@ export enum RequestType {
     Json = 'json',
     Attachment = 'attachment',
 }
+
+export enum SyncStatus {
+    SYNCHRONIZED = 'synchronized',
+    NOT_SYNCHRONIZED = 'not syncronized',
+    ERROR = 'error',
+}
+
 export class OfflineUpdateRequest {
     uniqueId: string;
     url: string;
     method: string;
     bodyData: any;
-    blob?: ArrayBuffer; //attachment object for offline content db
     type: RequestType;
-    entityid: number | null;
+    entityId: number | null; //This will be id for checklist, punch or work order. All updates will belong to either of these.
+    entityType:
+        | EntityType.Checklist
+        | EntityType.PunchItem
+        | EntityType.WorkOrder
+        | null;
+    plantId: string;
     timestamp: number;
     responseIsNewEntityId = false;
-    syncronized = false;
+    syncStatus: SyncStatus = SyncStatus.NOT_SYNCHRONIZED;
+    description: string | null;
+    blob?: ArrayBuffer; //attachment object for offline content db
+    errorCode?: number;
+    errorMessage?: string;
 
     constructor(
         url: string,
         method: string,
         bodyData: any,
         type: any,
-        entityid: number | null,
         timestamp: number,
         blob?: ArrayBuffer
     ) {
+        //Get plantId
+        const plantId = this.getPlantId(url);
+
         this.uniqueId = generateUniqueId();
         this.url = url;
+        this.plantId = plantId;
         this.method = method;
         this.bodyData = bodyData;
         this.type = type;
-        this.entityid = entityid;
         this.timestamp = timestamp;
         this.blob = blob;
+        this.entityId = null;
+        this.entityType = null;
+        this.description = null;
+    }
+
+    getPlantId(url: string): string {
+        const pos = url.indexOf('plantId=PCS$') + 'plantId=PCS$'.length;
+        return url.substring(pos, url.indexOf('&', pos));
+    }
+
+    hasError(): boolean {
+        if (this.errorCode) {
+            return true;
+        }
+        return false;
+    }
+
+    getErrorObject(): OfflineSynchronizationError {
+        return {
+            Id: this.entityId || 0,
+            Url: this.url,
+            Method: this.method,
+            ErrorMsg: this.errorMessage || 'No error',
+            ErrorCode: this.errorCode || 0,
+        };
     }
 
     /**
@@ -85,7 +130,6 @@ export class OfflineUpdateRequest {
             request.method,
             bodyData,
             type,
-            null,
             Date.now(),
             blob
         );
