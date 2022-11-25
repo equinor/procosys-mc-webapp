@@ -139,7 +139,6 @@ const useBookmarks = () => {
     const startOffline = async (userPin: string): Promise<void> => {
         setBookmarksStatus(AsyncStatus.LOADING);
         setOfflineAction(OfflineAction.DOWNLOADING);
-        // TODO: delete old database
 
         db.create(userPin);
 
