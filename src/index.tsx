@@ -39,10 +39,8 @@ const render = (content: JSX.Element): void => {
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const initialize = async () => {
-    console.log('initialize');
+    console.log('Application is initializing...5');
     await navigator.serviceWorker.ready; //wait until service worker is active
-    console.log('ready');
-
     if (!('serviceWorker' in navigator)) {
         console.log('The service worker is not active.');
         alert('Service worker is not ready.');
@@ -111,6 +109,7 @@ const initialize = async () => {
     const { appInsightsReactPlugin } = initializeAppInsights(
         appConfig.appInsights.instrumentationKey
     );
+    console.log('Initializing done.');
 
     return {
         authInstance,
