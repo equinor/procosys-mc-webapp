@@ -16,9 +16,10 @@ import {
     getPunchTypeById,
 } from './utils';
 import { OfflineUpdateRequest } from '../OfflineUpdateRequest';
-import { addRequestToOfflineUpdatesDb } from '../addUpdateRequestToDatabase';
+import { OfflineUpdateRepository } from '../OfflineUpdateRepository';
 
 const offlineContentRepository = new OfflineContentRepository();
+const offlineUpdateRepository = new OfflineUpdateRepository();
 
 /**
  * Update offline content database based on a post of new punch.
@@ -198,6 +199,11 @@ export const handleNewPunch = async (
     await offlineContentRepository.replaceEntity(mainPunchlistEntity);
 
     offlinePostRequest.responseIsNewEntityId = true;
-    await addRequestToOfflineUpdatesDb(newPunchItemId, offlinePostRequest);
+    offlinePostRequest.description = 'New punch - ' + newPunchReview.id;
+    await offlineUpdateRepository.addUpdateRequest(
+        newPunchItemId,
+        EntityType.PunchItem,
+        offlinePostRequest
+    );
     return { Id: newPunchItemId };
 };

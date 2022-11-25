@@ -131,7 +131,6 @@ const setUserPin = (pin: string): void => {
 const renderApp = async (): Promise<void> => {
     //If user is offline, the rendering of the app will be stalled, until pin is provided.
     if (getOfflineStatusfromLocalStorage() && userPin == '') {
-        console.log('setting timeout');
         setTimeout(renderApp, 1000);
         return;
     }

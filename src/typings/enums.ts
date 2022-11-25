@@ -27,6 +27,7 @@ export enum EntityType {
     EntityDetails = 'EntityDetails',
     Punchlist = 'Punchlist',
     Checklists = 'Checklists',
+    WorkOrder = 'WorkOrder',
     WorkOrderAttachments = 'WorkOrderAttachments',
     WorkOrderAttachment = 'WorkOrderAttachment',
     Checklist = 'Checklist',

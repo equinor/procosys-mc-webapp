@@ -4,9 +4,10 @@ import { ChecklistResponse } from '../../services/apiTypes';
 import { IEntity } from '../IEntity';
 import { generateRandomId } from './utils';
 import { OfflineUpdateRequest } from '../OfflineUpdateRequest';
-import { addRequestToOfflineUpdatesDb } from '../addUpdateRequestToDatabase';
+import { OfflineUpdateRepository } from '../OfflineUpdateRepository';
 
 const offlineContentRepository = new OfflineContentRepository();
+const offlineUpdateRepository = new OfflineUpdateRepository();
 
 /**
  * Update offline content database based on a post of checklist sign
@@ -31,7 +32,11 @@ export const handleChecklistPostSign = async (
         checklist.checkList.signedByUser = '<offline user>';
         await offlineContentRepository.replaceEntity(checklistEntity);
 
-        await addRequestToOfflineUpdatesDb(checklistId, offlinePostRequest);
+        await offlineUpdateRepository.addUpdateRequest(
+            checklistId,
+            EntityType.Checklist,
+            offlinePostRequest
+        );
     }
 };
 
@@ -57,7 +62,11 @@ export const handleChecklistPostUnSign = async (
         checklist.checkList.signedByUser = null;
         await offlineContentRepository.replaceEntity(checklistEntity);
 
-        await addRequestToOfflineUpdatesDb(checklistId, offlinePostRequest);
+        await offlineUpdateRepository.addUpdateRequest(
+            checklistId,
+            EntityType.Checklist,
+            offlinePostRequest
+        );
     }
 };
 
@@ -83,7 +92,11 @@ export const handleChecklistPostVerify = async (
         checklist.checkList.verifiedByUser = '<offline user>';
         await offlineContentRepository.replaceEntity(checklistEntity);
 
-        await addRequestToOfflineUpdatesDb(checklistId, offlinePostRequest);
+        await offlineUpdateRepository.addUpdateRequest(
+            checklistId,
+            EntityType.Checklist,
+            offlinePostRequest
+        );
     }
 };
 
@@ -109,7 +122,11 @@ export const handleChecklistPostUnVerify = async (
         checklist.checkList.verifiedByLastName = null;
         checklist.checkList.verifiedByUser = null;
         await offlineContentRepository.replaceEntity(checklistEntity);
-        await addRequestToOfflineUpdatesDb(checklistId, offlinePostRequest);
+        await offlineUpdateRepository.addUpdateRequest(
+            checklistId,
+            EntityType.Checklist,
+            offlinePostRequest
+        );
     }
 };
 
@@ -150,8 +167,9 @@ export const handleChecklistPostCustomCheckItem = async (
 
         offlinePostRequest.responseIsNewEntityId = true;
 
-        await addRequestToOfflineUpdatesDb(
+        await offlineUpdateRepository.addUpdateRequest(
             Number(dto.ChecklistId),
+            EntityType.Checklist,
             offlinePostRequest
         );
 
@@ -183,5 +201,9 @@ export const handleChecklistPutComment = async (
         checklist.checkList.comment = dto.Comment;
     }
     await offlineContentRepository.replaceEntity(checklistEntity);
-    await addRequestToOfflineUpdatesDb(dto.CheckListId, offlinePostRequest);
+    await offlineUpdateRepository.addUpdateRequest(
+        dto.CheckListId,
+        EntityType.Checklist,
+        offlinePostRequest
+    );
 };
