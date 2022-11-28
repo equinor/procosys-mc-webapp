@@ -4,7 +4,7 @@ import { AsyncStatus } from '@equinor/procosys-webapp-components';
 import styled from 'styled-components';
 import { COLORS, SHADOW } from '../../../style/GlobalStyles';
 import { ButtonsWrapper } from './Bookmarks';
-import useBookmarks from '../../../utils/useBookmarks';
+import useBookmarks, { OfflineAction } from '../../../utils/useBookmarks';
 
 const CancellingPopup = styled.div`
     display: flex;
@@ -21,12 +21,10 @@ const Spacer = styled.div`
 `;
 
 interface BookmarksPopUpsProps {
-    isStarting: boolean;
-    setIsStarting: React.Dispatch<React.SetStateAction<boolean>>;
+    offlineAction: OfflineAction;
+    setOfflineAction: React.Dispatch<React.SetStateAction<OfflineAction>>;
     setUserPin: React.Dispatch<React.SetStateAction<string>>;
     startOffline: (userPin: string) => Promise<void>;
-    isCancelling: boolean;
-    setIsCancelling: React.Dispatch<React.SetStateAction<boolean>>;
     bookmarksStatus: AsyncStatus;
     cancelOffline: () => Promise<void>;
     noNetworkConnection: boolean;
@@ -35,12 +33,10 @@ interface BookmarksPopUpsProps {
 }
 
 const BookmarksPopUps = ({
-    isStarting,
-    setIsStarting,
+    offlineAction,
+    setOfflineAction,
     setUserPin,
     startOffline,
-    isCancelling,
-    setIsCancelling,
     bookmarksStatus,
     cancelOffline,
     noNetworkConnection,
@@ -48,13 +44,14 @@ const BookmarksPopUps = ({
     startSync,
 }: BookmarksPopUpsProps): JSX.Element => {
     const [isSure, setIsSure] = useState<boolean>(false);
-    const [enteredPin, setEnteredPin] = useState<string>('');
+    const [enteredPin1, setEnteredPin1] = useState<string>('');
+    const [enteredPin2, setEnteredPin2] = useState<string>('');
     const [enteredPinIsValid, setEnteredPinIsValid] = useState(false);
 
     useEffect(() => {
         try {
-            const pin = parseInt(enteredPin);
-            if (!isNaN(pin) && enteredPin.length == 4) {
+            const pin = parseInt(enteredPin1);
+            if (!isNaN(pin) && enteredPin1.length == 4) {
                 setEnteredPinIsValid(true);
             } else {
                 setEnteredPinIsValid(false);
@@ -62,25 +59,68 @@ const BookmarksPopUps = ({
         } catch {
             setEnteredPinIsValid(false);
         }
-    }, [enteredPin]);
+    }, [enteredPin1]);
+
+    useEffect(() => {
+        try {
+            const pin = parseInt(enteredPin1);
+            if (!isNaN(pin) && enteredPin1.length == 4) {
+                setEnteredPinIsValid(true);
+            } else {
+                setEnteredPinIsValid(false);
+            }
+        } catch {
+            setEnteredPinIsValid(false);
+        }
+    }, [enteredPin1]);
 
     return (
         <>
-            {isStarting ? (
-                <Scrim isDismissable onClose={(): void => setIsStarting(false)}>
+            {offlineAction == OfflineAction.STARTING ? (
+                <Scrim
+                    isDismissable
+                    onClose={(): void =>
+                        setOfflineAction(OfflineAction.INACTIVE)
+                    }
+                >
                     <CancellingPopup>
-                        <h3>Input a code to use as your offline pin number</h3>
+                        <h3>
+                            Input a 4-digit pin number to use as your offline
+                            pin code
+                        </h3>
                         <Label label="Input a 4-digit number" />
                         <Input
-                            type="number"
-                            value={enteredPin}
+                            type="password"
+                            value={enteredPin1}
                             onChange={(
                                 e: React.ChangeEvent<HTMLInputElement>
                             ): void => {
-                                setEnteredPin(e.target.value);
+                                setEnteredPin1(e.target.value);
                             }}
                             variant={
-                                enteredPin && !enteredPinIsValid
+                                enteredPin1 && !enteredPinIsValid
+                                    ? 'error'
+                                    : 'default'
+                            }
+                        />
+                        <Spacer />
+                        <Label
+                            label={
+                                enteredPin2 == '' || enteredPin1 == enteredPin2
+                                    ? 'Enter pin again to confirm'
+                                    : 'Pins do not match'
+                            }
+                        />
+                        <Input
+                            type="password"
+                            value={enteredPin2}
+                            onChange={(
+                                e: React.ChangeEvent<HTMLInputElement>
+                            ): void => {
+                                setEnteredPin2(e.target.value);
+                            }}
+                            variant={
+                                enteredPin2 && enteredPin1 != enteredPin2
                                     ? 'error'
                                     : 'default'
                             }
@@ -92,21 +132,26 @@ const BookmarksPopUps = ({
                         />
                         <ButtonsWrapper>
                             <Button
-                                disabled={!isSure || !enteredPinIsValid}
+                                disabled={
+                                    !isSure ||
+                                    !enteredPinIsValid ||
+                                    enteredPin1 != enteredPin2
+                                }
                                 onClick={(): void => {
-                                    setUserPin(enteredPin);
+                                    setUserPin(enteredPin1);
                                     setIsSure(false);
-                                    setIsStarting(false);
-                                    startOffline(enteredPin);
+                                    setOfflineAction(OfflineAction.INACTIVE);
+                                    startOffline(enteredPin1);
                                 }}
                             >
                                 Create pin
                             </Button>
                             <Button
                                 onClick={(): void => {
-                                    setIsStarting(false);
+                                    setOfflineAction(OfflineAction.INACTIVE);
                                     setIsSure(false);
-                                    setEnteredPin('');
+                                    setEnteredPin1('');
+                                    setEnteredPin2('');
                                 }}
                             >
                                 Cancel
@@ -115,10 +160,12 @@ const BookmarksPopUps = ({
                     </CancellingPopup>
                 </Scrim>
             ) : null}
-            {isCancelling ? (
+            {offlineAction == OfflineAction.CANCELLING ? (
                 <Scrim
                     isDismissable
-                    onClose={(): void => setIsCancelling(false)}
+                    onClose={(): void =>
+                        setOfflineAction(OfflineAction.INACTIVE)
+                    }
                 >
                     <CancellingPopup>
                         <h3>Do you really wish to cancel offline mode?</h3>
@@ -143,7 +190,7 @@ const BookmarksPopUps = ({
                             </Button>
                             <Button
                                 onClick={(): void => {
-                                    setIsCancelling(false);
+                                    setOfflineAction(OfflineAction.INACTIVE);
                                     setIsSure(false);
                                 }}
                             >

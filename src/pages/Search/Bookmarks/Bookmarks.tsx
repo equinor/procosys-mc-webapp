@@ -1,13 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
-import { Button, Checkbox, Input, Label, Scrim } from '@equinor/eds-core-react';
-import useBookmarks from '../../../utils/useBookmarks';
+import { Button } from '@equinor/eds-core-react';
+import useBookmarks, { OfflineAction } from '../../../utils/useBookmarks';
 import BookmarkableEntityInfoList from '../BookmarkableEntityInfoList';
 import { SearchType } from '../../../typings/enums';
 import useCommonHooks from '../../../utils/useCommonHooks';
 import AsyncPage from '../../../components/AsyncPage';
-import { COLORS, SHADOW } from '../../../style/GlobalStyles';
-import { AsyncStatus } from '@equinor/procosys-webapp-components';
 import BookmarksPopUps from './BookmarksPopups';
 
 export const ButtonsWrapper = styled.div`
@@ -22,27 +20,35 @@ const Bookmarks = (): JSX.Element => {
         bookmarksStatus,
         isBookmarked,
         handleBookmarkClicked,
-        isDownloading,
+        cancelOffline,
+        startOffline,
         finishOffline,
         deleteBookmarks,
-        isCancelling,
-        setIsCancelling,
-        cancelOffline,
-        isStarting,
-        setIsStarting,
-        startOffline,
         setUserPin,
+        offlineAction,
+        setOfflineAction,
     } = useBookmarks();
     const { offlineState } = useCommonHooks();
     const [noNetworkConnection, setNoNetworkConnection] =
         useState<boolean>(false);
 
     const startSync = (): void => {
+        console.log(navigator.onLine);
         if (navigator.onLine) {
             setNoNetworkConnection(false);
             finishOffline();
         } else {
             setNoNetworkConnection(true);
+        }
+    };
+
+    const getLoadingMessage = (): string => {
+        if (offlineAction == OfflineAction.DOWNLOADING) {
+            return 'Downloading data for offline use. Please do not exit the app until the download has finished.';
+        } else if (offlineAction == OfflineAction.SYNCHING) {
+            return 'Synching offline changes. Please do not exit the app until the upload has finished.';
+        } else {
+            return '';
         }
     };
 
@@ -53,20 +59,14 @@ const Bookmarks = (): JSX.Element => {
             errorMessage={
                 "Couldn't get bookmarks, please reload page to try again"
             }
-            loadingMessage={
-                isDownloading
-                    ? 'Downloading data for offline use. Please do not exit the app until the download has finished.'
-                    : ''
-            }
+            loadingMessage={getLoadingMessage()}
         >
             <div>
                 <BookmarksPopUps
-                    isStarting={isStarting}
-                    setIsStarting={setIsStarting}
+                    offlineAction={offlineAction}
+                    setOfflineAction={setOfflineAction}
                     setUserPin={setUserPin}
                     startOffline={startOffline}
-                    isCancelling={isCancelling}
-                    setIsCancelling={setIsCancelling}
                     bookmarksStatus={bookmarksStatus}
                     cancelOffline={cancelOffline}
                     noNetworkConnection={noNetworkConnection}
@@ -78,7 +78,9 @@ const Bookmarks = (): JSX.Element => {
                         <>
                             <Button onClick={startSync}>Finish offline</Button>
                             <Button
-                                onClick={(): void => setIsCancelling(true)}
+                                onClick={(): void =>
+                                    setOfflineAction(OfflineAction.CANCELLING)
+                                }
                                 color="danger"
                             >
                                 Cancel offline
@@ -86,7 +88,11 @@ const Bookmarks = (): JSX.Element => {
                         </>
                     ) : (
                         <>
-                            <Button onClick={(): void => setIsStarting(true)}>
+                            <Button
+                                onClick={(): void =>
+                                    setOfflineAction(OfflineAction.STARTING)
+                                }
+                            >
                                 Start offline
                             </Button>
                             <Button onClick={deleteBookmarks}>

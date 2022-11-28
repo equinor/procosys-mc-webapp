@@ -1,4 +1,4 @@
-import { Button, Input } from '@equinor/eds-core-react';
+import { Button, Input, Label } from '@equinor/eds-core-react';
 import { Navbar, ProcosysButton } from '@equinor/procosys-webapp-components';
 import React, { useState } from 'react';
 import styled from 'styled-components';
@@ -22,10 +22,11 @@ interface OfflinePinProps {
 const OfflinePin = ({ setUserPin }: OfflinePinProps): JSX.Element => {
     const [enteredPin, setEnteredPin] = useState<string>('');
     const [failedPin, setFailedPin] = useState<boolean>(false);
+    const [loginTriesLeft, setLoginTriesLeft] = useState<number>(3);
 
     const testUserPin = async (): Promise<void> => {
-        const suksess = await db.reInitAndVerifyPin(enteredPin);
-        if (suksess) {
+        const succsess = await db.reInitAndVerifyPin(enteredPin);
+        if (succsess) {
             localStorage.removeItem('loginTries');
             setUserPin(enteredPin);
             return;
@@ -36,12 +37,14 @@ const OfflinePin = ({ setUserPin }: OfflinePinProps): JSX.Element => {
         if (loginTries == null) {
             localStorage.setItem('loginTries', '1');
             setFailedPin(true);
+            setLoginTriesLeft((prev) => prev - 1);
             return;
         }
         const loginTriesNum = parseInt(loginTries);
         if (!isNaN(loginTriesNum) && loginTriesNum < 2) {
             setFailedPin(true);
             localStorage.setItem('loginTries', `${loginTriesNum + 1}`);
+            setLoginTriesLeft((prev) => prev - 1);
         } else {
             await db.delete();
             updateOfflineStatus(false, '');
@@ -54,8 +57,17 @@ const OfflinePin = ({ setUserPin }: OfflinePinProps): JSX.Element => {
             <Navbar leftContent={<ProcosysButton />} isOffline={true} />
             <ContentWrapper>
                 <h3>Input your offline pin</h3>
+                {failedPin ? (
+                    <Label
+                        htmlFor="pin-input"
+                        label={`You have ${loginTriesLeft} login ${
+                            loginTriesLeft < 2 ? 'try' : 'tries'
+                        } left before offline data is deleted`}
+                    />
+                ) : null}
                 <Input
-                    type="number"
+                    id="pin-input"
+                    type="password"
                     value={enteredPin}
                     onChange={(
                         e: React.ChangeEvent<HTMLInputElement>

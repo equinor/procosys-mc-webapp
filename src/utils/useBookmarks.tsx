@@ -10,6 +10,14 @@ import { updateOfflineStatus } from '../offline/OfflineStatus';
 import { OfflineContentRepository } from '../offline/OfflineContentRepository';
 import { config } from 'process';
 
+export enum OfflineAction {
+    INACTIVE = 0,
+    STARTING = 1,
+    DOWNLOADING = 2,
+    CANCELLING = 3,
+    SYNCHING = 4,
+}
+
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const useBookmarks = () => {
     const { currentPlant, currentProject } = useContext(PlantContext);
@@ -21,9 +29,9 @@ const useBookmarks = () => {
     const [bookmarksStatus, setBookmarksStatus] = useState<AsyncStatus>(
         AsyncStatus.LOADING
     );
-    const [isDownloading, setIsDownloading] = useState<boolean>(false);
-    const [isCancelling, setIsCancelling] = useState<boolean>(false);
-    const [isStarting, setIsStarting] = useState<boolean>(false);
+    const [offlineAction, setOfflineAction] = useState<OfflineAction>(
+        OfflineAction.INACTIVE
+    );
     const [userPin, setUserPin] = useState<string>('');
     const abortController = new AbortController();
     const offlineContentRepository = new OfflineContentRepository();
@@ -108,7 +116,7 @@ const useBookmarks = () => {
                 updateOfflineStatus(false, '');
                 await db.delete();
                 setOfflineState(false);
-                setIsCancelling(false);
+                setOfflineAction(OfflineAction.INACTIVE);
                 setBookmarksStatus(AsyncStatus.SUCCESS);
             }
         } catch (error) {
@@ -152,7 +160,7 @@ const useBookmarks = () => {
 
     const startOffline = async (userPin: string): Promise<void> => {
         setBookmarksStatus(AsyncStatus.LOADING);
-        setIsDownloading(true);
+        setOfflineAction(OfflineAction.DOWNLOADING);
 
         db.create(userPin);
 
@@ -170,11 +178,12 @@ const useBookmarks = () => {
         setOfflineState(true);
         localStorage.removeItem('loginTries'); //just to be sure...
         setBookmarksStatus(AsyncStatus.SUCCESS);
-        setIsDownloading(false);
+        setOfflineAction(OfflineAction.INACTIVE);
     };
 
     const finishOffline = async (): Promise<void> => {
-        setBookmarksStatus(AsyncStatus.LOADING);
+        //setOfflineAction(OfflineAction.SYNCHING);
+        //setBookmarksStatus(AsyncStatus.LOADING);
         localStorage.setItem('status', 'sync');
         //After reloading, the application will be reauthenticated, and
         //syncronization will be started.
@@ -191,15 +200,12 @@ const useBookmarks = () => {
         handleBookmarkClicked,
         cancelOffline,
         startOffline,
-        isDownloading,
         finishOffline,
         deleteBookmarks,
-        isCancelling,
-        setIsCancelling,
-        isStarting,
-        setIsStarting,
         userPin,
         setUserPin,
+        offlineAction,
+        setOfflineAction,
     };
 };
 
