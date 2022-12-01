@@ -22,6 +22,7 @@ import {
 } from './offline/OfflineStatus';
 import { syncronizeOfflineUpdatesWithBackend } from './offline/syncUpdatesWithBackend';
 import { db } from './offline/db';
+import { OfflineStatus } from './typings/enums';
 
 serviceWorkerRegistration.register();
 
@@ -141,7 +142,7 @@ const renderApp = async (): Promise<void> => {
         //The user has selected to finish Offline,
         //so the synchronization with backend must be started.
         //We need to go online before initialization of the application.
-        updateOfflineStatus(false, '');
+        updateOfflineStatus(OfflineStatus.SYNCHING, '');
 
         const {
             authInstance,
@@ -156,7 +157,7 @@ const renderApp = async (): Promise<void> => {
         try {
             await syncronizeOfflineUpdatesWithBackend(procosysApiInstance);
             await db.delete();
-            localStorage.removeItem('status'); //todo: erstatt
+            updateOfflineStatus(OfflineStatus.ONLINE, '');
         } catch (error) {
             //todo: feilhåndtering
         }

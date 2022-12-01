@@ -1,16 +1,17 @@
 import { isOfType } from '@equinor/procosys-webapp-components';
+import { OfflineStatus } from '../typings/enums';
 
 const OFFLINE_PROJECT_ID = 'offlineProjectId';
 const OFFLINE_STATUS = 'offlineStatus';
 
-export const getOfflineStatusfromLocalStorage = (): boolean => {
+export const getOfflineStatusfromLocalStorage = (): OfflineStatus => {
     const offlineStatus = localStorage.getItem(OFFLINE_STATUS);
-    if (offlineStatus === 'true') {
-        return true;
-    } else {
-        console.log('returning false');
-        return false;
+    if (offlineStatus == null) return OfflineStatus.ONLINE;
+    const offlineStatusNum = parseInt(offlineStatus);
+    if (offlineStatusNum in OfflineStatus) {
+        return offlineStatusNum;
     }
+    return OfflineStatus.ONLINE;
 };
 
 /**
@@ -18,11 +19,11 @@ export const getOfflineStatusfromLocalStorage = (): boolean => {
  * Offline plantid and projectid will also be stored in local storage.
  */
 export const updateOfflineStatus = (
-    isOffline: boolean,
+    offlineStatus: OfflineStatus,
     userPin: string,
     currentProjectId?: number
 ): void => {
-    localStorage.setItem(OFFLINE_STATUS, String(isOffline));
+    localStorage.setItem(OFFLINE_STATUS, offlineStatus.toString());
 
     //todo: skal vi gjøre dette på en annen måte?
     if (currentProjectId) {
@@ -35,7 +36,7 @@ export const updateOfflineStatus = (
         navigator.serviceWorker.controller?.postMessage({
             type: 'SET_OFFLINE_STATUS',
             data: {
-                isOffline: isOffline,
+                offlineStatus: offlineStatus,
                 userPin: userPin,
             },
         });

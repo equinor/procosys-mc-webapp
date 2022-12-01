@@ -52,8 +52,8 @@ export enum SearchType {
     IPO = 'IPO',
 }
 
-export enum OfflineState {
-    ONLINE = 'Online',
-    OFFLINE = 'Offline',
-    SYNCHING = 'Synching',
+export enum OfflineStatus {
+    ONLINE,
+    OFFLINE,
+    SYNCHING,
 }

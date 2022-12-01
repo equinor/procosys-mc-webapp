@@ -19,6 +19,7 @@ import {
     handleFetchUpdate,
     handleOtherFetchEvents,
 } from './offline/handleFetchEvents';
+import { OfflineStatus } from './typings/enums';
 
 declare const self: ServiceWorkerGlobalScope;
 
@@ -76,10 +77,10 @@ registerRoute(
     })
 );
 
-let isOffline = false;
+let offlineStatus = OfflineStatus.ONLINE;
 
-type OfflineStatus = {
-    isOffline: boolean;
+type OfflineStatusMessage = {
+    offlineStatus: OfflineStatus;
     userPin: string;
 };
 
@@ -92,12 +93,12 @@ self.addEventListener('message', async (event: MessageEventInit) => {
         if (message.type === 'SKIP_WAITING') {
             self.skipWaiting();
         } else if (message.type === 'SET_OFFLINE_STATUS') {
-            const offlineStatus: OfflineStatus = message.data;
-            isOffline = offlineStatus.isOffline;
-            if (isOffline) {
+            const offlineStatusMessage: OfflineStatusMessage = message.data;
+            offlineStatus = offlineStatusMessage.offlineStatus;
+            if (offlineStatus == OfflineStatus.OFFLINE) {
                 if (
-                    !offlineStatus.userPin ||
-                    offlineStatus.userPin.length != 4
+                    !offlineStatusMessage.userPin ||
+                    offlineStatusMessage.userPin.length != 4
                 ) {
                     console.error(
                         'Trying to update offline status for service worker, but pin is missing.'
@@ -105,7 +106,7 @@ self.addEventListener('message', async (event: MessageEventInit) => {
                     return;
                 }
                 const suksess = await db.reInitAndVerifyPin(
-                    offlineStatus.userPin
+                    offlineStatusMessage.userPin
                 );
                 if (!suksess) {
                     console.error(
@@ -119,7 +120,7 @@ self.addEventListener('message', async (event: MessageEventInit) => {
 
 self.addEventListener('fetch', function (event: FetchEvent) {
     // console.log('Intercept fetch', event.request.url);
-    if (isOffline) {
+    if (offlineStatus == OfflineStatus.OFFLINE) {
         //User is in offline mode.  Data must be fetched from offline database
         const url = event.request.url;
         const method = event.request.method;
