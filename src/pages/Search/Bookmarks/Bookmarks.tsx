@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { Button } from '@equinor/eds-core-react';
 import useBookmarks, { OfflineAction } from '../../../utils/useBookmarks';
 import BookmarkableEntityInfoList from '../BookmarkableEntityInfoList';
-import { SearchType } from '../../../typings/enums';
+import { OfflineStatus, SearchType } from '../../../typings/enums';
 import useCommonHooks from '../../../utils/useCommonHooks';
 import AsyncPage from '../../../components/AsyncPage';
 import BookmarksPopUps from './BookmarksPopups';
@@ -74,7 +74,7 @@ const Bookmarks = (): JSX.Element => {
                     startSync={startSync}
                 />
                 <ButtonsWrapper>
-                    {offlineState == true ? (
+                    {offlineState == OfflineStatus.OFFLINE ? (
                         <>
                             <Button onClick={startSync}>Finish offline</Button>
                             <Button

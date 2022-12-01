@@ -6,6 +6,7 @@ import PlantContext from '../../contexts/PlantContext';
 import useCommonHooks from '../../utils/useCommonHooks';
 import { COLORS } from '../../style/GlobalStyles';
 import { StorageKey } from '@equinor/procosys-webapp-components';
+import { OfflineStatus } from '../../typings/enums';
 
 const SideMenuWrapper = styled.aside<{ isActive: boolean }>`
     width: 297px;
@@ -110,7 +111,7 @@ const SideMenu = (): JSX.Element => {
                     <Button
                         variant="outlined"
                         onClick={auth.logout}
-                        disabled={offlineState}
+                        disabled={offlineState == OfflineStatus.OFFLINE}
                     >
                         Sign out
                     </Button>
@@ -125,7 +126,7 @@ const SideMenu = (): JSX.Element => {
                             setDrawerIsOpen(false);
                             history.push('/');
                         }}
-                        disabled={offlineState}
+                        disabled={offlineState == OfflineStatus.OFFLINE}
                     >
                         Change plant
                         <EdsIcon name="chevron_right" />
@@ -146,7 +147,7 @@ const SideMenu = (): JSX.Element => {
                                     setDrawerIsOpen(false);
                                     history.push(`/${params.plant}`);
                                 }}
-                                disabled={offlineState}
+                                disabled={offlineState == OfflineStatus.OFFLINE}
                             >
                                 Change project
                                 <EdsIcon name="chevron_right" />

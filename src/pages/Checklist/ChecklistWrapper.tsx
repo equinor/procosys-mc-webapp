@@ -2,6 +2,7 @@ import React from 'react';
 import { Checklist, useSnackbar } from '@equinor/procosys-webapp-components';
 import useCommonHooks from '../../utils/useCommonHooks';
 import styled from 'styled-components';
+import { OfflineStatus } from '../../typings/enums';
 
 export const BottomSpacer = styled.div`
     height: 70px;
@@ -27,7 +28,7 @@ const ChecklistWrapper = ({
                 getAccessToken={auth.getAccessToken}
                 setSnackbarText={setSnackbarText}
                 refreshChecklistStatus={refreshChecklistStatus}
-                offlineState={offlineState}
+                offlineState={offlineState == OfflineStatus.OFFLINE}
             />
             {snackbar}
             <BottomSpacer />

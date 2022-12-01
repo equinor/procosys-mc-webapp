@@ -15,6 +15,7 @@ import EdsIcon from '../../components/icons/EdsIcon';
 import { Route, Switch } from 'react-router-dom';
 import Bookmarks from './Bookmarks/Bookmarks';
 import Search from './Search';
+import { OfflineStatus } from '../../typings/enums';
 
 const SearchPageWrapper = styled.main`
     padding: 0 4%;
@@ -35,7 +36,7 @@ const SearchPage = (): JSX.Element => {
                 <Navbar
                     leftContent={<ProcosysButton />}
                     rightContent={<SideMenu />}
-                    isOffline={offlineState}
+                    isOffline={offlineState != OfflineStatus.ONLINE}
                 />
                 <Switch>
                     <Route

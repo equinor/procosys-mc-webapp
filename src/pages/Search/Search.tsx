@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import SavedSearches from './SavedSearches/SavedSearches';
 import SearchArea from './Searching/SearchArea';
 import styled from 'styled-components';
-import { SearchType } from '../../typings/enums';
+import { OfflineStatus, SearchType } from '../../typings/enums';
 import useCommonHooks from '../../utils/useCommonHooks';
 import OutstandingIpos from '../../components/OutstandingIpos';
 import { SearchTypeButton } from '@equinor/procosys-webapp-components';
@@ -24,7 +24,7 @@ const Search = ({ setSnackbarText }: SearchProps): JSX.Element => {
     const { offlineState } = useCommonHooks();
 
     const determineComponent = (): JSX.Element => {
-        if (offlineState === true) return <></>;
+        if (offlineState === OfflineStatus.OFFLINE) return <></>;
         if (searchType === undefined) {
             return (
                 <>
@@ -44,25 +44,25 @@ const Search = ({ setSnackbarText }: SearchProps): JSX.Element => {
                     searchType={SearchType.PO}
                     currentSearchType={searchType}
                     setCurrentSearchType={setSearchType}
-                    disabled={offlineState}
+                    disabled={offlineState == OfflineStatus.OFFLINE}
                 />
                 <SearchTypeButton
                     searchType={SearchType.MC}
                     currentSearchType={searchType}
                     setCurrentSearchType={setSearchType}
-                    disabled={offlineState}
+                    disabled={offlineState == OfflineStatus.OFFLINE}
                 />
                 <SearchTypeButton
                     searchType={SearchType.WO}
                     currentSearchType={searchType}
                     setCurrentSearchType={setSearchType}
-                    disabled={offlineState}
+                    disabled={offlineState == OfflineStatus.OFFLINE}
                 />
                 <SearchTypeButton
                     searchType={SearchType.Tag}
                     currentSearchType={searchType}
                     setCurrentSearchType={setSearchType}
-                    disabled={offlineState}
+                    disabled={offlineState == OfflineStatus.OFFLINE}
                 />
             </ButtonsWrapper>
             {determineComponent()}

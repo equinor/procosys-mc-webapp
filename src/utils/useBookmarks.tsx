@@ -1,7 +1,7 @@
 import { AsyncStatus, isOfType } from '@equinor/procosys-webapp-components';
 import { useContext, useEffect, useState } from 'react';
 import PlantContext from '../contexts/PlantContext';
-import { EntityType, SearchType } from '../typings/enums';
+import { EntityType, OfflineStatus, SearchType } from '../typings/enums';
 import { Bookmarks } from '../services/apiTypes';
 import useCommonHooks from './useCommonHooks';
 import buildOfflineScope from '../offline/buildOfflineScope';
@@ -113,11 +113,11 @@ const useBookmarks = () => {
             if (currentProject) {
                 setBookmarksStatus(AsyncStatus.LOADING);
                 await api.putCancelOffline(params.plant, currentProject.id);
-                updateOfflineStatus(false, '');
+                updateOfflineStatus(OfflineStatus.ONLINE, '');
                 await db.delete();
-                setOfflineState(false);
+                setOfflineState(OfflineStatus.ONLINE);
                 setOfflineAction(OfflineAction.INACTIVE);
-                setBookmarksStatus(AsyncStatus.SUCCESS);
+                setBookmarksStatus(AsyncStatus.EMPTY_RESPONSE);
             }
         } catch (error) {
             if (!(error instanceof Error)) return;
@@ -173,9 +173,9 @@ const useBookmarks = () => {
             );
         }
         await sendOfflineStatusToBackend();
-        updateOfflineStatus(true, userPin, currentProject?.id);
+        updateOfflineStatus(OfflineStatus.OFFLINE, userPin, currentProject?.id);
 
-        setOfflineState(true);
+        setOfflineState(OfflineStatus.OFFLINE);
         localStorage.removeItem('loginTries'); //just to be sure...
         setBookmarksStatus(AsyncStatus.SUCCESS);
         setOfflineAction(OfflineAction.INACTIVE);
