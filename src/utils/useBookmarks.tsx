@@ -184,7 +184,10 @@ const useBookmarks = () => {
     const finishOffline = async (): Promise<void> => {
         //setOfflineAction(OfflineAction.SYNCHING);
         //setBookmarksStatus(AsyncStatus.LOADING);
-        localStorage.setItem('status', 'sync');
+        localStorage.setItem(
+            'offlineStatus',
+            OfflineStatus.SYNCHING.toString()
+        );
         //After reloading, the application will be reauthenticated, and
         //syncronization will be started.
         //Note: When running tests, location object does not have 'reload'.

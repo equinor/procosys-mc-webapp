@@ -136,8 +136,8 @@ const renderApp = async (): Promise<void> => {
         return;
     }
 
-    const status = localStorage.getItem('status');
-    if (status == 'sync') {
+    const status = getOfflineStatusfromLocalStorage();
+    if (status == OfflineStatus.SYNCHING) {
         console.log('status == sync');
         //The user has selected to finish Offline,
         //so the synchronization with backend must be started.
@@ -204,7 +204,7 @@ const renderApp = async (): Promise<void> => {
     render(<LoadingPage loadingText={'Initializing...'} />);
     try {
         console.log('getting offline status');
-        if (getOfflineStatusfromLocalStorage()) {
+        if (getOfflineStatusfromLocalStorage() != OfflineStatus.ONLINE) {
             render(<OfflinePin setUserPin={setUserPin} />);
         }
         renderApp();
