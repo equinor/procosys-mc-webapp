@@ -63,6 +63,7 @@ const Bookmarks = (): JSX.Element => {
         >
             <div>
                 <BookmarksPopUps
+                    offlineState={offlineState}
                     offlineAction={offlineAction}
                     setOfflineAction={setOfflineAction}
                     setUserPin={setUserPin}

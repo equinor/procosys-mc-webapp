@@ -1,10 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { Scrim, Label, Input, Checkbox, Button } from '@equinor/eds-core-react';
-import { AsyncStatus } from '@equinor/procosys-webapp-components';
+import {
+    AsyncStatus,
+    InfoItem,
+    isOfType,
+} from '@equinor/procosys-webapp-components';
 import styled from 'styled-components';
 import { COLORS, SHADOW } from '../../../style/GlobalStyles';
 import { ButtonsWrapper } from './Bookmarks';
 import useBookmarks, { OfflineAction } from '../../../utils/useBookmarks';
+import { OfflineStatus } from '../../../typings/enums';
+import { OfflineSynchronizationErrors } from '../../../services/apiTypes';
 
 const CancellingPopup = styled.div`
     display: flex;
@@ -21,6 +27,7 @@ const Spacer = styled.div`
 `;
 
 interface BookmarksPopUpsProps {
+    offlineState: OfflineStatus;
     offlineAction: OfflineAction;
     setOfflineAction: React.Dispatch<React.SetStateAction<OfflineAction>>;
     setUserPin: React.Dispatch<React.SetStateAction<string>>;
@@ -33,6 +40,7 @@ interface BookmarksPopUpsProps {
 }
 
 const BookmarksPopUps = ({
+    offlineState,
     offlineAction,
     setOfflineAction,
     setUserPin,
@@ -47,6 +55,8 @@ const BookmarksPopUps = ({
     const [enteredPin1, setEnteredPin1] = useState<string>('');
     const [enteredPin2, setEnteredPin2] = useState<string>('');
     const [enteredPinIsValid, setEnteredPinIsValid] = useState(false);
+    const [syncErrors, setSyncErrors] =
+        useState<OfflineSynchronizationErrors | null>(null);
 
     useEffect(() => {
         try {
@@ -73,6 +83,23 @@ const BookmarksPopUps = ({
             setEnteredPinIsValid(false);
         }
     }, [enteredPin1]);
+
+    useEffect(() => {
+        const errors = localStorage.getItem('SynchErrors');
+        if (errors != null) {
+            const errorsObject = JSON.parse(errors);
+            if (
+                isOfType<OfflineSynchronizationErrors>(
+                    errorsObject,
+                    'CheckListErrors'
+                )
+            ) {
+                setSyncErrors(errorsObject);
+                return;
+            }
+        }
+        setSyncErrors(null);
+    }, [offlineState]);
 
     return (
         <>
@@ -220,6 +247,25 @@ const BookmarksPopUps = ({
                                 Cancel Finish Offline
                             </Button>
                         </ButtonsWrapper>
+                    </CancellingPopup>
+                </Scrim>
+            ) : null}
+            {offlineState == OfflineStatus.ONLINE && syncErrors != null ? (
+                <Scrim>
+                    <CancellingPopup>
+                        <h3>Some of your offline changes could not be saved</h3>
+                        <p>
+                            A list of checklists and punches where at least one
+                            change could not be saved is shown below
+                        </p>
+                        <h4>Checklists</h4>
+                        {syncErrors.CheckListErrors.map((error) => {
+                            <p>{error.Id}</p>;
+                        })}
+                        <h4>Punches</h4>
+                        {syncErrors.PunchListItemErrors.map((error) => {
+                            <p>{error.Id}</p>;
+                        })}
                     </CancellingPopup>
                 </Scrim>
             ) : null}
