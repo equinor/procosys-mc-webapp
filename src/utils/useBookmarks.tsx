@@ -183,7 +183,7 @@ const useBookmarks = () => {
 
     const finishOffline = async (): Promise<void> => {
         //setOfflineAction(OfflineAction.SYNCHING);
-        //setBookmarksStatus(AsyncStatus.LOADING);
+        setBookmarksStatus(AsyncStatus.LOADING);
         localStorage.setItem(
             'offlineStatus',
             OfflineStatus.SYNCHING.toString()
