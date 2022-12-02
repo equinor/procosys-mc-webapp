@@ -150,7 +150,7 @@ const handleFailedUpdateRequest = async (
     console.log('handleFailedUpdateRequest', offlineUpdate, error);
     offlineUpdate.errorCode = error.errorCode;
     offlineUpdate.errorMessage = error.errorMessage;
-    offlineUpdateRepository.updateOfflineUpdateRequest(offlineUpdate);
+    await offlineUpdateRepository.updateOfflineUpdateRequest(offlineUpdate);
 };
 
 /**
@@ -276,7 +276,7 @@ const synchronizeOfflineUpdate = async (
         //Response is ok
         //Set offline update to be syncronized, both in browser database and backend
         offlineUpdate.syncStatus = SyncStatus.SYNCHRONIZED;
-        offlineUpdateRepository.updateOfflineUpdateRequest(offlineUpdate);
+        await offlineUpdateRepository.updateOfflineUpdateRequest(offlineUpdate);
 
         if (offlineUpdate.entityId) {
             if (offlineUpdate.entityType == EntityType.Checklist) {
@@ -308,9 +308,8 @@ const synchronizeOfflineUpdate = async (
     } catch (error) {
         if (error instanceof HTTPError) {
             //Main-api returned an error code.
-            console.log('syncmetode: har catchet HTTPerror');
             console.error('Not able to syncronize entity.', error);
-            handleFailedUpdateRequest(offlineUpdate, error);
+            await handleFailedUpdateRequest(offlineUpdate, error);
         } else {
             console.log('syncmetode: har catcheet Error');
             throw Error('Error occured when calling update request.  ' + error);
