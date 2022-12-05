@@ -160,7 +160,12 @@ const renderApp = async (): Promise<void> => {
             await db.delete();
             updateOfflineStatus(OfflineStatus.ONLINE, '');
         } catch (error) {
-            //todo: feilhåndtering
+            console.log(
+                'Error occured in synchronization with backend. ',
+                error
+            );
+            throw Error('Error occured in synchronization with backend.');
+            //todo: hva bør vi gjøre her?
         }
 
         render(
