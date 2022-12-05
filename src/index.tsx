@@ -70,7 +70,7 @@ const initialize = async () => {
 
     let configurationAccessToken = '';
 
-    if (!offline) {
+    if (offline != OfflineStatus.OFFLINE) {
         const isRedirecting = await authInstance.handleLogin();
         if (isRedirecting) return Promise.reject('redirecting');
         configurationAccessToken = await authInstance.getAccessToken(
@@ -85,7 +85,7 @@ const initialize = async () => {
     );
 
     let accessToken = '';
-    if (!offline) {
+    if (offline != OfflineStatus.OFFLINE) {
         accessToken = await authInstance.getAccessToken(
             appConfig.procosysWebApi.scope
         );
@@ -123,6 +123,7 @@ const initialize = async () => {
         procosysIPOApiInstance,
     };
 };
+
 let userPin = '';
 const setUserPin = (pin: string): void => {
     userPin = pin;
@@ -131,18 +132,18 @@ const setUserPin = (pin: string): void => {
 
 const renderApp = async (): Promise<void> => {
     //If user is offline, the rendering of the app will be stalled, until pin is provided.
-    if (getOfflineStatusfromLocalStorage() && userPin == '') {
+    const status = getOfflineStatusfromLocalStorage();
+    console.log('render app with pin ', userPin);
+    if (status != OfflineStatus.ONLINE && userPin == '') {
         setTimeout(renderApp, 1000);
         return;
     }
 
-    const status = getOfflineStatusfromLocalStorage();
     if (status == OfflineStatus.SYNCHING) {
         console.log('status == sync');
         //The user has selected to finish Offline,
         //so the synchronization with backend must be started.
         //We need to go online before initialization of the application.
-        updateOfflineStatus(OfflineStatus.SYNCHING, '');
 
         const {
             authInstance,
@@ -202,6 +203,7 @@ const renderApp = async (): Promise<void> => {
 
 (async (): Promise<void> => {
     render(<LoadingPage loadingText={'Initializing...'} />);
+    await navigator.serviceWorker.ready; //wait until service worker is active
     try {
         console.log('getting offline status');
         if (getOfflineStatusfromLocalStorage() != OfflineStatus.ONLINE) {

@@ -87,15 +87,19 @@ const BookmarksPopUps = ({
     useEffect(() => {
         const errors = localStorage.getItem('SynchErrors');
         if (errors != null) {
-            const errorsObject = JSON.parse(errors);
-            if (
-                isOfType<OfflineSynchronizationErrors>(
-                    errorsObject,
-                    'CheckListErrors'
-                )
-            ) {
-                setSyncErrors(errorsObject);
-                return;
+            try {
+                const errorsObject = JSON.parse(errors);
+                if (
+                    isOfType<OfflineSynchronizationErrors>(
+                        errorsObject,
+                        'CheckListErrors'
+                    )
+                ) {
+                    setSyncErrors(errorsObject);
+                    return;
+                }
+            } catch (error) {
+                console.log(error);
             }
         }
         setSyncErrors(null);
