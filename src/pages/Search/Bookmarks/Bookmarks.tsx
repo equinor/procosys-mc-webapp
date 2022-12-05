@@ -75,7 +75,7 @@ const Bookmarks = (): JSX.Element => {
                     startSync={startSync}
                 />
                 <ButtonsWrapper>
-                    {offlineState == OfflineStatus.OFFLINE ? (
+                    {offlineState != OfflineStatus.ONLINE ? (
                         <>
                             <Button onClick={startSync}>Finish offline</Button>
                             <Button
