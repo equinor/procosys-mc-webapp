@@ -136,7 +136,6 @@ export const syncronizeOfflineUpdatesWithBackend = async (
             }
         }
     }
-
     await reportErrorsIfExists(currentPlant, currentProject, api);
 
     //Note: Currently the offline scope will be set to synchronized, regardless of any errors.
@@ -161,37 +160,38 @@ const reportErrorsIfExists = async (
     projectId: number,
     api: ProcosysApiService
 ): Promise<void> => {
-    console.log('reportErrors');
+    console.log('reportErrorsIfExists');
     const offlineSynchronizationErrors: OfflineSynchronizationErrors = {
         ProjectId: projectId,
         CheckListErrors: [],
         PunchListItemErrors: [],
     };
-
     const offlineUpdates = await offlineUpdateRepository.getUpdateRequests();
 
     for (const offlineUpdate of offlineUpdates) {
-        console.log('reportErrors UPDATE', offlineUpdate);
-        if (offlineUpdate.hasError()) {
-            if ((offlineUpdate.entityType = EntityType.Checklist)) {
+        if (OfflineUpdateRequest.hasError(offlineUpdate)) {
+            if (offlineUpdate.entityType == EntityType.Checklist) {
                 offlineSynchronizationErrors.CheckListErrors.push(
-                    offlineUpdate.getErrorObject()
+                    OfflineUpdateRequest.getErrorObject(offlineUpdate)
                 );
-            } else if ((offlineUpdate.entityType = EntityType.PunchItem)) {
+            } else if (offlineUpdate.entityType == EntityType.PunchItem) {
                 offlineSynchronizationErrors.PunchListItemErrors.push(
-                    offlineUpdate.getErrorObject()
+                    OfflineUpdateRequest.getErrorObject(offlineUpdate)
                 );
-            } //todo: Work order is not yet handled.
+            } else {
+                console.error(
+                    'Not able to report error with entity type ' +
+                        offlineUpdate.entityType
+                );
+            }
+            //todo: Work order is not yet handled.
         }
     }
-
-    console.log('reportErrors kvitter', offlineSynchronizationErrors);
 
     if (
         offlineSynchronizationErrors.CheckListErrors.length > 0 ||
         offlineSynchronizationErrors.PunchListItemErrors.length > 0
     ) {
-        console.log('send errors to server');
         await api.postOfflineScopeSynchronizeErrors(
             plantId,
             offlineSynchronizationErrors

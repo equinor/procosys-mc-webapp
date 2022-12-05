@@ -993,10 +993,9 @@ const procosysApiService = (
         plantId: string,
         offlineSynchronizationErrors: OfflineSynchronizationErrors
     ): Promise<void> => {
-        await putByFetch(
-            `OfflineScope/SynchronizeErrors/plantId=PCS$${plantId}${apiVersion}`,
-            offlineSynchronizationErrors,
-            { 'Content-Type': 'application/json' }
+        await postByFetch(
+            `OfflineScope/SynchronizeErrors?plantId=PCS$${plantId}${apiVersion}`,
+            offlineSynchronizationErrors
         );
     };
 

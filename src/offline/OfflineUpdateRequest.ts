@@ -64,20 +64,29 @@ export class OfflineUpdateRequest {
         return url.substring(pos, url.indexOf('&', pos));
     }
 
-    hasError(): boolean {
-        if (this.errorCode) {
+    /**
+     * Returns true if the were errors executing the update request.
+     * Note: Must be a static function, because objects stored in indexeddb will not include object functions.
+     */
+    static hasError(updateRequest: OfflineUpdateRequest): boolean {
+        if (updateRequest.errorCode) {
             return true;
         }
         return false;
     }
 
-    getErrorObject(): OfflineSynchronizationError {
+    /**
+     * Return an object containing information about the error occured when executing the update request.
+     */
+    static getErrorObject(
+        updateRequest: OfflineUpdateRequest
+    ): OfflineSynchronizationError {
         return {
-            Id: this.entityId || 0,
-            Url: this.url,
-            Method: this.method,
-            ErrorMsg: this.errorMessage || 'No error',
-            ErrorCode: this.errorCode || 0,
+            Id: updateRequest.entityId || 0,
+            Url: updateRequest.url,
+            Method: updateRequest.method,
+            ErrorMsg: updateRequest.errorMessage || 'No error',
+            ErrorCode: updateRequest.errorCode || 0,
         };
     }
 
