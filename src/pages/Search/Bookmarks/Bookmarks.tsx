@@ -119,24 +119,22 @@ const Bookmarks = (): JSX.Element => {
                                     )}
                                 </div>
                             ) : null}
-                            <ButtonsWrapper>
-                                <button
-                                    onClick={(): void =>
-                                        setErrorPopupOpen(false)
-                                    }
-                                >
-                                    Close
-                                </button>
-                                <button
-                                    onClick={(): void => {
-                                        localStorage.removeItem('SynchErrors');
-                                        setSyncErrors(null);
-                                    }}
-                                >
-                                    Don&apost show this message again
-                                </button>
-                            </ButtonsWrapper>
                         </ErrorContainer>
+                        <ButtonsWrapper>
+                            <Button
+                                onClick={(): void => setErrorPopupOpen(false)}
+                            >
+                                Close
+                            </Button>
+                            <Button
+                                onClick={(): void => {
+                                    localStorage.removeItem('SynchErrors');
+                                    setSyncErrors(null);
+                                }}
+                            >
+                                Don&apos;t show this message again
+                            </Button>
+                        </ButtonsWrapper>
                     </BookmarksPopup>
                 </Scrim>
             ) : null}
