@@ -145,10 +145,11 @@ const procosysApiService = (
             },
             body: data ? JSON.stringify(data) : null,
         };
-        const res = await fetch(`${baseURL}/${url}`, DeleteOperation);
-        if (!res.ok) {
-            console.error('Delete by fetch failed. Url=' + url, res);
-            throw new HTTPError(res.status, res.statusText);
+        const response = await fetch(`${baseURL}/${url}`, DeleteOperation);
+
+        if (!response.ok) {
+            const errorMessage = await getErrorMessage(response);
+            throw new HTTPError(response.status, errorMessage);
         }
     };
 
@@ -202,11 +203,9 @@ const procosysApiService = (
                 return;
             }
         } else {
-            console.error('Server responded with error.', response);
-            throw new HTTPError(
-                response.status,
-                `Server responded with http error code ${response.status}. ${response.statusText}`
-            );
+            const errorMessage = await getErrorMessage(response);
+            console.error('Error occured on postByFetch', errorMessage);
+            throw new HTTPError(response.status, errorMessage);
         }
     };
 
@@ -224,10 +223,10 @@ const procosysApiService = (
             },
             body: file,
         };
-        const res = await fetch(`${baseURL}/${url}`, PostOperation);
-        if (!res.ok) {
-            console.error('Post attachment failed. Url=' + url, res);
-            throw new HTTPError(res.status, res.statusText);
+        const response = await fetch(`${baseURL}/${url}`, PostOperation);
+        if (!response.ok) {
+            const errorMessage = await getErrorMessage(response);
+            throw new HTTPError(response.status, errorMessage);
         }
     };
 
@@ -248,11 +247,23 @@ const procosysApiService = (
             body: JSON.stringify(bodyData),
         };
         console.log('SKAL LAGE PUT: ', PutOperation);
-        const res = await fetch(`${baseURL}/${url}`, PutOperation);
-        if (!res.ok) {
-            console.error('Put by fetch failed. Url=' + url, res);
-            throw new HTTPError(res.status, res.statusText);
+        const response = await fetch(`${baseURL}/${url}`, PutOperation);
+        if (!response.ok) {
+            const errorMessage = await getErrorMessage(response);
+            throw new HTTPError(response.status, errorMessage);
         }
+    };
+
+    const getErrorMessage = async (response: Response): Promise<string> => {
+        let errorMessage;
+        const text = await response.text();
+        if (text) {
+            errorMessage = text;
+        } else {
+            errorMessage = `Server responded with http error code ${response.status}. ${response.statusText}`;
+        }
+        console.error('Error occured on server call.', errorMessage);
+        return errorMessage;
     };
 
     const getPlants = async (): Promise<Plant[]> => {
