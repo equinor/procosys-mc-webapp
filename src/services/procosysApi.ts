@@ -204,6 +204,7 @@ const procosysApiService = (
             }
         } else {
             const errorMessage = await getErrorMessage(response);
+            console.error('Error occured on postByFetch', errorMessage);
             throw new HTTPError(response.status, errorMessage);
         }
     };
