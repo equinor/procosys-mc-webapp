@@ -117,7 +117,8 @@ const useBookmarks = () => {
                 await db.delete();
                 setOfflineState(false);
                 setOfflineAction(OfflineAction.INACTIVE);
-                setBookmarksStatus(AsyncStatus.SUCCESS);
+                setBookmarksStatus(AsyncStatus.EMPTY_RESPONSE);
+                setCurrentBookmarks(null);
             }
         } catch (error) {
             if (!(error instanceof Error)) return;

@@ -32,6 +32,7 @@ export class OfflineUpdateRequest {
     syncStatus: SyncStatus = SyncStatus.NOT_SYNCHRONIZED;
     description: string | null;
     blob?: ArrayBuffer; //attachment object for offline content db
+    mimeType?: string;
     errorCode?: number;
     errorMessage?: string;
 
@@ -41,7 +42,8 @@ export class OfflineUpdateRequest {
         bodyData: any,
         type: any,
         timestamp: number,
-        blob?: ArrayBuffer
+        blob?: ArrayBuffer,
+        mimeType?: string
     ) {
         //Get plantId
         const plantId = this.getPlantId(url);
@@ -54,6 +56,7 @@ export class OfflineUpdateRequest {
         this.type = type;
         this.timestamp = timestamp;
         this.blob = blob;
+        this.mimeType = mimeType;
         this.entityId = null;
         this.entityType = null;
         this.description = null;
@@ -101,24 +104,24 @@ export class OfflineUpdateRequest {
 
         const url = removeBaseUrlFromUrl(request.url);
 
+        let type;
         let bodyData;
         let blob;
-        let type;
+        let mimeType;
 
         if (request.body) {
             if (contentType == undefined || contentType.includes('json')) {
                 //json
-
                 bodyData = await request.json();
                 type = RequestType.Json;
             } else if (contentType.includes('form-data')) {
                 //attachment
                 const formData = await request.formData();
-
                 const tempData = new Map();
                 let arrayBuffer;
                 for (const [key, value] of formData) {
                     const tempBlob = value as File;
+                    mimeType = tempBlob.type;
                     arrayBuffer = await tempBlob.arrayBuffer();
                     tempData.set(key, arrayBuffer);
                 }
@@ -140,7 +143,8 @@ export class OfflineUpdateRequest {
             bodyData,
             type,
             Date.now(),
-            blob
+            blob,
+            mimeType
         );
     }
 }

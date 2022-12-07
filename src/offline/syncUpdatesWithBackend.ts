@@ -248,8 +248,10 @@ const performOfflineUpdate = async (
                 const fd = new FormData();
 
                 for (const [key, value] of bodyData) {
-                    const blob = new Blob([value]); // , { type: 'image/jpeg' }); //todo: type
-                    fd.append(key, blob);
+                    const blob = new Blob([value], {
+                        type: offlineUpdate.mimeType,
+                    });
+                    fd.append(key, blob, key);
                 }
 
                 response = await api.postAttachmentByFetch(

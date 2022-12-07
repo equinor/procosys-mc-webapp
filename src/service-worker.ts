@@ -127,7 +127,7 @@ self.addEventListener('install', (event) => {
 });
 
 self.addEventListener('fetch', function (event: FetchEvent) {
-    // console.log('Intercept fetch', event.request.url);
+    console.log('Intercept fetch', event.request.url);
     if (isOffline) {
         //User is in offline mode.  Data must be fetched from offline database
         const url = event.request.url;
