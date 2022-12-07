@@ -59,18 +59,18 @@ export const syncronizeOfflineUpdatesWithBackend = async (
         type: EntityType;
     };
 
-    //Make a list of checklist, punch and work orders to synchronize.
+    //Make a distinct list of checklist, punch and work orders to synchronize.
     const entitiesToUpdate: EntityToUpdate[] = [];
 
     for (const offlineUpdate of offlineUpdates) {
         console.log('skal evaluere', offlineUpdate);
-        const entityExist = entitiesToUpdate.some(
+        const entityExistInList = entitiesToUpdate.some(
             (entity) =>
                 entity.id === offlineUpdate.entityId &&
                 entity.type === offlineUpdate.entityType
         );
         if (
-            !entityExist &&
+            !entityExistInList &&
             offlineUpdate.entityId &&
             offlineUpdate.entityType
         ) {
@@ -83,7 +83,7 @@ export const syncronizeOfflineUpdatesWithBackend = async (
 
     console.log('liste med objekter som skal oppdateres:', entitiesToUpdate);
     for (const entityToUpdate of entitiesToUpdate) {
-        //Syncronize updates for the specific entity
+        //Syncronize all updates for the the given entity.
 
         //Find all updates for the current entity
         const updatesForEntity = offlineUpdates.filter(
@@ -113,10 +113,19 @@ export const syncronizeOfflineUpdatesWithBackend = async (
                     //The id for the update request for this entity must be updated.
                     updateEntityId(newEntityId, offlineUpdate);
                 }
-                const id = await synchronizeOfflineUpdate(offlineUpdate, api);
-                if (id) {
-                    //If id is returned it means that backend has created a new ID, that must be used for subsequent updates for this entity.
-                    newEntityId = id.Id;
+                try {
+                    const id = await synchronizeOfflineUpdate(
+                        offlineUpdate,
+                        api
+                    );
+
+                    if (id) {
+                        //If id is returned it means that backend has created a new ID, that must be used for subsequent updates for this entity.
+                        //TODO: To be able to retry synchronization, we should update all request on this entity, with the new id.
+                        newEntityId = id.Id;
+                    }
+                } catch (error) {
+                    break; //When an error occures, further synchronization of this entity should stop.
                 }
             } else if (offlineUpdate.syncStatus == SyncStatus.SYNCHRONIZED) {
                 console.log(
@@ -129,7 +138,7 @@ export const syncronizeOfflineUpdatesWithBackend = async (
                 );
                 break; //If an error occured we will skip further updates on this entity.
             } else {
-                console.log(
+                console.error(
                     'The offline update does not have the corret synchronization status. ',
                     offlineUpdate.syncStatus
                 );
@@ -142,6 +151,9 @@ export const syncronizeOfflineUpdatesWithBackend = async (
     await api.putOfflineScopeSynchronized(currentPlant, currentProject);
 };
 
+/**
+ * The update request is updated with error message.
+ */
 const handleFailedUpdateRequest = async (
     offlineUpdate: OfflineUpdateRequest,
     error: HTTPError
@@ -306,14 +318,12 @@ const synchronizeOfflineUpdate = async (
             return newEntityId;
         }
     } catch (error) {
+        console.error('Not able to syncronize entity.', error);
         if (error instanceof HTTPError) {
             //Main-api returned an error code.
-            console.error('Not able to syncronize entity.', error);
             await handleFailedUpdateRequest(offlineUpdate, error);
-        } else {
-            console.log('syncmetode: har catcheet Error');
-            throw Error('Error occured when calling update request.  ' + error);
         }
+        throw Error('Error occured when calling update request.  ' + error);
     }
 };
 

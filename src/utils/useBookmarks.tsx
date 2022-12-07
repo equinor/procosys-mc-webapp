@@ -162,6 +162,7 @@ const useBookmarks = () => {
         setBookmarksStatus(AsyncStatus.LOADING);
         setOfflineAction(OfflineAction.DOWNLOADING);
 
+        localStorage.removeItem('SynchErrors');
         db.create(userPin);
 
         if (currentPlant && currentProject) {

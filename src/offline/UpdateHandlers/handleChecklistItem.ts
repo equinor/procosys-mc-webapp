@@ -39,7 +39,7 @@ export const handleChecklistItemPostSetOK = async (
     }
 
     await offlineUpdateRepository.addUpdateRequest(
-        dto.CheckItemId,
+        Number.parseInt(dto.CheckListId),
         EntityType.Checklist,
         offlinePostRequest
     );
@@ -70,7 +70,7 @@ export const handleChecklistItemPostSetNA = async (
         await offlineContentRepository.replaceEntity(checklistEntity);
     }
     await offlineUpdateRepository.addUpdateRequest(
-        dto.CheckItemId,
+        Number.parseInt(dto.CheckListId),
         EntityType.Checklist,
         offlinePostRequest
     );
@@ -103,7 +103,7 @@ export const handleChecklistItemPostClear = async (
     }
 
     await offlineUpdateRepository.addUpdateRequest(
-        dto.CheckItemId,
+        Number.parseInt(dto.CheckListId),
         EntityType.Checklist,
         offlinePostRequest
     );
@@ -155,7 +155,7 @@ export const handleChecklistPutMetaTableCell = async (
                         checklistEntity
                     );
                     await offlineUpdateRepository.addUpdateRequest(
-                        dto.CheckItemId,
+                        dto.CheckListId,
                         EntityType.Checklist,
                         offlinePostRequest
                     );

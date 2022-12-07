@@ -15,7 +15,7 @@ export enum SyncStatus {
 }
 
 export class OfflineUpdateRequest {
-    uniqueId: string;
+    uniqueId: string; //We need this to be able to find and update a specific update request.
     url: string;
     method: string;
     bodyData: any;
