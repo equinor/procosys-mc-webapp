@@ -11,7 +11,7 @@ import {
 import { causeApiError, ENDPOINTS, rest, server } from '../../test/setupServer';
 import { CompletionStatus } from '../../services/apiTypes';
 import userEvent from '@testing-library/user-event';
-import { SavedSearchType } from '../../typings/enums';
+import { OfflineStatus, SavedSearchType } from '../../typings/enums';
 
 const renderSavedSearchPage = (savedSearchType: string): void => {
     render(
@@ -27,10 +27,8 @@ const renderSavedSearchPage = (savedSearchType: string): void => {
                     </Route>
                 </MemoryRouter>
             ),
-            offlineState: false,
-            setOfflineState: jest.fn((offlineState: boolean): Promise<void> => {
-                return Promise.resolve();
-            }),
+            offlineState: OfflineStatus.ONLINE,
+            setOfflineState: jest.fn(),
         })
     );
 };
