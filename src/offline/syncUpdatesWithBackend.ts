@@ -46,12 +46,6 @@ export const syncronizeOfflineUpdatesWithBackend = async (
         );
     }
 
-    console.log(
-        'ER I syncronizeOfflineUpdatesWithBackend, har jeg plant og project',
-        currentPlant,
-        currentProject
-    );
-
     const offlineUpdates = await offlineUpdateRepository.getUpdateRequests();
 
     type EntityToUpdate = {
@@ -63,7 +57,6 @@ export const syncronizeOfflineUpdatesWithBackend = async (
     const entitiesToUpdate: EntityToUpdate[] = [];
 
     for (const offlineUpdate of offlineUpdates) {
-        console.log('skal evaluere', offlineUpdate);
         const entityExist = entitiesToUpdate.some(
             (entity) =>
                 entity.id === offlineUpdate.entityId &&
@@ -239,8 +232,10 @@ const synchronizeOfflineUpdate = async (
                 const fd = new FormData();
 
                 for (const [key, value] of bodyData) {
-                    const blob = new Blob([value]); // , { type: 'image/jpeg' }); //todo: type
-                    fd.append(key, blob);
+                    const blob = new Blob([value], {
+                        type: offlineUpdate.mimeType,
+                    });
+                    fd.append(key, blob, key);
                 }
 
                 response = await api.postAttachmentByFetch(
