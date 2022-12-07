@@ -14,7 +14,8 @@ const offlineContentRepository = new OfflineContentRepository();
 const addAttachmentToAttachmentList = async (
     attachmentListEntity: IEntity,
     newAttachmentId: number,
-    title: string | null
+    title: string | null,
+    mimeType?: string
 ): Promise<void> => {
     if (!isOfType<IEntity>(attachmentListEntity, 'responseObj')) {
         console.error(
@@ -39,7 +40,7 @@ const addAttachmentToAttachmentList = async (
         title: title ? title : '',
         createdAt: new Date(),
         classification: '',
-        mimeType: '',
+        mimeType: mimeType ?? '',
         thumbnailAsBase64: '',
         hasFile: true,
         fileName: title ? title : '',
@@ -58,8 +59,7 @@ export const handlePostPunchAttachment = async (
     const plantId = params.get('plantId');
     const title = params.get('title');
     const punchIdStr = params.get('punchItemId');
-    //const blob: Blob = offlinePostRequest.bodyData[0];
-    const arrayBuffer = offlinePostRequest.blob; //await blob.arrayBuffer();
+    const arrayBuffer = offlinePostRequest.blob;
 
     if (punchIdStr === null) {
         console.error('The request parameters does not contain a punchId.');
@@ -95,7 +95,8 @@ export const handlePostPunchAttachment = async (
     await addAttachmentToAttachmentList(
         attachmentListEntity,
         newAttachmentId,
-        title
+        title,
+        offlinePostRequest.mimeType
     );
 
     //Update attachment count on punch

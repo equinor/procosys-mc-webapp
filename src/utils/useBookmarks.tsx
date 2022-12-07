@@ -118,6 +118,7 @@ const useBookmarks = () => {
                 setOfflineState(OfflineStatus.ONLINE);
                 setOfflineAction(OfflineAction.INACTIVE);
                 setBookmarksStatus(AsyncStatus.EMPTY_RESPONSE);
+                setCurrentBookmarks(null);
             }
         } catch (error) {
             if (!(error instanceof Error)) return;
