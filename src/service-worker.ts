@@ -117,6 +117,15 @@ self.addEventListener('message', async (event: MessageEventInit) => {
     }
 });
 
+/**
+ * When a new version of the application has been installed, the clients should skip waiting, and use the new version.
+ * This ensures that the user will get the new version automatically, without restart of the browser window.
+ */
+self.addEventListener('install', (event) => {
+    self.skipWaiting();
+    console.log('SkipWaiting is called.');
+});
+
 self.addEventListener('fetch', function (event: FetchEvent) {
     // console.log('Intercept fetch', event.request.url);
     if (isOffline) {
