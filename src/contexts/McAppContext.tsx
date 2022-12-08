@@ -11,6 +11,7 @@ import { IAuthService } from '../services/authService';
 import { ProcosysApiService } from '../services/procosysApi';
 import { ProcosysIPOApiService } from '../services/procosysIPOApi';
 import { getOfflineStatusfromLocalStorage } from '../offline/OfflineStatus';
+import { OfflineStatus } from '../typings/enums';
 
 type McAppContextProps = {
     availablePlants: Plant[];
@@ -18,8 +19,8 @@ type McAppContextProps = {
     api: ProcosysApiService;
     auth: IAuthService;
     appConfig: AppConfig;
-    offlineState: boolean;
-    setOfflineState: (offlineState: boolean) => void;
+    offlineState: OfflineStatus;
+    setOfflineState: React.Dispatch<React.SetStateAction<OfflineStatus>>;
     featureFlags: FeatureFlags;
     configurationAccessToken: string;
     ipoApi: ProcosysIPOApiService;
@@ -59,7 +60,9 @@ export const McAppContextProvider: React.FC<McAppContextProviderProps> = ({
         AsyncStatus.LOADING
     );
 
-    const [offlineState, setOfflineState] = useState(false);
+    const [offlineState, setOfflineState] = useState<OfflineStatus>(
+        OfflineStatus.ONLINE
+    );
 
     useEffect(() => {
         const offlineStatus = getOfflineStatusfromLocalStorage();

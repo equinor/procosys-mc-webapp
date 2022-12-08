@@ -3,6 +3,7 @@ import React from 'react';
 import { AsyncStatus } from '../../contexts/McAppContext';
 import { withMcAppContext } from '../../test/contexts';
 import { testPlants } from '../../test/dummyData';
+import { OfflineStatus } from '../../typings/enums';
 import SelectPlant from './SelectPlant';
 
 describe('<SelectPlant />', () => {
@@ -11,12 +12,8 @@ describe('<SelectPlant />', () => {
             withMcAppContext({
                 Component: <SelectPlant />,
                 asyncStatus: AsyncStatus.SUCCESS,
-                offlineState: false,
-                setOfflineState: jest.fn(
-                    (offlineState: boolean): Promise<void> => {
-                        return Promise.resolve();
-                    }
-                ),
+                offlineState: OfflineStatus.ONLINE,
+                setOfflineState: jest.fn(),
                 configurationAccessToken: 'dummy',
             })
         );
@@ -28,12 +25,8 @@ describe('<SelectPlant />', () => {
                 Component: <SelectPlant />,
                 asyncStatus: AsyncStatus.SUCCESS,
                 plants: [],
-                offlineState: false,
-                setOfflineState: jest.fn(
-                    (offlineState: boolean): Promise<void> => {
-                        return Promise.resolve();
-                    }
-                ),
+                offlineState: OfflineStatus.ONLINE,
+                setOfflineState: jest.fn(),
                 configurationAccessToken: 'dummy',
             })
         );

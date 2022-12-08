@@ -18,6 +18,7 @@ import {
 } from '@equinor/procosys-webapp-components';
 import AsyncPage from '../../components/AsyncPage';
 import usePersonsSearchFacade from '../../utils/usePersonsSearchFacade';
+import { OfflineStatus } from '../../typings/enums';
 
 const newPunchInitialValues = {
     category: '',
@@ -151,7 +152,7 @@ const NewPunchWrapper = (): JSX.Element => {
                     searchStatus={searchStatus}
                     query={query}
                     setQuery={setQuery}
-                    disablePersonsSearch={offlineState}
+                    disablePersonsSearch={offlineState == OfflineStatus.OFFLINE}
                 />
             </AsyncPage>
             {snackbar}

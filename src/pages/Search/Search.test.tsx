@@ -13,7 +13,7 @@ import {
 import { causeApiError, ENDPOINTS, server } from '../../test/setupServer';
 import { rest } from 'msw';
 import SearchPage from './SearchPage';
-import { SearchType } from '../../typings/enums';
+import { OfflineStatus, SearchType } from '../../typings/enums';
 import { MemoryRouter, Route } from 'react-router-dom';
 
 const search = async (
@@ -43,12 +43,8 @@ describe('<Search/> successes', () => {
                         </Route>
                     </MemoryRouter>
                 ),
-                offlineState: false,
-                setOfflineState: jest.fn(
-                    (offlineState: boolean): Promise<void> => {
-                        return Promise.resolve();
-                    }
-                ),
+                offlineState: OfflineStatus.ONLINE,
+                setOfflineState: jest.fn(),
             })
         );
     });
@@ -140,10 +136,8 @@ const renderSearch = (): void => {
                     </Route>
                 </MemoryRouter>
             ),
-            offlineState: false,
-            setOfflineState: jest.fn((offlineState: boolean): Promise<void> => {
-                return Promise.resolve();
-            }),
+            offlineState: OfflineStatus.ONLINE,
+            setOfflineState: jest.fn(),
         })
     );
 };

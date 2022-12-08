@@ -22,6 +22,7 @@ import AsyncPage from '../../components/AsyncPage';
 import TagInfoWrapper from '../../components/TagInfoWrapper';
 import PlantContext from '../../contexts/PlantContext';
 import { DetailsWrapper } from '../Entity/EntityPageDetailsCard';
+import { OfflineStatus } from '../../typings/enums';
 
 const PunchPage = (): JSX.Element => {
     const { api, params, path, history, url, offlineState } = useCommonHooks();
@@ -119,7 +120,7 @@ const PunchPage = (): JSX.Element => {
                     />
                 }
                 midContent="Punch Item"
-                isOffline={offlineState}
+                isOffline={offlineState != OfflineStatus.ONLINE}
             />
             {determineDetailsCard()}
             <AsyncPage

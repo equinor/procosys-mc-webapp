@@ -17,6 +17,7 @@ import {
     PunchAction,
 } from '@equinor/procosys-webapp-components';
 import usePersonsSearchFacade from '../../utils/usePersonsSearchFacade';
+import { OfflineStatus } from '../../typings/enums';
 
 const punchEndpoints: PunchEndpoints = {
     updateCategory: 'SetCategory',
@@ -164,7 +165,7 @@ const ClearPunchWrapper = ({
             query={query}
             setQuery={setQuery}
             abortController={abortController}
-            disablePersonsSearch={offlineState}
+            disablePersonsSearch={offlineState == OfflineStatus.OFFLINE}
         />
     );
 };

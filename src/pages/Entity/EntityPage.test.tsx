@@ -13,7 +13,7 @@ import {
     testScope,
     testWoPreview,
 } from '../../test/dummyData';
-import { SearchType } from '../../typings/enums';
+import { OfflineStatus, SearchType } from '../../typings/enums';
 
 const renderEntityPage = (
     searchType: SearchType,
@@ -34,10 +34,8 @@ const renderEntityPage = (
                     </Route>
                 </MemoryRouter>
             ),
-            offlineState: false,
-            setOfflineState: jest.fn((offlineState: boolean): Promise<void> => {
-                return Promise.resolve();
-            }),
+            offlineState: OfflineStatus.ONLINE,
+            setOfflineState: jest.fn(),
         })
     );
 };

@@ -1,7 +1,7 @@
 import { AsyncStatus, isOfType } from '@equinor/procosys-webapp-components';
 import { useContext, useEffect, useState } from 'react';
 import PlantContext from '../contexts/PlantContext';
-import { EntityType, SearchType } from '../typings/enums';
+import { EntityType, OfflineStatus, SearchType } from '../typings/enums';
 import { Bookmarks } from '../services/apiTypes';
 import useCommonHooks from './useCommonHooks';
 import buildOfflineScope from '../offline/buildOfflineScope';
@@ -113,9 +113,9 @@ const useBookmarks = () => {
             if (currentProject) {
                 setBookmarksStatus(AsyncStatus.LOADING);
                 await api.putCancelOffline(params.plant, currentProject.id);
-                updateOfflineStatus(false, '');
+                updateOfflineStatus(OfflineStatus.ONLINE, '');
                 await db.delete();
-                setOfflineState(false);
+                setOfflineState(OfflineStatus.ONLINE);
                 setOfflineAction(OfflineAction.INACTIVE);
                 setBookmarksStatus(AsyncStatus.EMPTY_RESPONSE);
                 setCurrentBookmarks(null);
@@ -175,9 +175,9 @@ const useBookmarks = () => {
             );
         }
         await sendOfflineStatusToBackend();
-        updateOfflineStatus(true, userPin, currentProject?.id);
+        updateOfflineStatus(OfflineStatus.OFFLINE, userPin, currentProject?.id);
 
-        setOfflineState(true);
+        setOfflineState(OfflineStatus.OFFLINE);
         localStorage.removeItem('loginTries'); //just to be sure...
         setBookmarksStatus(AsyncStatus.SUCCESS);
         setOfflineAction(OfflineAction.INACTIVE);
@@ -185,8 +185,11 @@ const useBookmarks = () => {
 
     const finishOffline = async (): Promise<void> => {
         //setOfflineAction(OfflineAction.SYNCHING);
-        //setBookmarksStatus(AsyncStatus.LOADING);
-        localStorage.setItem('status', 'sync');
+        setBookmarksStatus(AsyncStatus.LOADING);
+        localStorage.setItem(
+            'offlineStatus',
+            OfflineStatus.SYNCHING.toString()
+        );
         //After reloading, the application will be reauthenticated, and
         //syncronization will be started.
         //Note: When running tests, location object does not have 'reload'.

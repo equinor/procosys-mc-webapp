@@ -86,11 +86,13 @@ export const fetchAppConfig = async (
     accessToken: string,
     callbackFunc?: any
 ): Promise<AppConfigResponse> => {
+    console.log('fetch app config ', endpoint + accessToken);
     const data = await fetch(endpoint, {
         headers: {
             Authorization: 'Bearer ' + accessToken,
         },
     });
+    console.log('fetch app config data ', data);
     const resp = await data.json();
 
     if (callbackFunc) {

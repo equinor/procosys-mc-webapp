@@ -51,3 +51,9 @@ export enum SearchType {
     Tag = 'Tag',
     IPO = 'IPO',
 }
+
+export enum OfflineStatus {
+    ONLINE,
+    OFFLINE,
+    SYNCHING,
+}
