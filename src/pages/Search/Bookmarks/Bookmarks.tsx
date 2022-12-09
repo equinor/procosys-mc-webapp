@@ -7,6 +7,7 @@ import { SearchType } from '../../../typings/enums';
 import useCommonHooks from '../../../utils/useCommonHooks';
 import AsyncPage from '../../../components/AsyncPage';
 import BookmarksPopUps from './BookmarksPopups';
+import hasConnectionToServer from '../../../utils/hasConnectionToServer';
 
 export const ButtonsWrapper = styled.div`
     display: flex;
@@ -28,13 +29,13 @@ const Bookmarks = (): JSX.Element => {
         offlineAction,
         setOfflineAction,
     } = useBookmarks();
-    const { offlineState } = useCommonHooks();
+    const { offlineState, api } = useCommonHooks();
     const [noNetworkConnection, setNoNetworkConnection] =
         useState<boolean>(false);
 
-    const startSync = (): void => {
-        console.log(navigator.onLine);
-        if (navigator.onLine) {
+    const startSync = async (): Promise<void> => {
+        const connection = await hasConnectionToServer(api);
+        if (connection) {
             setNoNetworkConnection(false);
             finishOffline();
         } else {
