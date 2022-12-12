@@ -54,15 +54,12 @@ const procosysApiInstance = procosysApiService(
 
 const dummyConfigurationAccessToken = 'dummytoken';
 
-const baseIPOApiInstance = baseIPOApiService({
-    authInstance,
-    baseURL: baseURL,
-    scope: ['testscope'],
-});
-
-const ipoApiInstance = procosysIPOApiService({
-    axios: baseIPOApiInstance,
-});
+const ipoApiInstance = procosysIPOApiService(
+    {
+        baseURL: baseURL,
+    },
+    'dummy-bearer-token'
+);
 
 type WithMcAppContextProps = {
     Component: JSX.Element;
