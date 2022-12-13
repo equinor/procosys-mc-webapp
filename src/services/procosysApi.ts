@@ -1010,6 +1010,14 @@ const procosysApiService = (
         );
     };
 
+    /**
+     * This endpoint returns info about the current application.
+     * We use it to ensure that we can access the server, before we start offline syncronization.
+     */
+    const getApplication = async (): Promise<void> => {
+        await getByFetch(`Application?${apiVersion}`);
+    };
+
     return {
         getTag,
         deletePunchAttachment,
@@ -1062,6 +1070,7 @@ const procosysApiService = (
         putOfflineScopePunchlistItemSynchronized,
         postOfflineScopeSynchronizeErrors,
         putOfflineScopeOffline,
+        getApplication,
     };
 };
 
