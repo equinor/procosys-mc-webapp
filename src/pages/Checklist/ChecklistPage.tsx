@@ -20,6 +20,7 @@ import {
 import ChecklistDetailsCard from './ChecklistDetailsCard';
 import styled from 'styled-components';
 import PlantContext from '../../contexts/PlantContext';
+import { OfflineStatus } from '../../typings/enums';
 
 const ContentWrapper = styled.div`
     padding-bottom: 66px;
@@ -119,7 +120,7 @@ const ChecklistPage = (): JSX.Element => {
                         </Button>
                     )
                 }
-                isOffline={offlineState}
+                isOffline={offlineState != OfflineStatus.ONLINE}
             />
             <ChecklistDetailsCard
                 fetchDetailsStatus={fetchDetailsStatus}

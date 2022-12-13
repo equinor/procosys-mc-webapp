@@ -26,7 +26,7 @@ import {
     Scope,
 } from '@equinor/procosys-webapp-components';
 import EntityPageDetailsCard from './EntityPageDetailsCard';
-import { SearchType } from '../../typings/enums';
+import { OfflineStatus, SearchType } from '../../typings/enums';
 
 const EntityPageWrapper = styled.main``;
 
@@ -145,7 +145,7 @@ const EntityPage = (): JSX.Element => {
                         ? 'MC Package'
                         : params.searchType
                 }
-                isOffline={offlineState}
+                isOffline={offlineState != OfflineStatus.ONLINE}
             />
             <EntityPageDetailsCard
                 fetchDetailsStatus={fetchDetailsStatus}

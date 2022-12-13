@@ -5,7 +5,7 @@ import SearchResults from './SearchResults';
 import styled from 'styled-components';
 import { TagPhotoRecognition } from '@equinor/procosys-webapp-components';
 import useCommonHooks from '../../../utils/useCommonHooks';
-import { SearchType } from '../../../typings/enums';
+import { OfflineStatus, SearchType } from '../../../typings/enums';
 
 export const TallSearchField = styled(SearchField)`
     height: 54px;
@@ -53,7 +53,8 @@ const SearchArea = ({ searchType }: SearchAreaProps): JSX.Element => {
 
     return (
         <SearchAreaWrapper>
-            {searchType === SearchType.Tag && offlineState == false ? (
+            {searchType === SearchType.Tag &&
+            offlineState != OfflineStatus.OFFLINE ? (
                 <TagPhotoRecognition
                     setQuery={setQuery}
                     tagOcrEndpoint={appConfig.ocrFunctionEndpoint}

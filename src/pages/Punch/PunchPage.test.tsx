@@ -15,6 +15,7 @@ import {
     dummyPunchTypes,
 } from '../../test/dummyData';
 import userEvent from '@testing-library/user-event';
+import { OfflineStatus } from '../../typings/enums';
 
 const renderPunchPage = (): void => {
     render(
@@ -30,10 +31,8 @@ const renderPunchPage = (): void => {
                     </Route>
                 </MemoryRouter>
             ),
-            offlineState: false,
-            setOfflineState: jest.fn((offlineState: boolean): Promise<void> => {
-                return Promise.resolve();
-            }),
+            offlineState: OfflineStatus.ONLINE,
+            setOfflineState: jest.fn(),
         })
     );
 };

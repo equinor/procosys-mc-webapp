@@ -16,6 +16,7 @@ import baseIPOApiService from '../services/baseIPOApi';
 import procosysIPOApiService, {
     ProcosysIPOApiService,
 } from '../services/procosysIPOApi';
+import { OfflineStatus } from '../typings/enums';
 
 const client = new Msal.PublicClientApplication({
     auth: { clientId: 'testId', authority: 'testAuthority' },
@@ -71,8 +72,8 @@ type WithMcAppContextProps = {
     auth?: IAuthService;
     api?: ProcosysApiService;
     ipoApi?: ProcosysIPOApiService;
-    offlineState?: boolean;
-    setOfflineState: (offlineState: boolean) => Promise<void>;
+    offlineState?: OfflineStatus;
+    setOfflineState: React.Dispatch<React.SetStateAction<OfflineStatus>>;
     configurationAccessToken: string;
 };
 
@@ -83,7 +84,7 @@ export const withMcAppContext = ({
     auth = authInstance,
     api = procosysApiInstance,
     ipoApi = ipoApiInstance,
-    offlineState = false,
+    offlineState = OfflineStatus.ONLINE,
     setOfflineState,
     configurationAccessToken,
 }: WithMcAppContextProps): JSX.Element => {
@@ -117,8 +118,8 @@ type WithPlantContextProps = {
     availableProjects?: Project[] | null;
     currentProject?: Project | undefined;
     setCurrentProject?: (project: Project) => void;
-    offlineState?: boolean;
-    setOfflineState: (offlineState: boolean) => Promise<void>;
+    offlineState?: OfflineStatus;
+    setOfflineState: React.Dispatch<React.SetStateAction<OfflineStatus>>;
 };
 
 export const withPlantContext = ({
@@ -128,7 +129,7 @@ export const withPlantContext = ({
     currentProject = testProjects[1],
     permissions = dummyPermissions,
     Component,
-    offlineState = false,
+    offlineState = OfflineStatus.ONLINE,
     setOfflineState,
 }: WithPlantContextProps): JSX.Element => {
     return withMcAppContext({

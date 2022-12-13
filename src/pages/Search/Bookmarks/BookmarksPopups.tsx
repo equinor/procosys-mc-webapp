@@ -4,9 +4,9 @@ import { AsyncStatus } from '@equinor/procosys-webapp-components';
 import styled from 'styled-components';
 import { COLORS, SHADOW } from '../../../style/GlobalStyles';
 import { ButtonsWrapper } from './Bookmarks';
-import useBookmarks, { OfflineAction } from '../../../utils/useBookmarks';
+import { OfflineAction } from '../../../utils/useBookmarks';
 
-const CancellingPopup = styled.div`
+export const BookmarksPopup = styled.div`
     display: flex;
     flex-direction: column;
     border-radius: 5px;
@@ -14,6 +14,8 @@ const CancellingPopup = styled.div`
     padding: 16px;
     margin: 0 16px;
     box-shadow: ${SHADOW};
+    max-height: 90vh;
+    overflow: auto;
 `;
 
 const Spacer = styled.div`
@@ -83,7 +85,7 @@ const BookmarksPopUps = ({
                         setOfflineAction(OfflineAction.INACTIVE)
                     }
                 >
-                    <CancellingPopup>
+                    <BookmarksPopup>
                         <h3>
                             Input a 4-digit pin number to use as your offline
                             pin code
@@ -157,7 +159,7 @@ const BookmarksPopUps = ({
                                 Cancel
                             </Button>
                         </ButtonsWrapper>
-                    </CancellingPopup>
+                    </BookmarksPopup>
                 </Scrim>
             ) : null}
             {offlineAction == OfflineAction.CANCELLING ? (
@@ -167,7 +169,7 @@ const BookmarksPopUps = ({
                         setOfflineAction(OfflineAction.INACTIVE)
                     }
                 >
-                    <CancellingPopup>
+                    <BookmarksPopup>
                         <h3>Do you really wish to cancel offline mode?</h3>
                         <Checkbox
                             label="I understand that cancelling offline mode deletes all my offline changes"
@@ -197,12 +199,12 @@ const BookmarksPopUps = ({
                                 Don&apos;t cancel
                             </Button>
                         </ButtonsWrapper>
-                    </CancellingPopup>
+                    </BookmarksPopup>
                 </Scrim>
             ) : null}
             {noNetworkConnection ? (
                 <Scrim>
-                    <CancellingPopup>
+                    <BookmarksPopup>
                         <h3>You don&apos;t have an internet connection</h3>
                         <p>
                             Please establish an internet connection before
@@ -220,7 +222,7 @@ const BookmarksPopUps = ({
                                 Cancel Finish Offline
                             </Button>
                         </ButtonsWrapper>
-                    </CancellingPopup>
+                    </BookmarksPopup>
                 </Scrim>
             ) : null}
         </>

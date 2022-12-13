@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { db } from './offline/db';
 import { updateOfflineStatus } from './offline/OfflineStatus';
+import { OfflineStatus } from './typings/enums';
 
 const ContentWrapper = styled.main`
     margin: 16px;
@@ -47,7 +48,7 @@ const OfflinePin = ({ setUserPin }: OfflinePinProps): JSX.Element => {
             setLoginTriesLeft((prev) => prev - 1);
         } else {
             await db.delete();
-            updateOfflineStatus(false, '');
+            updateOfflineStatus(OfflineStatus.ONLINE, '');
             localStorage.removeItem('loginTries');
         }
     };

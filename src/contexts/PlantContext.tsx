@@ -13,6 +13,7 @@ import {
     ReloadButton,
     StorageKey,
 } from '@equinor/procosys-webapp-components';
+import { OfflineStatus } from '../typings/enums';
 
 export type PlantContextProps = {
     fetchProjectsAndPermissionsStatus: AsyncStatus;
@@ -133,7 +134,7 @@ export const PlantContextProvider: React.FC<{ children: ReactNode }> = ({
                 <>
                     <Navbar
                         leftContent={<ProcosysButton />}
-                        isOffline={offlineState}
+                        isOffline={offlineState != OfflineStatus.ONLINE}
                     />
                     <ErrorPage
                         title={'Unable to obtain permissions.'}
