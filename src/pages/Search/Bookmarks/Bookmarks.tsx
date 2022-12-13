@@ -66,7 +66,6 @@ const Bookmarks = (): JSX.Element => {
     }, [offlineState]);
 
     const startSync = (): void => {
-        console.log(navigator.onLine);
         if (navigator.onLine) {
             setNoNetworkConnection(false);
             finishOffline();

@@ -3,10 +3,30 @@ import { db } from './db';
 import { OfflineUpdateRequest } from './OfflineUpdateRequest';
 
 class OfflineUpdateRepository {
+    /**
+     * Get all update requests
+     */
     async getUpdateRequests(): Promise<OfflineUpdateRequest[]> {
         const result = await db.offlineUpdates.toArray();
         db.offlineUpdates.orderBy(['seqno']);
         return result as OfflineUpdateRequest[];
+    }
+
+    /**
+     * Get all update requests
+     */
+    async getUpdateRequest(uniqueId: string): Promise<OfflineUpdateRequest> {
+        const update = await db.offlineUpdates
+            .where('uniqueId')
+            .equals(uniqueId)
+            .first();
+        if (update) {
+            return update as OfflineUpdateRequest;
+        } else {
+            throw Error(
+                'Offline update with uniqueId ' + uniqueId + ' was not found.'
+            );
+        }
     }
 
     /**

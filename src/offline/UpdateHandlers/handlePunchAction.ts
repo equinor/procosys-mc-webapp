@@ -61,7 +61,9 @@ export const handlePunchAction = async (
     }
     punchItemEntity.responseObj = punch;
     await offlineContentRepository.replaceEntity(punchItemEntity);
+
     await updatePunchlists(punch);
+
     await offlineUpdateRepository.addUpdateRequest(
         punchItemId,
         EntityType.PunchItem,

@@ -50,9 +50,8 @@ export const syncronizeOfflineUpdatesWithBackend = async (
 
     const entitiesToUpdate = getListWithEntitiesToUpdate(offlineUpdates);
 
+    //Syncronize updates for one entity at the time
     for (const entityToUpdate of entitiesToUpdate) {
-        //Syncronize all updates for the the given entity.
-
         //Find all updates for the current entity
         const updatesForEntity = offlineUpdates.filter(
             (offlineUpdate) =>
@@ -66,17 +65,15 @@ export const syncronizeOfflineUpdatesWithBackend = async (
         //If the update is already set to synchronized, or an error code is set, it will be skipped.
         let newEntityId;
         for (let offlineUpdate of updatesForEntity) {
+            //Reload the offlineUpdate in case there are changes (new entityid)
+            offlineUpdate = await offlineUpdateRepository.getUpdateRequest(
+                offlineUpdate.uniqueId
+            );
+
             if (
                 offlineUpdate.syncStatus == SyncStatus.NOT_SYNCHRONIZED &&
                 !offlineUpdate.errorCode
             ) {
-                if (newEntityId) {
-                    offlineUpdate = updateIdOnEntityRequest(
-                        newEntityId,
-                        offlineUpdate
-                    );
-                }
-
                 try {
                     const id = await performOfflineUpdate(offlineUpdate, api);
 
@@ -332,8 +329,9 @@ const setEntityToSynchronized = async (
 };
 
 /**
- * Update id on all offline update requests, in database.
+ * Update entityId on all offline update requests, in database.
  * This is done to enable re-synching.
+ * NOTE: We do not update
  */
 const updateEntityIdForAllUpdatesForCurrentEntity = async (
     newEntityId: number,
@@ -356,7 +354,6 @@ const updateIdOnEntityRequest = (
     const method = offlineUpdate.method.toUpperCase();
 
     offlineUpdate.entityId = newEntityId;
-
     //Update body data
     if (method == 'PUT') {
         if (offlineUpdate.url.startsWith('PunchListItem/')) {
@@ -370,6 +367,14 @@ const updateIdOnEntityRequest = (
         ) {
             //postCustomClear and postCustomSetOK
             offlineUpdate.bodyData.CustomCheckItemId = newEntityId.toString();
+        } else if (
+            offlineUpdate.url.startsWith('PunchListItem/Clear') ||
+            offlineUpdate.url.startsWith('PunchListItem/Unclear') ||
+            offlineUpdate.url.startsWith('PunchListItem/Reject') ||
+            offlineUpdate.url.startsWith('PunchListItem/Verify') ||
+            offlineUpdate.url.startsWith('PunchListItem/Unverify')
+        ) {
+            offlineUpdate.bodyData = newEntityId.toString();
         }
     } else {
         console.error(

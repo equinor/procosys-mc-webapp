@@ -39,6 +39,17 @@ export default class OfflineStorage extends Dexie {
         this?.offlineContent.mapToClass(Entity);
         this?.offlineUpdates.mapToClass(OfflineUpdateRequest);
 
+        this.encryptDatabase(userPin);
+
+        if (!this.isOpen()) {
+            await this.open();
+        }
+    }
+
+    /**
+     * Apply Encryption on database using user pin as key.
+     */
+    private encryptDatabase(userPin: string): void {
         const secret = new Uint8Array(32);
         for (let i = 0; i < userPin.length; i++) {
             secret[i] = Number(userPin.charAt(i));
@@ -53,10 +64,6 @@ export default class OfflineStorage extends Dexie {
             },
             this.notAbleToDecrypt
         );
-
-        if (!this.isOpen()) {
-            await this.open();
-        }
     }
 
     public async reInitAndVerifyPin(userPin: string): Promise<boolean> {
