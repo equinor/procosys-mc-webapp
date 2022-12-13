@@ -9,6 +9,7 @@ import AsyncPage from '../../../components/AsyncPage';
 import BookmarksPopUps, { BookmarksPopup } from './BookmarksPopups';
 import { OfflineSynchronizationErrors } from '../../../services/apiTypes';
 import { isOfType } from '@equinor/procosys-webapp-components';
+import hasConnectionToServer from '../../../utils/hasConnectionToServer';
 
 export const ButtonsWrapper = styled.div`
     display: flex;
@@ -37,7 +38,7 @@ const Bookmarks = (): JSX.Element => {
         offlineAction,
         setOfflineAction,
     } = useBookmarks();
-    const { offlineState } = useCommonHooks();
+    const { offlineState, api } = useCommonHooks();
     const [noNetworkConnection, setNoNetworkConnection] =
         useState<boolean>(false);
     const [syncErrors, setSyncErrors] =
@@ -65,9 +66,9 @@ const Bookmarks = (): JSX.Element => {
         setSyncErrors(null);
     }, [offlineState]);
 
-    const startSync = (): void => {
-        console.log(navigator.onLine);
-        if (navigator.onLine) {
+    const startSync = async (): Promise<void> => {
+        const connection = await hasConnectionToServer(api);
+        if (connection) {
             setNoNetworkConnection(false);
             finishOffline();
         } else {
