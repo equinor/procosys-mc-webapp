@@ -63,7 +63,6 @@ export const syncronizeOfflineUpdatesWithBackend = async (
         //If an error occurs, further synchronization of this entity will be stopped and
         //the updates will be marked with 'error'.
         //If the update is already set to synchronized, or an error code is set, it will be skipped.
-        let newEntityId;
         for (let offlineUpdate of updatesForEntity) {
             //Reload the offlineUpdate in case there are changes (new entityid)
             offlineUpdate = await offlineUpdateRepository.getUpdateRequest(
@@ -79,11 +78,16 @@ export const syncronizeOfflineUpdatesWithBackend = async (
 
                     if (id) {
                         //Backend has created a new ID. All updates for the entity must be updated.
-                        newEntityId = id.Id;
-                        await updateEntityIdForAllUpdatesForCurrentEntity(
-                            newEntityId,
-                            updatesForEntity
-                        );
+                        for (const update of offlineUpdates) {
+                            const updated = updateIdOnEntityRequest(
+                                id.Id,
+                                update,
+                                offlineUpdate.temporaryId
+                            );
+                            await offlineUpdateRepository.updateOfflineUpdateRequest(
+                                updated
+                            );
+                        }
                     }
                 } catch (error) {
                     break; //When an error occures, further synchronization of this entity should stop.
@@ -336,36 +340,22 @@ const setEntityToSynchronized = async (
 };
 
 /**
- * Update entityId on all offline update requests, in database.
- * This is done to enable re-synching.
- * NOTE: We do not update
- */
-const updateEntityIdForAllUpdatesForCurrentEntity = async (
-    newEntityId: number,
-    offlineUpdates: OfflineUpdateRequest[]
-): Promise<void> => {
-    for (const offlineUpdate of offlineUpdates) {
-        const updated = updateIdOnEntityRequest(newEntityId, offlineUpdate);
-        await offlineUpdateRepository.updateOfflineUpdateRequest(updated);
-    }
-};
-
-/**
  * Update entityId for offline update request
  * The specific Post/PUT operation must be identified, and the specific variable in the body must be updated.
  */
 const updateIdOnEntityRequest = (
-    newEntityId: number,
-    offlineUpdate: OfflineUpdateRequest
+    newId: number,
+    offlineUpdate: OfflineUpdateRequest,
+    temporaryId?: number
 ): OfflineUpdateRequest => {
     const method = offlineUpdate.method.toUpperCase();
 
-    offlineUpdate.entityId = newEntityId;
     //Update body data
     if (method == 'PUT') {
         if (offlineUpdate.url.startsWith('PunchListItem/')) {
             //putUpdatePunch
-            offlineUpdate.bodyData.PunchItemId = newEntityId.toString();
+            offlineUpdate.entityId = newId;
+            offlineUpdate.bodyData.PunchItemId = newId.toString();
         }
     } else if (method == 'POST') {
         if (
@@ -373,7 +363,10 @@ const updateIdOnEntityRequest = (
             offlineUpdate.url.startsWith('CheckList/CustomItem/Clear')
         ) {
             //postCustomClear and postCustomSetOK
-            offlineUpdate.bodyData.CustomCheckItemId = newEntityId.toString();
+            if (offlineUpdate.bodyData.CustomCheckItemId == temporaryId) {
+                //Ensure that only the specific custom check item is updated (not all on the given checklist)
+                offlineUpdate.bodyData.CustomCheckItemId = newId.toString();
+            }
         } else if (
             offlineUpdate.url.startsWith('PunchListItem/Clear') ||
             offlineUpdate.url.startsWith('PunchListItem/Unclear') ||
@@ -381,7 +374,15 @@ const updateIdOnEntityRequest = (
             offlineUpdate.url.startsWith('PunchListItem/Verify') ||
             offlineUpdate.url.startsWith('PunchListItem/Unverify')
         ) {
-            offlineUpdate.bodyData = newEntityId.toString();
+            offlineUpdate.entityId = newId;
+            offlineUpdate.bodyData = newId.toString();
+        }
+    } else if (method == 'DELETE') {
+        if (offlineUpdate.url.startsWith('CheckList/CustomItem')) {
+            //deleteCustomItem. Must ensure that this is an update for the specific custom check item that got the new Id.
+            if (offlineUpdate.bodyData.CustomCheckItemId == temporaryId) {
+                offlineUpdate.bodyData.CustomCheckItemId = newId.toString();
+            }
         }
     } else {
         console.error(
