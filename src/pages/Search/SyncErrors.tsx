@@ -1,11 +1,19 @@
 import { Button } from '@equinor/eds-core-react';
 import {
     CollapsibleCard,
+    EntityDetails,
+    InfoItem,
     PageHeader,
 } from '@equinor/procosys-webapp-components';
 import React from 'react';
+import styled from 'styled-components';
+import EdsIcon from '../../components/icons/EdsIcon';
 import { OfflineSynchronizationErrors } from '../../services/apiTypes';
+import { COLORS } from '../../style/GlobalStyles';
 
+const ErrorsWrapper = styled.div`
+    margin: -16px 0 66px 0;
+`;
 interface SyncErrorProps {
     syncErrors: OfflineSynchronizationErrors | null;
     setSyncErrors: React.Dispatch<
@@ -24,7 +32,7 @@ const SyncErrors = ({
                     'Errors encountered during uploading/sync after offline work'
                 }
             />
-            <CollapsibleCard cardTitle="Explanation">
+            <CollapsibleCard cardTitle="Error Information">
                 <p>
                     At least one of the changes made during offline could not be
                     synchronized with the online version. Any other changes on
@@ -48,17 +56,43 @@ const SyncErrors = ({
                     {syncErrors.CheckListErrors.length > 0 ? (
                         <div>
                             <h4>Checklists</h4>
-                            {syncErrors.CheckListErrors.map((error) => (
-                                <p key={error.Id}>{error.Id}</p>
-                            ))}
+                            <ErrorsWrapper>
+                                {syncErrors.CheckListErrors.map((error) => (
+                                    <EntityDetails
+                                        key={error.Id}
+                                        isDetailsCard={true}
+                                        icon={
+                                            <EdsIcon
+                                                name="error_outlined"
+                                                color={COLORS.danger}
+                                            />
+                                        }
+                                        headerText={error.Id.toString()}
+                                        description={error.ErrorMsg}
+                                    />
+                                ))}
+                            </ErrorsWrapper>
                         </div>
                     ) : null}
                     {syncErrors.PunchListItemErrors.length > 0 ? (
                         <div>
                             <h4>Punches</h4>
-                            {syncErrors.PunchListItemErrors.map((error) => (
-                                <p key={error.Id}>{error.Id}</p>
-                            ))}
+                            <ErrorsWrapper>
+                                {syncErrors.PunchListItemErrors.map((error) => (
+                                    <EntityDetails
+                                        key={error.Id}
+                                        isDetailsCard={true}
+                                        icon={
+                                            <EdsIcon
+                                                name="error_outlined"
+                                                color={COLORS.danger}
+                                            />
+                                        }
+                                        headerText={error.Id.toString()}
+                                        description={`${error.ErrorCode}: ${error.ErrorMsg}`}
+                                    />
+                                ))}
+                            </ErrorsWrapper>
                         </div>
                     ) : null}
                 </div>

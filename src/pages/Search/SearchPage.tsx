@@ -109,9 +109,9 @@ const SearchPage = (): JSX.Element => {
                             color={COLORS.mossGreen}
                         />
                     }
-                    label={'Offline bookmarks'}
+                    label={'Bookmarks'}
                 />
-                {syncErrors == null ? (
+                {syncErrors != null ? (
                     <FooterButton
                         active={history.location.pathname.includes(
                             '/sync-errors'
