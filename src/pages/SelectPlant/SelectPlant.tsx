@@ -85,7 +85,7 @@ const SelectPlant = (): JSX.Element => {
             <Navbar
                 leftContent={<ProcosysButton />}
                 rightContent={<SideMenu />}
-                isOffline={offlineState != OfflineStatus.ONLINE}
+                isOffline={offlineState == OfflineStatus.OFFLINE}
             />
             <SelectPlantWrapper>{content()}</SelectPlantWrapper>
         </>

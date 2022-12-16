@@ -248,7 +248,7 @@ const SavedSearchPage = (): JSX.Element => {
                 leftContent={
                     <BackButton to={`${removeSubdirectories(url, 3)}`} />
                 }
-                isOffline={offlineState != OfflineStatus.ONLINE}
+                isOffline={offlineState == OfflineStatus.OFFLINE}
             />
             <AsyncPage
                 errorMessage={

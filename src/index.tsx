@@ -48,6 +48,7 @@ const initialize = async () => {
     }
 
     const offline = getOfflineStatusfromLocalStorage();
+    console.log('getting offline state in init ', offline);
 
     updateOfflineStatus(offline, userPin);
 
@@ -157,7 +158,6 @@ const renderApp = async (): Promise<void> => {
         try {
             await syncronizeOfflineUpdatesWithBackend(procosysApiInstance);
             await db.delete();
-            updateOfflineStatus(OfflineStatus.ONLINE, '');
         } catch (error) {
             console.log(
                 'Error occured in synchronization with backend. ',
@@ -210,7 +210,11 @@ const renderApp = async (): Promise<void> => {
     await navigator.serviceWorker.ready; //wait until service worker is active
     try {
         console.log('getting offline status');
-        if (getOfflineStatusfromLocalStorage() != OfflineStatus.ONLINE) {
+        const status = getOfflineStatusfromLocalStorage();
+        if (
+            status == OfflineStatus.OFFLINE ||
+            status == OfflineStatus.SYNCHING
+        ) {
             render(<OfflinePin setUserPin={setUserPin} />);
         }
         renderApp();

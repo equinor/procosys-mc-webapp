@@ -10,18 +10,12 @@ import BookmarksPopUps, { BookmarksPopup } from './BookmarksPopups';
 import { OfflineSynchronizationErrors } from '../../../services/apiTypes';
 import { isOfType } from '@equinor/procosys-webapp-components';
 import hasConnectionToServer from '../../../utils/hasConnectionToServer';
+import { updateOfflineStatus } from '../../../offline/OfflineStatus';
 
 export const ButtonsWrapper = styled.div`
     display: flex;
     justify-content: space-between;
     padding-top: 16px;
-`;
-
-const ErrorContainer = styled.div`
-    display: flex;
-    & > div {
-        width: 50%;
-    }
 `;
 
 const Bookmarks = (): JSX.Element => {
@@ -38,33 +32,9 @@ const Bookmarks = (): JSX.Element => {
         offlineAction,
         setOfflineAction,
     } = useBookmarks();
-    const { offlineState, api } = useCommonHooks();
+    const { offlineState, setOfflineState, api } = useCommonHooks();
     const [noNetworkConnection, setNoNetworkConnection] =
         useState<boolean>(false);
-    const [syncErrors, setSyncErrors] =
-        useState<OfflineSynchronizationErrors | null>(null);
-    const [errorPopupOpen, setErrorPopupOpen] = useState<boolean>(true);
-
-    useEffect(() => {
-        const errors = localStorage.getItem('SynchErrors');
-        if (errors != null) {
-            try {
-                const errorsObject = JSON.parse(errors);
-                if (
-                    isOfType<OfflineSynchronizationErrors>(
-                        errorsObject,
-                        'CheckListErrors'
-                    )
-                ) {
-                    setSyncErrors(errorsObject);
-                    return;
-                }
-            } catch (error) {
-                console.log(error);
-            }
-        }
-        setSyncErrors(null);
-    }, [offlineState]);
 
     const startSync = async (): Promise<void> => {
         const connection = await hasConnectionToServer(api);
@@ -88,54 +58,22 @@ const Bookmarks = (): JSX.Element => {
 
     return (
         <>
-            {offlineState == OfflineStatus.ONLINE &&
-            syncErrors != null &&
-            errorPopupOpen ? (
+            {offlineState == OfflineStatus.SYNC_FAIL ? (
                 <Scrim
-                    isDismissable={true}
-                    onClose={(): void => setErrorPopupOpen(false)}
+                    isDismissable
+                    onClose={(): void => {
+                        console.log('closing sync error popover');
+                        setOfflineState(OfflineStatus.ONLINE);
+                        updateOfflineStatus(OfflineStatus.ONLINE, '');
+                    }}
                 >
                     <BookmarksPopup>
-                        <h3>Some of your offline changes could not be saved</h3>
+                        <h3>Uploading/sync done</h3>
                         <p>
-                            A list of checklists and punches where at least one
-                            change could not be saved is shown below
+                            At least one of the changes made during offline
+                            could not be synchronized with the online version. A
+                            list of errors has been added to the errors page.
                         </p>
-                        <ErrorContainer>
-                            {syncErrors.CheckListErrors.length > 0 ? (
-                                <div>
-                                    <h4>Checklists</h4>
-                                    {syncErrors.CheckListErrors.map((error) => (
-                                        <p key={error.Id}>{error.Id}</p>
-                                    ))}
-                                </div>
-                            ) : null}
-                            {syncErrors.PunchListItemErrors.length > 0 ? (
-                                <div>
-                                    <h4>Punches</h4>
-                                    {syncErrors.PunchListItemErrors.map(
-                                        (error) => (
-                                            <p key={error.Id}>{error.Id}</p>
-                                        )
-                                    )}
-                                </div>
-                            ) : null}
-                        </ErrorContainer>
-                        <ButtonsWrapper>
-                            <Button
-                                onClick={(): void => setErrorPopupOpen(false)}
-                            >
-                                Close
-                            </Button>
-                            <Button
-                                onClick={(): void => {
-                                    localStorage.removeItem('SynchErrors');
-                                    setSyncErrors(null);
-                                }}
-                            >
-                                Don&apos;t show this message again
-                            </Button>
-                        </ButtonsWrapper>
                     </BookmarksPopup>
                 </Scrim>
             ) : null}
