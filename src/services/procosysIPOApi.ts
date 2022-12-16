@@ -1,6 +1,7 @@
 import { objectToCamelCase } from '@equinor/procosys-webapp-components';
 import { AxiosInstance } from 'axios';
 import { IpoDetails, OutstandingIposType } from './apiTypes';
+import { StorageKey } from '@equinor/procosys-webapp-components';
 
 type ProcosysIPOApiServiceProps = {
     baseURL: string;
@@ -25,21 +26,27 @@ const procosysIPOApiService = (
     const getByFetch = async (
         url: string,
         abortSignal?: AbortSignal,
-        additionalHeaders?: any,
-        isBlob?: boolean
+        additionalHeaders?: any
     ): Promise<any> => {
+        const plantInStorage = window.localStorage.getItem(StorageKey.PLANT);
+        let headers;
+        if (plantInStorage !== 'undefined') {
+            headers = {
+                Authorization: `Bearer ${token}`,
+                'x-plant': `PCS$${plantInStorage}`,
+                ...additionalHeaders,
+            };
+        } else {
+            headers = {
+                Authorization: `Bearer ${token}`,
+                ...additionalHeaders,
+            };
+        }
         const GetOperation: GetOperationProps = {
             abortSignal: abortSignal,
             method: 'GET',
-            headers: {
-                Authorization: `Bearer ${token}`,
-                ...additionalHeaders,
-            },
+            headers: headers,
         };
-
-        if (isBlob) {
-            GetOperation.responseType = 'blob';
-        }
 
         const res = callback(await fetch(`${baseURL}/${url}`, GetOperation));
         if (res.ok) {
