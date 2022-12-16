@@ -1,6 +1,7 @@
 import { objectToCamelCase } from '@equinor/procosys-webapp-components';
 import { IpoDetails, OutstandingIposType } from './apiTypes';
 import { StorageKey } from '@equinor/procosys-webapp-components';
+import { HTTPError } from './HTTPError';
 
 type ProcosysIPOApiServiceProps = {
     baseURL: string;
@@ -16,12 +17,11 @@ type GetOperationProps = {
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const procosysIPOApiService = (
-    {
-        baseURL,
-        callback = (res: Response): Response => res,
-    }: ProcosysIPOApiServiceProps,
+    { baseURL }: ProcosysIPOApiServiceProps,
     token: string
 ) => {
+    const callback = (resultObj: any, apiPath: string): string => resultObj;
+
     const getByFetch = async (
         url: string,
         abortSignal?: AbortSignal,
@@ -47,25 +47,15 @@ const procosysIPOApiService = (
             headers: headers,
         };
 
-        const res = callback(await fetch(`${baseURL}/${url}`, GetOperation));
+        const res = await fetch(`${baseURL}/${url}`, GetOperation);
         if (res.ok) {
             const jsonResult = await res.json();
-            if (jsonResult instanceof Array) {
-                return objectToCamelCase(jsonResult);
-            } else {
-                if (
-                    typeof jsonResult === 'object' &&
-                    !(jsonResult instanceof Blob)
-                ) {
-                    return objectToCamelCase(jsonResult);
-                } else {
-                    return jsonResult;
-                }
-            }
+            const resultObj = objectToCamelCase(jsonResult);
+            callback(resultObj, res.url);
+            return resultObj;
         } else {
-            alert('HTTP-Error: ' + res.status);
-            console.error(res.status);
-            return res;
+            console.error('Get by fetch failed. Url=' + url, res);
+            throw new HTTPError(res.status, res.statusText);
         }
     };
 
