@@ -14,7 +14,6 @@ import {
 } from '@equinor/procosys-webapp-components';
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 import procosysIPOApiService from './services/procosysIPOApi';
-import baseIPOApiService from './services/baseIPOApi';
 import OfflinePin from './OfflinePin';
 import {
     getOfflineStatusfromLocalStorage,

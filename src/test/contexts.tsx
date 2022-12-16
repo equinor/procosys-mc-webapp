@@ -12,7 +12,6 @@ import { testProjects, testPlants, dummyPermissions } from './dummyData';
 import { IAuthService } from '../services/authService';
 import { baseURL } from './setupServer';
 import { AppConfig, FeatureFlags } from '../services/appConfiguration';
-import baseIPOApiService from '../services/baseIPOApi';
 import procosysIPOApiService, {
     ProcosysIPOApiService,
 } from '../services/procosysIPOApi';
