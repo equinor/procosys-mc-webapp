@@ -1,5 +1,4 @@
 import { objectToCamelCase } from '@equinor/procosys-webapp-components';
-import { AxiosInstance } from 'axios';
 import { IpoDetails, OutstandingIposType } from './apiTypes';
 import { StorageKey } from '@equinor/procosys-webapp-components';
 
