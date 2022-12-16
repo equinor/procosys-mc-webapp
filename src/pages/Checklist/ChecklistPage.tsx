@@ -120,7 +120,7 @@ const ChecklistPage = (): JSX.Element => {
                         </Button>
                     )
                 }
-                isOffline={offlineState != OfflineStatus.ONLINE}
+                isOffline={offlineState == OfflineStatus.OFFLINE}
             />
             <ChecklistDetailsCard
                 fetchDetailsStatus={fetchDetailsStatus}

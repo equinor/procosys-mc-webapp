@@ -145,7 +145,7 @@ const EntityPage = (): JSX.Element => {
                         ? 'MC Package'
                         : params.searchType
                 }
-                isOffline={offlineState != OfflineStatus.ONLINE}
+                isOffline={offlineState == OfflineStatus.OFFLINE}
             />
             <EntityPageDetailsCard
                 fetchDetailsStatus={fetchDetailsStatus}

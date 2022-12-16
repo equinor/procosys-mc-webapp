@@ -120,7 +120,7 @@ const PunchPage = (): JSX.Element => {
                     />
                 }
                 midContent="Punch Item"
-                isOffline={offlineState != OfflineStatus.ONLINE}
+                isOffline={offlineState == OfflineStatus.OFFLINE}
             />
             {determineDetailsCard()}
             <AsyncPage

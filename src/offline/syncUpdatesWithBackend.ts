@@ -215,6 +215,7 @@ const reportErrorsIfExists = async (
             'offlineStatus',
             OfflineStatus.SYNC_FAIL.toString()
         );
+        console.log('setting offline status to sync fail');
     } else {
         localStorage.setItem('offlineStatus', OfflineStatus.ONLINE.toString());
     }
