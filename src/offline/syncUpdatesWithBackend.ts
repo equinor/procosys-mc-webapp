@@ -1,6 +1,6 @@
 import { HTTPError } from '../services/HTTPError';
 import { ProcosysApiService } from '../services/procosysApi';
-import { EntityType } from '../typings/enums';
+import { EntityType, OfflineStatus } from '../typings/enums';
 import { OfflineUpdateRepository } from './OfflineUpdateRepository';
 import {
     OfflineUpdateRequest,
@@ -211,6 +211,12 @@ const reportErrorsIfExists = async (
             'SynchErrors',
             JSON.stringify(offlineSynchronizationErrors)
         );
+        localStorage.setItem(
+            'offlineStatus',
+            OfflineStatus.SYNC_FAIL.toString()
+        );
+    } else {
+        localStorage.setItem('offlineStatus', OfflineStatus.ONLINE.toString());
     }
 };
 

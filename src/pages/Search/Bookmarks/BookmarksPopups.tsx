@@ -5,6 +5,8 @@ import styled from 'styled-components';
 import { COLORS, SHADOW } from '../../../style/GlobalStyles';
 import { ButtonsWrapper } from './Bookmarks';
 import { OfflineAction } from '../../../utils/useBookmarks';
+import { OfflineStatus } from '../../../typings/enums';
+import { updateOfflineStatus } from '../../../offline/OfflineStatus';
 
 export const BookmarksPopup = styled.div`
     display: flex;
@@ -23,6 +25,8 @@ const Spacer = styled.div`
 `;
 
 interface BookmarksPopUpsProps {
+    offlineState: OfflineStatus;
+    setOfflineState: React.Dispatch<React.SetStateAction<OfflineStatus>>;
     offlineAction: OfflineAction;
     setOfflineAction: React.Dispatch<React.SetStateAction<OfflineAction>>;
     setUserPin: React.Dispatch<React.SetStateAction<string>>;
@@ -35,6 +39,8 @@ interface BookmarksPopUpsProps {
 }
 
 const BookmarksPopUps = ({
+    offlineState,
+    setOfflineState,
     offlineAction,
     setOfflineAction,
     setUserPin,
@@ -78,6 +84,24 @@ const BookmarksPopUps = ({
 
     return (
         <>
+            {offlineState == OfflineStatus.SYNC_FAIL ? (
+                <Scrim
+                    isDismissable
+                    onClose={(): void => {
+                        setOfflineState(OfflineStatus.ONLINE);
+                        updateOfflineStatus(OfflineStatus.ONLINE, '');
+                    }}
+                >
+                    <BookmarksPopup>
+                        <h3>Uploading/sync done</h3>
+                        <p>
+                            At least one of the changes made during offline
+                            could not be synchronized with the online version. A
+                            list of errors has been added to the errors page.
+                        </p>
+                    </BookmarksPopup>
+                </Scrim>
+            ) : null}
             {offlineAction == OfflineAction.STARTING ? (
                 <Scrim
                     isDismissable

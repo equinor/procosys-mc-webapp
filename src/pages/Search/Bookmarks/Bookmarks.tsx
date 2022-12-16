@@ -38,7 +38,7 @@ const Bookmarks = (): JSX.Element => {
         offlineAction,
         setOfflineAction,
     } = useBookmarks();
-    const { offlineState, api } = useCommonHooks();
+    const { offlineState, setOfflineState, api } = useCommonHooks();
     const [noNetworkConnection, setNoNetworkConnection] =
         useState<boolean>(false);
 
@@ -73,6 +73,8 @@ const Bookmarks = (): JSX.Element => {
         >
             <div>
                 <BookmarksPopUps
+                    offlineState={offlineState}
+                    setOfflineState={setOfflineState}
                     offlineAction={offlineAction}
                     setOfflineAction={setOfflineAction}
                     setUserPin={setUserPin}
