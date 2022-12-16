@@ -56,4 +56,5 @@ export enum OfflineStatus {
     ONLINE,
     OFFLINE,
     SYNCHING,
+    SYNC_FAIL,
 }

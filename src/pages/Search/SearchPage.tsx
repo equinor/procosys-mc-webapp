@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import withAccessControl from '../../services/withAccessControl';
 import styled from 'styled-components';
 import {
@@ -7,6 +7,7 @@ import {
     useSnackbar,
     NavigationFooter,
     FooterButton,
+    isOfType,
 } from '@equinor/procosys-webapp-components';
 import SideMenu from '../../components/navigation/SideMenu';
 import useCommonHooks from '../../utils/useCommonHooks';
@@ -16,6 +17,8 @@ import { Route, Switch } from 'react-router-dom';
 import Bookmarks from './Bookmarks/Bookmarks';
 import Search from './Search';
 import { OfflineStatus } from '../../typings/enums';
+import SyncErrors from './SyncErrors';
+import { OfflineSynchronizationErrors } from '../../services/apiTypes';
 
 const SearchPageWrapper = styled.main`
     padding: 0 4%;
@@ -29,6 +32,29 @@ const SearchPageWrapper = styled.main`
 const SearchPage = (): JSX.Element => {
     const { snackbar, setSnackbarText } = useSnackbar();
     const { history, url, path, offlineState } = useCommonHooks();
+    const [syncErrors, setSyncErrors] =
+        useState<OfflineSynchronizationErrors | null>(null);
+
+    useEffect(() => {
+        const errors = localStorage.getItem('SynchErrors');
+        if (errors != null) {
+            try {
+                const errorsObject = JSON.parse(errors);
+                if (
+                    isOfType<OfflineSynchronizationErrors>(
+                        errorsObject,
+                        'CheckListErrors'
+                    )
+                ) {
+                    setSyncErrors(errorsObject);
+                    return;
+                }
+            } catch (error) {
+                console.log(error);
+            }
+        }
+        setSyncErrors(null);
+    }, [offlineState]);
 
     return (
         <>
@@ -51,12 +77,25 @@ const SearchPage = (): JSX.Element => {
                         path={`${path}/bookmarks`}
                         render={(): JSX.Element => <Bookmarks />}
                     />
+                    <Route
+                        exact
+                        path={`${path}/sync-errors`}
+                        render={(): JSX.Element => (
+                            <SyncErrors
+                                syncErrors={syncErrors}
+                                setSyncErrors={setSyncErrors}
+                            />
+                        )}
+                    />
                 </Switch>
                 {snackbar}
             </SearchPageWrapper>
             <NavigationFooter>
                 <FooterButton
-                    active={!history.location.pathname.includes('/bookmarks')}
+                    active={
+                        !history.location.pathname.includes('/bookmarks') &&
+                        !history.location.pathname.includes('/sync-errors')
+                    }
                     goTo={(): void => history.push(`${url}`)}
                     icon={<EdsIcon name="search" color={COLORS.mossGreen} />}
                     label="Search"
@@ -72,6 +111,23 @@ const SearchPage = (): JSX.Element => {
                     }
                     label={'Offline bookmarks'}
                 />
+                {syncErrors == null ? (
+                    <FooterButton
+                        active={history.location.pathname.includes(
+                            '/sync-errors'
+                        )}
+                        goTo={(): void => history.push(`${url}/sync-errors`)}
+                        icon={
+                            <EdsIcon
+                                name="error_outlined"
+                                color={COLORS.mossGreen}
+                            />
+                        }
+                        label="Errors"
+                    />
+                ) : (
+                    <></>
+                )}
             </NavigationFooter>
         </>
     );
