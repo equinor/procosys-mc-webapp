@@ -36,6 +36,9 @@ export const handleCustomChecklistItemPostSetOK = async (
     if (customCheckitem) {
         customCheckitem.isOk = true;
         await offlineContentRepository.replaceEntity(checklistEntity);
+
+        offlinePostRequest.temporaryId = dto.CustomCheckItemId;
+
         await offlineUpdateRepository.addUpdateRequest(
             dto.CheckListId,
             EntityType.Checklist,
@@ -67,6 +70,9 @@ export const handleCustomChecklistItemPostClear = async (
     if (customCheckitem) {
         customCheckitem.isOk = false;
         await offlineContentRepository.replaceEntity(checklistEntity);
+
+        offlinePostRequest.temporaryId = dto.CustomCheckItemId;
+
         await offlineUpdateRepository.addUpdateRequest(
             dto.CheckListId,
             EntityType.Checklist,
@@ -102,6 +108,9 @@ export const handleCustomChecklistItemDelete = async (
     if (customCheckitemIndex > -1) {
         checklist.customCheckItems.splice(customCheckitemIndex, 1);
         await offlineContentRepository.replaceEntity(checklistEntity);
+
+        offlinePostRequest.temporaryId = dto.CustomCheckItemId;
+
         await offlineUpdateRepository.addUpdateRequest(
             Number(dto.ChecklistId),
             EntityType.Checklist,

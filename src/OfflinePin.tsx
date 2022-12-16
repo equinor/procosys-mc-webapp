@@ -26,6 +26,7 @@ const OfflinePin = ({ setUserPin }: OfflinePinProps): JSX.Element => {
     const [loginTriesLeft, setLoginTriesLeft] = useState<number>(3);
 
     const testUserPin = async (): Promise<void> => {
+        //todo: Hvis kode her kaster exception, så må vi sørge for å vise feilmelding
         const succsess = await db.reInitAndVerifyPin(enteredPin);
         if (succsess) {
             localStorage.removeItem('loginTries');

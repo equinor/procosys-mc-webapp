@@ -29,6 +29,7 @@ export class OfflineUpdateRequest {
     plantId: string;
     timestamp: number;
     responseIsNewEntityId = false;
+    temporaryId?: number; //This must be set when we have a temporary generated id, and this id is not entityId (e.g. custom check item)
     syncStatus: SyncStatus = SyncStatus.NOT_SYNCHRONIZED;
     description: string | null;
     blob?: ArrayBuffer; //attachment object for offline content db

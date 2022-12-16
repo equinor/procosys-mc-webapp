@@ -145,6 +145,7 @@ export const handleChecklistPostCustomCheckItem = async (
 ): Promise<void | { id: number }> => {
     const dto: CustomCheckItemDto = await offlinePostRequest.bodyData;
 
+    //Get checklist and add the new custom check item
     const checklistEntity: IEntity =
         await offlineContentRepository.getEntityByTypeAndId(
             EntityType.Checklist,
@@ -152,7 +153,6 @@ export const handleChecklistPostCustomCheckItem = async (
         );
 
     const checklist: ChecklistResponse = await checklistEntity.responseObj;
-
     if (checklist) {
         const id = generateRandomId();
         const newCustomCheckItem = {
@@ -166,6 +166,7 @@ export const handleChecklistPostCustomCheckItem = async (
         await offlineContentRepository.replaceEntity(checklistEntity);
 
         offlinePostRequest.responseIsNewEntityId = true;
+        offlinePostRequest.temporaryId = newCustomCheckItem.id;
 
         await offlineUpdateRepository.addUpdateRequest(
             Number(dto.ChecklistId),
