@@ -574,7 +574,7 @@ const procosysApiService = (
         plantId: string,
         searchType: SearchType,
         entityId: string,
-        ipoDetails: McPkgPreview | WoPreview | Tag | PoPreview | IpoDetails,
+        entityDetails: McPkgPreview | WoPreview | Tag | PoPreview | IpoDetails,
         abortSignal?: AbortSignal
     ): Promise<PunchPreview[]> => {
         let url = '';
@@ -588,21 +588,21 @@ const procosysApiService = (
             url = `PurchaseOrder/PunchList?plantId=PCS$${plantId}&callOffId=${entityId}${apiVersion}`;
         } else if (
             searchType === SearchType.IPO &&
-            isOfType<IpoDetails>(ipoDetails, 'location')
+            isOfType<IpoDetails>(entityDetails, 'location')
         ) {
-            if (ipoDetails.type == 'DP') {
-                const mcPkgNo = ipoDetails.mcPkgScope.map(
+            if (entityDetails.type == 'DP') {
+                const mcPkgNo = entityDetails.mcPkgScope.map(
                     (mcPkg) => '&mcPkgNos=' + mcPkg.mcPkgNo
                 );
                 url = `McPkgs/PunchLists?plantId=PCS$${plantId}&projectName=${
-                    ipoDetails.projectName
+                    entityDetails.projectName
                 }${mcPkgNo.join('')}${apiVersion}`;
             } else {
-                const commPkgNo = ipoDetails.commPkgScope.map(
+                const commPkgNo = entityDetails.commPkgScope.map(
                     (commPkg) => '&commPkgNos=' + commPkg.commPkgNo
                 );
                 url = `CommPkgs/PunchLists?plantId=PCS$${plantId}&projectName=${
-                    ipoDetails.projectName
+                    entityDetails.projectName
                 }${commPkgNo.join('')}${apiVersion}`;
             }
         } else {

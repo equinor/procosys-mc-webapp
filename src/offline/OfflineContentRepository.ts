@@ -1,4 +1,4 @@
-import { EntityType } from '../typings/enums';
+import { EntityType, SearchType } from '../typings/enums';
 import { db } from './db';
 import { Entity } from './Entity';
 import { EntityIndexes } from './EntityIndexes';
@@ -66,18 +66,26 @@ class OfflineContentRepository {
      */
     async getEntityByTypeAndId(
         entityType: EntityType,
-        entityId: number
+        entityId: number,
+        searchType?: SearchType
     ): Promise<Entity> {
+        let updatedEntityType: string = entityType;
+
+        if (searchType) {
+            updatedEntityType = searchType + entityType;
+        }
+
         const result = await db.offlineContent
             .where('entitytype')
-            .equals(entityType)
+            .equals(updatedEntityType)
             .and((entity) => entity.entityid == entityId)
             .first();
+
         if (result) {
             return result;
         } else {
             throw Error(
-                `Entity by type ${entityType} and id ${entityId} not found in offline database.`
+                `Entity by type ${entityType}, id ${entityId} and searchType ${searchType} is not found in offline database.`
             );
         }
     }

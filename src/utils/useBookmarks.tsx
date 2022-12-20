@@ -8,7 +8,6 @@ import buildOfflineScope from '../offline/buildOfflineScope';
 import { db } from '../offline/db';
 import { updateOfflineStatus } from '../offline/OfflineStatus';
 import { OfflineContentRepository } from '../offline/OfflineContentRepository';
-import { config } from 'process';
 
 export enum OfflineAction {
     INACTIVE = 0,
