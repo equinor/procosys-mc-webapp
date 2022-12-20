@@ -74,7 +74,6 @@ const buildOfflineScope = async (
 
     //------------------------------------------------------------
     // Fetch data and store in offline database.
-    // The entity
     //------------------------------------------------------------
 
     //auth config
@@ -184,7 +183,7 @@ const buildOfflineScope = async (
         plantId: string,
         searchType: SearchType
     ): Promise<void> => {
-        //Entity details
+        //Entity details (MCpkg, WO, PO, Tag)
         const entityDetails = await api.getEntityDetails(
             plantId,
             searchType,
@@ -227,6 +226,7 @@ const buildOfflineScope = async (
             parententityid: entityId,
             responseObj: currentResponseObj,
             apipath: currentApiPath,
+            searchtype: searchType,
         });
 
         //WO Info
@@ -281,6 +281,7 @@ const buildOfflineScope = async (
                     parententityid: entityId,
                     responseObj: currentResponseObj,
                     apipath: currentApiPath,
+                    searchtype: searchType,
                 });
                 //Tag
                 await api.getTag(plantId, checklistResp.checkList.tagId);

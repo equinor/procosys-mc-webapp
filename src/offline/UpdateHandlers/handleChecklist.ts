@@ -1,8 +1,13 @@
 import { OfflineContentRepository } from '../OfflineContentRepository';
-import { EntityType } from '../../typings/enums';
-import { ChecklistResponse } from '../../services/apiTypes';
+import { EntityType, SearchType } from '../../typings/enums';
+import {
+    ChecklistPreview,
+    ChecklistResponse,
+    CompletionStatus,
+    PunchPreview,
+} from '../../services/apiTypes';
 import { IEntity } from '../IEntity';
-import { generateRandomId } from './utils';
+import { generateRandomId, getPunchTypeById } from './utils';
 import { OfflineUpdateRequest } from '../OfflineUpdateRequest';
 import { OfflineUpdateRepository } from '../OfflineUpdateRepository';
 
@@ -25,12 +30,24 @@ export const handleChecklistPostSign = async (
 
     const checklist: ChecklistResponse = checklistEntity.responseObj;
 
-    if (checklist) {
+    if (
+        checklist &&
+        checklistEntity.parententityid &&
+        checklistEntity.searchtype
+    ) {
         checklist.checkList.signedAt = new Date();
         checklist.checkList.signedByFirstName = '<offline user>';
         checklist.checkList.signedByLastName = '<offline user>';
         checklist.checkList.signedByUser = '<offline user>';
         await offlineContentRepository.replaceEntity(checklistEntity);
+
+        await updateStatusInScopeList(
+            checklistEntity.parententityid,
+            checklist.checkList.id,
+            checklistEntity.searchtype,
+            true,
+            false
+        );
 
         await offlineUpdateRepository.addUpdateRequest(
             checklistId,
@@ -62,6 +79,16 @@ export const handleChecklistPostUnSign = async (
         checklist.checkList.signedByUser = null;
         await offlineContentRepository.replaceEntity(checklistEntity);
 
+        if (checklistEntity.parententityid && checklistEntity.searchtype) {
+            await updateStatusInScopeList(
+                checklistEntity.parententityid,
+                checklist.checkList.id,
+                checklistEntity.searchtype,
+                false,
+                false
+            );
+        }
+
         await offlineUpdateRepository.addUpdateRequest(
             checklistId,
             EntityType.Checklist,
@@ -91,6 +118,16 @@ export const handleChecklistPostVerify = async (
         checklist.checkList.verifiedByLastName = '<offline user>';
         checklist.checkList.verifiedByUser = '<offline user>';
         await offlineContentRepository.replaceEntity(checklistEntity);
+
+        if (checklistEntity.parententityid && checklistEntity.searchtype) {
+            await updateStatusInScopeList(
+                checklistEntity.parententityid,
+                checklist.checkList.id,
+                checklistEntity.searchtype,
+                true,
+                true
+            );
+        }
 
         await offlineUpdateRepository.addUpdateRequest(
             checklistId,
@@ -122,6 +159,17 @@ export const handleChecklistPostUnVerify = async (
         checklist.checkList.verifiedByLastName = null;
         checklist.checkList.verifiedByUser = null;
         await offlineContentRepository.replaceEntity(checklistEntity);
+
+        if (checklistEntity.parententityid && checklistEntity.searchtype) {
+            await updateStatusInScopeList(
+                checklistEntity.parententityid,
+                checklist.checkList.id,
+                checklistEntity.searchtype,
+                true,
+                false
+            );
+        }
+
         await offlineUpdateRepository.addUpdateRequest(
             checklistId,
             EntityType.Checklist,
@@ -207,4 +255,72 @@ export const handleChecklistPutComment = async (
         EntityType.Checklist,
         offlinePostRequest
     );
+};
+
+/**
+ * Returnes an completion status (PA, PB or OK) for a checklist, by traversing the punches.
+ * Return the most 'severe' status given on any of the given punches.
+ */
+const getPunchStatusForChecklist = async (
+    checklist: ChecklistPreview
+): Promise<CompletionStatus> => {
+    const checklistPunchlistEntity =
+        await offlineContentRepository.getEntityByTypeAndId(
+            EntityType.ChecklistPunchlist,
+            checklist.id
+        );
+
+    const punchlist: PunchPreview[] = checklistPunchlistEntity.responseObj;
+
+    const hasPA = punchlist.some(
+        (punch) => punch.status == CompletionStatus.PA && !punch.cleared
+    );
+    if (hasPA) {
+        return CompletionStatus.PA;
+    }
+
+    const hasPB = punchlist.some(
+        (punch) => punch.status == CompletionStatus.PB && !punch.cleared
+    );
+    if (hasPB) {
+        return CompletionStatus.PB;
+    }
+    return CompletionStatus.OK;
+};
+
+/**
+ * Update status on a checklist on the scope list based on sign status and punch status.
+ */
+const updateStatusInScopeList = async (
+    parentEntityId: number,
+    checklistId: number,
+    searchType: SearchType,
+    isSigned: boolean,
+    isVerified: boolean
+): Promise<void> => {
+    const checklistsEntity =
+        await offlineContentRepository.getEntityByTypeAndId(
+            EntityType.Checklists,
+            parentEntityId,
+            searchType
+        );
+
+    const checklists: ChecklistPreview[] = checklistsEntity.responseObj;
+
+    const checklistIndex = checklists.findIndex((c) => c.id == checklistId);
+    if (checklistIndex > -1) {
+        //Set checklist statuses
+        checklists[checklistIndex].isSigned = isSigned;
+        checklists[checklistIndex].isVerified = isVerified;
+
+        if (!isSigned) {
+            //TODO: Er dette korrekt
+            checklists[checklistIndex].status = CompletionStatus.OS;
+        } else {
+            checklists[checklistIndex].status =
+                await getPunchStatusForChecklist(checklists[checklistIndex]);
+        }
+
+        offlineContentRepository.replaceEntity(checklistsEntity);
+    }
 };
