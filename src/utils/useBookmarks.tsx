@@ -112,10 +112,10 @@ const useBookmarks = () => {
         try {
             if (currentProject) {
                 setBookmarksStatus(AsyncStatus.LOADING);
-                await api.putCancelOffline(params.plant, currentProject.id);
                 updateOfflineStatus(OfflineStatus.ONLINE, '');
-                await db.delete();
                 setOfflineState(OfflineStatus.ONLINE);
+                await api.putCancelOffline(params.plant, currentProject.id);
+                await db.delete();
                 setOfflineAction(OfflineAction.INACTIVE);
                 setBookmarksStatus(AsyncStatus.EMPTY_RESPONSE);
                 setCurrentBookmarks(null);
