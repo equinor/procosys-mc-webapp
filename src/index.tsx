@@ -14,6 +14,7 @@ import {
 } from '@equinor/procosys-webapp-components';
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 import procosysIPOApiService from './services/procosysIPOApi';
+import baseIPOApiService from './services/baseIPOApi';
 import OfflinePin from './OfflinePin';
 import {
     getOfflineStatusfromLocalStorage,
@@ -97,18 +98,15 @@ const initialize = async () => {
         accessToken
     );
 
-    let accessTokenIPO = '';
-    if (!offline) {
-        accessTokenIPO = await authInstance.getAccessToken(
-            appConfig.ipoApi.scope
-        );
-    }
-    const procosysIPOApiInstance = procosysIPOApiService(
-        {
-            baseURL: appConfig.ipoApi.baseUrl,
-        },
-        accessTokenIPO
-    );
+    const baseIpoApiInstance = baseIPOApiService({
+        authInstance,
+        baseURL: appConfig.ipoApi.baseUrl,
+        scope: appConfig.ipoApi.scope,
+    });
+
+    const procosysIPOApiInstance = procosysIPOApiService({
+        axios: baseIpoApiInstance,
+    });
 
     const { appInsightsReactPlugin } = initializeAppInsights(
         appConfig.appInsights.instrumentationKey

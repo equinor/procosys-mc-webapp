@@ -1,81 +1,29 @@
-import { objectToCamelCase } from '@equinor/procosys-webapp-components';
+import { AxiosInstance } from 'axios';
 import { IpoDetails, OutstandingIposType } from './apiTypes';
-import { StorageKey } from '@equinor/procosys-webapp-components';
-import { HTTPError } from './HTTPError';
 
 type ProcosysIPOApiServiceProps = {
-    baseURL: string;
-    callback?: (res: Response) => Response;
-};
-
-type GetOperationProps = {
-    abortSignal?: AbortSignal;
-    method: string;
-    headers: any;
-    responseType?: string;
+    axios: AxiosInstance;
 };
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-const procosysIPOApiService = (
-    { baseURL }: ProcosysIPOApiServiceProps,
-    token: string
-) => {
-    const callback = (resultObj: any, apiPath: string): string => resultObj;
-
-    const getByFetch = async (
-        url: string,
-        abortSignal?: AbortSignal,
-        additionalHeaders?: any
-    ): Promise<any> => {
-        const plantInStorage = window.localStorage.getItem(StorageKey.PLANT);
-        let headers;
-        if (plantInStorage !== undefined) {
-            headers = {
-                Authorization: `Bearer ${token}`,
-                'x-plant': `PCS$${plantInStorage}`,
-                ...additionalHeaders,
-            };
-        } else {
-            headers = {
-                Authorization: `Bearer ${token}`,
-                ...additionalHeaders,
-            };
-        }
-        const GetOperation: GetOperationProps = {
-            abortSignal: abortSignal,
-            method: 'GET',
-            headers: headers,
-        };
-
-        const res = await fetch(`${baseURL}/${url}`, GetOperation);
-        if (res.ok) {
-            const jsonResult = await res.json();
-            const resultObj = objectToCamelCase(jsonResult);
-            callback(resultObj, res.url);
-            return resultObj;
-        } else {
-            console.error('Get by fetch failed. Url=' + url, res);
-            throw new HTTPError(res.status, res.statusText);
-        }
-    };
-
+const procosysIPOApiService = ({ axios }: ProcosysIPOApiServiceProps) => {
     const getOutstandingIpos = async (
         plantId: string
     ): Promise<OutstandingIposType> => {
-        const OutstandingIPOs = await getByFetch(
+        const { data } = await axios.get(
             `Me/OutstandingIpos?plantId=PCS$${plantId}`
         );
-        return OutstandingIPOs;
+        return data;
     };
 
     const getIpoDetails = async (
         plantId: string,
         id: string
     ): Promise<IpoDetails> => {
-        const IpoDetails = await getByFetch(
+        const { data } = await axios.get(
             `Invitations/${id}/?plantId=PCS$${plantId}`
         );
-        return IpoDetails;
+        return data;
     };
 
     return {
