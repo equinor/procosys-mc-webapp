@@ -19,6 +19,7 @@ The application can be started with or without a service worker. The service wor
 Without service worker:  `yarn start`
 
 With service worker: 
+* Make a file in project folder called .env.production.local containing `PUBLIC_URL=http://localhost:3000`
 * `yarn build` (optimized production build is needed)
 * `serve build`
 
