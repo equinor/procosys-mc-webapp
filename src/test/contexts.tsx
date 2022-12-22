@@ -12,6 +12,7 @@ import { testProjects, testPlants, dummyPermissions } from './dummyData';
 import { IAuthService } from '../services/authService';
 import { baseURL } from './setupServer';
 import { AppConfig, FeatureFlags } from '../services/appConfiguration';
+import baseIPOApiService from '../services/baseIPOApi';
 import procosysIPOApiService, {
     ProcosysIPOApiService,
 } from '../services/procosysIPOApi';
@@ -54,12 +55,15 @@ const procosysApiInstance = procosysApiService(
 
 const dummyConfigurationAccessToken = 'dummytoken';
 
-const ipoApiInstance = procosysIPOApiService(
-    {
-        baseURL: baseURL,
-    },
-    'dummy-bearer-token'
-);
+const baseIPOApiInstance = baseIPOApiService({
+    authInstance,
+    baseURL: baseURL,
+    scope: ['testscope'],
+});
+
+const ipoApiInstance = procosysIPOApiService({
+    axios: baseIPOApiInstance,
+});
 
 type WithMcAppContextProps = {
     Component: JSX.Element;
