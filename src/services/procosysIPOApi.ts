@@ -29,7 +29,7 @@ const procosysIPOApiService = (
     ): Promise<any> => {
         const plantInStorage = window.localStorage.getItem(StorageKey.PLANT);
         let headers;
-        if (plantInStorage !== undefined) {
+        if (plantInStorage !== 'undefined') {
             headers = {
                 Authorization: `Bearer ${token}`,
                 'x-plant': `PCS$${plantInStorage}`,
