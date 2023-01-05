@@ -24,7 +24,8 @@ const Search = ({ setSnackbarText }: SearchProps): JSX.Element => {
     const { offlineState } = useCommonHooks();
 
     const determineComponent = (): JSX.Element => {
-        if (offlineState === OfflineStatus.OFFLINE) return <></>;
+        if (offlineState === OfflineStatus.OFFLINE)
+            return <SavedSearches setSnackbarText={setSnackbarText} />;
         if (searchType === undefined) {
             return (
                 <>
