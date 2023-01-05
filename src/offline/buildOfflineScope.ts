@@ -1,8 +1,10 @@
 import {
+    ApiSavedSearchType,
     Attachment,
     ChecklistPreview,
     ChecklistResponse,
     PunchPreview,
+    SavedSearch,
     Tag,
 } from '../services/apiTypes';
 
@@ -425,12 +427,37 @@ const buildOfflineScope = async (
     }
 
     //Saved Searches
-    const savedSearches = api.getSavedSearches(plantId, abortSignal);
+    const savedSearches = await api.getSavedSearches(plantId, abortSignal);
     addEntityToMap({
         apipath: currentApiPath,
         responseObj: savedSearches,
         entitytype: EntityType.SavedSearches,
     });
+
+    const getSavedSearchResults = async (
+        savedSearch: SavedSearch,
+        nextPage: number
+    ): Promise<void> => {
+        const savedSearchResults = await api.getSavedSearchResults(
+            plantId,
+            savedSearch.id.toString(),
+            savedSearch.type,
+            abortSignal,
+            nextPage
+        );
+        addEntityToMap({
+            apipath: currentApiPath,
+            responseObj: savedSearchResults,
+            entitytype: EntityType.SavedSearchResults,
+        });
+        // TODO: get all info about punches or checklists
+        if (savedSearchResults.length > 0)
+            getSavedSearchResults(savedSearch, nextPage + 1);
+    };
+
+    for (const savedSearch of savedSearches) {
+        getSavedSearchResults(savedSearch, 0);
+    }
 
     addEntitiesToDatabase();
 };

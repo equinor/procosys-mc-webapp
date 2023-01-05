@@ -38,7 +38,7 @@ export enum EntityType {
     ChecklistAttachments = 'ChecklistAttachments',
     ChecklistAttachment = 'ChecklistAttachment',
     SavedSearches = 'SavedSearches',
-    SavedSearch = 'SavedSearch',
+    SavedSearchResults = 'SavedSearchRessults',
 }
 
 export enum SavedSearchType {
