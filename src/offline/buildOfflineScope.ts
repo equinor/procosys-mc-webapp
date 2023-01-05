@@ -1,5 +1,6 @@
 import {
     Attachment,
+    ChecklistPreview,
     ChecklistResponse,
     PunchPreview,
     Tag,
@@ -176,96 +177,13 @@ const buildOfflineScope = async (
     });
 
     /**
-     * Build offline scope for a search type entity
+     * Build offline scope for a list of checklists
      */
-    const buildOfflineScopeForEntity = async (
+    const buildOfflineScopeForAScope = async (
+        scope: ChecklistPreview[],
         entityId: number,
-        plantId: string,
         searchType: SearchType
     ): Promise<void> => {
-        //Entity details (MCpkg, WO, PO, Tag)
-        const entityDetails = await api.getEntityDetails(
-            plantId,
-            searchType,
-            entityId.toString()
-        );
-
-        addEntityToMap({
-            entityid: entityId,
-            entitytype: searchType + EntityType.EntityDetails,
-            responseObj: currentResponseObj,
-            apipath: currentApiPath,
-        });
-
-        //Punch list
-        await api.getPunchList(
-            plantId,
-            searchType,
-            entityId.toString(),
-            entityDetails
-        );
-
-        addEntityToMap({
-            entityid: entityId,
-            entitytype: EntityType.Punchlist,
-            responseObj: currentResponseObj,
-            apipath: currentApiPath,
-        });
-
-        //Scope (checklists)
-        const scope = await api.getScope(
-            plantId,
-            searchType,
-            entityId.toString(),
-            entityDetails
-        );
-
-        addEntityToMap({
-            entitytype: searchType + EntityType.Checklists,
-            entityid: entityId,
-            parententityid: entityId,
-            responseObj: currentResponseObj,
-            apipath: currentApiPath,
-            searchtype: searchType,
-        });
-
-        //WO Info
-        if (searchType === SearchType.WO) {
-            //WO attachments
-            const woAttachments: Attachment[] =
-                await api.getWorkOrderAttachments(
-                    plantId,
-                    entityId.toString(),
-                    abortSignal
-                );
-
-            addEntityToMap({
-                entitytype: EntityType.WorkOrderAttachments,
-                entityid: entityId,
-                parententityid: entityId,
-                responseObj: currentResponseObj,
-                apipath: currentApiPath,
-            });
-
-            for (const attachment of woAttachments) {
-                //Checklist attachment
-                await api.getWorkOrderAttachment(
-                    plantId,
-                    entityId.toString(),
-                    attachment.id,
-                    abortSignal
-                );
-                addEntityToMap({
-                    entitytype: EntityType.WorkOrderAttachment,
-                    entityid: attachment.id,
-                    parententityid: entityId,
-                    apipath: currentApiPath,
-                    responseObj: currentResponseObj,
-                });
-            }
-        }
-
-        //For all checklists
         for (const checklist of scope) {
             //Checklist
             try {
@@ -387,6 +305,100 @@ const buildOfflineScope = async (
         }
     };
 
+    /**
+     * Build offline scope for a search type entity
+     */
+    const buildOfflineScopeForEntity = async (
+        entityId: number,
+        plantId: string,
+        searchType: SearchType
+    ): Promise<void> => {
+        //Entity details (MCpkg, WO, PO, Tag)
+        const entityDetails = await api.getEntityDetails(
+            plantId,
+            searchType,
+            entityId.toString()
+        );
+
+        addEntityToMap({
+            entityid: entityId,
+            entitytype: searchType + EntityType.EntityDetails,
+            responseObj: currentResponseObj,
+            apipath: currentApiPath,
+        });
+
+        //Punch list
+        await api.getPunchList(
+            plantId,
+            searchType,
+            entityId.toString(),
+            entityDetails
+        );
+
+        addEntityToMap({
+            entityid: entityId,
+            entitytype: EntityType.Punchlist,
+            responseObj: currentResponseObj,
+            apipath: currentApiPath,
+        });
+
+        //Scope (checklists)
+        const scope = await api.getScope(
+            plantId,
+            searchType,
+            entityId.toString(),
+            entityDetails
+        );
+
+        addEntityToMap({
+            entitytype: searchType + EntityType.Checklists,
+            entityid: entityId,
+            parententityid: entityId,
+            responseObj: currentResponseObj,
+            apipath: currentApiPath,
+            searchtype: searchType,
+        });
+
+        //WO Info
+        if (searchType === SearchType.WO) {
+            //WO attachments
+            const woAttachments: Attachment[] =
+                await api.getWorkOrderAttachments(
+                    plantId,
+                    entityId.toString(),
+                    abortSignal
+                );
+
+            addEntityToMap({
+                entitytype: EntityType.WorkOrderAttachments,
+                entityid: entityId,
+                parententityid: entityId,
+                responseObj: currentResponseObj,
+                apipath: currentApiPath,
+            });
+
+            for (const attachment of woAttachments) {
+                //Checklist attachment
+                await api.getWorkOrderAttachment(
+                    plantId,
+                    entityId.toString(),
+                    attachment.id,
+                    abortSignal
+                );
+                addEntityToMap({
+                    entitytype: EntityType.WorkOrderAttachment,
+                    entityid: attachment.id,
+                    parententityid: entityId,
+                    apipath: currentApiPath,
+                    responseObj: currentResponseObj,
+                });
+            }
+        }
+
+        //For all checklists
+        buildOfflineScopeForAScope(scope, entityId, searchType);
+    };
+
     //Todo: Vi bør sjekke om vi kan bygge parallelt, for å spare tid. Altså, for-løkke som start buildOfflineScopeForEntity for alle elementer.
     //Todo: Istedenfor å gjøre api-kall, og så finne ut om vi allerede har entity i map-en, burde vi unngå å hente samme entity flere ganger.
 
@@ -411,6 +423,14 @@ const buildOfflineScope = async (
         console.log('Build offline scope for WO pkgs.');
         await buildOfflineScopeForEntity(wo.id, plantId, SearchType.WO);
     }
+
+    //Saved Searches
+    const savedSearches = api.getSavedSearches(plantId, abortSignal);
+    addEntityToMap({
+        apipath: currentApiPath,
+        responseObj: savedSearches,
+        entitytype: EntityType.SavedSearches,
+    });
 
     addEntitiesToDatabase();
 };
