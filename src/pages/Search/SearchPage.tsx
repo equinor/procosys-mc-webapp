@@ -19,6 +19,7 @@ import Search from './Search';
 import { OfflineStatus } from '../../typings/enums';
 import SyncErrors from './SyncErrors';
 import { OfflineSynchronizationErrors } from '../../services/apiTypes';
+import { LocalStorage } from '../../contexts/McAppContext';
 
 const SearchPageWrapper = styled.main`
     padding: 0 4%;
@@ -36,7 +37,7 @@ const SearchPage = (): JSX.Element => {
         useState<OfflineSynchronizationErrors | null>(null);
 
     useEffect(() => {
-        const errors = localStorage.getItem('SynchErrors');
+        const errors = localStorage.getItem(LocalStorage.SYNCH_ERRORS);
         if (errors != null) {
             try {
                 const errorsObject = JSON.parse(errors);

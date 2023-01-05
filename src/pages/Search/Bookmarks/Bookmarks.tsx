@@ -7,8 +7,6 @@ import { OfflineStatus, SearchType } from '../../../typings/enums';
 import useCommonHooks from '../../../utils/useCommonHooks';
 import AsyncPage from '../../../components/AsyncPage';
 import BookmarksPopUps, { BookmarksPopup } from './BookmarksPopups';
-import { OfflineSynchronizationErrors } from '../../../services/apiTypes';
-import { isOfType } from '@equinor/procosys-webapp-components';
 import hasConnectionToServer from '../../../utils/hasConnectionToServer';
 import { updateOfflineStatus } from '../../../offline/OfflineStatus';
 
@@ -49,8 +47,6 @@ const Bookmarks = (): JSX.Element => {
     const getLoadingMessage = (): string => {
         if (offlineAction == OfflineAction.DOWNLOADING) {
             return 'Downloading data for offline use. Please do not exit the app until the download has finished.';
-        } else if (offlineState == OfflineStatus.SYNCHING) {
-            return 'Synching offline changes. Please do not exit the app until the upload has finished.';
         } else {
             return '';
         }

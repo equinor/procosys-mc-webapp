@@ -2,6 +2,7 @@ import { Button, Input, Label } from '@equinor/eds-core-react';
 import { Navbar, ProcosysButton } from '@equinor/procosys-webapp-components';
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import { LocalStorage } from './contexts/McAppContext';
 import { db } from './offline/db';
 import { updateOfflineStatus } from './offline/OfflineStatus';
 import { OfflineStatus } from './typings/enums';
@@ -29,15 +30,15 @@ const OfflinePin = ({ setUserPin }: OfflinePinProps): JSX.Element => {
         //todo: Hvis kode her kaster exception, så må vi sørge for å vise feilmelding
         const succsess = await db.reInitAndVerifyPin(enteredPin);
         if (succsess) {
-            localStorage.removeItem('loginTries');
+            localStorage.removeItem(LocalStorage.LOGIN_TRIES);
             setUserPin(enteredPin);
             return;
         }
 
         //Not able to initialize database. Probably wrong pin.
-        const loginTries = localStorage.getItem('loginTries');
+        const loginTries = localStorage.getItem(LocalStorage.LOGIN_TRIES);
         if (loginTries == null) {
-            localStorage.setItem('loginTries', '1');
+            localStorage.setItem(LocalStorage.LOGIN_TRIES, '1');
             setFailedPin(true);
             setLoginTriesLeft((prev) => prev - 1);
             return;
@@ -45,12 +46,15 @@ const OfflinePin = ({ setUserPin }: OfflinePinProps): JSX.Element => {
         const loginTriesNum = parseInt(loginTries);
         if (!isNaN(loginTriesNum) && loginTriesNum < 2) {
             setFailedPin(true);
-            localStorage.setItem('loginTries', `${loginTriesNum + 1}`);
+            localStorage.setItem(
+                LocalStorage.LOGIN_TRIES,
+                `${loginTriesNum + 1}`
+            );
             setLoginTriesLeft((prev) => prev - 1);
         } else {
             await db.delete();
             updateOfflineStatus(OfflineStatus.ONLINE, '');
-            localStorage.removeItem('loginTries');
+            localStorage.removeItem(LocalStorage.LOGIN_TRIES);
         }
     };
 

@@ -11,6 +11,8 @@ import {
 import { OfflineSynchronizationErrors } from '../services/apiTypes';
 import { getOfflineProjectIdfromLocalStorage } from './OfflineStatus';
 import { StorageKey } from '@equinor/procosys-webapp-components';
+import { db } from './db';
+import { LocalStorage } from '../contexts/McAppContext';
 
 const offlineUpdateRepository = new OfflineUpdateRepository();
 
@@ -69,10 +71,7 @@ export const syncronizeOfflineUpdatesWithBackend = async (
                 offlineUpdate.uniqueId
             );
 
-            if (
-                offlineUpdate.syncStatus == SyncStatus.NOT_SYNCHRONIZED &&
-                !offlineUpdate.errorCode
-            ) {
+            if (offlineUpdate.syncStatus == SyncStatus.NOT_SYNCHRONIZED) {
                 try {
                     const id = await performOfflineUpdate(offlineUpdate, api);
 
@@ -90,7 +89,16 @@ export const syncronizeOfflineUpdatesWithBackend = async (
                         }
                     }
                 } catch (error) {
-                    break; //When an error occures, further synchronization of this entity should stop.
+                    if (error instanceof HTTPError) {
+                        //Main-api returned an error code.
+                        await handleFailedUpdateRequest(offlineUpdate, error);
+                        break; //skip further updates on current entity
+                    } else {
+                        throw Error(
+                            'Error occured when calling update request.  ' +
+                                error
+                        );
+                    }
                 }
             } else if (offlineUpdate.syncStatus == SyncStatus.SYNCHRONIZED) {
                 console.log(
@@ -114,10 +122,17 @@ export const syncronizeOfflineUpdatesWithBackend = async (
         await setEntityToSynchronized(updatesForEntity[0], api);
     }
 
-    await reportErrorsIfExists(currentPlant, currentProject, api);
+    const errorsExists = await reportErrorsIfExists(
+        currentPlant,
+        currentProject,
+        api
+    );
 
-    //Note: Currently the offline scope will be set to synchronized, regardless of any errors.
-    await api.putOfflineScopeSynchronized(currentPlant, currentProject);
+    if (!errorsExists) {
+        //The offline scope will be set to synchronized and database will be delete, only if there are no errors.
+        await api.putOfflineScopeSynchronized(currentPlant, currentProject);
+        await db.delete();
+    }
 };
 
 type EntityToUpdate = {
@@ -154,7 +169,7 @@ const getListWithEntitiesToUpdate = (
 };
 
 /**
- * The update request is updated with error message.
+ * The update request in the offline-database is updated with error message.
  */
 const handleFailedUpdateRequest = async (
     offlineUpdate: OfflineUpdateRequest,
@@ -173,7 +188,7 @@ const reportErrorsIfExists = async (
     plantId: string,
     projectId: number,
     api: ProcosysApiService
-): Promise<void> => {
+): Promise<boolean> => {
     console.log('reportErrorsIfExists');
     const offlineSynchronizationErrors: OfflineSynchronizationErrors = {
         ProjectId: projectId,
@@ -212,16 +227,22 @@ const reportErrorsIfExists = async (
         );
 
         localStorage.setItem(
-            'SynchErrors',
+            LocalStorage.SYNCH_ERRORS,
             JSON.stringify(offlineSynchronizationErrors)
         );
         localStorage.setItem(
-            'offlineStatus',
+            LocalStorage.OFFLINE_STATUS,
             OfflineStatus.SYNC_FAIL.toString()
         );
         console.log('setting offline status to sync fail');
+        return true;
     } else {
-        localStorage.setItem('offlineStatus', OfflineStatus.ONLINE.toString());
+        localStorage.setItem(
+            LocalStorage.OFFLINE_STATUS,
+            OfflineStatus.ONLINE.toString()
+        );
+        localStorage.removeItem(LocalStorage.SYNCH_ERRORS); //just in case...
+        return false;
     }
 };
 
@@ -238,75 +259,61 @@ const performOfflineUpdate = async (
     const method = offlineUpdate.method.toUpperCase();
     let newEntityId;
 
-    try {
-        if (method == 'POST') {
-            //Handle POST
-            if (offlineUpdate.type == RequestType.Json) {
-                //Handle json
-                newEntityId = await api.postByFetch(
-                    offlineUpdate.url,
-                    offlineUpdate.bodyData
-                );
-            } else if (offlineUpdate.type == RequestType.Attachment) {
-                //Handle attachment
-                const bodyData = offlineUpdate.bodyData as Map<
-                    string,
-                    ArrayBuffer
-                >;
-                const fd = new FormData();
-
-                for (const [key, value] of bodyData) {
-                    const blob = new Blob([value], {
-                        type: offlineUpdate.mimeType,
-                    });
-                    fd.append(key, blob, key);
-                }
-
-                response = await api.postAttachmentByFetch(
-                    offlineUpdate.url,
-                    fd
-                );
-            } else {
-                throw Error(
-                    'Not able to handle given offline update type. Offline update type: ' +
-                        offlineUpdate.type
-                );
-            }
-        } else if (method == 'PUT') {
-            //Handle PUT
-            response = await api.putByFetch(
-                offlineUpdate.url,
-                offlineUpdate.bodyData,
-                { 'Content-Type': 'application/json' }
-            );
-        } else if (method == 'DELETE') {
-            //Handle DELETE
-            response = await api.deleteByFetch(
+    if (method == 'POST') {
+        //Handle POST
+        if (offlineUpdate.type == RequestType.Json) {
+            //Handle json
+            newEntityId = await api.postByFetch(
                 offlineUpdate.url,
                 offlineUpdate.bodyData
             );
+        } else if (offlineUpdate.type == RequestType.Attachment) {
+            //Handle attachment
+            const bodyData = offlineUpdate.bodyData as Map<string, ArrayBuffer>;
+            const fd = new FormData();
+
+            for (const [key, value] of bodyData) {
+                const blob = new Blob([value], {
+                    type: offlineUpdate.mimeType,
+                });
+                fd.append(key, blob, key);
+            }
+
+            response = await api.postAttachmentByFetch(offlineUpdate.url, fd);
         } else {
             throw Error(
-                'Not able to handle update request. Method is ' + method
+                'Not able to handle given offline update type. Offline update type: ' +
+                    offlineUpdate.type
             );
         }
+    } else if (method == 'PUT') {
+        //Handle PUT
+        response = await api.putByFetch(
+            offlineUpdate.url,
+            offlineUpdate.bodyData,
+            { 'Content-Type': 'application/json' }
+        );
+    } else if (method == 'DELETE') {
+        //Handle DELETE
+        response = await api.deleteByFetch(
+            offlineUpdate.url,
+            offlineUpdate.bodyData
+        );
+    } else {
+        throw Error('Not able to handle update request. Method is ' + method);
+    }
 
-        //Response is ok
-        //Set offline update to be syncronized in browser database.
-        offlineUpdate.syncStatus = SyncStatus.SYNCHRONIZED;
-        await offlineUpdateRepository.updateOfflineUpdateRequest(offlineUpdate);
+    //Response is ok
+    //Set offline update to be syncronized in browser database.
+    offlineUpdate.syncStatus = SyncStatus.SYNCHRONIZED;
+    offlineUpdate.errorCode = undefined; //remove in case eror code was set in previous synchroinzation.
+    offlineUpdate.errorMessage = undefined;
 
-        if (offlineUpdate.responseIsNewEntityId) {
-            //todo: Her kan vi ha litt feilhådntering. Vi må ha en reposnse.id her.
-            return newEntityId;
-        }
-    } catch (error) {
-        console.error('Not able to syncronize entity.', error);
-        if (error instanceof HTTPError) {
-            //Main-api returned an error code.
-            await handleFailedUpdateRequest(offlineUpdate, error);
-        }
-        throw Error('Error occured when calling update request.  ' + error);
+    await offlineUpdateRepository.updateOfflineUpdateRequest(offlineUpdate);
+
+    if (offlineUpdate.responseIsNewEntityId) {
+        //todo: Her kan vi ha litt feilhådntering. Vi må ha en reposnse.id her.
+        return newEntityId;
     }
 };
 

@@ -34,6 +34,13 @@ export enum AsyncStatus {
     EMPTY_RESPONSE,
 }
 
+export enum LocalStorage {
+    LOGIN_TRIES = 'loginTries',
+    OFFLINE_PROJECT_ID = 'offlineProjectId',
+    OFFLINE_STATUS = 'offlineStatus',
+    SYNCH_ERRORS = 'SynchErrors',
+}
+
 const McAppContext = React.createContext({} as McAppContextProps);
 
 type McAppContextProviderProps = {

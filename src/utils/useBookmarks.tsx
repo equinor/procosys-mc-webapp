@@ -8,6 +8,7 @@ import buildOfflineScope from '../offline/buildOfflineScope';
 import { db } from '../offline/db';
 import { updateOfflineStatus } from '../offline/OfflineStatus';
 import { OfflineContentRepository } from '../offline/OfflineContentRepository';
+import { LocalStorage } from '../contexts/McAppContext';
 
 export enum OfflineAction {
     INACTIVE = 0,
@@ -164,7 +165,7 @@ const useBookmarks = () => {
         setBookmarksStatus(AsyncStatus.LOADING);
         setOfflineAction(OfflineAction.DOWNLOADING);
 
-        localStorage.removeItem('SynchErrors');
+        localStorage.removeItem(LocalStorage.SYNCH_ERRORS); //just to be sure...
         db.create(userPin);
 
         if (currentPlant && currentProject) {
@@ -179,7 +180,7 @@ const useBookmarks = () => {
         updateOfflineStatus(OfflineStatus.OFFLINE, userPin, currentProject?.id);
 
         setOfflineState(OfflineStatus.OFFLINE);
-        localStorage.removeItem('loginTries'); //just to be sure...
+        localStorage.removeItem(LocalStorage.LOGIN_TRIES); //just to be sure...
         setBookmarksStatus(AsyncStatus.SUCCESS);
         setOfflineAction(OfflineAction.INACTIVE);
     };
@@ -188,7 +189,7 @@ const useBookmarks = () => {
         //setOfflineAction(OfflineAction.SYNCHING);
         setBookmarksStatus(AsyncStatus.LOADING);
         localStorage.setItem(
-            'offlineStatus',
+            LocalStorage.OFFLINE_STATUS,
             OfflineStatus.SYNCHING.toString()
         );
         //After reloading, the application will be reauthenticated, and

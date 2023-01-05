@@ -40,7 +40,7 @@ export default class OfflineStorage extends Dexie {
         this?.offlineContent.mapToClass(Entity);
         this?.offlineUpdates.mapToClass(OfflineUpdateRequest);
 
-        //this.encryptDatabase(userPin);
+        this.encryptDatabase(userPin);
 
         if (!this.isOpen()) {
             await this.open();

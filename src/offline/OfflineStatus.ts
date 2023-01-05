@@ -1,11 +1,9 @@
 import { isOfType } from '@equinor/procosys-webapp-components';
+import { LocalStorage } from '../contexts/McAppContext';
 import { OfflineStatus } from '../typings/enums';
 
-const OFFLINE_PROJECT_ID = 'offlineProjectId';
-const OFFLINE_STATUS = 'offlineStatus';
-
 export const getOfflineStatusfromLocalStorage = (): OfflineStatus => {
-    const offlineStatus = localStorage.getItem(OFFLINE_STATUS);
+    const offlineStatus = localStorage.getItem(LocalStorage.OFFLINE_STATUS);
     if (offlineStatus == null) return OfflineStatus.ONLINE;
     const offlineStatusNum = parseInt(offlineStatus);
     if (offlineStatusNum in OfflineStatus) {
@@ -23,11 +21,14 @@ export const updateOfflineStatus = (
     userPin: string,
     currentProjectId?: number
 ): void => {
-    localStorage.setItem(OFFLINE_STATUS, offlineStatus.toString());
+    localStorage.setItem(LocalStorage.OFFLINE_STATUS, offlineStatus.toString());
 
     //todo: skal vi gjøre dette på en annen måte?
     if (currentProjectId) {
-        localStorage.setItem(OFFLINE_PROJECT_ID, String(currentProjectId));
+        localStorage.setItem(
+            LocalStorage.OFFLINE_PROJECT_ID,
+            String(currentProjectId)
+        );
     }
 
     //Send message to service worker about offline status
@@ -44,7 +45,7 @@ export const updateOfflineStatus = (
 };
 
 export const getOfflineProjectIdfromLocalStorage = (): number => {
-    const projectId = localStorage.getItem(OFFLINE_PROJECT_ID);
+    const projectId = localStorage.getItem(LocalStorage.OFFLINE_PROJECT_ID);
     if (projectId) {
         return Number.parseInt(projectId);
     }

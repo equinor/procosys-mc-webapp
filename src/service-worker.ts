@@ -128,10 +128,13 @@ self.addEventListener('install', (event) => {
 });
 
 self.addEventListener('fetch', function (event: FetchEvent) {
-    // console.log('Intercept fetch', event.request.url);
-    if (offlineStatus == OfflineStatus.OFFLINE) {
+    //console.log('Intercept fetch', event.request.url);
+    const url = event.request.url;
+    if (
+        offlineStatus == OfflineStatus.OFFLINE &&
+        !url.includes('Application?') //is used to check connection to server
+    ) {
         //User is in offline mode.  Data must be fetched from offline database
-        const url = event.request.url;
         const method = event.request.method;
         if (method == 'GET' && url.includes('/api/')) {
             //todo: We should find a better way to identify these requests!
