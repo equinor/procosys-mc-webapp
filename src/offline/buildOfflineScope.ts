@@ -282,7 +282,10 @@ const buildOfflineScope = async (
                     apipath: currentApiPath,
                 });
 
-                buildOfflineScopeForPunchList(checklistPunchList, checklist.id);
+                await buildOfflineScopeForPunchList(
+                    checklistPunchList,
+                    checklist.id
+                );
                 //Checklist attachment list
                 const checklistAttachments: Attachment[] =
                     await api.getChecklistAttachments(
@@ -411,7 +414,7 @@ const buildOfflineScope = async (
         }
 
         //For all checklists
-        buildOfflineScopeForAScope(scope, entityId, searchType);
+        await buildOfflineScopeForAScope(scope, entityId, searchType);
     };
 
     //Todo: Vi bør sjekke om vi kan bygge parallelt, for å spare tid. Altså, for-løkke som start buildOfflineScopeForEntity for alle elementer.
@@ -458,6 +461,7 @@ const buildOfflineScope = async (
             abortSignal,
             nextPage
         );
+
         if (
             savedSearch.type == ApiSavedSearchType.CHECKLIST &&
             isArrayOfType<ChecklistSavedSearchResult>(
@@ -465,13 +469,17 @@ const buildOfflineScope = async (
                 'isSigned'
             )
         ) {
+            console.log('checklist saved search :', currentApiPath);
             addEntityToMap({
                 apipath: currentApiPath,
                 responseObj: savedSearchResults,
                 entitytype: EntityType.Checklists,
                 searchtype: SearchType.SAVED,
             });
-            buildOfflineScopeForAScope(savedSearchResults, savedSearch.id);
+            await buildOfflineScopeForAScope(
+                savedSearchResults,
+                savedSearch.id
+            );
         } else if (
             savedSearch.type == ApiSavedSearchType.PUNCH &&
             isArrayOfType<PunchItemSavedSearchResult>(
@@ -479,14 +487,19 @@ const buildOfflineScope = async (
                 'isCleared'
             )
         ) {
+            console.log('punch saved search :', currentApiPath);
             addEntityToMap({
                 apipath: currentApiPath,
                 responseObj: savedSearchResults,
                 entitytype: EntityType.Punchlist,
                 searchtype: SearchType.SAVED,
             });
-            buildOfflineScopeForPunchList(savedSearchResults, savedSearch.id);
+            await buildOfflineScopeForPunchList(
+                savedSearchResults,
+                savedSearch.id
+            );
         }
+
         if (savedSearchResults.length > 0)
             getSavedSearchResults(savedSearch, nextPage + 1);
     };
