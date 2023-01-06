@@ -182,6 +182,56 @@ const buildOfflineScope = async (
     });
 
     /**
+     * Build offline scope for a punch list
+     */
+    const buildOfflineScopeForPunchList = async (
+        punchList: PunchPreview[] | PunchItemSavedSearchResult[],
+        parentId: number
+    ): Promise<void> => {
+        for (const punch of punchList) {
+            //Punch item
+            await api.getPunchItem(plantId, punch.id.toString());
+
+            addEntityToMap({
+                entitytype: EntityType.PunchItem,
+                entityid: punch.id,
+                parententityid: parentId,
+                responseObj: currentResponseObj,
+                apipath: currentApiPath,
+            });
+
+            //Punch attachments
+            const punchAttachments: Attachment[] =
+                await api.getPunchAttachments(plantId, punch.id);
+
+            addEntityToMap({
+                entitytype: EntityType.PunchAttachments,
+                entityid: punch.id,
+                parententityid: parentId,
+                responseObj: currentResponseObj,
+                apipath: currentApiPath,
+            });
+
+            for (const attachment of punchAttachments) {
+                //Checklist attachment
+                await api.getPunchAttachment(
+                    abortSignal,
+                    plantId,
+                    punch.id,
+                    attachment.id
+                );
+                addEntityToMap({
+                    entitytype: EntityType.PunchAttachment,
+                    entityid: attachment.id,
+                    parententityid: punch.id,
+                    apipath: currentApiPath,
+                    responseObj: currentResponseObj,
+                });
+            }
+        }
+    };
+
+    /**
      * Build offline scope for a list of checklists
      */
     const buildOfflineScopeForAScope = async (
@@ -232,47 +282,7 @@ const buildOfflineScope = async (
                     apipath: currentApiPath,
                 });
 
-                for (const punch of checklistPunchList) {
-                    //Punch item
-                    await api.getPunchItem(plantId, punch.id.toString());
-
-                    addEntityToMap({
-                        entitytype: EntityType.PunchItem,
-                        entityid: punch.id,
-                        parententityid: checklist.id,
-                        responseObj: currentResponseObj,
-                        apipath: currentApiPath,
-                    });
-
-                    //Punch attachments
-                    const punchAttachments: Attachment[] =
-                        await api.getPunchAttachments(plantId, punch.id);
-
-                    addEntityToMap({
-                        entitytype: EntityType.PunchAttachments,
-                        entityid: punch.id,
-                        parententityid: checklist.id,
-                        responseObj: currentResponseObj,
-                        apipath: currentApiPath,
-                    });
-
-                    for (const attachment of punchAttachments) {
-                        //Checklist attachment
-                        await api.getPunchAttachment(
-                            abortSignal,
-                            plantId,
-                            punch.id,
-                            attachment.id
-                        );
-                        addEntityToMap({
-                            entitytype: EntityType.PunchAttachment,
-                            entityid: attachment.id,
-                            parententityid: punch.id,
-                            apipath: currentApiPath,
-                            responseObj: currentResponseObj,
-                        });
-                    }
-                }
+                buildOfflineScopeForPunchList(checklistPunchList, checklist.id);
                 //Checklist attachment list
                 const checklistAttachments: Attachment[] =
                     await api.getChecklistAttachments(
@@ -472,10 +482,10 @@ const buildOfflineScope = async (
             addEntityToMap({
                 apipath: currentApiPath,
                 responseObj: savedSearchResults,
-                entitytype: EntityType.Checklists,
+                entitytype: EntityType.Punchlist,
                 searchtype: SearchType.SAVED,
             });
-            // TODO: get info about all the punches (separate from the buildOfflineScopeForAScope func)
+            buildOfflineScopeForPunchList(savedSearchResults, savedSearch.id);
         }
         if (savedSearchResults.length > 0)
             getSavedSearchResults(savedSearch, nextPage + 1);
