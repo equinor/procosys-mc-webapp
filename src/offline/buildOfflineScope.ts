@@ -3,17 +3,20 @@ import {
     Attachment,
     ChecklistPreview,
     ChecklistResponse,
+    ChecklistSavedSearchResult,
+    PunchItemSavedSearchResult,
     PunchPreview,
     SavedSearch,
     Tag,
 } from '../services/apiTypes';
 
 import { ProcosysApiService } from '../services/procosysApi';
-import { EntityType, SearchType } from '../typings/enums';
+import { EntityType, SavedSearchType, SearchType } from '../typings/enums';
 import { OfflineContentRepository } from './OfflineContentRepository';
 import { IEntity } from './IEntity';
 import { fetchAppConfig, fetchAuthConfig } from '../services/appConfiguration';
 import removeBaseUrlFromUrl from '../utils/removeBaseUrlFromUrl';
+import { isArrayOfType, isOfType } from '@equinor/procosys-webapp-components';
 
 /**
  * This function will be called when user want to go offline with given bookmarks.
@@ -182,9 +185,9 @@ const buildOfflineScope = async (
      * Build offline scope for a list of checklists
      */
     const buildOfflineScopeForAScope = async (
-        scope: ChecklistPreview[],
+        scope: ChecklistPreview[] | ChecklistSavedSearchResult[],
         entityId: number,
-        searchType: SearchType
+        searchType?: SearchType
     ): Promise<void> => {
         for (const checklist of scope) {
             //Checklist
@@ -445,12 +448,35 @@ const buildOfflineScope = async (
             abortSignal,
             nextPage
         );
-        addEntityToMap({
-            apipath: currentApiPath,
-            responseObj: savedSearchResults,
-            entitytype: EntityType.SavedSearchResults,
-        });
-        // TODO: get all info about punches or checklists
+        if (
+            savedSearch.type == ApiSavedSearchType.CHECKLIST &&
+            isArrayOfType<ChecklistSavedSearchResult>(
+                savedSearchResults,
+                'isSigned'
+            )
+        ) {
+            addEntityToMap({
+                apipath: currentApiPath,
+                responseObj: savedSearchResults,
+                entitytype: EntityType.Checklists,
+                searchtype: SearchType.SAVED,
+            });
+            buildOfflineScopeForAScope(savedSearchResults, savedSearch.id);
+        } else if (
+            savedSearch.type == ApiSavedSearchType.PUNCH &&
+            isArrayOfType<PunchItemSavedSearchResult>(
+                savedSearchResults,
+                'isCleared'
+            )
+        ) {
+            addEntityToMap({
+                apipath: currentApiPath,
+                responseObj: savedSearchResults,
+                entitytype: EntityType.Checklists,
+                searchtype: SearchType.SAVED,
+            });
+            // TODO: get info about all the punches (separate from the buildOfflineScopeForAScope func)
+        }
         if (savedSearchResults.length > 0)
             getSavedSearchResults(savedSearch, nextPage + 1);
     };

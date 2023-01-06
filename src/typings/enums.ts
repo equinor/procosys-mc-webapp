@@ -38,7 +38,6 @@ export enum EntityType {
     ChecklistAttachments = 'ChecklistAttachments',
     ChecklistAttachment = 'ChecklistAttachment',
     SavedSearches = 'SavedSearches',
-    SavedSearchResults = 'SavedSearchRessults',
 }
 
 export enum SavedSearchType {
@@ -52,6 +51,7 @@ export enum SearchType {
     WO = 'WO',
     Tag = 'Tag',
     IPO = 'IPO',
+    SAVED = 'saved',
 }
 
 export enum OfflineStatus {
