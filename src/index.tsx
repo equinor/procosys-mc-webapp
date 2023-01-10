@@ -244,10 +244,7 @@ const renderApp = async (): Promise<void> => {
     try {
         console.log('getting offline status');
         const status = getOfflineStatusfromLocalStorage();
-        if (
-            status == OfflineStatus.OFFLINE ||
-            status == OfflineStatus.SYNCHING
-        ) {
+        if (status != OfflineStatus.ONLINE) {
             render(<OfflinePin setUserPin={setUserPin} />);
         }
         renderApp();

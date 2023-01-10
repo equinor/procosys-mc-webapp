@@ -6,12 +6,15 @@ import {
     PageHeader,
     StorageKey,
 } from '@equinor/procosys-webapp-components';
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import EdsIcon from '../../components/icons/EdsIcon';
 import { LocalStorage } from '../../contexts/McAppContext';
 import { db } from '../../offline/db';
-import { getOfflineProjectIdfromLocalStorage } from '../../offline/OfflineStatus';
+import {
+    getOfflineProjectIdfromLocalStorage,
+    updateOfflineStatus,
+} from '../../offline/OfflineStatus';
 import { OfflineSynchronizationErrors } from '../../services/apiTypes';
 import { COLORS } from '../../style/GlobalStyles';
 import { OfflineStatus } from '../../typings/enums';
@@ -25,6 +28,7 @@ interface SyncErrorProps {
     setSyncErrors: React.Dispatch<
         React.SetStateAction<OfflineSynchronizationErrors | null>
     >;
+    url: string;
 }
 
 const ButtonWrapper = styled.div`
@@ -38,10 +42,30 @@ const ButtonWrapper = styled.div`
 const SyncErrors = ({
     syncErrors,
     setSyncErrors,
+    url,
 }: SyncErrorProps): JSX.Element => {
     const currentPlant = localStorage.getItem(StorageKey.PLANT);
     const currentProject = getOfflineProjectIdfromLocalStorage();
-    const { api } = useCommonHooks();
+    const { setOfflineState, api, history } = useCommonHooks();
+
+    useEffect(() => {
+        if (!syncErrors) {
+            history.push(`${url}/bookmarks`);
+        }
+    }, [syncErrors]);
+
+    const deleteFailedUpdates = async (): Promise<void> => {
+        localStorage.removeItem(LocalStorage.SYNCH_ERRORS);
+        //Set offline scope to synchronized and elete offline database.
+        if (currentPlant && currentProject) {
+            await api.putOfflineScopeSynchronized(currentPlant, currentProject);
+        }
+
+        await db.delete();
+        setOfflineState(OfflineStatus.ONLINE);
+        updateOfflineStatus(OfflineStatus.ONLINE, '');
+        setSyncErrors(null);
+    };
 
     return (
         <>
@@ -57,17 +81,15 @@ const SyncErrors = ({
                     the same punch/checklist has not been attempted.
                 </p>
                 <p>
+                    The reason for errors might be legitimate, and can be caused
+                    by modifications done by other users. You should try to fix
+                    the issues before retrying the synchronization. By deleting
+                    the failed updates, they will be lost.
+                </p>
+
+                <p>
                     Details describing the error(s) encountered is listed below.
                     Contact support for any questions regarding the error(s)
-                </p>
-                <p>
-                    You can retry the synchronization by clicking the
-                    &apos;Retry synchronization&apos; button.
-                </p>
-                <p>
-                    By clicking &apos;Delete errors&apos;, the error messages
-                    will be deleted, and you will not be able to retry
-                    synchronization.
                 </p>
             </CollapsibleCard>
             <ButtonWrapper>
@@ -87,20 +109,8 @@ const SyncErrors = ({
                 >
                     Retry synchronization
                 </Button>
-                <Button
-                    onClick={async (): Promise<void> => {
-                        localStorage.removeItem(LocalStorage.SYNCH_ERRORS);
-                        setSyncErrors(null);
-                        //Set offline scope to synchronized and elete offline database.
-                        if (currentPlant && currentProject)
-                            await api.putOfflineScopeSynchronized(
-                                currentPlant,
-                                currentProject
-                            );
-                        await db.delete();
-                    }}
-                >
-                    Delete errors
+                <Button onClick={deleteFailedUpdates}>
+                    Delete failed updates
                 </Button>
             </ButtonWrapper>
             {syncErrors ? (

@@ -57,6 +57,12 @@ const SearchPage = (): JSX.Element => {
         setSyncErrors(null);
     }, [offlineState]);
 
+    useEffect(() => {
+        if (syncErrors) {
+            history.push(`${url}/sync-errors`);
+        }
+    }, [syncErrors]);
+
     return (
         <>
             <SearchPageWrapper>
@@ -85,6 +91,7 @@ const SearchPage = (): JSX.Element => {
                             <SyncErrors
                                 syncErrors={syncErrors}
                                 setSyncErrors={setSyncErrors}
+                                url={url}
                             />
                         )}
                     />
