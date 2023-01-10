@@ -18,7 +18,9 @@ import {
     ProcosysApiSettings,
 } from '../services/appConfiguration';
 import baseIPOApiService from '../services/baseIPOApi';
-import procosysIPOApiService, { ProcosysIPOApiService } from '../services/procosysIPOApi';
+import procosysIPOApiService, {
+    ProcosysIPOApiService,
+} from '../services/procosysIPOApi';
 
 const client = new Msal.PublicClientApplication({
     auth: { clientId: 'testId', authority: 'testAuthority' },
@@ -37,8 +39,8 @@ const dummyAppConfig: AppConfig = {
     ipoApi: {
         baseUrl: 'testUrl',
         apiVersion: '',
-        scope: ['']
-    }
+        scope: [''],
+    },
 };
 
 const dummyFeatureFlags: FeatureFlags = {
@@ -56,15 +58,12 @@ const procosysApiInstance = procosysApiService({
     apiVersion: 'dummy-version',
 });
 
-const baseIPOApiInstance = baseIPOApiService({
-    authInstance,
-    baseURL: baseURL,
-    scope: ['testscope']
-});
-
-const ipoApiInstance = procosysIPOApiService({
-    axios: baseIPOApiInstance
-});
+const ipoApiInstance = procosysIPOApiService(
+    {
+        baseURL: baseURL,
+    },
+    'dummy-bearer-token'
+);
 
 type WithMcAppContextProps = {
     Component: JSX.Element;
@@ -93,7 +92,7 @@ export const withMcAppContext = ({
                     api: api,
                     appConfig: dummyAppConfig,
                     featureFlags: dummyFeatureFlags,
-                    ipoApi: ipoApi
+                    ipoApi: ipoApi,
                 }}
             >
                 {Component}
