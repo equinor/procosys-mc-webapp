@@ -11,6 +11,7 @@ import {
     ErrorPage,
     ReloadButton,
     LoadingPage,
+    SkeletonLoadingPage,
 } from '@equinor/procosys-webapp-components';
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 import procosysIPOApiService from './services/procosysIPOApi';
@@ -20,8 +21,8 @@ import {
     updateOfflineStatus,
 } from './offline/OfflineStatus';
 import { syncronizeOfflineUpdatesWithBackend } from './offline/syncUpdatesWithBackend';
-import { db } from './offline/db';
 import { OfflineStatus } from './typings/enums';
+import hasConnectionToServer from './utils/hasConnectionToServer';
 
 serviceWorkerRegistration.register();
 
@@ -147,39 +148,69 @@ const renderApp = async (): Promise<void> => {
         //so the synchronization with backend must be started.
         //We need to go online before initialization of the application.
 
-        const {
-            authInstance,
-            procosysApiInstance,
-            appInsightsReactPlugin,
-            appConfig,
-            featureFlags,
-            configurationAccessToken,
-            procosysIPOApiInstance,
-        } = await initialize();
+        //HER MÅ JEG SJEKKE OM JEG ER ONLINE, HVIS IKKE, GI FEILMELDING, EVT SJEKKER JEG DETTE I INITITLIZE,D OG KASTER EXCEDPTION
+
+        let api = null;
 
         try {
+            const {
+                authInstance,
+                procosysApiInstance,
+                appInsightsReactPlugin,
+                appConfig,
+                featureFlags,
+                configurationAccessToken,
+                procosysIPOApiInstance,
+            } = await initialize();
+
+            api = procosysApiInstance;
+
+            render(
+                <SkeletonLoadingPage
+                    nrOfRows={10}
+                    text={
+                        'Synching offline changes. Please do not exit the app until the upload has finished.'
+                    }
+                />
+            );
+
             await syncronizeOfflineUpdatesWithBackend(procosysApiInstance);
-            await db.delete();
+
+            render(
+                <App
+                    authInstance={authInstance}
+                    procosysApiInstance={procosysApiInstance}
+                    appInsightsReactPlugin={appInsightsReactPlugin}
+                    appConfig={appConfig}
+                    featureFlags={featureFlags}
+                    configurationAccessToken={configurationAccessToken}
+                    procosysIPOApiInstance={procosysIPOApiInstance}
+                />
+            );
         } catch (error) {
-            console.log(
+            console.error(
                 'Error occured in synchronization with backend. ',
                 error
             );
-            throw Error('Error occured in synchronization with backend.');
-            //todo: hva bør vi gjøre her?
-        }
 
-        render(
-            <App
-                authInstance={authInstance}
-                procosysApiInstance={procosysApiInstance}
-                appInsightsReactPlugin={appInsightsReactPlugin}
-                appConfig={appConfig}
-                featureFlags={featureFlags}
-                configurationAccessToken={configurationAccessToken}
-                procosysIPOApiInstance={procosysIPOApiInstance}
-            />
-        );
+            let errorMessage = '';
+
+            if (api && (await hasConnectionToServer(api))) {
+                errorMessage =
+                    'An error occured during synchronization of offline updates. Reload this page to try again. Contact support if problem persist.';
+            } else {
+                errorMessage =
+                    'The application is not able to connect to the server. Please check you internet connection. Reload this page to try again. Contact support if problem persist.';
+            }
+
+            render(
+                <ErrorPage
+                    actions={[<ReloadButton key={'reload'} />]}
+                    title="Error occured during synchronization"
+                    description={errorMessage}
+                ></ErrorPage>
+            );
+        }
     } else {
         console.log('state not sync');
         //We are either in online or offline mode, and will render the application
@@ -213,10 +244,7 @@ const renderApp = async (): Promise<void> => {
     try {
         console.log('getting offline status');
         const status = getOfflineStatusfromLocalStorage();
-        if (
-            status == OfflineStatus.OFFLINE ||
-            status == OfflineStatus.SYNCHING
-        ) {
+        if (status != OfflineStatus.ONLINE) {
             render(<OfflinePin setUserPin={setUserPin} />);
         }
         renderApp();

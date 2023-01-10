@@ -1,3 +1,4 @@
+import { HTTPError } from '../services/HTTPError';
 import { ProcosysApiService } from '../services/procosysApi';
 
 /**
@@ -10,6 +11,11 @@ const hasConnectionToServer = async (
         await api.getApplication();
         return true;
     } catch (error) {
+        if (error instanceof HTTPError) {
+            //HTTPError means that we have a connection, but request give error code. Probably because of authentication.
+            return true;
+        }
+        console.error('Not able to get connection to the server. ', error);
         return false;
     }
 };
