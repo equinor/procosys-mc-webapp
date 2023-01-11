@@ -40,6 +40,7 @@ const dummyAppConfig: AppConfig = {
 
 const dummyFeatureFlags: FeatureFlags = {
     mcAppIsEnabled: true,
+    offlineFunctionalityIsEnabled: false,
 };
 
 const authInstance = authService({ MSAL: client, scopes: ['testScope'] });

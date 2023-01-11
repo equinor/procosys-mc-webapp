@@ -28,6 +28,7 @@ export type AuthConfigResponse = {
 
 export type FeatureFlags = {
     mcAppIsEnabled: boolean;
+    offlineFunctionalityIsEnabled: boolean;
 };
 
 export type AppConfig = {

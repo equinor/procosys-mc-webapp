@@ -29,7 +29,7 @@ const Bookmarks = (): JSX.Element => {
         offlineAction,
         setOfflineAction,
     } = useBookmarks();
-    const { offlineState, api } = useCommonHooks();
+    const { offlineState, api, featureFlags } = useCommonHooks();
     const [noNetworkConnection, setNoNetworkConnection] =
         useState<boolean>(false);
 
@@ -79,40 +79,51 @@ const Bookmarks = (): JSX.Element => {
                     setNoNetworkConnection={setNoNetworkConnection}
                     startSync={startSync}
                 />
-                <ButtonsWrapper>
-                    {offlineState != OfflineStatus.ONLINE ? (
-                        <>
-                            <Button
-                                onClick={startSync}
-                                disabled={disableActions()}
-                            >
-                                Finish offline
-                            </Button>
-                            <Button
-                                onClick={(): void =>
-                                    setOfflineAction(OfflineAction.CANCELLING)
-                                }
-                                disabled={disableActions()}
-                                color="danger"
-                            >
-                                Cancel offline
-                            </Button>
-                        </>
-                    ) : (
-                        <>
-                            <Button
-                                onClick={(): void =>
-                                    setOfflineAction(OfflineAction.STARTING)
-                                }
-                            >
-                                Start offline
-                            </Button>
-                            <Button onClick={deleteBookmarks}>
-                                Delete bookmarks
-                            </Button>
-                        </>
-                    )}
-                </ButtonsWrapper>
+
+                {featureFlags.offlineFunctionalityIsEnabled == true ? (
+                    <>
+                        <ButtonsWrapper>
+                            {offlineState != OfflineStatus.ONLINE ? (
+                                <>
+                                    <Button
+                                        onClick={startSync}
+                                        disabled={disableActions()}
+                                    >
+                                        Finish offline
+                                    </Button>
+                                    <Button
+                                        onClick={(): void =>
+                                            setOfflineAction(
+                                                OfflineAction.CANCELLING
+                                            )
+                                        }
+                                        disabled={disableActions()}
+                                        color="danger"
+                                    >
+                                        Cancel offline
+                                    </Button>
+                                </>
+                            ) : (
+                                <>
+                                    <Button
+                                        onClick={(): void =>
+                                            setOfflineAction(
+                                                OfflineAction.STARTING
+                                            )
+                                        }
+                                    >
+                                        Start offline
+                                    </Button>
+                                    <Button onClick={deleteBookmarks}>
+                                        Delete bookmarks
+                                    </Button>
+                                </>
+                            )}
+                        </ButtonsWrapper>
+                    </>
+                ) : (
+                    <Button onClick={deleteBookmarks}>Delete bookmarks</Button>
+                )}
                 {currentBookmarks
                     ? currentBookmarks.bookmarkedMcPkgs.length > 0 && (
                           <>
