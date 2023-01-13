@@ -13,6 +13,8 @@ const ButtonsWrapper = styled.div`
     }
 `;
 
+import OutstandingIpos from '../../components/OutstandingIpos';
+
 interface SearchProps {
     setSnackbarText: React.Dispatch<React.SetStateAction<string>>;
 }
@@ -22,7 +24,12 @@ const Search = ({ setSnackbarText }: SearchProps): JSX.Element => {
 
     const determineComponent = (): JSX.Element => {
         if (searchType === undefined) {
-            return <SavedSearches setSnackbarText={setSnackbarText} />;
+            return (
+                <>
+                    <SavedSearches setSnackbarText={setSnackbarText} />{' '}
+                    <OutstandingIpos />{' '}
+                </>
+            );
         }
         return <SearchArea searchType={searchType} />;
     };
