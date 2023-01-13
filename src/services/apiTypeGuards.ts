@@ -102,6 +102,9 @@ const isCheckItem = (data: unknown): data is CheckItem => {
     return (
         data != null && typeof (data as CheckItem).hasMetaTable === 'boolean'
     );
+    return (
+        data != null && typeof (data as CheckItem).hasMetaTable === 'boolean'
+    );
 };
 
 const isArrayOfCheckItems = (data: unknown): data is CheckItem[] => {
@@ -109,6 +112,7 @@ const isArrayOfCheckItems = (data: unknown): data is CheckItem[] => {
 };
 
 const isCustomCheckItem = (data: unknown): data is CustomCheckItem => {
+    return data != null && typeof (data as CustomCheckItem).isOk === 'boolean';
     return data != null && typeof (data as CustomCheckItem).isOk === 'boolean';
 };
 
