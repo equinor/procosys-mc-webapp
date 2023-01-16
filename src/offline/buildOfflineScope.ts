@@ -329,10 +329,10 @@ const buildOfflineScope = async (
                     for (const attachment of punchAttachments) {
                         //Checklist attachment
                         await api.getPunchAttachment(
-                            abortSignal,
                             plantId,
                             punch.id,
-                            attachment.id
+                            attachment.id,
+                            abortSignal
                         );
                         addEntityToMap({
                             entitytype: EntityType.PunchAttachment,
