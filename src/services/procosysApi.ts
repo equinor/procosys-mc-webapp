@@ -737,10 +737,10 @@ const procosysApiService = (
     };
 
     const getPunchAttachment = async (
-        abortSignal: AbortSignal,
         plantId: string,
         punchItemId: number,
-        attachmentId: number
+        attachmentId: number,
+        abortSignal?: AbortSignal
     ): Promise<Blob> => {
         const data = await getAttachmentByFetch(
             `PunchListItem/Attachment?plantId=PCS$${plantId}&punchItemId=${punchItemId}&attachmentId=${attachmentId}${apiVersion}`,
@@ -837,7 +837,7 @@ const procosysApiService = (
         plantId: string,
         workOrderId: string,
         attachmentId: number,
-        abortSignal: AbortSignal
+        abortSignal?: AbortSignal
     ): Promise<Blob> => {
         const data = await getAttachmentByFetch(
             `WorkOrder/Attachment?plantId=PCS$${plantId}&workOrderId=${workOrderId}&attachmentId=${attachmentId}${apiVersion}`,
