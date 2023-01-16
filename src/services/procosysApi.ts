@@ -1,5 +1,6 @@
 import {
     PunchAction,
+    PunchEndpoints,
     UpdatePunchData,
 } from '@equinor/procosys-webapp-components';
 import { SavedSearchType, SearchType } from '../typings/enums';
