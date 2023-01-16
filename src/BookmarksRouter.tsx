@@ -2,7 +2,6 @@ import React from 'react';
 import { Route, Switch, useRouteMatch } from 'react-router-dom';
 import PunchPage from './pages/Punch/PunchPage';
 import ChecklistPage from './pages/Checklist/ChecklistPage';
-import SearchPage from './pages/Search/SearchPage';
 import EntityPage from './pages/Entity/EntityPage';
 
 const BookmarksRouter = (): JSX.Element => {
