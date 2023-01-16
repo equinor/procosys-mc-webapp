@@ -63,10 +63,6 @@ const buildOfflineScope = async (
      * This function will add the map of offline entities, to the offline database.
      */
     const addEntitiesToDatabase = async (): Promise<void> => {
-        console.log(
-            `Entities to store in database (${offlineEntities.size}`,
-            offlineEntities
-        );
         await offlineContentRepository.bulkAdd(
             Array.from(offlineEntities.values())
         );
@@ -99,10 +95,10 @@ const buildOfflineScope = async (
     //Bookmarks
     const bookmarks = await api.getBookmarks(plantId, projectId, abortSignal);
     if (bookmarks == null) {
-        console.log('No offline scope started for project.', projectId);
+        console.error('No bookmarks found.');
         return; //todo: Må gi feilmelding. Dette skal ikke kunne gå ann.
     }
-    console.log('Offline bookmarks', bookmarks);
+
     addEntityToMap({
         entitytype: EntityType.Bookmarks,
         responseObj: currentResponseObj,
@@ -119,7 +115,6 @@ const buildOfflineScope = async (
 
     //Plants
     await api.getPlants();
-    //todo: hvis vi ikke ønsker å vise alle plants, kan vi filtrere her.
     addEntityToMap({
         entitytype: EntityType.Plants,
         responseObj: currentResponseObj,
@@ -128,7 +123,6 @@ const buildOfflineScope = async (
 
     //Projects
     await api.getProjectsForPlant(`PCS$${plantId}`);
-    //todo: hvis vi ikke ønsker å vise alle projects, kan vi filtrere her.
     addEntityToMap({
         entitytype: EntityType.Projects,
         responseObj: currentResponseObj,
@@ -269,7 +263,6 @@ const buildOfflineScope = async (
         for (const checklist of scope) {
             //Checklist
             try {
-                // todo: ta bort try.
                 const checklistResp: ChecklistResponse = await api.getChecklist(
                     plantId,
                     checklist.id.toString()
@@ -382,7 +375,7 @@ const buildOfflineScope = async (
                     });
                 }
             } catch (e) {
-                console.error('Feil med getcheckoust. hopper over.');
+                console.error('Error occured when fetching checklists.');
             }
         }
     };

@@ -50,7 +50,7 @@ const authService = ({ MSAL, scopes }: IAuthServiceProps): IAuthService => {
         if (accessToken) {
             return Promise.resolve(accessToken);
         } else {
-            console.log('Token acquisition failed, redirecting');
+            console.log('Token acquisition failed, redirecting.');
             MSAL.acquireTokenRedirect({ scopes: scope });
             return '';
         }

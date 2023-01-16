@@ -14,12 +14,11 @@ export default class OfflineStorage extends Dexie {
 
     constructor() {
         super('ProCoSysMcAppDB');
-        console.log('NÅ OPPRETTES DATABASE -construkctur');
     }
 
     notAbleToDecrypt<T extends Dexie>(db: T): Promise<void[]> {
-        console.log(
-            'Was not able to decrypt the offline database with the given user pin'
+        console.error(
+            'Was not able to decrypt the offline database with the given user pin.'
         );
         return Promise.resolve([]);
     }

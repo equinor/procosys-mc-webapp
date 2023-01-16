@@ -42,10 +42,6 @@ class OfflineUpdateRepository {
             | EntityType.WorkOrder,
         offlineUpdateRequest: OfflineUpdateRequest
     ): Promise<void> {
-        console.log(
-            'addUpdateRequest - lagrer i database',
-            offlineUpdateRequest
-        );
         offlineUpdateRequest.entityId = Number(entityId);
         offlineUpdateRequest.entityType = entityType;
 

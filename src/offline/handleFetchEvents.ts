@@ -9,7 +9,6 @@ import { updateOfflineDatabase as updateOfflineDatabase } from './updateOfflineD
 const offlineContentRepository = new OfflineContentRepository();
 
 export const handleFetchGET = async (event: FetchEvent): Promise<any> => {
-    //console.log('handleFetchGET', event);
     const url = removeBaseUrlFromUrl(event.request.url);
 
     if (url.includes('CheckList/CustomItem/NextItemNo')) {
@@ -20,12 +19,6 @@ export const handleFetchGET = async (event: FetchEvent): Promise<any> => {
     // Try to get the response from offline content database.
     const entity = await offlineContentRepository.getByApiPath(url);
     if (entity) {
-        // todo: Ta bort log
-        // console.log(
-        //     'handleFetchGET: Returnerer objekt fra database. ' +
-        //         event.request.url,
-        //     entity.responseObj
-        // );
         if (url.includes('/Attachment?')) {
             const arrayBuffer = entity.responseObj as ArrayBuffer;
             //const blob = new Blob([arrayBuffer], { type: 'image/jpeg' });
@@ -50,7 +43,6 @@ export const handleFetchUpdate = async (
     const offlinePostRequest =
         await OfflineUpdateRequest.buildOfflineRequestObject(event.request);
 
-    console.log('handleFetchUpdate, offlineRequest', offlinePostRequest);
     const data = await updateOfflineDatabase(offlinePostRequest);
     if (data) {
         return new Response(JSON.stringify(data));
@@ -65,7 +57,6 @@ export const handleFetchUpdate = async (
 export const handleOtherFetchEvents = async (
     event: FetchEvent
 ): Promise<Response> => {
-    //console.log('handleOtherFetchEvents', event);
     console.error(
         'We are in offline mode, and should not need to perform any fetch.',
         event.request.url

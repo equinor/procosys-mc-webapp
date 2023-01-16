@@ -169,22 +169,6 @@ const procosysApiService = (
             body: JSON.stringify(bodyData),
         };
 
-        //------KODE FOR Å TESTE FEILHÅNDTERING
-        // if (url.includes('PunchListItem?')) {
-        //     console.log('HAR URL:', url);
-        //     //url = url.replace('PunchListItem', 'PunchListIteeem');
-
-        //     PostOperation = {
-        //         method: 'POST',
-        //         headers: {
-        //             Authorization: `Bearer ${token}`,
-        //             'Content-Type': 'application/json',
-        //         },
-        //         body: 'hallo i luken',
-        //     };
-        // }
-        //------------
-
         let response = new Response();
         try {
             response = await fetch(`${baseURL}/${url}`, PostOperation);
@@ -247,7 +231,6 @@ const procosysApiService = (
             },
             body: JSON.stringify(bodyData),
         };
-        console.log('SKAL LAGE PUT: ', PutOperation);
         const response = await fetch(`${baseURL}/${url}`, PutOperation);
         if (!response.ok) {
             const errorMessage = await getErrorMessage(response);
@@ -707,7 +690,6 @@ const procosysApiService = (
         if (!isOfType<PunchItem>(data, 'raisedByCode')) {
             throw new Error(typeGuardErrorMessage('punchItem'));
         }
-        console.log('har hentet punch: ', data);
         return data;
     };
 

@@ -40,7 +40,7 @@ const render = (content: JSX.Element): void => {
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const initialize = async () => {
-    console.log('Application is initializing...5');
+    console.log('Application is initializing');
     await navigator.serviceWorker.ready; //wait until service worker is active
     if (!('serviceWorker' in navigator)) {
         console.log('The service worker is not active.');
@@ -48,7 +48,7 @@ const initialize = async () => {
     }
 
     const offline = getOfflineStatusfromLocalStorage();
-    console.log('getting offline state in init ', offline);
+    console.log('Offline status is ', offline);
 
     updateOfflineStatus(offline, userPin);
 
@@ -130,26 +130,20 @@ const initialize = async () => {
 let userPin = '';
 const setUserPin = (pin: string): void => {
     userPin = pin;
-    console.log(userPin);
 };
 
 const renderApp = async (): Promise<void> => {
     //If user is offline, the rendering of the app will be stalled, until pin is provided.
     const status = getOfflineStatusfromLocalStorage();
-    console.log('render app with pin ', userPin);
     if (status != OfflineStatus.ONLINE && userPin == '') {
         setTimeout(renderApp, 1000);
         return;
     }
 
     if (status == OfflineStatus.SYNCHING) {
-        console.log('status == sync');
         //The user has selected to finish Offline,
         //so the synchronization with backend must be started.
         //We need to go online before initialization of the application.
-
-        //HER MÅ JEG SJEKKE OM JEG ER ONLINE, HVIS IKKE, GI FEILMELDING, EVT SJEKKER JEG DETTE I INITITLIZE,D OG KASTER EXCEDPTION
-
         let api = null;
 
         try {
@@ -212,7 +206,6 @@ const renderApp = async (): Promise<void> => {
             );
         }
     } else {
-        console.log('state not sync');
         //We are either in online or offline mode, and will render the application
         const {
             authInstance,
@@ -242,7 +235,6 @@ const renderApp = async (): Promise<void> => {
     render(<LoadingPage loadingText={'Initializing...'} />);
     await navigator.serviceWorker.ready; //wait until service worker is active
     try {
-        console.log('getting offline status');
         const status = getOfflineStatusfromLocalStorage();
         if (status != OfflineStatus.ONLINE) {
             render(<OfflinePin setUserPin={setUserPin} />);

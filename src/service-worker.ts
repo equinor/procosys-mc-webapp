@@ -87,7 +87,6 @@ type OfflineStatusMessage = {
 // This allows the web app to trigger skipWaiting via
 // registration.waiting.postMessage({type: 'SKIP_WAITING'})
 self.addEventListener('message', async (event: MessageEventInit) => {
-    console.log('ADDEVENTLISTENER message.', event);
     const message: MessageEvent = event.data;
     if (message) {
         if (message.type === 'SKIP_WAITING') {
@@ -124,17 +123,16 @@ self.addEventListener('message', async (event: MessageEventInit) => {
  */
 self.addEventListener('install', (event) => {
     self.skipWaiting();
-    console.log('SkipWaiting is called.');
 });
 
 self.addEventListener('fetch', function (event: FetchEvent) {
-    //console.log('Intercept fetch', event.request.url);
     const url = event.request.url;
     if (
         offlineStatus == OfflineStatus.OFFLINE &&
         !url.includes('Application?') //is used to check connection to server
     ) {
         //User is in offline mode.  Data must be fetched from offline database
+        console.log('Intercept fetch - offline mode', event.request.url);
         const method = event.request.method;
         if (method == 'GET' && url.includes('/api/')) {
             //todo: We should find a better way to identify these requests!
@@ -150,11 +148,7 @@ self.addEventListener('fetch', function (event: FetchEvent) {
         event.respondWith(handleOtherFetchEvents(event));
     } else {
         //User is in online mode. The requests will be done the normal way.
-        console.log(
-            'service-worker - handleFetch. Online mode',
-            event.request.url,
-            event.request
-        );
+        console.log('Intercept fetch - online mode', event.request.url);
         event.respondWith(fetch(event.request));
     }
 });
