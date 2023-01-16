@@ -96,7 +96,7 @@ const SyncErrors = ({
                     the failed offline changes, they will be lost.
                 </p>
                 <p>
-                    Note that this error need to be handled before you can go
+                    Note that these errors need to be handled before you can go
                     offline again.
                 </p>
                 <p>
@@ -143,6 +143,7 @@ const SyncErrors = ({
                     isDismissable
                     onClose={(): void => {
                         setShowDeleteConfirmation(false);
+                        setIsSure(false);
                     }}
                 >
                     <BookmarksPopup>
@@ -150,7 +151,7 @@ const SyncErrors = ({
                             Do you really wish to delete failed offline changes?
                         </h3>
                         <Checkbox
-                            label="I understand that by deleting failed offline changes, I will loose these changes and corresponding error messages."
+                            label="I understand that by deleting failed offline changes, I will lose these changes and corresponding error messages."
                             onClick={(): void => setIsSure((prev) => !prev)}
                         />
                         <ButtonsWrapper>
