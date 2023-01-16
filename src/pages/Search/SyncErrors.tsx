@@ -1,4 +1,4 @@
-import { Button } from '@equinor/eds-core-react';
+import { Button, Checkbox, Progress, Scrim } from '@equinor/eds-core-react';
 import {
     CollapsibleCard,
     EntityDetails,
@@ -6,7 +6,7 @@ import {
     PageHeader,
     StorageKey,
 } from '@equinor/procosys-webapp-components';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import EdsIcon from '../../components/icons/EdsIcon';
 import { LocalStorage } from '../../contexts/McAppContext';
@@ -19,6 +19,8 @@ import { OfflineSynchronizationErrors } from '../../services/apiTypes';
 import { COLORS } from '../../style/GlobalStyles';
 import { OfflineStatus } from '../../typings/enums';
 import useCommonHooks from '../../utils/useCommonHooks';
+import { ButtonsWrapper } from './Bookmarks/Bookmarks';
+import { BookmarksPopup } from './Bookmarks/BookmarksPopups';
 
 const ErrorsWrapper = styled.div`
     margin: -16px 0 66px 0;
@@ -47,6 +49,13 @@ const SyncErrors = ({
     const currentPlant = localStorage.getItem(StorageKey.PLANT);
     const currentProject = getOfflineProjectIdfromLocalStorage();
     const { setOfflineState, api, history } = useCommonHooks();
+
+    const [showDeleteConfirmation, setShowDeleteConfirmation] =
+        useState<boolean>(false);
+
+    const [isSure, setIsSure] = useState<boolean>(false);
+
+    const [resyncStarted, setResyncStarted] = useState<boolean>(false);
 
     useEffect(() => {
         if (!syncErrors) {
@@ -84,9 +93,12 @@ const SyncErrors = ({
                     The reason for errors might be legitimate, and can be caused
                     by modifications done by other users. You should try to fix
                     the issues before retrying the synchronization. By deleting
-                    the failed updates, they will be lost.
+                    the failed offline changes, they will be lost.
                 </p>
-
+                <p>
+                    Note that these errors need to be handled before you can go
+                    offline again.
+                </p>
                 <p>
                     Details describing the error(s) encountered is listed below.
                     Contact support for any questions regarding the error(s)
@@ -95,6 +107,7 @@ const SyncErrors = ({
             <ButtonWrapper>
                 <Button
                     onClick={(): void => {
+                        setResyncStarted(true);
                         localStorage.setItem(
                             LocalStorage.OFFLINE_STATUS,
                             OfflineStatus.SYNCHING.toString()
@@ -107,12 +120,65 @@ const SyncErrors = ({
                         }
                     }}
                 >
-                    Retry synchronization
+                    {resyncStarted ? (
+                        <>
+                            Retry synchronization
+                            <Progress.Circular size={16} />
+                        </>
+                    ) : (
+                        <div>Retry synchronization</div>
+                    )}
                 </Button>
-                <Button onClick={deleteFailedUpdates}>
-                    Delete failed updates
+                <Button
+                    onClick={(): void => {
+                        setShowDeleteConfirmation(true);
+                    }}
+                >
+                    Delete failed offline changes
                 </Button>
             </ButtonWrapper>
+
+            {showDeleteConfirmation == true ? (
+                <Scrim
+                    isDismissable
+                    onClose={(): void => {
+                        setShowDeleteConfirmation(false);
+                        setIsSure(false);
+                    }}
+                >
+                    <BookmarksPopup>
+                        <h3>
+                            Do you really wish to delete failed offline changes?
+                        </h3>
+                        <Checkbox
+                            label="I understand that by deleting failed offline changes, I will lose these changes and corresponding error messages."
+                            onClick={(): void => setIsSure((prev) => !prev)}
+                        />
+                        <ButtonsWrapper>
+                            <Button
+                                color={'danger'}
+                                disabled={!isSure}
+                                onClick={(): void => {
+                                    setIsSure(false);
+                                    deleteFailedUpdates();
+                                }}
+                                aria-label="Delete"
+                            >
+                                Yes, delete failed offline changes
+                            </Button>
+                            <Button
+                                onClick={(): void => {
+                                    setShowDeleteConfirmation(false);
+                                    setIsSure(false);
+                                }}
+                            >
+                                Don&apos;t delete
+                            </Button>
+                        </ButtonsWrapper>
+                    </BookmarksPopup>
+                </Scrim>
+            ) : null}
+
             {syncErrors ? (
                 <div>
                     {syncErrors.CheckListErrors.length > 0 ? (

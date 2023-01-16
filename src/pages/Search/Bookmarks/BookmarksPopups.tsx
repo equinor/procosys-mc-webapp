@@ -83,9 +83,10 @@ const BookmarksPopUps = ({
             {offlineAction == OfflineAction.STARTING ? (
                 <Scrim
                     isDismissable
-                    onClose={(): void =>
-                        setOfflineAction(OfflineAction.INACTIVE)
-                    }
+                    onClose={(): void => {
+                        setOfflineAction(OfflineAction.INACTIVE);
+                        setIsSure(false);
+                    }}
                 >
                     <BookmarksPopup>
                         <h3>
