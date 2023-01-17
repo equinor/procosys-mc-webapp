@@ -5,8 +5,6 @@ import styled from 'styled-components';
 import { COLORS, SHADOW } from '../../../style/GlobalStyles';
 import { ButtonsWrapper } from './Bookmarks';
 import { OfflineAction } from '../../../utils/useBookmarks';
-import { OfflineStatus } from '../../../typings/enums';
-import { updateOfflineStatus } from '../../../offline/OfflineStatus';
 
 export const BookmarksPopup = styled.div`
     display: flex;
