@@ -23,7 +23,7 @@ const SearchResults = ({
     searchResults,
     searchType,
 }: SearchResultsProps): JSX.Element => {
-    const { offlineState } = useCommonHooks();
+    const { offlineState, featureFlags } = useCommonHooks();
     const { isBookmarked, handleBookmarkClicked } = useBookmarks();
     const getPlaceholderTextType = (): string => {
         if (searchType === SearchType.MC) {
@@ -91,6 +91,28 @@ const SearchResults = ({
                         field{searchType === SearchType.PO ? 's' : ''} above.
                     </i>
                 </p>
+                <p></p>
+                <p>
+                    Bookmarks: The entities in the search result can be
+                    bookmarked by clicking the icon to the right of the entities
+                    (toggle on/off). Go to Bookmark page (tab below) to see the
+                    bookmarked entities.
+                </p>
+                {featureFlags.offlineFunctionalityIsEnabled ? (
+                    <p>
+                        Offline: In the Bookmark page you can choose to go
+                        offline with the bookmarked entities. You will then be
+                        able to use the app without internet connection. Note
+                        that you MUST finish offline mode to get your changes
+                        uploaded to the server. This should be done preferably
+                        at the end of the working day.
+                    </p>
+                ) : (
+                    <p>
+                        In a future release you will be able to work offline
+                        with the bookmarked entities.
+                    </p>
+                )}
             </div>
         );
     } else if (searchStatus === SearchStatus.ERROR) {

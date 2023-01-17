@@ -80,9 +80,9 @@ const Bookmarks = (): JSX.Element => {
                     startSync={startSync}
                 />
 
-                {featureFlags.offlineFunctionalityIsEnabled == true ? (
-                    <>
-                        <ButtonsWrapper>
+                <ButtonsWrapper>
+                    {featureFlags.offlineFunctionalityIsEnabled == true ? (
+                        <>
                             {offlineState != OfflineStatus.ONLINE ? (
                                 <>
                                     <Button
@@ -119,11 +119,14 @@ const Bookmarks = (): JSX.Element => {
                                     </Button>
                                 </>
                             )}
-                        </ButtonsWrapper>
-                    </>
-                ) : (
-                    <Button onClick={deleteBookmarks}>Delete bookmarks</Button>
-                )}
+                        </>
+                    ) : (
+                        <Button onClick={deleteBookmarks}>
+                            Delete bookmarks
+                        </Button>
+                    )}
+                </ButtonsWrapper>
+
                 {currentBookmarks
                     ? currentBookmarks.bookmarkedMcPkgs.length > 0 && (
                           <>
