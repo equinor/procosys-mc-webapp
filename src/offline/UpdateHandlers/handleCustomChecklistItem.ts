@@ -21,7 +21,6 @@ export const handleCustomChecklistItemPostSetOK = async (
 ): Promise<void> => {
     const dto: PostDto = offlinePostRequest.bodyData;
 
-    console.log('handleCustomChecklistItemPostSetOK', dto);
     const checklistEntity: IEntity =
         await offlineContentRepository.getEntityByTypeAndId(
             EntityType.Checklist,

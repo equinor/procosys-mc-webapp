@@ -37,8 +37,6 @@ const offlineUpdateRepository = new OfflineUpdateRepository();
 export const syncronizeOfflineUpdatesWithBackend = async (
     api: ProcosysApiService
 ): Promise<void> => {
-    console.log('syncronizeOfflineUpdatesWithBackend');
-
     const currentPlant = localStorage.getItem(StorageKey.PLANT);
     const currentProject = getOfflineProjectIdfromLocalStorage();
 
@@ -105,6 +103,7 @@ export const syncronizeOfflineUpdatesWithBackend = async (
                     'Offline update already syncronized for entity ' +
                         offlineUpdate.entityId
                 );
+                //do nothing
             } else if (offlineUpdate.syncStatus == SyncStatus.ERROR) {
                 console.log(
                     `Offline update already set to error-status:  ${offlineUpdate.errorCode} - ${offlineUpdate.errorMessage} `
@@ -118,7 +117,7 @@ export const syncronizeOfflineUpdatesWithBackend = async (
             }
         }
 
-        //todo: Skal bare sette til syncronized, hvis alle updatesa er satt til syncronzied eller error. Setter jeg synchronized hvis det er error?
+        //todo: Er det riktig å sette denne til syncronized hvis det er error?
         await setEntityToSynchronized(updatesForEntity[0], api);
     }
 
@@ -175,7 +174,6 @@ const handleFailedUpdateRequest = async (
     offlineUpdate: OfflineUpdateRequest,
     error: HTTPError
 ): Promise<void> => {
-    console.log('handleFailedUpdateRequest', offlineUpdate, error);
     offlineUpdate.errorCode = error.errorCode;
     offlineUpdate.errorMessage = error.errorMessage;
     await offlineUpdateRepository.updateOfflineUpdateRequest(offlineUpdate);
@@ -189,7 +187,6 @@ const reportErrorsIfExists = async (
     projectId: number,
     api: ProcosysApiService
 ): Promise<boolean> => {
-    console.log('reportErrorsIfExists');
     const offlineSynchronizationErrors: OfflineSynchronizationErrors = {
         ProjectId: projectId,
         CheckListErrors: [],
@@ -234,7 +231,6 @@ const reportErrorsIfExists = async (
             LocalStorage.OFFLINE_STATUS,
             OfflineStatus.SYNC_FAIL.toString()
         );
-        console.log('setting offline status to sync fail');
         return true;
     } else {
         localStorage.setItem(
@@ -253,8 +249,6 @@ const performOfflineUpdate = async (
     offlineUpdate: OfflineUpdateRequest,
     api: ProcosysApiService
 ): Promise<any> => {
-    console.log('synchronizeOfflineUpdate', offlineUpdate);
-
     let response: Response | null = null;
     const method = offlineUpdate.method.toUpperCase();
     let newEntityId;

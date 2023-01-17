@@ -109,7 +109,6 @@ const useBookmarks = () => {
     };
 
     const cancelOffline = async (): Promise<void> => {
-        console.log('cancel offline');
         try {
             if (currentProject) {
                 setBookmarksStatus(AsyncStatus.LOADING);
@@ -161,7 +160,6 @@ const useBookmarks = () => {
     };
 
     const startOffline = async (userPin: string): Promise<void> => {
-        console.log('start offline');
         setBookmarksStatus(AsyncStatus.LOADING);
         setOfflineAction(OfflineAction.DOWNLOADING);
 

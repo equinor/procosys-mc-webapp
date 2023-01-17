@@ -59,7 +59,6 @@ export const fetchAuthConfig = async (
 };
 
 export const getAuthConfig = async () => {
-    console.log('get auth config');
     const authConfigResp = await fetchAuthConfig(null);
 
     // Todo: TypeGuard authsettings
@@ -87,13 +86,11 @@ export const fetchAppConfig = async (
     accessToken: string,
     callbackFunc?: any
 ): Promise<AppConfigResponse> => {
-    console.log('fetch app config ', endpoint + accessToken);
     const data = await fetch(endpoint, {
         headers: {
             Authorization: 'Bearer ' + accessToken,
         },
     });
-    console.log('fetch app config data ', data);
     const resp = await data.json();
 
     if (callbackFunc) {

@@ -46,7 +46,6 @@ import {
 export const updateOfflineDatabase = async (
     offlinePostRequest: OfflineUpdateRequest
 ): Promise<void | any> => {
-    console.log('updateOfflineDatabase', offlinePostRequest);
     const dummyUrl = new URL('http://dummy.no' + offlinePostRequest.url); //todo: Better way to find searchParams?
     const searchParams = dummyUrl.searchParams;
     //const bodyData = offlinePostRequest.bodyData;
