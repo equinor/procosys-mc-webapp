@@ -10,6 +10,8 @@ import { AppConfig, FeatureFlags } from '../services/appConfiguration';
 import { IAuthService } from '../services/authService';
 import { ProcosysApiService } from '../services/procosysApi';
 import { ProcosysIPOApiService } from '../services/procosysIPOApi';
+import { getOfflineStatusfromLocalStorage } from '../offline/OfflineStatus';
+import { OfflineStatus } from '../typings/enums';
 
 type McAppContextProps = {
     availablePlants: Plant[];
@@ -17,7 +19,10 @@ type McAppContextProps = {
     api: ProcosysApiService;
     auth: IAuthService;
     appConfig: AppConfig;
+    offlineState: OfflineStatus;
+    setOfflineState: React.Dispatch<React.SetStateAction<OfflineStatus>>;
     featureFlags: FeatureFlags;
+    configurationAccessToken: string;
     ipoApi: ProcosysIPOApiService;
 };
 
@@ -29,6 +34,13 @@ export enum AsyncStatus {
     EMPTY_RESPONSE,
 }
 
+export enum LocalStorage {
+    LOGIN_TRIES = 'loginTries',
+    OFFLINE_PROJECT_ID = 'offlineProjectId',
+    OFFLINE_STATUS = 'offlineStatus',
+    SYNCH_ERRORS = 'SynchErrors',
+}
+
 const McAppContext = React.createContext({} as McAppContextProps);
 
 type McAppContextProviderProps = {
@@ -37,6 +49,7 @@ type McAppContextProviderProps = {
     api: ProcosysApiService;
     appConfig: AppConfig;
     featureFlags: FeatureFlags;
+    configurationAccessToken: string;
     ipoApi: ProcosysIPOApiService;
 };
 
@@ -46,12 +59,22 @@ export const McAppContextProvider: React.FC<McAppContextProviderProps> = ({
     api,
     appConfig,
     featureFlags,
+    configurationAccessToken,
     ipoApi,
 }: McAppContextProviderProps) => {
     const [availablePlants, setAvailablePlants] = useState<Plant[]>([]);
     const [fetchPlantsStatus, setFetchPlantsStatus] = useState<AsyncStatus>(
         AsyncStatus.LOADING
     );
+
+    const [offlineState, setOfflineState] = useState<OfflineStatus>(
+        OfflineStatus.ONLINE
+    );
+
+    useEffect(() => {
+        const offlineStatus = getOfflineStatusfromLocalStorage();
+        setOfflineState(offlineStatus);
+    }, []);
 
     useEffect(() => {
         (async (): Promise<void> => {
@@ -93,7 +116,10 @@ export const McAppContextProvider: React.FC<McAppContextProviderProps> = ({
                 api,
                 auth,
                 appConfig,
+                offlineState,
+                setOfflineState,
                 featureFlags,
+                configurationAccessToken,
                 ipoApi,
             }}
         >

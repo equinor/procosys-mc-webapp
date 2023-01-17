@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from 'react';
-import Axios from 'axios';
+import React, { useContext, useEffect, useState } from 'react';
 import EdsIcon from '../../components/icons/EdsIcon';
 import withAccessControl from '../../services/withAccessControl';
 import useCommonHooks from '../../utils/useCommonHooks';
@@ -19,9 +18,17 @@ import {
     removeSubdirectories,
 } from '@equinor/procosys-webapp-components';
 import ChecklistDetailsCard from './ChecklistDetailsCard';
+import styled from 'styled-components';
+import PlantContext from '../../contexts/PlantContext';
+import { OfflineStatus } from '../../typings/enums';
+
+const ContentWrapper = styled.div`
+    padding-bottom: 66px;
+`;
 
 const ChecklistPage = (): JSX.Element => {
-    const { history, url, path, api, params } = useCommonHooks();
+    const { history, url, path, api, params, offlineState } = useCommonHooks();
+    const { permissions } = useContext(PlantContext);
     const [punchList, setPunchList] = useState<PunchPreview[]>();
     const [details, setDetails] = useState<ChecklistResponse>();
     const [fetchPunchListStatus, setFetchPunchListStatus] = useState(
@@ -31,7 +38,8 @@ const ChecklistPage = (): JSX.Element => {
         AsyncStatus.LOADING
     );
     const [refreshChecklistStatus, setRefreshChecklistStatus] = useState(false);
-    const source = Axios.CancelToken.source();
+    const abortController = new AbortController();
+    const abortSignal = abortController.signal;
     const isOnNewPunchPage = history.location.pathname.includes('/new-punch');
     const isOnPunchListPage = history.location.pathname.includes('/punch-list');
     const isOnTagInfoPage = history.location.pathname.includes('/tag-info');
@@ -42,7 +50,7 @@ const ChecklistPage = (): JSX.Element => {
 
     useEffect(() => {
         return (): void => {
-            source.cancel();
+            abortController.abort();
         };
     }, []);
 
@@ -52,7 +60,7 @@ const ChecklistPage = (): JSX.Element => {
                 const detailsFromApi = await api.getChecklist(
                     params.plant,
                     params.checklistId,
-                    source.token
+                    abortSignal
                 );
                 setDetails(detailsFromApi);
                 setFetchDetailsStatus(AsyncStatus.SUCCESS);
@@ -68,7 +76,7 @@ const ChecklistPage = (): JSX.Element => {
                 const punchListFromApi = await api.getChecklistPunchList(
                     params.plant,
                     params.checklistId,
-                    source.token
+                    abortSignal
                 );
                 setPunchList(punchListFromApi);
                 if (punchListFromApi.length === 0) {
@@ -104,57 +112,65 @@ const ChecklistPage = (): JSX.Element => {
                             onClick={(): void =>
                                 history.push(`${url}/punch-list/new-punch`)
                             }
+                            disabled={
+                                !permissions.includes('PUNCHLISTITEM/CREATE')
+                            }
                         >
                             New punch
                         </Button>
                     )
                 }
+                isOffline={offlineState == OfflineStatus.OFFLINE}
             />
             <ChecklistDetailsCard
                 fetchDetailsStatus={fetchDetailsStatus}
                 details={details}
             />
-            <Switch>
-                <Route
-                    exact
-                    path={`${path}`}
-                    render={(): JSX.Element => (
-                        <ChecklistWrapper
-                            refreshChecklistStatus={setRefreshChecklistStatus}
-                        />
-                    )}
-                />
-                <Route
-                    exact
-                    path={`${path}/tag-info`}
-                    render={(): JSX.Element => (
-                        <TagInfoWrapper tagId={details?.checkList.tagId} />
-                    )}
-                />
-                <Route
-                    exact
-                    path={`${path}/punch-list`}
-                    render={(): JSX.Element => (
-                        <PunchList
-                            fetchPunchListStatus={fetchPunchListStatus}
-                            onPunchClick={(punch: PunchPreview): void =>
-                                history.push(
-                                    `${removeSubdirectories(
-                                        history.location.pathname
-                                    )}/punch-item/${punch.id}`
-                                )
-                            }
-                            punchList={punchList}
-                            isChecklistPunchList
-                        />
-                    )}
-                />
-                <Route
-                    exact
-                    path={`${path}/punch-list/new-punch`}
-                    component={NewPunchWrapper}
-                />
-            </Switch>
+            <ContentWrapper>
+                <Switch>
+                    <Route
+                        exact
+                        path={`${path}`}
+                        render={(): JSX.Element => (
+                            <ChecklistWrapper
+                                refreshChecklistStatus={
+                                    setRefreshChecklistStatus
+                                }
+                            />
+                        )}
+                    />
+                    <Route
+                        exact
+                        path={`${path}/tag-info`}
+                        render={(): JSX.Element => (
+                            <TagInfoWrapper tagId={details?.checkList.tagId} />
+                        )}
+                    />
+                    <Route
+                        exact
+                        path={`${path}/punch-list`}
+                        render={(): JSX.Element => (
+                            <PunchList
+                                fetchPunchListStatus={fetchPunchListStatus}
+                                onPunchClick={(punch: PunchPreview): void =>
+                                    history.push(
+                                        `${removeSubdirectories(
+                                            history.location.pathname
+                                        )}/punch-item/${punch.id}`
+                                    )
+                                }
+                                punchList={punchList}
+                                isChecklistPunchList
+                            />
+                        )}
+                    />
+                    <Route
+                        exact
+                        path={`${path}/punch-list/new-punch`}
+                        component={NewPunchWrapper}
+                    />
+                </Switch>
+            </ContentWrapper>
             <NavigationFooter footerStatus={fetchPunchListStatus}>
                 <FooterButton
                     active={!(isOnPunchListPage || isOnTagInfoPage)}

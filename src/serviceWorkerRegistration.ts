@@ -8,7 +8,7 @@
 // resources are updated in the background.
 
 // To learn more about the benefits of this model and instructions on how to
-// opt-in, read https://bit.ly/CRA-PWA
+// opt-in, read https://cra.link/PWA
 
 const isLocalhost = Boolean(
     window.location.hostname === 'localhost' ||
@@ -27,12 +27,14 @@ type Config = {
 
 export function register(config?: Config): void {
     if (process.env.NODE_ENV === 'production' && 'serviceWorker' in navigator) {
+        console.log('Starting service-worker registration.');
         // The URL constructor is available in all browsers that support SW.
         const publicUrl = new URL(process.env.PUBLIC_URL, window.location.href);
         if (publicUrl.origin !== window.location.origin) {
             // Our service worker won't work if PUBLIC_URL is on a different origin
             // from what our page is served on. This might happen if a CDN is used to
             // serve assets; see https://github.com/facebook/create-react-app/issues/2374
+            console.error('Service worker - wrong origin.');
             return;
         }
 
@@ -48,7 +50,7 @@ export function register(config?: Config): void {
                 navigator.serviceWorker.ready.then(() => {
                     console.log(
                         'This web app is being served cache-first by a service ' +
-                            'worker. To learn more, visit https://bit.ly/CRA-PWA'
+                            'worker. To learn more, visit https://cra.link/PWA'
                     );
                 });
             } else {
@@ -63,12 +65,16 @@ function registerValidSW(swUrl: string, config?: Config): void {
     navigator.serviceWorker
         .register(swUrl)
         .then((registration) => {
+            console.log('Service worker is registered.', swUrl);
             registration.onupdatefound = (): void => {
+                console.log('on update found');
                 const installingWorker = registration.installing;
                 if (installingWorker == null) {
+                    console.log('installingworker == null');
                     return;
                 }
                 installingWorker.onstatechange = (): void => {
+                    console.log('on state change');
                     if (installingWorker.state === 'installed') {
                         if (navigator.serviceWorker.controller) {
                             // At this point, the updated precached content has been fetched,
@@ -76,11 +82,12 @@ function registerValidSW(swUrl: string, config?: Config): void {
                             // content until all client tabs are closed.
                             console.log(
                                 'New content is available and will be used when all ' +
-                                    'tabs for this page are closed. See https://bit.ly/CRA-PWA.'
+                                    'tabs for this page are closed. See https://cra.link/PWA.'
                             );
 
                             // Execute callback
                             if (config && config.onUpdate) {
+                                console.log('on update');
                                 config.onUpdate(registration);
                             }
                         } else {
@@ -91,7 +98,9 @@ function registerValidSW(swUrl: string, config?: Config): void {
 
                             // Execute callback
                             if (config && config.onSuccess) {
+                                console.log('on success');
                                 config.onSuccess(registration);
+                                console.log('after on success');
                             }
                         }
                     }
@@ -116,6 +125,7 @@ function checkValidServiceWorker(swUrl: string, config?: Config): void {
                 (contentType != null &&
                     contentType.indexOf('javascript') === -1)
             ) {
+                console.log('Service worker not found.');
                 // No service worker found. Probably a different app. Reload the page.
                 navigator.serviceWorker.ready.then((registration) => {
                     registration.unregister().then(() => {

@@ -1,6 +1,7 @@
 import * as Msal from '@azure/msal-browser';
 import { AccountInfo } from '@azure/msal-browser';
 import { StorageKey } from '@equinor/procosys-webapp-components';
+
 export interface IAuthService {
     login: () => Promise<void>;
     logout: () => Promise<void>;
@@ -49,7 +50,7 @@ const authService = ({ MSAL, scopes }: IAuthServiceProps): IAuthService => {
         if (accessToken) {
             return Promise.resolve(accessToken);
         } else {
-            console.log('Token acquisition failed, redirecting');
+            console.log('Token acquisition failed, redirecting.');
             MSAL.acquireTokenRedirect({ scopes: scope });
             return '';
         }

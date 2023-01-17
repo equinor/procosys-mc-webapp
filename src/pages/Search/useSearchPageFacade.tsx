@@ -1,9 +1,7 @@
 import React, { useContext, useEffect, useReducer, useState } from 'react';
-import axios, { CancelToken } from 'axios';
 import PlantContext from '../../contexts/PlantContext';
 import { SearchResults } from '../../services/apiTypes';
 import { ProcosysApiService } from '../../services/procosysApi';
-import { SearchType } from './Search';
 import useCommonHooks from '../../utils/useCommonHooks';
 
 export enum SearchStatus {
@@ -58,7 +56,7 @@ const fetchHits = async (
     dispatch: React.Dispatch<Action>,
     plantId: string,
     projectId: number,
-    cancelToken: CancelToken,
+    abortSignal: AbortSignal,
     api: ProcosysApiService,
     searchType: string
 ): Promise<void> => {
@@ -70,7 +68,7 @@ const fetchHits = async (
             projectId,
             plantId,
             searchType,
-            cancelToken
+            abortSignal
         );
         dispatch({
             type: 'FETCH_SUCCESS',
@@ -103,7 +101,10 @@ const useSearchPageFacade = (searchType: string) => {
             dispatch({ type: 'FETCH_INACTIVE' });
             return;
         }
-        const { cancel, token } = axios.CancelToken.source();
+
+        const controller = new AbortController();
+        const signal = controller.signal;
+
         const timeOutId = setTimeout(
             () =>
                 fetchHits(
@@ -112,14 +113,14 @@ const useSearchPageFacade = (searchType: string) => {
                     dispatch,
                     currentPlant.id,
                     currentProject.id,
-                    token,
+                    signal,
                     api,
                     searchType
                 ),
             300
         );
         return (): void => {
-            cancel('A new search has taken place instead');
+            controller.abort('A new search has taken place instead');
             clearTimeout(timeOutId);
         };
     }, [query, callOffQuery, currentProject, currentPlant, api, searchType]);

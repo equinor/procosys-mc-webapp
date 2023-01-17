@@ -13,10 +13,8 @@ import {
     IpoDetails,
 } from '../../services/apiTypes';
 import withAccessControl from '../../services/withAccessControl';
-import Axios from 'axios';
 import EdsIcon from '../../components/icons/EdsIcon';
 import { COLORS } from '../../style/GlobalStyles';
-import { SearchType } from '../Search/Search';
 import WorkOrderInfo from './WorkOrderInfo';
 import {
     BackButton,
@@ -28,6 +26,7 @@ import {
     Scope,
 } from '@equinor/procosys-webapp-components';
 import EntityPageDetailsCard from './EntityPageDetailsCard';
+import { OfflineStatus, SearchType } from '../../typings/enums';
 
 const EntityPageWrapper = styled.main``;
 
@@ -36,7 +35,8 @@ const ContentWrapper = styled.div`
 `;
 
 const EntityPage = (): JSX.Element => {
-    const { api, ipoApi, params, path, history, url } = useCommonHooks();
+    const { api, ipoApi, params, path, history, url, offlineState } =
+        useCommonHooks();
     const [scope, setScope] = useState<ChecklistPreview[]>();
     const [punchList, setPunchList] = useState<PunchPreview[]>();
     const [details, setDetails] = useState<
@@ -54,13 +54,14 @@ const EntityPage = (): JSX.Element => {
     const [fetchDetailsStatus, setFetchDetailsStatus] = useState(
         AsyncStatus.LOADING
     );
-    const source = Axios.CancelToken.source();
+    const controller = new AbortController();
+    const abortSignal = controller.signal;
     const isOnPunchListPage = history.location.pathname.includes('/punch-list');
     const isOnWoInfoPage = history.location.pathname.includes('/wo-info');
 
     useEffect(() => {
         return (): void => {
-            source.cancel();
+            controller.abort();
         };
     }, []);
 
@@ -73,15 +74,15 @@ const EntityPage = (): JSX.Element => {
                             params.plant,
                             params.searchType,
                             params.entityId,
-                            source.token,
-                            details
+                            details,
+                            abortSignal
                         ),
                         api.getScope(
                             params.plant,
                             params.searchType,
                             params.entityId,
-                            source.token,
-                            details
+                            details,
+                            abortSignal
                         ),
                     ]);
 
@@ -116,7 +117,7 @@ const EntityPage = (): JSX.Element => {
                         params.plant,
                         params.searchType,
                         params.entityId,
-                        source.token
+                        abortSignal
                     );
                 } else {
                     detailsFromApi = await ipoApi.getIpoDetails(
@@ -144,6 +145,7 @@ const EntityPage = (): JSX.Element => {
                         ? 'MC Package'
                         : params.searchType
                 }
+                isOffline={offlineState == OfflineStatus.OFFLINE}
             />
             <EntityPageDetailsCard
                 fetchDetailsStatus={fetchDetailsStatus}

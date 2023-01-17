@@ -1,6 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Route, Switch } from 'react-router-dom';
-import Axios from 'axios';
 import EdsIcon from '../../components/icons/EdsIcon';
 import withAccessControl from '../../services/withAccessControl';
 import { COLORS } from '../../style/GlobalStyles';
@@ -23,9 +22,10 @@ import AsyncPage from '../../components/AsyncPage';
 import TagInfoWrapper from '../../components/TagInfoWrapper';
 import PlantContext from '../../contexts/PlantContext';
 import { DetailsWrapper } from '../Entity/EntityPageDetailsCard';
+import { OfflineStatus } from '../../typings/enums';
 
 const PunchPage = (): JSX.Element => {
-    const { api, params, path, history, url } = useCommonHooks();
+    const { api, params, path, history, url, offlineState } = useCommonHooks();
     const [punch, setPunch] = useState<PunchItem>();
     const [fetchPunchStatus, setFetchPunchStatus] = useState<AsyncStatus>(
         AsyncStatus.LOADING
@@ -33,13 +33,14 @@ const PunchPage = (): JSX.Element => {
     const { permissions } = useContext(PlantContext);
 
     useEffect(() => {
-        const source = Axios.CancelToken.source();
+        const controller = new AbortController();
+        const abortSignal = controller.signal;
         (async (): Promise<void> => {
             try {
                 const punchFromApi = await api.getPunchItem(
                     params.plant,
                     params.punchItemId,
-                    source.token
+                    abortSignal
                 );
                 setPunch(punchFromApi);
                 setFetchPunchStatus(AsyncStatus.SUCCESS);
@@ -48,7 +49,7 @@ const PunchPage = (): JSX.Element => {
             }
         })();
         return (): void => {
-            source.cancel();
+            controller.abort();
         };
     }, [api, params]);
 
@@ -119,6 +120,7 @@ const PunchPage = (): JSX.Element => {
                     />
                 }
                 midContent="Punch Item"
+                isOffline={offlineState == OfflineStatus.OFFLINE}
             />
             {determineDetailsCard()}
             <AsyncPage

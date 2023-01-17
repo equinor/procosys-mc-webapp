@@ -3,7 +3,6 @@ import { render, screen, waitFor } from '@testing-library/react';
 import { withPlantContext } from '../../test/contexts';
 import { MemoryRouter, Route } from 'react-router-dom';
 import SavedSearchPage from './SavedSearchPage';
-import { SavedSearchType } from '../Search/SavedSearches/SavedSearchResult';
 import {
     testChecklistSavedSearch,
     testPunchListItemSavedSearch,
@@ -12,6 +11,7 @@ import {
 import { causeApiError, ENDPOINTS, rest, server } from '../../test/setupServer';
 import { CompletionStatus } from '../../services/apiTypes';
 import userEvent from '@testing-library/user-event';
+import { OfflineStatus, SavedSearchType } from '../../typings/enums';
 
 const renderSavedSearchPage = (savedSearchType: string): void => {
     render(
@@ -27,6 +27,8 @@ const renderSavedSearchPage = (savedSearchType: string): void => {
                     </Route>
                 </MemoryRouter>
             ),
+            offlineState: OfflineStatus.ONLINE,
+            setOfflineState: jest.fn(),
         })
     );
 };

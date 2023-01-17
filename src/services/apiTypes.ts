@@ -1,4 +1,29 @@
 import { CheckItem } from '@equinor/procosys-webapp-components/dist/typings/apiTypes';
+import * as tg from 'generic-type-guard';
+
+export type Entities =
+    | Plant
+    | Project
+    | SearchResults
+    | ChecklistPreview
+    | PunchPreview
+    | ChecklistResponse
+    | PunchCategory
+    | PunchType
+    | PunchOrganization
+    | NewPunch
+    | PunchItem
+    | Attachment
+    | McPkgPreview
+    | PunchSort
+    | PunchPriority
+    | Person
+    | Tag
+    | WoPreview
+    | PoPreview
+    | SavedSearch
+    | PunchItemSavedSearchResult
+    | ChecklistSavedSearchResult;
 
 export enum CompletionStatus {
     OS = 'OS',
@@ -20,8 +45,30 @@ export interface Plant {
     projects?: Project[];
 }
 
-//SEARCH
+export const isProject: tg.TypeGuard<Project> = new tg.IsInterface()
+    .withProperties({
+        description: tg.isString,
+        id: tg.isNumber,
+        title: tg.isString,
+    })
+    .get();
 
+export const isProjects = (project: unknown): tg.TypeGuard<Project[]> =>
+    tg.isArray(isProject);
+
+export const isPlant: tg.TypeGuard<Plant> = new tg.IsInterface()
+    .withProperties({
+        id: tg.isString,
+        title: tg.isString,
+        slug: tg.isString,
+        projects: tg.isArray<Project>(isProject),
+    })
+    .get();
+
+export const isPlants = (plant: unknown): tg.TypeGuard<Plant[]> =>
+    tg.isArray(isPlant);
+
+//SEARCH
 export enum ApiSavedSearchType {
     CHECKLIST = 'Check Lists',
     PUNCH = 'Punch List Items',
@@ -292,14 +339,14 @@ export interface ChecklistDetails {
     formularType: string;
     formularGroup: string;
     comment: string;
-    signedByUser: string;
-    signedByFirstName: string;
-    signedByLastName: string;
-    signedAt: Date;
-    verifiedByUser: string;
-    verifiedByFirstName: string;
-    verifiedByLastName: string;
-    verifiedAt: Date;
+    signedByUser: string | null;
+    signedByFirstName: string | null;
+    signedByLastName: string | null;
+    signedAt: Date | null;
+    verifiedByUser: string | null;
+    verifiedByFirstName: string | null;
+    verifiedByLastName: string | null;
+    verifiedAt: Date | null;
     updatedAt: Date;
     updatedByUser: string;
     updatedByFirstName: string;
@@ -307,6 +354,7 @@ export interface ChecklistDetails {
     isRestrictedForUser: boolean;
     hasElectronicForm: boolean;
     attachmentCount: number;
+    partOfCertificateSentToCommissioning: boolean;
 }
 
 export interface ColumnLabel {
@@ -393,9 +441,9 @@ export interface NewPunch {
     ClearingByOrganizationId: number;
     SortingId?: number;
     PriorityId?: number;
-    ActionByPerson?: number | null;
-    DueDate?: string;
-    Estimate?: number;
+    ActionByPerson: number | null;
+    DueDate: string | null;
+    Estimate: number | null;
     TemporaryFileIds: string[];
 }
 
@@ -510,4 +558,51 @@ export interface Person {
     firstName: string;
     lastName: string;
     email: string;
+}
+
+export interface McPkgBookmark {
+    id: number;
+    mcPkgNo: string;
+    description: string;
+    status: CompletionStatus;
+    commPkgNo: string;
+    phaseCode: string;
+    responsibleCode: string;
+    commissioningHandoverStatus: string;
+    operationHandoverStatus: string;
+}
+
+export interface TagBookmark {
+    id: number;
+    tagNo: string;
+    description: string;
+}
+
+export interface Bookmarks {
+    openDefinition: {
+        offlineAt?: Date;
+        status: string;
+    };
+    bookmarkedMcPkgs: McPkgBookmark[];
+    bookmarkedPurchaseOrders: PoPreview[];
+    bookmarkedTags: TagBookmark[];
+    bookmarkedWorkOrders: WoPreview[];
+}
+
+export interface EntityId {
+    Id: number;
+}
+
+export interface OfflineSynchronizationError {
+    Id: number;
+    Url: string;
+    Method: string;
+    ErrorMsg: string;
+    ErrorCode: number;
+}
+
+export interface OfflineSynchronizationErrors {
+    ProjectId: number;
+    CheckListErrors: OfflineSynchronizationError[];
+    PunchListItemErrors: OfflineSynchronizationError[];
 }

@@ -14,6 +14,7 @@ import {
     ReloadButton,
 } from '@equinor/procosys-webapp-components';
 import SideMenu from '../../components/navigation/SideMenu';
+import { OfflineStatus } from '../../typings/enums';
 
 export const SelectPlantWrapper = styled.main`
     display: flex;
@@ -45,7 +46,7 @@ export const SelectorButton = styled(Link)`
 
 const SelectPlant = (): JSX.Element => {
     const { availablePlants } = useContext(CommAppContext);
-    const { auth } = useCommonHooks();
+    const { auth, offlineState } = useCommonHooks();
 
     const content = (): JSX.Element => {
         if (availablePlants.length < 1) {
@@ -84,6 +85,7 @@ const SelectPlant = (): JSX.Element => {
             <Navbar
                 leftContent={<ProcosysButton />}
                 rightContent={<SideMenu />}
+                isOffline={offlineState == OfflineStatus.OFFLINE}
             />
             <SelectPlantWrapper>{content()}</SelectPlantWrapper>
         </>

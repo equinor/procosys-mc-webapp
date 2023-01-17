@@ -4,7 +4,6 @@ import PlantContext from '../contexts/PlantContext';
 import McAppContext, { AsyncStatus } from '../contexts/McAppContext';
 import * as Msal from '@azure/msal-browser';
 import { Plant, Project } from '../services/apiTypes';
-import baseApiService from '../services/baseApi';
 import procosysApiService, {
     ProcosysApiService,
 } from '../services/procosysApi';
@@ -12,15 +11,11 @@ import authService from '../services/__mocks__/authService';
 import { testProjects, testPlants, dummyPermissions } from './dummyData';
 import { IAuthService } from '../services/authService';
 import { baseURL } from './setupServer';
-import {
-    AppConfig,
-    FeatureFlags,
-    ProcosysApiSettings,
-} from '../services/appConfiguration';
-import baseIPOApiService from '../services/baseIPOApi';
+import { AppConfig, FeatureFlags } from '../services/appConfiguration';
 import procosysIPOApiService, {
     ProcosysIPOApiService,
 } from '../services/procosysIPOApi';
+import { OfflineStatus } from '../typings/enums';
 
 const client = new Msal.PublicClientApplication({
     auth: { clientId: 'testId', authority: 'testAuthority' },
@@ -28,9 +23,9 @@ const client = new Msal.PublicClientApplication({
 
 const dummyAppConfig: AppConfig = {
     procosysWebApi: {
-        baseUrl: 'testUrl',
-        scope: [''],
-        apiVersion: '',
+        baseUrl: 'https://test-url.com',
+        scope: ['testScope'],
+        apiVersion: '&dummy-version',
     },
     appInsights: {
         instrumentationKey: '',
@@ -45,18 +40,20 @@ const dummyAppConfig: AppConfig = {
 
 const dummyFeatureFlags: FeatureFlags = {
     mcAppIsEnabled: true,
+    offlineFunctionalityIsEnabled: false,
 };
 
 const authInstance = authService({ MSAL: client, scopes: ['testScope'] });
-const baseApiInstance = baseApiService({
-    authInstance,
-    baseURL: baseURL,
-    scope: ['testscope'],
-});
-const procosysApiInstance = procosysApiService({
-    axios: baseApiInstance,
-    apiVersion: 'dummy-version',
-});
+
+const procosysApiInstance = procosysApiService(
+    {
+        baseURL: baseURL,
+        apiVersion: '&dummy-version',
+    },
+    'dummy-bearer-token'
+);
+
+const dummyConfigurationAccessToken = 'dummytoken';
 
 const ipoApiInstance = procosysIPOApiService(
     {
@@ -72,6 +69,9 @@ type WithMcAppContextProps = {
     auth?: IAuthService;
     api?: ProcosysApiService;
     ipoApi?: ProcosysIPOApiService;
+    offlineState?: OfflineStatus;
+    setOfflineState: React.Dispatch<React.SetStateAction<OfflineStatus>>;
+    configurationAccessToken: string;
 };
 
 export const withMcAppContext = ({
@@ -81,6 +81,9 @@ export const withMcAppContext = ({
     auth = authInstance,
     api = procosysApiInstance,
     ipoApi = ipoApiInstance,
+    offlineState = OfflineStatus.ONLINE,
+    setOfflineState,
+    configurationAccessToken,
 }: WithMcAppContextProps): JSX.Element => {
     return (
         <MemoryRouter initialEntries={['/test/sub/directory']}>
@@ -90,9 +93,12 @@ export const withMcAppContext = ({
                     fetchPlantsStatus: asyncStatus,
                     auth: auth,
                     api: api,
+                    ipoApi: ipoApi,
                     appConfig: dummyAppConfig,
                     featureFlags: dummyFeatureFlags,
-                    ipoApi: ipoApi,
+                    offlineState: offlineState,
+                    setOfflineState: setOfflineState,
+                    configurationAccessToken: configurationAccessToken,
                 }}
             >
                 {Component}
@@ -109,6 +115,8 @@ type WithPlantContextProps = {
     availableProjects?: Project[] | null;
     currentProject?: Project | undefined;
     setCurrentProject?: (project: Project) => void;
+    offlineState?: OfflineStatus;
+    setOfflineState: React.Dispatch<React.SetStateAction<OfflineStatus>>;
 };
 
 export const withPlantContext = ({
@@ -118,6 +126,8 @@ export const withPlantContext = ({
     currentProject = testProjects[1],
     permissions = dummyPermissions,
     Component,
+    offlineState = OfflineStatus.ONLINE,
+    setOfflineState,
 }: WithPlantContextProps): JSX.Element => {
     return withMcAppContext({
         Component: (
@@ -134,5 +144,8 @@ export const withPlantContext = ({
                 {Component}
             </PlantContext.Provider>
         ),
+        offlineState: offlineState,
+        setOfflineState: setOfflineState,
+        configurationAccessToken: dummyConfigurationAccessToken,
     });
 };

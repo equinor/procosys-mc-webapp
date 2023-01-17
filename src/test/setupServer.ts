@@ -1,5 +1,6 @@
 import { setupServer } from 'msw/node';
 import { rest } from 'msw';
+import 'whatwg-fetch';
 import {
     dummyChecklistResponse,
     dummyPunchListResponse,
@@ -49,6 +50,9 @@ export const ENDPOINTS = {
     //Saved search
     getChecklistSavedSearch: `${baseURL}/CheckList/Search`,
     getPunchItemSavedSearch: `${baseURL}/PunchListItem/Search`,
+
+    //Bookmarks
+    getOfflineScope: `${baseURL}/OfflineScope`,
 
     // Checklist
     getMcScope: `${baseURL}/McPkg/CheckLists`,
@@ -161,6 +165,11 @@ export const server = setupServer(
             context.json(testPunchListItemSavedSearch),
             context.status(200)
         );
+    }),
+
+    //Bookmarks
+    rest.get(ENDPOINTS.getOfflineScope, (_, response, context) => {
+        return response(context.json(null), context.status(200));
     }),
 
     //Checklist
@@ -330,7 +339,10 @@ export const server = setupServer(
 
     //IPO
     rest.get(ENDPOINTS.isAlive, (_, response, context) => {
-        return response(context.json(dummyIPOIsAliveResponse), context.status(200));
+        return response(
+            context.json(dummyIPOIsAliveResponse),
+            context.status(200)
+        );
     })
 );
 

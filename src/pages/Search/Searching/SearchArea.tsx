@@ -1,11 +1,11 @@
-import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
+import React, { ChangeEvent, useEffect, useRef } from 'react';
 import { Search as SearchField } from '@equinor/eds-core-react';
 import useSearchPageFacade from '../useSearchPageFacade';
 import SearchResults from './SearchResults';
-import { SearchType } from '../Search';
 import styled from 'styled-components';
 import { TagPhotoRecognition } from '@equinor/procosys-webapp-components';
 import useCommonHooks from '../../../utils/useCommonHooks';
+import { OfflineStatus, SearchType } from '../../../typings/enums';
 
 export const TallSearchField = styled(SearchField)`
     height: 54px;
@@ -27,7 +27,7 @@ const SearchArea = ({ searchType }: SearchAreaProps): JSX.Element => {
     const callOffSearchbarRef = useRef<HTMLInputElement>(
         document.createElement('input')
     );
-    const { appConfig } = useCommonHooks();
+    const { appConfig, offlineState } = useCommonHooks();
     const {
         hits,
         searchStatus,
@@ -53,7 +53,8 @@ const SearchArea = ({ searchType }: SearchAreaProps): JSX.Element => {
 
     return (
         <SearchAreaWrapper>
-            {searchType === SearchType.Tag ? (
+            {searchType === SearchType.Tag &&
+            offlineState != OfflineStatus.OFFLINE ? (
                 <TagPhotoRecognition
                     setQuery={setQuery}
                     tagOcrEndpoint={appConfig.ocrFunctionEndpoint}

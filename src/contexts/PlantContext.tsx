@@ -13,6 +13,7 @@ import {
     ReloadButton,
     StorageKey,
 } from '@equinor/procosys-webapp-components';
+import { OfflineStatus } from '../typings/enums';
 
 export type PlantContextProps = {
     fetchProjectsAndPermissionsStatus: AsyncStatus;
@@ -27,7 +28,7 @@ const PlantContext = React.createContext({} as PlantContextProps);
 export const PlantContextProvider: React.FC<{ children: ReactNode }> = ({
     children,
 }) => {
-    const { params, api, history, auth } = useCommonHooks();
+    const { params, api, history, auth, offlineState } = useCommonHooks();
     const [currentPlant, setCurrentPlant] = useState<Plant | undefined>();
     const { availablePlants } = useContext(McAppContext);
     const [availableProjects, setAvailableProjects] = useState<Project[]>([]);
@@ -99,12 +100,13 @@ export const PlantContextProvider: React.FC<{ children: ReactNode }> = ({
         (async (): Promise<void> => {
             setFetchProjectsAndPermissionsStatus(AsyncStatus.LOADING);
             try {
-                const [projectsFromApi, permissionsFromApi] = await Promise.all(
-                    [
-                        api.getProjectsForPlant(currentPlant.id),
-                        await api.getPermissionsForPlant(currentPlant.id),
-                    ]
+                const projectsFromApi = await api.getProjectsForPlant(
+                    currentPlant.id
                 );
+                const permissionsFromApi = await api.getPermissionsForPlant(
+                    currentPlant.id
+                );
+
                 setAvailableProjects(projectsFromApi);
                 setPermissions(permissionsFromApi);
                 if (projectsFromApi.length < 1) {
@@ -130,7 +132,10 @@ export const PlantContextProvider: React.FC<{ children: ReactNode }> = ({
         if (fetchProjectsAndPermissionsStatus === AsyncStatus.ERROR) {
             return (
                 <>
-                    <Navbar leftContent={<ProcosysButton />} />
+                    <Navbar
+                        leftContent={<ProcosysButton />}
+                        isOffline={offlineState == OfflineStatus.OFFLINE}
+                    />
                     <ErrorPage
                         title={'Unable to obtain permissions.'}
                         description={

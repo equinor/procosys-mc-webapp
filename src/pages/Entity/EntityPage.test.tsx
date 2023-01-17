@@ -4,7 +4,6 @@ import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
 import { rest } from 'msw';
 import { server, ENDPOINTS, causeApiError } from '../../test/setupServer';
-import { SearchType } from '../Search/Search';
 import { MemoryRouter, Route } from 'react-router-dom';
 import userEvent from '@testing-library/user-event';
 import {
@@ -14,6 +13,7 @@ import {
     testScope,
     testWoPreview,
 } from '../../test/dummyData';
+import { OfflineStatus, SearchType } from '../../typings/enums';
 
 const renderEntityPage = (
     searchType: SearchType,
@@ -34,6 +34,8 @@ const renderEntityPage = (
                     </Route>
                 </MemoryRouter>
             ),
+            offlineState: OfflineStatus.ONLINE,
+            setOfflineState: jest.fn(),
         })
     );
 };

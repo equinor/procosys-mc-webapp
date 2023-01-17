@@ -16,8 +16,8 @@ import {
     WoPreview,
 } from '../../services/apiTypes';
 import { COLORS } from '../../style/GlobalStyles';
+import { SearchType } from '../../typings/enums';
 import useCommonHooks from '../../utils/useCommonHooks';
-import { SearchType } from '../Search/Search';
 
 export const DetailsWrapper = styled.p`
     text-align: center;

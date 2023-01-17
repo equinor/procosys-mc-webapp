@@ -6,6 +6,8 @@ import { SelectPlantWrapper, SelectorButton } from '../SelectPlant/SelectPlant';
 import AsyncPage from '../../components/AsyncPage';
 import SideMenu from '../../components/navigation/SideMenu';
 import { Navbar, ProcosysButton } from '@equinor/procosys-webapp-components';
+import useCommonHooks from '../../utils/useCommonHooks';
+import { OfflineStatus } from '../../typings/enums';
 
 const SelectProject = (): JSX.Element => {
     const {
@@ -13,12 +15,14 @@ const SelectProject = (): JSX.Element => {
         currentPlant,
         fetchProjectsAndPermissionsStatus,
     } = useContext(PlantContext);
+    const { offlineState } = useCommonHooks();
 
     return (
         <>
             <Navbar
                 leftContent={<ProcosysButton />}
                 rightContent={<SideMenu />}
+                isOffline={offlineState == OfflineStatus.OFFLINE}
             />
             <SelectPlantWrapper>
                 <AsyncPage

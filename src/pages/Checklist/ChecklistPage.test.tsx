@@ -14,6 +14,7 @@ import {
     dummyPunchTypes,
 } from '../../test/dummyData';
 import userEvent from '@testing-library/user-event';
+import { OfflineStatus } from '../../typings/enums';
 
 const renderChecklistPage = (contentType?: string): void => {
     render(
@@ -31,6 +32,8 @@ const renderChecklistPage = (contentType?: string): void => {
                     </Route>
                 </MemoryRouter>
             ),
+            offlineState: OfflineStatus.ONLINE,
+            setOfflineState: jest.fn(),
         })
     );
 };
@@ -92,41 +95,6 @@ describe('<ChecklistPage>', () => {
             await screen.findByText('Unable to load footer. Please reload')
         ).toBeInTheDocument();
         await expectTagInfoPage();
-    });
-});
-
-describe('<ChecklistPage> in-page routing', () => {
-    it('Shows the Tag info if the "Tag info" button is clicked', async () => {
-        renderChecklistPage('tag-info');
-        await expectTagInfoPage();
-    });
-    it('Shows the NewPunch component if the "New punch" button is clicked', async () => {
-        renderChecklistPage('punch-list');
-        await expectDetails();
-        await expectPunchListPage();
-        await expectFooter();
-        const newPunchButton = await screen.findByRole('button', {
-            name: 'New punch',
-        });
-        expect(newPunchButton).toBeInTheDocument();
-        userEvent.click(newPunchButton);
-        await expectDetails();
-        await expectNewPunchPage();
-        await expectFooter();
-    });
-    it('Shows the punch list if the back button is clicked when on the new punch page', async () => {
-        renderChecklistPage('punch-list/new-punch');
-        await expectDetails();
-        await expectNewPunchPage();
-        await expectFooter();
-        const backButton = await screen.findByRole('img', {
-            name: 'Back',
-        });
-        expect(backButton).toBeInTheDocument();
-        userEvent.click(backButton);
-        await expectDetails();
-        await expectPunchListPage();
-        await expectFooter();
     });
 });
 

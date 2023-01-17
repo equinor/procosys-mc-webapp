@@ -3,6 +3,7 @@ import React from 'react';
 import { AsyncStatus } from '../../contexts/McAppContext';
 import { withPlantContext } from '../../test/contexts';
 import { testProjects } from '../../test/dummyData';
+import { OfflineStatus } from '../../typings/enums';
 import SelectProject from '../SelectProject/SelectProject';
 
 describe('<SelectProject />', () => {
@@ -11,6 +12,8 @@ describe('<SelectProject />', () => {
             withPlantContext({
                 Component: <SelectProject />,
                 fetchProjectsAndPermissionsStatus: AsyncStatus.SUCCESS,
+                offlineState: OfflineStatus.ONLINE,
+                setOfflineState: jest.fn(),
             })
         );
         expect(getByText(testProjects[0].title)).toBeInTheDocument();
@@ -44,6 +47,8 @@ describe('<SelectProject />', () => {
                 Component: <SelectProject />,
                 fetchProjectsAndPermissionsStatus: AsyncStatus.ERROR,
                 availableProjects: [],
+                offlineState: OfflineStatus.ONLINE,
+                setOfflineState: jest.fn(),
             })
         );
         expect(

@@ -16,8 +16,8 @@ import {
     useSnackbar,
     PunchAction,
 } from '@equinor/procosys-webapp-components';
-import Axios from 'axios';
 import usePersonsSearchFacade from '../../utils/usePersonsSearchFacade';
+import { OfflineStatus } from '../../typings/enums';
 
 const punchEndpoints: PunchEndpoints = {
     updateCategory: 'SetCategory',
@@ -45,7 +45,7 @@ const ClearPunchWrapper = ({
     canEdit,
     canClear,
 }: ClearPunchWrapperProps): JSX.Element => {
-    const { api, params, history, url } = useCommonHooks();
+    const { api, params, history, url, offlineState } = useCommonHooks();
     const { snackbar, setSnackbarText } = useSnackbar();
     const [categories, setCategories] = useState<PunchCategory[]>([]);
     const [types, setTypes] = useState<PunchType[]>([]);
@@ -61,7 +61,8 @@ const ClearPunchWrapper = ({
     const [clearPunchStatus, setClearPunchStatus] = useState(
         AsyncStatus.INACTIVE
     );
-    const source = Axios.CancelToken.source();
+    const abortController = new AbortController();
+    const abortSignal = abortController.signal;
     const { hits, searchStatus, query, setQuery } = usePersonsSearchFacade();
 
     useEffect(() => {
@@ -74,11 +75,11 @@ const ClearPunchWrapper = ({
                     sortsFromApi,
                     prioritiesFromApi,
                 ] = await Promise.all([
-                    api.getPunchCategories(params.plant, source.token),
-                    api.getPunchTypes(params.plant, source.token),
-                    api.getPunchOrganizations(params.plant, source.token),
-                    api.getPunchSorts(params.plant, source.token),
-                    api.getPunchPriorities(params.plant, source.token),
+                    api.getPunchCategories(params.plant, abortSignal),
+                    api.getPunchTypes(params.plant, abortSignal),
+                    api.getPunchOrganizations(params.plant, abortSignal),
+                    api.getPunchSorts(params.plant, abortSignal),
+                    api.getPunchPriorities(params.plant, abortSignal),
                 ]);
                 setCategories(categoriesFromApi);
                 setTypes(typesFromApi);
@@ -91,7 +92,7 @@ const ClearPunchWrapper = ({
             }
         })();
         return (): void => {
-            source.cancel();
+            abortController.abort();
         };
     }, [params.plant, api, params.punchItemId]);
 
@@ -163,7 +164,8 @@ const ClearPunchWrapper = ({
             searchStatus={searchStatus}
             query={query}
             setQuery={setQuery}
-            source={source}
+            abortController={abortController}
+            disablePersonsSearch={offlineState == OfflineStatus.OFFLINE}
         />
     );
 };

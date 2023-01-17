@@ -1,6 +1,5 @@
 import { CheckItem } from '@equinor/procosys-webapp-components/dist/typings/apiTypes';
-import { SavedSearchType } from '../pages/Search/SavedSearches/SavedSearchResult';
-import { SearchType } from '../pages/Search/Search';
+import { SavedSearchType, SearchType } from '../typings/enums';
 import {
     ChecklistDetails,
     ChecklistResponse,
@@ -26,6 +25,7 @@ export const isOfType = <T>(
     varToBeChecked: unknown,
     propertyToCheckFor: keyof T
 ): varToBeChecked is T => {
+    if (varToBeChecked === undefined) return false;
     return (varToBeChecked as T)[propertyToCheckFor] !== undefined;
 };
 

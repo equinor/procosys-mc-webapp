@@ -14,7 +14,16 @@ Features include:
 * Set the auth settings endpoint to a valid Azure function app endpoint.
 
 #### Run
-`yarn start`
+The application can be started with or without a service worker. The service worker is needed to use the offline functionality. 
+
+Without service worker:  `yarn start`
+
+With service worker: 
+* Make a file in project folder called .env.production.local containing `PUBLIC_URL=http://localhost:3000`
+* `yarn build` (optimized production build is needed)
+* `serve build`
+
+Note: If 'serve' is not installed: `npm install --global serve`
 
 #### Test
 `yarn test`

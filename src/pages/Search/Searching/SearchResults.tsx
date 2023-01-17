@@ -1,23 +1,12 @@
 import React from 'react';
 import { SearchStatus } from '../useSearchPageFacade';
-import {
-    McPkgPreview,
-    PoPreview,
-    SearchResults as SearchResultsType,
-    TagPreview,
-    WoPreview,
-} from '../../../services/apiTypes';
-import { SearchType } from '../Search';
-import McDetails from '../../../components/detailCards/McDetails';
+import { SearchResults as SearchResultsType } from '../../../services/apiTypes';
 import styled from 'styled-components';
-import { isArrayOfType } from '../../../services/apiTypeGuards';
+import { SkeletonLoadingPage } from '@equinor/procosys-webapp-components';
+import BookmarkableEntityInfoList from '../BookmarkableEntityInfoList';
+import useBookmarks from '../../../utils/useBookmarks';
+import { SearchType } from '../../../typings/enums';
 import useCommonHooks from '../../../utils/useCommonHooks';
-import { COLORS } from '../../../style/GlobalStyles';
-import {
-    EntityDetails,
-    SkeletonLoadingPage,
-    TextIcon,
-} from '@equinor/procosys-webapp-components';
 
 const SearchResultAmountWrapper = styled.h6`
     margin: 10px 0px;
@@ -34,8 +23,8 @@ const SearchResults = ({
     searchResults,
     searchType,
 }: SearchResultsProps): JSX.Element => {
-    const { history, url } = useCommonHooks();
-
+    const { offlineState, featureFlags } = useCommonHooks();
+    const { isBookmarked, handleBookmarkClicked } = useBookmarks();
     const getPlaceholderTextType = (): string => {
         if (searchType === SearchType.MC) {
             return 'MC Package number';
@@ -60,117 +49,6 @@ const SearchResults = ({
         }
     };
 
-    const determineContentToRender = (): JSX.Element => {
-        if (
-            searchType === SearchType.MC &&
-            isArrayOfType<McPkgPreview>(searchResults.items, 'mcPkgNo')
-        ) {
-            return (
-                <>
-                    {searchResults.items.map((searchResult) => {
-                        return (
-                            <McDetails
-                                key={searchResult.id}
-                                mcPkgDetails={searchResult}
-                            />
-                        );
-                    })}
-                </>
-            );
-        } else if (
-            searchType === SearchType.WO &&
-            isArrayOfType<WoPreview>(searchResults.items, 'workOrderNo')
-        ) {
-            return (
-                <>
-                    {searchResults.items.map((searchResult) => {
-                        return (
-                            <EntityDetails
-                                key={searchResult.id}
-                                icon={
-                                    <TextIcon
-                                        color={COLORS.workOrderIcon}
-                                        text="WO"
-                                    />
-                                }
-                                headerText={searchResult.workOrderNo}
-                                description={searchResult.title}
-                                details={
-                                    searchResult.disciplineCode
-                                        ? [
-                                              `${searchResult.disciplineCode}, ${searchResult.disciplineDescription}`,
-                                          ]
-                                        : undefined
-                                }
-                                onClick={(): void =>
-                                    history.push(`${url}/WO/${searchResult.id}`)
-                                }
-                            />
-                        );
-                    })}
-                </>
-            );
-        } else if (
-            searchType === SearchType.Tag &&
-            isArrayOfType<TagPreview>(searchResults.items, 'tagNo')
-        ) {
-            return (
-                <>
-                    {searchResults.items.map((searchResult) => {
-                        return (
-                            <EntityDetails
-                                key={searchResult.id}
-                                icon={
-                                    <TextIcon
-                                        color={COLORS.tagIcon}
-                                        text="Tag"
-                                    />
-                                }
-                                headerText={searchResult.tagNo}
-                                description={searchResult.description}
-                                onClick={(): void =>
-                                    history.push(
-                                        `${url}/Tag/${searchResult.id}`
-                                    )
-                                }
-                            />
-                        );
-                    })}
-                </>
-            );
-        } else if (
-            searchType === SearchType.PO &&
-            isArrayOfType<PoPreview>(searchResults.items, 'isPurchaseOrder')
-        ) {
-            return (
-                <>
-                    {searchResults.items.map((searchResult) => {
-                        return (
-                            <EntityDetails
-                                key={searchResult.callOffId}
-                                icon={
-                                    <TextIcon
-                                        color={COLORS.purchaseOrderIcon}
-                                        text="PO"
-                                    />
-                                }
-                                headerText={searchResult.title}
-                                description={searchResult.description}
-                                details={[searchResult.responsibleCode]}
-                                onClick={(): void =>
-                                    history.push(
-                                        `${url}/PO/${searchResult.callOffId}`
-                                    )
-                                }
-                            />
-                        );
-                    })}
-                </>
-            );
-        }
-        return <></>;
-    };
-
     if (searchType in SearchType === false) {
         return (
             <div>
@@ -193,7 +71,13 @@ const SearchResults = ({
                     Displaying {searchResults.items.length} out of{' '}
                     {searchResults.maxAvailable} {getSearchResultType()}
                 </SearchResultAmountWrapper>
-                {determineContentToRender()}
+                <BookmarkableEntityInfoList
+                    searchType={searchType}
+                    isBookmarked={isBookmarked}
+                    handleBookmarkClicked={handleBookmarkClicked}
+                    entityInfoList={searchResults.items}
+                    offlinePlanningState={!offlineState}
+                />
             </div>
         );
     } else if (searchStatus === SearchStatus.LOADING) {
@@ -207,6 +91,28 @@ const SearchResults = ({
                         field{searchType === SearchType.PO ? 's' : ''} above.
                     </i>
                 </p>
+                <p></p>
+                <p>
+                    Bookmarks: The entities in the search result can be
+                    bookmarked by clicking the icon to the right of the entities
+                    (toggle on/off). Go to Bookmark page (tab below) to see the
+                    bookmarked entities.
+                </p>
+                {featureFlags.offlineFunctionalityIsEnabled ? (
+                    <p>
+                        Offline: In the Bookmark page you can choose to go
+                        offline with the bookmarked entities. You will then be
+                        able to use the app without internet connection. Note
+                        that you MUST finish offline mode to get your changes
+                        uploaded to the server. This should be done preferably
+                        at the end of the working day.
+                    </p>
+                ) : (
+                    <p>
+                        In a future release you will be able to work offline
+                        with the bookmarked entities.
+                    </p>
+                )}
             </div>
         );
     } else if (searchStatus === SearchStatus.ERROR) {

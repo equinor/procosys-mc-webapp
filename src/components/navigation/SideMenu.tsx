@@ -6,6 +6,7 @@ import PlantContext from '../../contexts/PlantContext';
 import useCommonHooks from '../../utils/useCommonHooks';
 import { COLORS } from '../../style/GlobalStyles';
 import { StorageKey } from '@equinor/procosys-webapp-components';
+import { OfflineStatus } from '../../typings/enums';
 
 const SideMenuWrapper = styled.aside<{ isActive: boolean }>`
     width: 297px;
@@ -80,7 +81,7 @@ const PlantInfo = styled.div`
 `;
 
 const SideMenu = (): JSX.Element => {
-    const { auth, history, params } = useCommonHooks();
+    const { auth, history, params, offlineState } = useCommonHooks();
     const { currentPlant, currentProject } = useContext(PlantContext);
     const [drawerIsOpen, setDrawerIsOpen] = useState(false);
 
@@ -107,7 +108,11 @@ const SideMenu = (): JSX.Element => {
                 <UserInfo>
                     <p>Signed in as:</p>
                     <UserNameText>{auth.getUserName()}</UserNameText>
-                    <Button variant="outlined" onClick={auth.logout}>
+                    <Button
+                        variant="outlined"
+                        onClick={auth.logout}
+                        disabled={offlineState == OfflineStatus.OFFLINE}
+                    >
                         Sign out
                     </Button>
                 </UserInfo>
@@ -121,6 +126,7 @@ const SideMenu = (): JSX.Element => {
                             setDrawerIsOpen(false);
                             history.push('/');
                         }}
+                        disabled={offlineState == OfflineStatus.OFFLINE}
                     >
                         Change plant
                         <EdsIcon name="chevron_right" />
@@ -141,6 +147,7 @@ const SideMenu = (): JSX.Element => {
                                     setDrawerIsOpen(false);
                                     history.push(`/${params.plant}`);
                                 }}
+                                disabled={offlineState == OfflineStatus.OFFLINE}
                             >
                                 Change project
                                 <EdsIcon name="chevron_right" />

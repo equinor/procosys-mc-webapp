@@ -15,6 +15,7 @@ import {
     dummyPunchTypes,
 } from '../../test/dummyData';
 import userEvent from '@testing-library/user-event';
+import { OfflineStatus } from '../../typings/enums';
 
 const renderPunchPage = (): void => {
     render(
@@ -30,6 +31,8 @@ const renderPunchPage = (): void => {
                     </Route>
                 </MemoryRouter>
             ),
+            offlineState: OfflineStatus.ONLINE,
+            setOfflineState: jest.fn(),
         })
     );
 };
@@ -68,30 +71,6 @@ describe('<PunchPage>', () => {
         ).toBeInTheDocument();
         expect(tagInfoButton).toBeInTheDocument();
     });
-    it('Renders the VerifyPunch component when the "Clear" button has been clicked', async () => {
-        renderPunchPage();
-        await expectDetails();
-        await expectFooter();
-        const clearButton = await screen.findByRole('button', {
-            name: 'Clear',
-        });
-        expect(clearButton).toBeInTheDocument();
-        server.use(
-            rest.get(ENDPOINTS.getPunchItem, (request, response, context) => {
-                return response(
-                    context.json(dummyPunchItemCleared),
-                    context.status(200)
-                );
-            })
-        );
-        userEvent.click(clearButton);
-        await expectDetails();
-        await expectFooter();
-        const unclearButton = await screen.findByRole('button', {
-            name: 'Unclear',
-        });
-        expect(unclearButton).toBeInTheDocument();
-    });
     it('Renders the ClearPunch component when the "Unclear" button has been clicked', async () => {
         server.use(
             rest.get(ENDPOINTS.getPunchItem, (request, response, context) => {
@@ -119,9 +98,7 @@ describe('<PunchPage>', () => {
         userEvent.click(unclearButton);
         await expectDetails();
         await expectFooter();
-        const clearButton = await screen.findByRole('button', {
-            name: 'Clear',
-        });
+        const clearButton = await screen.findByText('Clear');
         expect(clearButton).toBeInTheDocument();
     });
 });

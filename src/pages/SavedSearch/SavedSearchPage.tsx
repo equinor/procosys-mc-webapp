@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import Axios from 'axios';
 import { AsyncStatus } from '../../contexts/McAppContext';
 import {
     ChecklistSavedSearchResult,
@@ -7,7 +6,6 @@ import {
     SavedSearch,
 } from '../../services/apiTypes';
 import useCommonHooks from '../../utils/useCommonHooks';
-import { SavedSearchType } from '../Search/SavedSearches/SavedSearchResult';
 import AsyncPage from '../../components/AsyncPage';
 import { isArrayOfType } from '../../services/apiTypeGuards';
 import {
@@ -19,6 +17,7 @@ import {
 import styled from 'styled-components';
 import { Button, DotProgress } from '@equinor/eds-core-react';
 import { PageHeader } from '@equinor/procosys-webapp-components';
+import { OfflineStatus, SavedSearchType } from '../../typings/enums';
 
 const DetailsWrapper = styled.div`
     padding: 0 4%;
@@ -40,7 +39,7 @@ const ButtonWrapper = styled.div`
 `;
 
 const SavedSearchPage = (): JSX.Element => {
-    const { url, params, api, history } = useCommonHooks();
+    const { url, params, api, history, offlineState } = useCommonHooks();
     const [savedSearch, setSavedSearch] = useState<SavedSearch>();
     const [results, setResults] = useState<
         ChecklistSavedSearchResult[] | PunchItemSavedSearchResult[]
@@ -51,19 +50,20 @@ const SavedSearchPage = (): JSX.Element => {
     const [fetchMoreResultsStatus, setFetchMoreResultsStatus] =
         useState<AsyncStatus>(AsyncStatus.INACTIVE);
     const [nextPageNumber, setNextPageNumber] = useState<number>(1);
-    const source = Axios.CancelToken.source();
+    const controller = new AbortController();
+    const abortSignal = controller.signal;
 
     useEffect(() => {
         (async (): Promise<void> => {
             try {
                 const [savedSearchesFromApi, resultsFromAPI] =
                     await Promise.all([
-                        api.getSavedSearches(params.plant, source.token),
+                        api.getSavedSearches(params.plant, abortSignal),
                         api.getSavedSearchResults(
                             params.plant,
                             params.savedSearchId,
                             params.savedSearchType,
-                            source.token
+                            abortSignal
                         ),
                     ]);
                 setSavedSearch(
@@ -82,7 +82,7 @@ const SavedSearchPage = (): JSX.Element => {
             }
         })();
         return (): void => {
-            source.cancel();
+            controller.abort();
         };
     }, [params]);
 
@@ -93,7 +93,7 @@ const SavedSearchPage = (): JSX.Element => {
                 params.plant,
                 params.savedSearchId,
                 params.savedSearchType,
-                source.token,
+                abortSignal,
                 nextPageNumber
             );
             if (newResults.length === 0) {
@@ -248,6 +248,7 @@ const SavedSearchPage = (): JSX.Element => {
                 leftContent={
                     <BackButton to={`${removeSubdirectories(url, 3)}`} />
                 }
+                isOffline={offlineState == OfflineStatus.OFFLINE}
             />
             <AsyncPage
                 errorMessage={

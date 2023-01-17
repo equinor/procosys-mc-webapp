@@ -1,26 +1,11 @@
 import React, { useState } from 'react';
-import withAccessControl from '../../services/withAccessControl';
-import styled from 'styled-components';
-import SearchArea from './Searching/SearchArea';
 import SavedSearches from './SavedSearches/SavedSearches';
+import SearchArea from './Searching/SearchArea';
+import styled from 'styled-components';
+import { OfflineStatus, SearchType } from '../../typings/enums';
+import useCommonHooks from '../../utils/useCommonHooks';
 import OutstandingIpos from '../../components/OutstandingIpos';
-
-import {
-    Navbar,
-    ProcosysButton,
-    SearchTypeButton,
-    useSnackbar,
-} from '@equinor/procosys-webapp-components';
-import SideMenu from '../../components/navigation/SideMenu';
-
-const SearchPageWrapper = styled.main`
-    padding: 0 4%;
-    margin: 0;
-    & > p {
-        margin: 0;
-        padding: 16px 0;
-    }
-`;
+import { SearchTypeButton } from '@equinor/procosys-webapp-components';
 
 const ButtonsWrapper = styled.div`
     display: flex;
@@ -30,19 +15,16 @@ const ButtonsWrapper = styled.div`
     }
 `;
 
-export enum SearchType {
-    PO = 'PO',
-    MC = 'MC',
-    WO = 'WO',
-    Tag = 'Tag',
-    IPO = 'IPO',
+interface SearchProps {
+    setSnackbarText: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const Search = (): JSX.Element => {
+const Search = ({ setSnackbarText }: SearchProps): JSX.Element => {
     const [searchType, setSearchType] = useState<string>();
-    const { snackbar, setSnackbarText } = useSnackbar();
+    const { offlineState } = useCommonHooks();
 
     const determineComponent = (): JSX.Element => {
+        if (offlineState === OfflineStatus.OFFLINE) return <></>;
         if (searchType === undefined) {
             return (
                 <>
@@ -55,43 +37,37 @@ const Search = (): JSX.Element => {
     };
 
     return (
-        <SearchPageWrapper>
-            <Navbar
-                leftContent={<ProcosysButton />}
-                rightContent={<SideMenu />}
-            />
+        <>
             <p>Search for</p>
             <ButtonsWrapper>
                 <SearchTypeButton
                     searchType={SearchType.PO}
                     currentSearchType={searchType}
                     setCurrentSearchType={setSearchType}
+                    disabled={offlineState == OfflineStatus.OFFLINE}
                 />
                 <SearchTypeButton
                     searchType={SearchType.MC}
                     currentSearchType={searchType}
                     setCurrentSearchType={setSearchType}
+                    disabled={offlineState == OfflineStatus.OFFLINE}
                 />
                 <SearchTypeButton
                     searchType={SearchType.WO}
                     currentSearchType={searchType}
                     setCurrentSearchType={setSearchType}
+                    disabled={offlineState == OfflineStatus.OFFLINE}
                 />
                 <SearchTypeButton
                     searchType={SearchType.Tag}
                     currentSearchType={searchType}
                     setCurrentSearchType={setSearchType}
+                    disabled={offlineState == OfflineStatus.OFFLINE}
                 />
             </ButtonsWrapper>
             {determineComponent()}
-            {snackbar}
-        </SearchPageWrapper>
+        </>
     );
 };
 
-export default withAccessControl(Search, [
-    'MCPKG/READ',
-    'WO/READ',
-    'TAG/READ',
-    'PURCHASEORDER/READ',
-]);
+export default Search;

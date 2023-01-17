@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Button } from '@equinor/eds-core-react';
 import {
     Attachments,
@@ -8,7 +8,6 @@ import {
     removeSubdirectories,
     useSnackbar,
 } from '@equinor/procosys-webapp-components';
-import Axios from 'axios';
 import styled from 'styled-components';
 import AsyncPage from '../../components/AsyncPage';
 import { AsyncStatus } from '../../contexts/McAppContext';
@@ -23,6 +22,8 @@ import {
 } from '../../services/apiTypes';
 import { removeHtmlFromText } from '../../utils/removeHtmlFromText';
 import useCommonHooks from '../../utils/useCommonHooks';
+import PlantContext from '../../contexts/PlantContext';
+import { OfflineStatus } from '../../typings/enums';
 
 const TagInfoWrapper = styled.main`
     min-height: 0px;
@@ -46,9 +47,11 @@ const WorkOrderInfo = ({
     workOrder,
     fetchWorkOrderStatus,
 }: WorkOrderInfoProps): JSX.Element => {
-    const { history, url, api, params } = useCommonHooks();
+    const { history, url, api, params, offlineState } = useCommonHooks();
+    const { permissions } = useContext(PlantContext);
     const { snackbar, setSnackbarText } = useSnackbar();
-    const source = Axios.CancelToken.source();
+    const abortController = new AbortController();
+    const abortSignal = abortController.signal;
     if (
         workOrder === undefined ||
         isOfType<WoPreview>(workOrder, 'workOrderNo')
@@ -75,7 +78,7 @@ const WorkOrderInfo = ({
                             api.getWorkOrderAttachments(
                                 params.plant,
                                 params.entityId,
-                                source.token
+                                abortSignal
                             )
                         }
                         getAttachment={(attachmentId: number): Promise<Blob> =>
@@ -83,7 +86,7 @@ const WorkOrderInfo = ({
                                 params.plant,
                                 params.entityId,
                                 attachmentId,
-                                source.token
+                                abortSignal
                             )
                         }
                         postAttachment={(
@@ -107,8 +110,11 @@ const WorkOrderInfo = ({
                             )
                         }
                         setSnackbarText={setSnackbarText}
-                        readOnly={false}
-                        source={source}
+                        readOnly={
+                            !permissions.includes('WO/ATTACHFILE') ||
+                            offlineState != OfflineStatus.ONLINE
+                        }
+                        abortController={abortController}
                     />
                     {snackbar}
                 </TagInfoWrapper>
