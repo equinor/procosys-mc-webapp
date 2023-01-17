@@ -90,10 +90,10 @@ const SyncErrors = ({
                     the same punch/checklist has not been attempted.
                 </p>
                 <p>
-                    The reason for errors might be legitimate, and can be caused
-                    by modifications done by other users. You should try to fix
-                    the issues before retrying the synchronization. By deleting
-                    the failed offline changes, they will be lost.
+                    The reason for the error(s) might be legitimate, and could
+                    be caused caused by modifications done by other users. You
+                    should read the issues before retrying the synchronization.
+                    By deleting the failed offline changes, they will be lost.
                 </p>
                 <p>
                     Note that these errors need to be handled before you can go
@@ -101,7 +101,7 @@ const SyncErrors = ({
                 </p>
                 <p>
                     Details describing the error(s) encountered is listed below.
-                    Contact support for any questions regarding the error(s)
+                    Contact support for any questions regarding the error(s).
                 </p>
             </CollapsibleCard>
             <ButtonWrapper>
@@ -151,7 +151,7 @@ const SyncErrors = ({
                             Do you really wish to delete failed offline changes?
                         </h3>
                         <Checkbox
-                            label="I understand that by deleting failed offline changes, I will lose these changes and corresponding error messages."
+                            label="I understand that by deleting failed offline changes, I will lose these changes and the corresponding error messages."
                             onClick={(): void => setIsSure((prev) => !prev)}
                         />
                         <ButtonsWrapper>
