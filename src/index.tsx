@@ -169,6 +169,7 @@ const renderApp = async (): Promise<void> => {
             );
 
             await syncronizeOfflineUpdatesWithBackend(procosysApiInstance);
+            console.log('Synchronization is done.');
 
             render(
                 <App
