@@ -75,7 +75,7 @@ export const syncronizeOfflineUpdatesWithBackend = async (
 
                     if (id) {
                         //Backend has created a new ID. All updates for the entity must be updated.
-                        for (const update of offlineUpdates) {
+                        for (const update of updatesForEntity) {
                             const updated = updateIdOnEntityRequest(
                                 id.Id,
                                 update,
@@ -89,6 +89,10 @@ export const syncronizeOfflineUpdatesWithBackend = async (
                 } catch (error) {
                     if (error instanceof HTTPError) {
                         //Main-api returned an error code.
+                        console.error(
+                            'The offline update was not updated with the server. An error occured.',
+                            error
+                        );
                         await handleFailedUpdateRequest(offlineUpdate, error);
                         break; //skip further updates on current entity
                     } else {
@@ -118,7 +122,15 @@ export const syncronizeOfflineUpdatesWithBackend = async (
         }
 
         //todo: Er det riktig å sette denne til syncronized hvis det er error?
-        await setEntityToSynchronized(updatesForEntity[0], api);
+        try {
+            await setEntityToSynchronized(updatesForEntity[0], api);
+        } catch (error) {
+            console.error(
+                'An error occured when trying to set an entity to synchronized',
+                error
+            );
+            //what do we do?
+        }
     }
 
     const errorsExists = await reportErrorsIfExists(
@@ -194,6 +206,7 @@ const reportErrorsIfExists = async (
     };
     const offlineUpdates = await offlineUpdateRepository.getUpdateRequests();
 
+    //Get a list of errors from the updates store offline, if any
     for (const offlineUpdate of offlineUpdates) {
         if (OfflineUpdateRequest.hasError(offlineUpdate)) {
             if (offlineUpdate.entityType == EntityType.Checklist) {
@@ -218,10 +231,18 @@ const reportErrorsIfExists = async (
         offlineSynchronizationErrors.CheckListErrors.length > 0 ||
         offlineSynchronizationErrors.PunchListItemErrors.length > 0
     ) {
-        await api.postOfflineScopeSynchronizeErrors(
-            plantId,
-            offlineSynchronizationErrors
-        );
+        try {
+            await api.postOfflineScopeSynchronizeErrors(
+                plantId,
+                offlineSynchronizationErrors
+            );
+        } catch (error) {
+            //TODO: VI KAN GI MULIGHET FOR Å LEGGE INN ANDRE FEILMELDINGER, SOM F.EKS AT VI IKKE FÅR SENT INN ERROR ELLER AT DET ER SYNCHRONISERT.
+            console.error(
+                'An error occured when trying to post offline scope synchronization errors',
+                error
+            );
+        }
 
         localStorage.setItem(
             LocalStorage.SYNCH_ERRORS,
@@ -249,6 +270,11 @@ const performOfflineUpdate = async (
     offlineUpdate: OfflineUpdateRequest,
     api: ProcosysApiService
 ): Promise<any> => {
+    console.log(
+        `Handle offline update. EntityId=${offlineUpdate.entityId}, EntityType=${offlineUpdate.entityType}`,
+        offlineUpdate.url
+    );
+
     let response: Response | null = null;
     const method = offlineUpdate.method.toUpperCase();
     let newEntityId;
@@ -299,6 +325,9 @@ const performOfflineUpdate = async (
 
     //Response is ok
     //Set offline update to be syncronized in browser database.
+    console.log(
+        'Offline update is synchronized with server. Status on update will be set to synchronized.'
+    );
     offlineUpdate.syncStatus = SyncStatus.SYNCHRONIZED;
     offlineUpdate.errorCode = undefined; //remove in case eror code was set in previous synchroinzation.
     offlineUpdate.errorMessage = undefined;
@@ -377,6 +406,8 @@ const updateIdOnEntityRequest = (
         ) {
             offlineUpdate.entityId = newId;
             offlineUpdate.bodyData = newId.toString();
+        } else if (offlineUpdate.url.startsWith('PunchListItem?')) {
+            offlineUpdate.entityId = newId;
         }
     } else if (method == 'DELETE') {
         if (offlineUpdate.url.startsWith('CheckList/CustomItem')) {
