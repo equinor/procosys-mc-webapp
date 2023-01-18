@@ -233,6 +233,7 @@ const procosysApiService = (
         };
         const response = await fetch(`${baseURL}/${url}`, PutOperation);
         if (!response.ok) {
+            console.log('putByFetch - response !ok');
             const errorMessage = await getErrorMessage(response);
             throw new HTTPError(response.status, errorMessage);
         }
