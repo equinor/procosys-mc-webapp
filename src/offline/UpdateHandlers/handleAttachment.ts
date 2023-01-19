@@ -168,8 +168,7 @@ export const handlePostWorkOrderAttachment = async (
     const plantId = params.get('plantId');
     const title = params.get('title');
     const workOrderId = params.get('workOrderId');
-    const blob: Blob = offlinePostRequest.bodyData[0];
-    const arrayBuffer = await blob.arrayBuffer();
+    const arrayBuffer = offlinePostRequest.blob;
 
     //Construct url for new punch attachment
     const newAttachmentId = generateRandomId();
@@ -217,8 +216,7 @@ export const handlePostChecklistAttachment = async (
     const plantId = params.get('plantId');
     const title = params.get('title');
     const checklistId = params.get('checkListId');
-    const blob: Blob = offlinePostRequest.bodyData[0];
-    const arrayBuffer = await blob.arrayBuffer();
+    const arrayBuffer = offlinePostRequest.blob;
 
     //Construct url for new punch attachment
     const newAttachmentId = generateRandomId();
