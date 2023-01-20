@@ -84,12 +84,13 @@ const Bookmarks = (): JSX.Element => {
                     {featureFlags.offlineFunctionalityIsEnabled == true ? (
                         <>
                             {offlineState != OfflineStatus.ONLINE ? (
+                                // TODO: decide on whether to change cancel offline mode to delete offline changes or something similar
                                 <>
                                     <Button
                                         onClick={startSync}
                                         disabled={disableActions()}
                                     >
-                                        Finish offline
+                                        Stop offline mode
                                     </Button>
                                     <Button
                                         onClick={(): void =>
@@ -100,7 +101,7 @@ const Bookmarks = (): JSX.Element => {
                                         disabled={disableActions()}
                                         color="danger"
                                     >
-                                        Cancel offline
+                                        Cancel offline mode
                                     </Button>
                                 </>
                             ) : (
@@ -112,7 +113,7 @@ const Bookmarks = (): JSX.Element => {
                                             )
                                         }
                                     >
-                                        Start offline
+                                        Start offline mode
                                     </Button>
                                     <Button onClick={deleteBookmarks}>
                                         Delete bookmarks
