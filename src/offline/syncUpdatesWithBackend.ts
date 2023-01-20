@@ -299,7 +299,11 @@ const performOfflineUpdate = async (
                 fd.append(key, blob, key);
             }
 
-            response = await api.postAttachmentByFetch(offlineUpdate.url, fd);
+            response = await api.postAttachmentByFetch(
+                offlineUpdate.url,
+                fd,
+                false
+            );
         } else {
             throw Error(
                 'Not able to handle given offline update type. Offline update type: ' +
