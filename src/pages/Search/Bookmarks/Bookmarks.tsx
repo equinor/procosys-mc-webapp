@@ -84,7 +84,6 @@ const Bookmarks = (): JSX.Element => {
                     {featureFlags.offlineFunctionalityIsEnabled == true ? (
                         <>
                             {offlineState != OfflineStatus.ONLINE ? (
-                                // TODO: decide on whether to change cancel offline mode to delete offline changes or something similar
                                 <>
                                     <Button
                                         onClick={startSync}
