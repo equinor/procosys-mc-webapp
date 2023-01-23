@@ -8,9 +8,9 @@ import {
     SyncStatus,
 } from './OfflineUpdateRequest';
 
-import { OfflineSynchronizationErrors } from '../services/apiTypes';
+import { EntityId, OfflineSynchronizationErrors } from '../services/apiTypes';
 import { getOfflineProjectIdfromLocalStorage } from './OfflineStatus';
-import { StorageKey } from '@equinor/procosys-webapp-components';
+import { isOfType, StorageKey } from '@equinor/procosys-webapp-components';
 import { db } from './db';
 import { LocalStorage } from '../contexts/McAppContext';
 
@@ -63,6 +63,7 @@ export const syncronizeOfflineUpdatesWithBackend = async (
         //If an error occurs, further synchronization of this entity will be stopped and
         //the updates will be marked with 'error'.
         //If the update is already set to synchronized, or an error code is set, it will be skipped.
+        let newEntityId;
         for (let offlineUpdate of updatesForEntity) {
             //Reload the offlineUpdate in case there are changes (new entityid)
             offlineUpdate = await offlineUpdateRepository.getUpdateRequest(
@@ -71,15 +72,22 @@ export const syncronizeOfflineUpdatesWithBackend = async (
 
             if (offlineUpdate.syncStatus == SyncStatus.NOT_SYNCHRONIZED) {
                 try {
-                    const id = await performOfflineUpdate(offlineUpdate, api);
-
-                    if (id) {
+                    newEntityId = await performOfflineUpdate(
+                        offlineUpdate,
+                        api
+                    );
+                    if (newEntityId) {
                         //Backend has created a new ID. All updates for the entity must be updated.
-                        for (const update of updatesForEntity) {
+                        for (let update of updatesForEntity) {
+                            //Reload the offline update to get changes (performOfflineUpdate will make updates)
+                            update =
+                                await offlineUpdateRepository.getUpdateRequest(
+                                    update.uniqueId
+                                );
                             const updated = updateIdOnEntityRequest(
-                                id.Id,
+                                newEntityId,
                                 update,
-                                offlineUpdate.temporaryId
+                                update.temporaryId
                             );
                             await offlineUpdateRepository.updateOfflineUpdateRequest(
                                 updated
@@ -122,8 +130,12 @@ export const syncronizeOfflineUpdatesWithBackend = async (
         }
 
         //todo: Er det riktig å sette denne til syncronized hvis det er error?
+        const synchronizedEntityId = newEntityId
+            ? newEntityId
+            : updatesForEntity[0].entityId;
+
         try {
-            await setEntityToSynchronized(updatesForEntity[0], api);
+            await setEntityToSynchronized(synchronizedEntityId, api);
         } catch (error) {
             console.error(
                 'An error occured when trying to set an entity to synchronized',
@@ -283,10 +295,13 @@ const performOfflineUpdate = async (
         //Handle POST
         if (offlineUpdate.type == RequestType.Json) {
             //Handle json
-            newEntityId = await api.postByFetch(
+            const response = await api.postByFetch(
                 offlineUpdate.url,
                 offlineUpdate.bodyData
             );
+            if (isOfType<EntityId>(response, 'Id')) {
+                newEntityId = response.Id;
+            }
         } else if (offlineUpdate.type == RequestType.Attachment) {
             //Handle attachment
             const bodyData = offlineUpdate.bodyData as Map<string, ArrayBuffer>;
@@ -339,8 +354,14 @@ const performOfflineUpdate = async (
     await offlineUpdateRepository.updateOfflineUpdateRequest(offlineUpdate);
 
     if (offlineUpdate.responseIsNewEntityId) {
-        //todo: Her kan vi ha litt feilhådntering. Vi må ha en reposnse.id her.
+        if (!newEntityId) {
+            throw Error(
+                `The offline update given by ${offlineUpdate.url} did not respond with a new entityId.`
+            );
+        }
         return newEntityId;
+    } else {
+        return;
     }
 };
 
@@ -435,6 +456,5 @@ const updateIdOnEntityRequest = (
             offlineUpdate.url
         );
     }
-
     return offlineUpdate;
 };
