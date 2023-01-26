@@ -96,7 +96,11 @@ const SideMenu = (): JSX.Element => {
             />
             <SideMenuWrapper isActive={drawerIsOpen}>
                 <TopContent>
-                    <h2>Welcome</h2>
+                    <h2>
+                        Welcome
+                        <br />
+                    </h2>
+                    <p>Version 1.1</p>
                     <Button
                         variant="ghost"
                         onClick={(): void => setDrawerIsOpen(false)}
