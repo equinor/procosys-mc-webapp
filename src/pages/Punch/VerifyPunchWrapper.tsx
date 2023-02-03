@@ -73,6 +73,7 @@ const VerifyPunchWrapper = ({
             punchActionStatus={punchActionStatus}
             getPunchAttachments={api.getPunchAttachments}
             getPunchAttachment={api.getPunchAttachment}
+            getPunchComments={api.getPunchComments}
             snackbar={snackbar}
             setSnackbarText={setSnackbarText}
             abortController={abortController}

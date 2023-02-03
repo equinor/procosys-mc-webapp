@@ -72,6 +72,8 @@ export const ENDPOINTS = {
     postTempPunchAttachment: `${baseURL}/PunchListItem/TempAttachment`,
     postPunchAttachment: `${baseURL}/PunchListItem/Attachment`,
     getPunchAttachments: `${baseURL}/PunchListItem/Attachments`,
+    getPunchComments: `${baseURL}/PunchListItem/Comments`,
+    postPunchComment: `${baseURL}/PunchListItem/AddComment`,
     getPunchCategories: `${baseURL}/PunchListItem/Categories`,
     getPunchTypes: `${baseURL}/PunchListItem/Types`,
     getPunchOrganizations: `${baseURL}/PunchListItem/Organizations`,
