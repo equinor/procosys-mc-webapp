@@ -3,6 +3,10 @@ import {
     PunchEndpoints,
     UpdatePunchData,
 } from '@equinor/procosys-webapp-components';
+import {
+    PunchComment,
+    APIComment,
+} from '@equinor/procosys-webapp-components/dist/typings/apiTypes';
 import { SavedSearchType, SearchType } from '../typings/enums';
 import objectToCamelCase from '../utils/objectToCamelCase';
 import {
@@ -41,8 +45,6 @@ import {
     IpoDetails,
     EntityId,
     OfflineSynchronizationErrors,
-    PunchComment,
-    APIComment,
 } from './apiTypes';
 import { HTTPError } from './HTTPError';
 

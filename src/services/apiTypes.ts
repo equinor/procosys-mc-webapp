@@ -494,20 +494,6 @@ export interface PunchItem {
     attachmentCount: number;
 }
 
-export interface PunchComment {
-    PunchItemId: number;
-    Text: string;
-}
-
-// Punch API Comment
-export interface APIComment {
-    createdAt: string;
-    firstName: string;
-    lastName: string;
-    text: string;
-    id: number;
-}
-
 export interface Attachment {
     id: number;
     uri: string;
