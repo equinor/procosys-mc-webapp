@@ -41,6 +41,8 @@ import {
     IpoDetails,
     EntityId,
     OfflineSynchronizationErrors,
+    PunchComment,
+    APIComment,
 } from './apiTypes';
 import { HTTPError } from './HTTPError';
 
@@ -739,6 +741,28 @@ const procosysApiService = (
         return data as Blob;
     };
 
+    const getPunchComments = async (
+        plantId: string,
+        punchItemId: number,
+        abortSignal?: AbortSignal
+    ): Promise<APIComment[]> => {
+        const data = await getByFetch(
+            `PunchListItem/Comments?plantId=PCS$${plantId}&punchItemId=${punchItemId}&${apiVersion}`,
+            abortSignal
+        );
+        return data;
+    };
+
+    const postPunchComment = async (
+        plantId: string,
+        comment: PunchComment
+    ): Promise<void> => {
+        await postByFetch(
+            `PunchListItem/AddComment?plantId=PCS$${plantId}${apiVersion}`,
+            comment
+        );
+    };
+
     const deletePunchAttachment = async (
         plantId: string,
         punchItemId: number,
@@ -1019,6 +1043,7 @@ const procosysApiService = (
         getVersion,
         getPunchAttachments,
         getPunchAttachment,
+        getPunchComments,
         getPunchItem,
         getPlants,
         getProjectsForPlant,
@@ -1035,6 +1060,7 @@ const procosysApiService = (
         postNewPunch,
         postPunchAction,
         postPunchAttachment,
+        postPunchComment,
         postTempPunchAttachment,
         putUpdatePunch,
         getSearchResults,
