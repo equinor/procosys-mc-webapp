@@ -3,6 +3,10 @@ import {
     PunchEndpoints,
     UpdatePunchData,
 } from '@equinor/procosys-webapp-components';
+import {
+    PunchComment,
+    APIComment,
+} from '@equinor/procosys-webapp-components/dist/typings/apiTypes';
 import { SavedSearchType, SearchType } from '../typings/enums';
 import objectToCamelCase from '../utils/objectToCamelCase';
 import {
@@ -199,7 +203,8 @@ const procosysApiService = (
      */
     const postAttachmentByFetch = async (
         url: string,
-        file: FormData
+        file: FormData,
+        returnId: boolean
     ): Promise<any> => {
         const PostOperation = {
             method: 'POST',
@@ -212,6 +217,12 @@ const procosysApiService = (
         if (!response.ok) {
             const errorMessage = await getErrorMessage(response);
             throw new HTTPError(response.status, errorMessage);
+        }
+        if (returnId == true) {
+            const jsonResult = await response.json();
+            const resultObj = objectToCamelCase(jsonResult);
+            callback(resultObj, response.url);
+            return resultObj;
         }
     };
 
@@ -732,6 +743,28 @@ const procosysApiService = (
         return data as Blob;
     };
 
+    const getPunchComments = async (
+        plantId: string,
+        punchItemId: number,
+        abortSignal?: AbortSignal
+    ): Promise<APIComment[]> => {
+        const data = await getByFetch(
+            `PunchListItem/Comments?plantId=PCS$${plantId}&punchItemId=${punchItemId}&${apiVersion}`,
+            abortSignal
+        );
+        return data;
+    };
+
+    const postPunchComment = async (
+        plantId: string,
+        comment: PunchComment
+    ): Promise<void> => {
+        await postByFetch(
+            `PunchListItem/AddComment?plantId=PCS$${plantId}${apiVersion}`,
+            comment
+        );
+    };
+
     const deletePunchAttachment = async (
         plantId: string,
         punchItemId: number,
@@ -754,8 +787,10 @@ const procosysApiService = (
     ): Promise<string> => {
         const data = await postAttachmentByFetch(
             `PunchListItem/TempAttachment?plantId=PCS$${plantId}${apiVersion}`,
-            file
+            file,
+            true
         );
+        console.log('data: ', data);
         return data.id as string;
     };
 
@@ -767,7 +802,8 @@ const procosysApiService = (
     ): Promise<void> => {
         await postAttachmentByFetch(
             `PunchListItem/Attachment?plantId=PCS$${plantId}&punchItemId=${punchId}&title=${title}${apiVersion}`,
-            file
+            file,
+            false
         );
     };
 
@@ -837,7 +873,8 @@ const procosysApiService = (
     ): Promise<void> => {
         await postAttachmentByFetch(
             `WorkOrder/Attachment?plantId=PCS$${plantId}&workOrderId=${workOrderId}&title=${title}${apiVersion}`,
-            file
+            file,
+            false
         );
     };
 
@@ -904,7 +941,8 @@ const procosysApiService = (
     ): Promise<void> => {
         await postAttachmentByFetch(
             `CheckList/Attachment?plantId=PCS$${plantId}&checkListId=${checklistId}&title=${title}${apiVersion}`,
-            data
+            data,
+            false
         );
     };
 
@@ -1007,6 +1045,7 @@ const procosysApiService = (
         getVersion,
         getPunchAttachments,
         getPunchAttachment,
+        getPunchComments,
         getPunchItem,
         getPlants,
         getProjectsForPlant,
@@ -1023,6 +1062,7 @@ const procosysApiService = (
         postNewPunch,
         postPunchAction,
         postPunchAttachment,
+        postPunchComment,
         postTempPunchAttachment,
         putUpdatePunch,
         getSearchResults,

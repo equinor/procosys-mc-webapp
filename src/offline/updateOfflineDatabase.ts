@@ -53,6 +53,8 @@ export const updateOfflineDatabase = async (
     const method = offlinePostRequest.method.toUpperCase();
     const url = offlinePostRequest.url;
 
+    // TODO: add handler for postTempPunchAttachment
+
     if (method == 'POST') {
         if (url.startsWith('PunchListItem?plantId')) {
             return await handleNewPunch(offlinePostRequest, searchParams);

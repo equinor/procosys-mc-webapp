@@ -7,6 +7,7 @@ import useCommonHooks from '../../utils/useCommonHooks';
 import { COLORS } from '../../style/GlobalStyles';
 import { StorageKey } from '@equinor/procosys-webapp-components';
 import { OfflineStatus } from '../../typings/enums';
+import packageJson from '../../../package.json';
 
 const SideMenuWrapper = styled.aside<{ isActive: boolean }>`
     width: 297px;
@@ -78,6 +79,14 @@ const PlantInfo = styled.div`
     display: flex;
     flex-direction: column;
     background-color: ${COLORS.fadedBlue};
+`;
+const VersionInfo = styled.div`
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    & p {
+        margin: 0;
+    }
 `;
 
 const SideMenu = (): JSX.Element => {
@@ -155,6 +164,18 @@ const SideMenu = (): JSX.Element => {
                         </>
                     )}
                 </PlantInfo>
+                <VersionInfo>
+                    <p>
+                        Versions <br />
+                        MC App: {packageJson.version} <br />
+                        WebApp Components:{' '}
+                        {
+                            packageJson.dependencies[
+                                '@equinor/procosys-webapp-components'
+                            ]
+                        }
+                    </p>
+                </VersionInfo>
             </SideMenuWrapper>
         </>
     );
