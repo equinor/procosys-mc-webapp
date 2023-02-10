@@ -99,7 +99,7 @@ const initialize = async () => {
     );
 
     let accessTokenIPO = '';
-    if (!offline) {
+    if (offline != OfflineStatus.OFFLINE) {
         accessTokenIPO = await authInstance.getAccessToken(
             appConfig.ipoApi.scope
         );
