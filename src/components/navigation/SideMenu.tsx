@@ -18,7 +18,7 @@ const SideMenuWrapper = styled.aside<{ isActive: boolean }>`
     z-index: 1000;
     background-color: ${COLORS.white};
     border-right: 2px solid ${COLORS.fadedBlue};
-    overflow-y: auto;
+    overflow: auto;
     opacity: ${(props): string => (props.isActive ? '1' : '0')};
     transform: ${(props): string =>
         props.isActive ? 'translateX(0)' : 'translateX(-300px)'};
@@ -84,6 +84,7 @@ const VersionInfo = styled.div`
     padding: 16px;
     display: flex;
     flex-direction: column;
+    margin-bottom: 32px;
     & p {
         margin: 0;
     }
