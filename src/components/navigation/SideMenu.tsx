@@ -23,6 +23,7 @@ const SideMenuWrapper = styled.aside<{ isActive: boolean }>`
     transform: ${(props): string =>
         props.isActive ? 'translateX(0)' : 'translateX(-300px)'};
     transition: transform 0.4s ease-in;
+    margin-bottom: 32px;
 `;
 
 const TopContent = styled.div`
@@ -84,9 +85,8 @@ const VersionInfo = styled.div`
     padding: 16px;
     display: flex;
     flex-direction: column;
-    margin-bottom: 32px;
     & p {
-        margin: 0;
+        margin: 0 0 16px 0;
     }
 `;
 
@@ -176,6 +176,7 @@ const SideMenu = (): JSX.Element => {
                             ]
                         }
                     </p>
+                    <Button>Check for new version</Button>
                 </VersionInfo>
             </SideMenuWrapper>
         </>
