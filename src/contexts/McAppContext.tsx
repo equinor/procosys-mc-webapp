@@ -39,6 +39,7 @@ export enum LocalStorage {
     OFFLINE_PROJECT_ID = 'offlineProjectId',
     OFFLINE_STATUS = 'offlineStatus',
     SYNCH_ERRORS = 'SynchErrors',
+    SW_UPDATE = 'serviceWorkerUpdate',
 }
 
 const McAppContext = React.createContext({} as McAppContextProps);

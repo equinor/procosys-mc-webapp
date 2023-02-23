@@ -23,8 +23,13 @@ import {
 import { syncronizeOfflineUpdatesWithBackend } from './offline/syncUpdatesWithBackend';
 import { OfflineStatus } from './typings/enums';
 import hasConnectionToServer from './utils/hasConnectionToServer';
+import { LocalStorage } from './contexts/McAppContext';
 
-serviceWorkerRegistration.register();
+const onUpdate = (registration: ServiceWorkerRegistration): void => {
+    localStorage.setItem(LocalStorage.SW_UPDATE, 'true');
+};
+
+serviceWorkerRegistration.register({ onUpdate });
 
 const render = (content: JSX.Element): void => {
     ReactDOM.render(
