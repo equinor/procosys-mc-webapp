@@ -96,9 +96,11 @@ const SideMenu = (): JSX.Element => {
     const { currentPlant, currentProject } = useContext(PlantContext);
     const [drawerIsOpen, setDrawerIsOpen] = useState(false);
     const updateServiceWorker = (): void => {
-        navigator.serviceWorker.controller?.postMessage({
-            type: 'SKIP_WAITING',
-        });
+        if (isOfType<Navigator>(navigator, 'serviceWorker')) {
+            navigator.serviceWorker.controller?.postMessage({
+                type: 'SKIP_WAITING',
+            });
+        }
         localStorage.setItem(LocalStorage.SW_UPDATE, 'false');
         if (isOfType<Location>(location, 'reload')) {
             location.reload();
