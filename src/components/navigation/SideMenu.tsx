@@ -5,9 +5,10 @@ import EdsIcon from '../icons/EdsIcon';
 import PlantContext from '../../contexts/PlantContext';
 import useCommonHooks from '../../utils/useCommonHooks';
 import { COLORS } from '../../style/GlobalStyles';
-import { StorageKey } from '@equinor/procosys-webapp-components';
+import { isOfType, StorageKey } from '@equinor/procosys-webapp-components';
 import { OfflineStatus } from '../../typings/enums';
 import packageJson from '../../../package.json';
+import { LocalStorage } from '../../contexts/McAppContext';
 
 const SideMenuWrapper = styled.aside<{ isActive: boolean }>`
     width: 297px;
@@ -94,6 +95,15 @@ const SideMenu = (): JSX.Element => {
     const { auth, history, params, offlineState } = useCommonHooks();
     const { currentPlant, currentProject } = useContext(PlantContext);
     const [drawerIsOpen, setDrawerIsOpen] = useState(false);
+    const updateServiceWorker = (): void => {
+        navigator.serviceWorker.controller?.postMessage({
+            type: 'SKIP_WAITING',
+        });
+        localStorage.setItem(LocalStorage.SW_UPDATE, 'false');
+        if (isOfType<Location>(location, 'reload')) {
+            location.reload();
+        }
+    };
 
     return (
         <>
@@ -176,7 +186,11 @@ const SideMenu = (): JSX.Element => {
                             ]
                         }
                     </p>
-                    <Button>Check for new version</Button>
+                    {localStorage.getItem(LocalStorage.SW_UPDATE) == 'true' ? (
+                        <Button onClick={updateServiceWorker}>
+                            Update to newest version
+                        </Button>
+                    ) : null}
                 </VersionInfo>
             </SideMenuWrapper>
         </>
