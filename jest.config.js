@@ -3,8 +3,11 @@ module.exports = {
     verbose: true,
     preset: 'ts-jest',
     testEnvironment: 'jsdom',
+    moduleNameMapper: {
+        "axios": "axios/dist/node/axios.cjs"
+    },
     transformIgnorePatterns: [
-        '/node_modules/(?!(@equinor/eds-tokens|@equinor/eds-icons))',
+        '/node_modules/(?!(@equinor/eds-tokens|@equinor/eds-icons))'
     ],
     transform: {
         '^.+\\.(js|ts|tsx)$': 'ts-jest',

@@ -103,7 +103,7 @@ const SearchResults = ({
                         Offline: In the Bookmark page you can choose to go
                         offline with the bookmarked entities. You will then be
                         able to use the app without internet connection. Note
-                        that you MUST finish offline mode to get your changes
+                        that you MUST stop offline mode to get your changes
                         uploaded to the server. This should be done preferably
                         at the end of the working day.
                     </p>
