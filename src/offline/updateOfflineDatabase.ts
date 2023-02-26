@@ -30,6 +30,7 @@ import {
     handleCustomChecklistItemPostClear,
     handleCustomChecklistItemPostSetOK,
 } from './UpdateHandlers/handleCustomChecklistItem';
+import { handlePostComment } from './UpdateHandlers/handleComments';
 
 //************************************************************************************
 // The functions here will handle update of offline database, on POST, PUT and DELETE.
@@ -93,6 +94,8 @@ export const updateOfflineDatabase = async (
                 offlinePostRequest,
                 searchParams
             );
+        } else if (url.startsWith('Checklist/Comment')) {
+            await handlePostComment(offlinePostRequest, searchParams);
         } else if (url.startsWith('WorkOrder/Attachment')) {
             await handlePostWorkOrderAttachment(
                 offlinePostRequest,

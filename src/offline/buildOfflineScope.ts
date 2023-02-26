@@ -314,6 +314,17 @@ const buildOfflineScope = async (
                         apipath: currentApiPath,
                     });
 
+                    //Punch comments
+                    await api.getPunchComments(plantId, punch.id);
+
+                    addEntityToMap({
+                        entitytype: EntityType.PunchComment,
+                        entityid: punch.id,
+                        parententityid: checklist.id,
+                        responseObj: currentResponseObj,
+                        apipath: currentApiPath,
+                    });
+
                     //Punch attachments
                     const punchAttachments: Attachment[] =
                         await api.getPunchAttachments(plantId, punch.id);

@@ -37,6 +37,7 @@ export enum EntityType {
     PunchAttachment = 'PunchAttachment',
     ChecklistAttachments = 'ChecklistAttachments',
     ChecklistAttachment = 'ChecklistAttachment',
+    PunchComment = 'PunchComment',
 }
 
 export enum SavedSearchType {
