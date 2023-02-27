@@ -1,11 +1,13 @@
 import { OfflineContentRepository } from '../OfflineContentRepository';
 import { OfflineUpdateRequest } from '../OfflineUpdateRequest';
+import { OfflineUpdateRepository } from '../OfflineUpdateRepository';
 import { generateRandomId } from './utils';
 import { EntityType } from '../../typings/enums';
 import { IEntity } from '../IEntity';
 import { APIComment } from '@equinor/procosys-webapp-components/dist/typings/apiTypes';
 
 const offlineContentRepository = new OfflineContentRepository();
+const offlineUpdateRepository = new OfflineUpdateRepository();
 
 export const handlePostComment = async (
     offlinePostRequest: OfflineUpdateRequest,
@@ -29,6 +31,14 @@ export const handlePostComment = async (
             punchId
         );
 
+    const newComment = {
+        id: newCommentId,
+        text: comment,
+        firstName: '',
+        lastName: '',
+        createdAt: new Date(Date.now()).toLocaleString().split(',')[0],
+    };
+
     const commentList: APIComment[] = commentListEntity.responseObj;
     const mainEntityId = commentListEntity.parententityid; //MC,Tag,PO or WO
     if (mainEntityId === undefined) {
@@ -37,18 +47,10 @@ export const handlePostComment = async (
             commentList
         );
         return; // todo: feilhåndtering.
-    } else {
-        commentList.push({
-            id: newCommentId,
-            text: comment,
-            firstName: '',
-            lastName: '',
-            createdAt: '',
-        });
     }
 
     const apiVersion = 'api-version=4.1'; //hvor får vi denne fra?
-    const apiPath = `PunchListItem/Comment?plantId=PCS$${plantId}${apiVersion}`;
+    const apiPath = `PunchListItem/Comments?plantId=${plantId}&${apiVersion}`;
 
     //Create entity object and store in database
     const punchCommentEntity: IEntity = {
@@ -59,5 +61,13 @@ export const handlePostComment = async (
         entityid: newCommentId,
     };
 
-    await offlineContentRepository.add(punchCommentEntity);
+    commentList.unshift(newComment);
+    commentListEntity.responseObj = commentList;
+    await offlineContentRepository.replaceEntity(commentListEntity);
+
+    await offlineUpdateRepository.addUpdateRequest(
+        newCommentId,
+        EntityType.PunchItem,
+        offlinePostRequest
+    );
 };
