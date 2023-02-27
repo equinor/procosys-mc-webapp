@@ -25,7 +25,6 @@ export class OfflineUpdateRequest {
         | EntityType.Checklist
         | EntityType.PunchItem
         | EntityType.WorkOrder
-        | EntityType.PunchComment
         | null;
     plantId: string;
     timestamp: number;

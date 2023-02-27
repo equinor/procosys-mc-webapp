@@ -94,7 +94,7 @@ export const updateOfflineDatabase = async (
                 offlinePostRequest,
                 searchParams
             );
-        } else if (url.startsWith('Checklist/Comment')) {
+        } else if (url.startsWith('PunchListItem/AddComment')) {
             await handlePostComment(offlinePostRequest, searchParams);
         } else if (url.startsWith('WorkOrder/Attachment')) {
             await handlePostWorkOrderAttachment(
