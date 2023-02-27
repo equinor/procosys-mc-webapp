@@ -3,17 +3,14 @@ import { OfflineUpdateRequest } from '../OfflineUpdateRequest';
 import { OfflineUpdateRepository } from '../OfflineUpdateRepository';
 import { generateRandomId } from './utils';
 import { EntityType } from '../../typings/enums';
-import { IEntity } from '../IEntity';
 import { APIComment } from '@equinor/procosys-webapp-components/dist/typings/apiTypes';
 
 const offlineContentRepository = new OfflineContentRepository();
 const offlineUpdateRepository = new OfflineUpdateRepository();
 
 export const handlePostComment = async (
-    offlinePostRequest: OfflineUpdateRequest,
-    params: URLSearchParams
+    offlinePostRequest: OfflineUpdateRequest
 ): Promise<void> => {
-    const plantId = params.get('plantId');
     const { Text: comment, PunchItemId: punchIdStr } =
         offlinePostRequest.bodyData; // PunchId is stored in the body of the request
     const newCommentId = generateRandomId();
@@ -42,24 +39,9 @@ export const handlePostComment = async (
     const commentList: APIComment[] = commentListEntity.responseObj;
     const mainEntityId = commentListEntity.parententityid; //MC,Tag,PO or WO
     if (mainEntityId === undefined) {
-        console.error(
-            'Not able to find main punchlist based on entity on checklist punchlist.',
-            commentList
-        );
+        console.error('Not able to find', commentList);
         return; // todo: feilhåndtering.
     }
-
-    const apiVersion = 'api-version=4.1'; //hvor får vi denne fra?
-    const apiPath = `PunchListItem/Comments?plantId=${plantId}&${apiVersion}`;
-
-    //Create entity object and store in database
-    const punchCommentEntity: IEntity = {
-        entitytype: EntityType.PunchComment,
-        apipath: apiPath,
-        responseObj: commentList,
-        parententityid: punchId,
-        entityid: newCommentId,
-    };
 
     commentList.unshift(newComment);
     commentListEntity.responseObj = commentList;
