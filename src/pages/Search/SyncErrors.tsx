@@ -141,6 +141,7 @@ const SyncErrors = ({
             {showDeleteConfirmation == true ? (
                 <Scrim
                     isDismissable
+                    open={showDeleteConfirmation}
                     onClose={(): void => {
                         setShowDeleteConfirmation(false);
                         setIsSure(false);

@@ -129,6 +129,7 @@ const SavedSearches = ({
                 <Scrim
                     isDismissable
                     onClose={(): void => setSearchToBeDeleted(0)}
+                    open={searchToBeDeleted != 0}
                 >
                     <DeletionPopup>
                         <p>Really delete this item?</p>
