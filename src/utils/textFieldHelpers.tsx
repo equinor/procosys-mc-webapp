@@ -1,13 +1,17 @@
-import { Variants } from '@equinor/eds-core-react/dist/types/components/TextField/types';
 import React from 'react';
-import EdsIcon from '../components/icons/EdsIcon';
 import { AsyncStatus } from '../contexts/McAppContext';
-import { COLORS } from '../style/GlobalStyles';
 
-export const determineVariant = (status: AsyncStatus): Variants => {
-    if (status === AsyncStatus.ERROR) return 'error';
-    if (status === AsyncStatus.SUCCESS) return 'success';
-    return 'default';
+enum TextFieldVariants {
+    ERROR = 'error',
+    SUCCESS = 'success',
+}
+
+export const determineVariant = (
+    status: AsyncStatus
+): TextFieldVariants | undefined => {
+    if (status === AsyncStatus.ERROR) return TextFieldVariants.ERROR;
+    if (status === AsyncStatus.SUCCESS) return TextFieldVariants.SUCCESS;
+    return undefined;
 };
 
 export const determineHelperText = (status: AsyncStatus): string => {

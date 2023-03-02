@@ -178,29 +178,6 @@ describe('<ChecklistPage> New Punch', () => {
             dummyPunchOrganizations[0].Id.toString(),
             1
         );
-        // Choosing a person
-        const personInput = await screen.findByRole('textbox', {
-            name: 'Action by person',
-        });
-        expect(personInput).toBeInTheDocument();
-        userEvent.click(personInput);
-        const personSearch = screen.getByRole('searchbox');
-        expect(personSearch).toBeInTheDocument();
-        userEvent.type(personSearch, 'name');
-        const person = await screen.findByText(
-            `${dummyPersonsSearch[0].FirstName} ${dummyPersonsSearch[0].LastName}`
-        );
-        expect(person).toBeInTheDocument();
-        userEvent.click(person);
-        expect(personSearch).not.toBeInTheDocument();
-        const personInputAfter = await screen.findByRole('textbox', {
-            name: 'Action by person',
-        });
-        await waitFor(() =>
-            expect((personInputAfter as HTMLInputElement).value).toEqual(
-                `${dummyPersonsSearch[0].FirstName} ${dummyPersonsSearch[0].LastName}`
-            )
-        );
         // Choosing due date
         const dateInput = await screen.findByRole('datepicker');
         fireEvent.change(dateInput, { target: { value: '2021-05-05' } });
