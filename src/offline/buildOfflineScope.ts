@@ -1,5 +1,6 @@
 import {
     Attachment,
+    ChecklistPreview,
     ChecklistResponse,
     PunchPreview,
     Tag,
@@ -10,8 +11,7 @@ import { EntityType, SearchType } from '../typings/enums';
 import { OfflineContentRepository } from './OfflineContentRepository';
 import { IEntity } from './IEntity';
 import { fetchAppConfig, fetchAuthConfig } from '../services/appConfiguration';
-import removeBaseUrlFromUrl from '../utils/removeBaseUrlFromUrl';
-
+import { useWorker, WORKER_STATUS } from '@koale/useworker';
 /**
  * This function will be called when user want to go offline with given bookmarks.
  * All relevant data will be fetched from main-api, and store in browser database (indexeddb).
@@ -28,27 +28,21 @@ const buildOfflineScope = async (
     const offlineContentRepository = new OfflineContentRepository();
     const offlineEntities: Map<string, IEntity> = new Map();
 
-    let currentResponseObj = '' as string | Blob;
-    let currentApiPath = '';
-
-    /**
-     * This function will be used as a callback function when calling fetch-methods.
-     * When performing a fetch call (in e.g. procosysApi.ts) we must call this function, and pass the resonse object and url path.
-     * This function will then update the local variables currentResponsObj and currentApiPath, so that we can build the offline scope.
-     * @param responseObj The response object given by the fetch
-     * @param apiPath The url path
-     */
-    const cbFunc = (
-        responseObj: string | Blob,
-        apiPath: string
-    ): string | Blob => {
-        currentResponseObj = responseObj;
-        currentApiPath = removeBaseUrlFromUrl(apiPath);
-        return responseObj;
+    const createEntityObj = (
+        entityType: EntityType | string,
+        entityId?: number,
+        parentEntityId?: number,
+        searchType?: SearchType
+    ): IEntity => {
+        return {
+            entitytype: entityType,
+            entityid: entityId,
+            parententityid: parentEntityId,
+            searchtype: searchType,
+            responseObj: '',
+            apipath: '',
+        };
     };
-
-    api.setCallbackFunction(cbFunc);
-
     /**
      * This function will be use to add entities to a map. It will ensure that no duplicates are stored in the database (entities with same api path)
      */
@@ -68,106 +62,143 @@ const buildOfflineScope = async (
         );
     };
 
+    /**
+     * This function fetches data for a punch
+     */
+    const fetchPunch = async (
+        punch: PunchPreview,
+        checklist: ChecklistPreview
+    ): Promise<void> => {
+        //Punch item
+        const punchItemEntity = createEntityObj(
+            EntityType.PunchItem,
+            punch.id,
+            checklist.id
+        );
+        await api.getPunchItem(
+            plantId,
+            punch.id.toString(),
+            abortSignal,
+            punchItemEntity
+        );
+
+        addEntityToMap(punchItemEntity);
+
+        //Punch attachments
+        const punchAttachmentsEntity = createEntityObj(
+            EntityType.PunchAttachments,
+            punch.id,
+            checklist.id
+        );
+
+        const punchAttachments: Attachment[] = await api.getPunchAttachments(
+            plantId,
+            punch.id,
+            abortSignal,
+            punchAttachmentsEntity
+        );
+
+        addEntityToMap(punchAttachmentsEntity);
+
+        //Fetch entities for all punch attacments
+        for (const attachment of punchAttachments) {
+            //Checklist attachment
+            const punchAttachmentEntity = createEntityObj(
+                EntityType.PunchAttachment,
+                attachment.id,
+                punch.id
+            );
+
+            await api.getPunchAttachment(
+                plantId,
+                punch.id,
+                attachment.id,
+                abortSignal,
+                punchAttachmentEntity
+            );
+            addEntityToMap(punchAttachmentEntity);
+        }
+    };
+
     //------------------------------------------------------------
     // Fetch data and store in offline database.
     //------------------------------------------------------------
 
     //auth config
-    const authConfig = await fetchAuthConfig(cbFunc);
-    addEntityToMap({
-        entitytype: EntityType.AuthConfig,
-        responseObj: currentResponseObj,
-        apipath: currentApiPath,
-    });
+    const authConfigEntity = createEntityObj(EntityType.AuthConfig);
+    const authConfig = await fetchAuthConfig(authConfigEntity);
+    addEntityToMap(authConfigEntity);
 
     //App config
+    const appConfigEntity = createEntityObj(EntityType.AppConfig);
     await fetchAppConfig(
         authConfig.configurationEndpoint,
         configurationAccessToken,
-        cbFunc
+        appConfigEntity
     );
-    addEntityToMap({
-        entitytype: EntityType.AppConfig,
-        responseObj: currentResponseObj,
-        apipath: currentApiPath,
-    });
+    addEntityToMap(appConfigEntity);
 
     //Bookmarks
-    const bookmarks = await api.getBookmarks(plantId, projectId, abortSignal);
+    const bookmarksEntity = createEntityObj(EntityType.Bookmarks);
+
+    const bookmarks = await api.getBookmarks(
+        plantId,
+        projectId,
+        abortSignal,
+        bookmarksEntity
+    );
     if (bookmarks == null) {
         console.error('No bookmarks found.');
         return; //todo: Må gi feilmelding. Dette skal ikke kunne gå ann.
     }
-
-    addEntityToMap({
-        entitytype: EntityType.Bookmarks,
-        responseObj: currentResponseObj,
-        apipath: currentApiPath,
-    });
+    addEntityToMap(bookmarksEntity);
 
     //Permissions
-    await api.getPermissionsForPlant(`PCS$${plantId}`);
-    addEntityToMap({
-        entitytype: EntityType.Permissions,
-        responseObj: currentResponseObj,
-        apipath: currentApiPath,
-    });
+    const permissionsEntity = createEntityObj(EntityType.Permissions);
+    await api.getPermissionsForPlant(`PCS$${plantId}`, permissionsEntity);
+    addEntityToMap(permissionsEntity);
 
     //Plants
-    await api.getPlants();
-    addEntityToMap({
-        entitytype: EntityType.Plants,
-        responseObj: currentResponseObj,
-        apipath: currentApiPath,
-    });
+    const plantEntity = createEntityObj(EntityType.Plants);
+    await api.getPlants(plantEntity);
+    addEntityToMap(plantEntity);
 
     //Projects
-    await api.getProjectsForPlant(`PCS$${plantId}`);
-    addEntityToMap({
-        entitytype: EntityType.Projects,
-        responseObj: currentResponseObj,
-        apipath: currentApiPath,
-    });
+    const projectsForPlantEntity = createEntityObj(EntityType.Projects);
+    await api.getProjectsForPlant(`PCS$${plantId}`, projectsForPlantEntity);
+    addEntityToMap(projectsForPlantEntity);
 
     //Punch categories
-    await api.getPunchCategories(plantId, abortSignal);
-    addEntityToMap({
-        entitytype: EntityType.PunchCategories,
-        responseObj: currentResponseObj,
-        apipath: currentApiPath,
-    });
+    const punchCategoriesEntity = createEntityObj(EntityType.PunchCategories);
+    await api.getPunchCategories(plantId, abortSignal, punchCategoriesEntity);
+    addEntityToMap(punchCategoriesEntity);
 
     //Punch organization
-    await api.getPunchOrganizations(plantId, abortSignal);
-    addEntityToMap({
-        entitytype: EntityType.PunchOrganization,
-        responseObj: currentResponseObj,
-        apipath: currentApiPath,
-    });
+    const punchOrganizationsEntity = createEntityObj(
+        EntityType.PunchOrganization
+    );
+    await api.getPunchOrganizations(
+        plantId,
+        abortSignal,
+        punchOrganizationsEntity
+    );
+    addEntityToMap(punchOrganizationsEntity);
 
     //Punch priorities
-    await api.getPunchPriorities(plantId, abortSignal);
-    addEntityToMap({
-        entitytype: EntityType.PunchPriorities,
-        responseObj: currentResponseObj,
-        apipath: currentApiPath,
-    });
+
+    const punchPrioritiesEntity = createEntityObj(EntityType.PunchPriorities);
+    await api.getPunchPriorities(plantId, abortSignal, punchPrioritiesEntity);
+    addEntityToMap(punchPrioritiesEntity);
 
     //Punch sorts
-    await api.getPunchSorts(plantId, abortSignal);
-    addEntityToMap({
-        entitytype: EntityType.PunchSorts,
-        responseObj: currentResponseObj,
-        apipath: currentApiPath,
-    });
+    const punchSortsEntity = createEntityObj(EntityType.PunchSorts);
+    await api.getPunchSorts(plantId, abortSignal, punchSortsEntity);
+    addEntityToMap(punchSortsEntity);
 
     //Punch types
-    await api.getPunchTypes(plantId, abortSignal);
-    addEntityToMap({
-        entitytype: EntityType.PunchTypes,
-        responseObj: currentResponseObj,
-        apipath: currentApiPath,
-    });
+    const punchTypesEntity = createEntityObj(EntityType.PunchTypes);
+    await api.getPunchTypes(plantId, abortSignal, punchTypesEntity);
+    addEntityToMap(punchTypesEntity);
 
     /**
      * Build offline scope for a search type entity
@@ -178,201 +209,183 @@ const buildOfflineScope = async (
         searchType: SearchType
     ): Promise<void> => {
         //Entity details (MCpkg, WO, PO, Tag)
+        const entityDetailsObj = createEntityObj(
+            searchType + EntityType.EntityDetails,
+            entityId
+        );
         const entityDetails = await api.getEntityDetails(
             plantId,
             searchType,
-            entityId.toString()
+            entityId.toString(),
+            abortSignal,
+            entityDetailsObj
         );
 
-        addEntityToMap({
-            entityid: entityId,
-            entitytype: searchType + EntityType.EntityDetails,
-            responseObj: currentResponseObj,
-            apipath: currentApiPath,
-        });
+        addEntityToMap(entityDetailsObj);
 
         //Punch list
+        const punchListEntity = createEntityObj(EntityType.Punchlist, entityId);
         await api.getPunchList(
             plantId,
             searchType,
             entityId.toString(),
-            entityDetails
+            entityDetails,
+            abortSignal,
+            punchListEntity
         );
-
-        addEntityToMap({
-            entityid: entityId,
-            entitytype: EntityType.Punchlist,
-            responseObj: currentResponseObj,
-            apipath: currentApiPath,
-        });
+        addEntityToMap(punchListEntity);
 
         //Scope (checklists)
+        const scopeEntity = createEntityObj(
+            searchType + EntityType.Checklist,
+            entityId,
+            entityId,
+            searchType
+        );
         const scope = await api.getScope(
             plantId,
             searchType,
             entityId.toString(),
-            entityDetails
+            entityDetails,
+            abortSignal,
+            scopeEntity
         );
 
-        addEntityToMap({
-            entitytype: searchType + EntityType.Checklists,
-            entityid: entityId,
-            parententityid: entityId,
-            responseObj: currentResponseObj,
-            apipath: currentApiPath,
-            searchtype: searchType,
-        });
+        addEntityToMap(scopeEntity);
 
         //WO Info
         if (searchType === SearchType.WO) {
             //WO attachments
+
+            const woAttachmentsEntity = createEntityObj(
+                EntityType.WorkOrderAttachments,
+                entityId,
+                entityId
+            );
+
             const woAttachments: Attachment[] =
                 await api.getWorkOrderAttachments(
                     plantId,
                     entityId.toString(),
-                    abortSignal
+                    abortSignal,
+                    woAttachmentsEntity
                 );
 
-            addEntityToMap({
-                entitytype: EntityType.WorkOrderAttachments,
-                entityid: entityId,
-                parententityid: entityId,
-                responseObj: currentResponseObj,
-                apipath: currentApiPath,
-            });
+            addEntityToMap(woAttachmentsEntity);
 
+            //Get entities for all workorder attacments
             for (const attachment of woAttachments) {
-                //Checklist attachment
+                //workorder attachment
+                const woOrderAttachmentEntity = createEntityObj(
+                    EntityType.WorkOrderAttachment,
+                    attachment.id,
+                    entityId
+                );
+
                 await api.getWorkOrderAttachment(
                     plantId,
                     entityId.toString(),
                     attachment.id,
-                    abortSignal
+                    abortSignal,
+                    woOrderAttachmentEntity
                 );
-                addEntityToMap({
-                    entitytype: EntityType.WorkOrderAttachment,
-                    entityid: attachment.id,
-                    parententityid: entityId,
-                    apipath: currentApiPath,
-                    responseObj: currentResponseObj,
-                });
+                addEntityToMap(woOrderAttachmentEntity);
             }
         }
 
-        //For all checklists
+        //fetch entitities for all checklists
         for (const checklist of scope) {
             //Checklist
             try {
-                const checklistResp: ChecklistResponse = await api.getChecklist(
-                    plantId,
-                    checklist.id.toString()
+                const checklistEntity = createEntityObj(
+                    EntityType.Checklist,
+                    checklist.id,
+                    entityId,
+                    searchType
                 );
 
-                addEntityToMap({
-                    entitytype: EntityType.Checklist,
-                    entityid: checklist.id,
-                    parententityid: entityId,
-                    responseObj: currentResponseObj,
-                    apipath: currentApiPath,
-                    searchtype: searchType,
-                });
-                //Tag
-                await api.getTag(plantId, checklistResp.checkList.tagId);
+                const checklistResp: ChecklistResponse = await api.getChecklist(
+                    plantId,
+                    checklist.id.toString(),
+                    abortSignal,
+                    checklistEntity
+                );
 
-                addEntityToMap({
-                    entitytype: EntityType.Tag,
-                    entityid: checklistResp.checkList.tagId,
-                    parententityid: entityId,
-                    responseObj: currentResponseObj,
-                    apipath: currentApiPath,
-                });
+                addEntityToMap(checklistEntity);
+
+                //Tag
+
+                const tagEntity = createEntityObj(
+                    EntityType.Tag,
+                    checklistResp.checkList.tagId,
+                    entityId
+                );
+                await api.getTag(
+                    plantId,
+                    checklistResp.checkList.tagId,
+                    abortSignal,
+                    tagEntity
+                );
+
+                addEntityToMap(tagEntity);
 
                 //Checklist punchlist
+                const checklistPunchListEntity = createEntityObj(
+                    EntityType.ChecklistPunchlist,
+                    checklist.id,
+                    entityId
+                );
                 const checklistPunchList: PunchPreview[] =
                     await api.getChecklistPunchList(
                         plantId,
-                        checklist.id.toString()
+                        checklist.id.toString(),
+                        abortSignal,
+                        checklistPunchListEntity
                     );
 
-                addEntityToMap({
-                    entitytype: EntityType.ChecklistPunchlist,
-                    entityid: checklist.id,
-                    parententityid: entityId,
-                    responseObj: currentResponseObj,
-                    apipath: currentApiPath,
-                });
+                addEntityToMap(checklistPunchListEntity);
 
+                //Fetch all checklist punches
                 for (const punch of checklistPunchList) {
-                    //Punch item
-                    await api.getPunchItem(plantId, punch.id.toString());
-
-                    addEntityToMap({
-                        entitytype: EntityType.PunchItem,
-                        entityid: punch.id,
-                        parententityid: checklist.id,
-                        responseObj: currentResponseObj,
-                        apipath: currentApiPath,
-                    });
-
-                    //Punch attachments
-                    const punchAttachments: Attachment[] =
-                        await api.getPunchAttachments(plantId, punch.id);
-
-                    addEntityToMap({
-                        entitytype: EntityType.PunchAttachments,
-                        entityid: punch.id,
-                        parententityid: checklist.id,
-                        responseObj: currentResponseObj,
-                        apipath: currentApiPath,
-                    });
-
-                    for (const attachment of punchAttachments) {
-                        //Checklist attachment
-                        await api.getPunchAttachment(
-                            plantId,
-                            punch.id,
-                            attachment.id,
-                            abortSignal
-                        );
-                        addEntityToMap({
-                            entitytype: EntityType.PunchAttachment,
-                            entityid: attachment.id,
-                            parententityid: punch.id,
-                            apipath: currentApiPath,
-                            responseObj: currentResponseObj,
-                        });
-                    }
+                    //FETCH PUNCH
+                    fetchPunch(punch, checklist);
                 }
                 //Checklist attachment list
+                const checklistAttachmentsEntity = createEntityObj(
+                    EntityType.ChecklistAttachments,
+                    checklist.id,
+                    entityId
+                );
+
                 const checklistAttachments: Attachment[] =
                     await api.getChecklistAttachments(
                         plantId,
-                        checklist.id.toString()
+                        checklist.id.toString(),
+                        abortSignal,
+                        checklistAttachmentsEntity
                     );
 
-                addEntityToMap({
-                    entitytype: EntityType.ChecklistAttachments,
-                    entityid: checklist.id,
-                    parententityid: entityId,
-                    apipath: currentApiPath,
-                    responseObj: currentResponseObj,
-                });
+                addEntityToMap(checklistAttachmentsEntity);
 
+                //Fetch all checklist attachments
                 for (const attachment of checklistAttachments) {
                     //Checklist attachment
+
+                    const checklistAttachmentEntity = createEntityObj(
+                        EntityType.ChecklistAttachment,
+                        attachment.id,
+                        checklist.id
+                    );
+
                     await api.getChecklistAttachment(
                         plantId,
                         checklist.id.toString(),
-                        attachment.id
+                        attachment.id,
+                        abortSignal,
+                        checklistAttachmentEntity
                     );
 
-                    addEntityToMap({
-                        entitytype: EntityType.ChecklistAttachment,
-                        entityid: attachment.id,
-                        parententityid: checklist.id,
-                        apipath: currentApiPath,
-                        responseObj: currentResponseObj,
-                    });
+                    addEntityToMap(checklistAttachmentEntity);
                 }
             } catch (e) {
                 console.error('Error occured when fetching checklists.');
