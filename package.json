@@ -6,8 +6,8 @@
   "dependencies": {
     "@azure/msal-browser": "2.32.2",
     "@equinor/eds-core-react": "^0.29.1",
-    "@equinor/eds-icons": "^0.7.0",
-    "@equinor/procosys-webapp-components": "^2.2.1",
+    "@equinor/eds-icons": "^0.10.0",
+    "@equinor/procosys-webapp-components": "^3.0.3",
     "@koale/useworker": "^4.0.2",
     "@microsoft/applicationinsights-react-js": "^3.4.1",
     "@microsoft/applicationinsights-web": "^2.8.10",
@@ -69,6 +69,6 @@
     "msw": "^1.0.0",
     "prettier": "^2.7.1",
     "ts-jest": "^29.0.5",
-    "typescript": "^4.9.5"
+    "typescript": "^4.8.3"
   }
 }

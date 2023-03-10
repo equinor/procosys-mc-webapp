@@ -1359,10 +1359,10 @@
   resolved "https://registry.yarnpkg.com/@equinor/eds-icons/-/eds-icons-0.18.0.tgz#bfa581cb997bf43cf182a2ec3656b8c4ad8fdeff"
   integrity sha512-2M0XaNp5r2lIIN5bOfhE3/i/utiURDCC06WXVj/3H2H3ZUNgcYjYnU4tr2BJHRi5/ruH6z1UxWwYTB0hUZCrGQ==
 
-"@equinor/eds-icons@^0.7.0":
-  version "0.7.0"
-  resolved "https://registry.yarnpkg.com/@equinor/eds-icons/-/eds-icons-0.7.0.tgz#1141eaa7c664adb0a288fc5dcb2f170353ffcb4b"
-  integrity sha512-DjbZjsKKxvsXoZV+hRO/Gg5tXH9tbq/ekrymL8YJR9tE73Wt8TbsDnjLZPWocs/Oj61xJUcY+yCoDmidSJVZ6w==
+"@equinor/eds-icons@^0.10.0":
+  version "0.10.0"
+  resolved "https://registry.yarnpkg.com/@equinor/eds-icons/-/eds-icons-0.10.0.tgz#3e3227d07b26bba4732feab34af2f4c5f2858032"
+  integrity sha512-oYnbMtBLiwp30TzN8Q/MEJdqhyAQs87oD/x/mHFQ+BpFGlbbrcsWeTOD+rNY6JhxtJl5qfi9mAhJQgRMtauXsA==
 
 "@equinor/eds-tokens@0.9.0":
   version "0.9.0"
@@ -1380,10 +1380,10 @@
     babel-jest "^29.1.2"
     react-popper "2.3.0"
 
-"@equinor/procosys-webapp-components@^2.2.1":
-  version "2.2.1"
-  resolved "https://registry.yarnpkg.com/@equinor/procosys-webapp-components/-/procosys-webapp-components-2.2.1.tgz#9ee87b9ad1e21e26bc7d6a5576011225a8e500d2"
-  integrity sha512-nYLgKm6Qhsp4UOiHLcNovfKlg2iwMYalre6xu8CAtJH6JURArvCU++R3/6wybovNDHcgSjGRF//KtrPEdjsxwQ==
+"@equinor/procosys-webapp-components@^3.0.3":
+  version "3.0.3"
+  resolved "https://registry.yarnpkg.com/@equinor/procosys-webapp-components/-/procosys-webapp-components-3.0.3.tgz#779fa8c62c9f3d65925f25273942fa1175fb6498"
+  integrity sha512-J0UVMiCdS7UNxEyZsLPirCn7EA4fdI70XYyokunwcu9LfPcy7R6C1OICn01pvjfQccVnTU/V5yhDwtIfmcDLTg==
 
 "@eslint/eslintrc@^0.4.3":
   version "0.4.3"
@@ -10118,7 +10118,7 @@ typedarray-to-buffer@^3.1.5:
   dependencies:
     is-typedarray "^1.0.0"
 
-typescript@^4.9.5:
+typescript@^4.8.3:
   version "4.9.5"
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.9.5.tgz#095979f9bcc0d09da324d58d03ce8f8374cbe65a"
   integrity sha512-1FXk9E2Hm+QzZQ7z+McJiHL4NW1F2EzMu9Nq9i3zAaGqibafqYwCVU6WyWAuyQRRzOlxou8xZSyXLEN8oKj24g==
