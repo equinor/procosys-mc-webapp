@@ -1,6 +1,6 @@
 import GlobalStyles from './style/GlobalStyles';
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import App from './App';
 import authService from './services/authService';
 import * as MSAL from '@azure/msal-browser';
@@ -32,14 +32,16 @@ const onUpdate = (registration: ServiceWorkerRegistration): void => {
 serviceWorkerRegistration.register({ onUpdate });
 
 const render = (content: JSX.Element): void => {
-    ReactDOM.render(
+    const container = document.getElementById('root');
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const root = createRoot(container!);
+    root.render(
         <React.StrictMode>
             <>
                 <GlobalStyles />
                 {content}
             </>
-        </React.StrictMode>,
-        document.getElementById('root')
+        </React.StrictMode>
     );
 };
 
