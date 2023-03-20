@@ -17,6 +17,7 @@ import {
 } from './utils';
 import { OfflineUpdateRequest } from '../OfflineUpdateRequest';
 import { OfflineUpdateRepository } from '../OfflineUpdateRepository';
+import { APIComment } from '@equinor/procosys-webapp-components/dist/typings/apiTypes';
 
 const offlineContentRepository = new OfflineContentRepository();
 const offlineUpdateRepository = new OfflineUpdateRepository();
@@ -156,6 +157,18 @@ export const handleNewPunch = async (
     };
 
     await offlineContentRepository.add(punchEntity);
+
+    // Add empty comment list for the new punch item
+    const punchCommenturl = `PunchListItem/Comments?plantId=${plantId}&punchItemId=${newPunchItemId}&&${apiVersion}`;
+    const apiResponseComment: APIComment[] = [];
+    const commentEntity: IEntity = {
+        entitytype: EntityType.PunchComment,
+        entityid: newPunchItemId,
+        parententityid: newPunch.CheckListId,
+        responseObj: apiResponseComment,
+        apipath: punchCommenturl,
+    };
+    await offlineContentRepository.add(commentEntity);
 
     // Add empty attachment list for the new punch item
     const punchAttachmentsUrl = `PunchListItem/Attachments?plantId=${plantId}&punchItemId=${newPunchItemId}&thumbnailSize=128&${apiVersion}`;
