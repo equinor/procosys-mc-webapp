@@ -11,7 +11,7 @@ import { EntityType, SearchType } from '../typings/enums';
 import { OfflineContentRepository } from './OfflineContentRepository';
 import { IEntity } from './IEntity';
 import { fetchAppConfig, fetchAuthConfig } from '../services/appConfiguration';
-import { useWorker, WORKER_STATUS } from '@koale/useworker';
+
 /**
  * This function will be called when user want to go offline with given bookmarks.
  * All relevant data will be fetched from main-api, and store in browser database (indexeddb).
@@ -43,6 +43,7 @@ const buildOfflineScope = async (
             apipath: '',
         };
     };
+
     /**
      * This function will be use to add entities to a map. It will ensure that no duplicates are stored in the database (entities with same api path)
      */
@@ -69,6 +70,7 @@ const buildOfflineScope = async (
         punch: PunchPreview,
         checklist: ChecklistPreview
     ): Promise<void> => {
+        console.log('Nå er jeg i fetchpUNCH: ' + punch.id);
         //Punch item
         const punchItemEntity = createEntityObj(
             EntityType.PunchItem,
@@ -346,10 +348,14 @@ const buildOfflineScope = async (
                 addEntityToMap(checklistPunchListEntity);
 
                 //Fetch all checklist punches
-                for (const punch of checklistPunchList) {
-                    //FETCH PUNCH
-                    fetchPunch(punch, checklist);
-                }
+                console.log('skal fetche pounch!§');
+                const promises = checklistPunchList.map(async (punch) => {
+                    await fetchPunch(punch, checklist);
+                });
+
+                await Promise.allSettled(promises);
+                console.log('ferdig med  fetche pounch!§');
+
                 //Checklist attachment list
                 const checklistAttachmentsEntity = createEntityObj(
                     EntityType.ChecklistAttachments,

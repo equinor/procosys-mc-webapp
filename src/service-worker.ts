@@ -151,7 +151,7 @@ self.addEventListener('fetch', function (event: FetchEvent) {
         event.respondWith(handleOtherFetchEvents(event));
     } else {
         //User is in online mode. The requests will be done the normal way.
-        console.log('Intercept fetch - online mode', event.request.url);
+        //console.log('Intercept fetch - online mode', event.request.url);
         event.respondWith(fetch(event.request));
     }
 });
