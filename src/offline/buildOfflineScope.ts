@@ -70,7 +70,6 @@ const buildOfflineScope = async (
         punch: PunchPreview,
         checklist: ChecklistPreview
     ): Promise<void> => {
-        console.log('Nå er jeg i fetchpUNCH: ' + punch.id);
         //Punch item
         const punchItemEntity = createEntityObj(
             EntityType.PunchItem,
@@ -119,6 +118,112 @@ const buildOfflineScope = async (
                 punchAttachmentEntity
             );
             addEntityToMap(punchAttachmentEntity);
+        }
+        console.log('Nå har jeg gjort fetch punch');
+    };
+
+    /**
+     * This function fetches data for a checklist
+     */
+    const fetchChecklist = async (
+        entityId: number,
+        searchType: SearchType,
+        checklist: ChecklistPreview
+    ): Promise<void> => {
+        try {
+            const checklistEntity = createEntityObj(
+                EntityType.Checklist,
+                checklist.id,
+                entityId,
+                searchType
+            );
+
+            const checklistResp: ChecklistResponse = await api.getChecklist(
+                plantId,
+                checklist.id.toString(),
+                abortSignal,
+                checklistEntity
+            );
+
+            addEntityToMap(checklistEntity);
+
+            //Tag
+            const tagEntity = createEntityObj(
+                EntityType.Tag,
+                checklistResp.checkList.tagId,
+                entityId
+            );
+            await api.getTag(
+                plantId,
+                checklistResp.checkList.tagId,
+                abortSignal,
+                tagEntity
+            );
+
+            addEntityToMap(tagEntity);
+
+            //Checklist punchlist
+            const checklistPunchListEntity = createEntityObj(
+                EntityType.ChecklistPunchlist,
+                checklist.id,
+                entityId
+            );
+            const checklistPunchList: PunchPreview[] =
+                await api.getChecklistPunchList(
+                    plantId,
+                    checklist.id.toString(),
+                    abortSignal,
+                    checklistPunchListEntity
+                );
+
+            addEntityToMap(checklistPunchListEntity);
+
+            //Punches
+            const fetchPunchPromises = checklistPunchList.map(async (punch) => {
+                await fetchPunch(punch, checklist);
+            });
+
+            await Promise.allSettled(fetchPunchPromises);
+
+            //Checklist attachment list
+            const checklistAttachmentsEntity = createEntityObj(
+                EntityType.ChecklistAttachments,
+                checklist.id,
+                entityId
+            );
+
+            const checklistAttachments: Attachment[] =
+                await api.getChecklistAttachments(
+                    plantId,
+                    checklist.id.toString(),
+                    abortSignal,
+                    checklistAttachmentsEntity
+                );
+
+            addEntityToMap(checklistAttachmentsEntity);
+
+            //Fetch all checklist attachments
+            for (const attachment of checklistAttachments) {
+                //Checklist attachment
+
+                const checklistAttachmentEntity = createEntityObj(
+                    EntityType.ChecklistAttachment,
+                    attachment.id,
+                    checklist.id
+                );
+
+                await api.getChecklistAttachment(
+                    plantId,
+                    checklist.id.toString(),
+                    attachment.id,
+                    abortSignal,
+                    checklistAttachmentEntity
+                );
+
+                addEntityToMap(checklistAttachmentEntity);
+            }
+        } catch (e) {
+            console.error('Error occured when fetching checklists.');
         }
     };
 
@@ -296,110 +401,13 @@ const buildOfflineScope = async (
         }
 
         //fetch entitities for all checklists
-        for (const checklist of scope) {
-            //Checklist
-            try {
-                const checklistEntity = createEntityObj(
-                    EntityType.Checklist,
-                    checklist.id,
-                    entityId,
-                    searchType
-                );
+        const checklistPromises = scope.map(async (checklist) => {
+            await fetchChecklist(entityId, searchType, checklist);
+        });
 
-                const checklistResp: ChecklistResponse = await api.getChecklist(
-                    plantId,
-                    checklist.id.toString(),
-                    abortSignal,
-                    checklistEntity
-                );
-
-                addEntityToMap(checklistEntity);
-
-                //Tag
-
-                const tagEntity = createEntityObj(
-                    EntityType.Tag,
-                    checklistResp.checkList.tagId,
-                    entityId
-                );
-                await api.getTag(
-                    plantId,
-                    checklistResp.checkList.tagId,
-                    abortSignal,
-                    tagEntity
-                );
-
-                addEntityToMap(tagEntity);
-
-                //Checklist punchlist
-                const checklistPunchListEntity = createEntityObj(
-                    EntityType.ChecklistPunchlist,
-                    checklist.id,
-                    entityId
-                );
-                const checklistPunchList: PunchPreview[] =
-                    await api.getChecklistPunchList(
-                        plantId,
-                        checklist.id.toString(),
-                        abortSignal,
-                        checklistPunchListEntity
-                    );
-
-                addEntityToMap(checklistPunchListEntity);
-
-                //Fetch all checklist punches
-                console.log('skal fetche pounch!§');
-                const promises = checklistPunchList.map(async (punch) => {
-                    await fetchPunch(punch, checklist);
-                });
-
-                await Promise.allSettled(promises);
-                console.log('ferdig med  fetche pounch!§');
-
-                //Checklist attachment list
-                const checklistAttachmentsEntity = createEntityObj(
-                    EntityType.ChecklistAttachments,
-                    checklist.id,
-                    entityId
-                );
-
-                const checklistAttachments: Attachment[] =
-                    await api.getChecklistAttachments(
-                        plantId,
-                        checklist.id.toString(),
-                        abortSignal,
-                        checklistAttachmentsEntity
-                    );
-
-                addEntityToMap(checklistAttachmentsEntity);
-
-                //Fetch all checklist attachments
-                for (const attachment of checklistAttachments) {
-                    //Checklist attachment
-
-                    const checklistAttachmentEntity = createEntityObj(
-                        EntityType.ChecklistAttachment,
-                        attachment.id,
-                        checklist.id
-                    );
-
-                    await api.getChecklistAttachment(
-                        plantId,
-                        checklist.id.toString(),
-                        attachment.id,
-                        abortSignal,
-                        checklistAttachmentEntity
-                    );
-
-                    addEntityToMap(checklistAttachmentEntity);
-                }
-            } catch (e) {
-                console.error('Error occured when fetching checklists.');
-            }
-        }
+        await Promise.all(checklistPromises);
     };
 
-    //Todo: Vi bør sjekke om vi kan bygge parallelt, for å spare tid. Altså, for-løkke som start buildOfflineScopeForEntity for alle elementer.
     //Todo: Istedenfor å gjøre api-kall, og så finne ut om vi allerede har entity i map-en, burde vi unngå å hente samme entity flere ganger.
 
     //MC pkgs
