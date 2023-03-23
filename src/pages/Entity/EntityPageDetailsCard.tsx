@@ -78,7 +78,7 @@ const EntityPageDetailsCard = ({
             return (
                 <EntityDetails
                     isDetailsCard={true}
-                    headerText={params.entityId}
+                    headerText={params.entityId ?? 'undefined'}
                     description={details.description}
                     details={[details.title]}
                     icon={<TextIcon color={COLORS.ipoIcon} text="IPO" />}

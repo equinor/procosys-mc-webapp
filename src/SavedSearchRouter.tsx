@@ -1,33 +1,40 @@
 import React from 'react';
-import { Route, Switch, useRouteMatch } from 'react-router-dom';
+import { Route, useRouteMatch } from 'react-router-dom';
 import SavedSearchPage from './pages/SavedSearch/SavedSearchPage';
 import PunchPage from './pages/Punch/PunchPage';
 import ChecklistPage from './pages/Checklist/ChecklistPage';
+import { Routes } from 'react-router';
 
 const SavedSearchRouter = (): JSX.Element => {
     const { path } = useRouteMatch();
     return (
-        <Switch>
+        <Routes>
             <Route
                 path={
-                    '/:plant/:project/saved-search/:savedSearchType/:savedSearchId/punch-item/:punchItemId'
+                    '/:plant/:project/saved-search/:savedSearchType/:savedSearchId/punch-item/:punchItemId/*'
                 }
-                component={PunchPage}
-            />
+            >
+                <PunchPage />
+            </Route>
             <Route
                 path={
-                    '/:plant/:project/saved-search/:savedSearchType/:savedSearchId/checklist/:checklistId/punch-item/:punchItemId'
+                    '/:plant/:project/saved-search/:savedSearchType/:savedSearchId/checklist/:checklistId/punch-item/:punchItemId/*'
                 }
-                component={PunchPage}
-            />
+            >
+                <PunchPage />
+            </Route>
+
             <Route
                 path={
-                    '/:plant/:project/saved-search/:savedSearchType/:savedSearchId/checklist/:checklistId'
+                    '/:plant/:project/saved-search/:savedSearchType/:savedSearchId/checklist/:checklistId/*'
                 }
-                component={ChecklistPage}
-            />
-            <Route path={path} component={SavedSearchPage} />
-        </Switch>
+            >
+                <ChecklistPage />
+            </Route>
+            <Route path={path}>
+                <SavedSearchPage />
+            </Route>
+        </Routes>
     );
 };
 

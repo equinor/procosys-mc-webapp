@@ -1,33 +1,39 @@
 import React from 'react';
-import { Route, Switch, useRouteMatch } from 'react-router-dom';
+import { Route, useRouteMatch } from 'react-router-dom';
 import PunchPage from './pages/Punch/PunchPage';
 import ChecklistPage from './pages/Checklist/ChecklistPage';
 import EntityPage from './pages/Entity/EntityPage';
+import { Routes } from 'react-router';
 
 const BookmarksRouter = (): JSX.Element => {
     const { path } = useRouteMatch();
     return (
-        <Switch>
+        <Routes>
             <Route
                 path={
-                    '/:plant/:project/bookmarks/:searchType/:entityId/punch-item/:punchItemId'
+                    '/:plant/:project/bookmarks/:searchType/:entityId/punch-item/:punchItemId/*'
                 }
-                component={PunchPage}
-            />
+            >
+                <PunchPage />
+            </Route>
             <Route
                 path={
-                    '/:plant/:project/bookmarks/:searchType/:entityId/checklist/:checklistId/punch-item/:punchItemId'
+                    '/:plant/:project/bookmarks/:searchType/:entityId/checklist/:checklistId/punch-item/:punchItemId/*'
                 }
-                component={PunchPage}
-            />
+            >
+                <PunchPage />
+            </Route>
             <Route
                 path={
-                    '/:plant/:project/bookmarks/:searchType/:entityId/checklist/:checklistId'
+                    '/:plant/:project/bookmarks/:searchType/:entityId/checklist/:checklistId/*'
                 }
-                component={ChecklistPage}
-            />
-            <Route path={path} component={EntityPage} />
-        </Switch>
+            >
+                <ChecklistPage />
+            </Route>
+            <Route path={path}>
+                <EntityPage />
+            </Route>
+        </Routes>
     );
 };
 

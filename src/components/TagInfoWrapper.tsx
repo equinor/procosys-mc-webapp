@@ -23,6 +23,10 @@ const TagInfoWrapper = ({ tagId }: TagInfoWrapperProps): JSX.Element => {
         if (!tagId) return;
         (async (): Promise<void> => {
             try {
+                if (!params.plant) {
+                    setFetchTagStatus(AsyncStatus.ERROR);
+                    return;
+                }
                 const tagResponse = await api.getTag(
                     params.plant,
                     tagId,

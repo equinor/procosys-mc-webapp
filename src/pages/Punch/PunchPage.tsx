@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Route, Switch } from 'react-router-dom';
+import { Route } from 'react-router-dom';
 import EdsIcon from '../../components/icons/EdsIcon';
 import withAccessControl from '../../services/withAccessControl';
 import { COLORS } from '../../style/GlobalStyles';
@@ -23,6 +23,7 @@ import TagInfoWrapper from '../../components/TagInfoWrapper';
 import PlantContext from '../../contexts/PlantContext';
 import { DetailsWrapper } from '../Entity/EntityPageDetailsCard';
 import { OfflineStatus } from '../../typings/enums';
+import { Routes } from 'react-router';
 
 const PunchPage = (): JSX.Element => {
     const { api, params, path, history, url, offlineState } = useCommonHooks();
@@ -37,6 +38,10 @@ const PunchPage = (): JSX.Element => {
         const abortSignal = controller.signal;
         (async (): Promise<void> => {
             try {
+                if (!params.plant || !params.punchItemId) {
+                    setFetchPunchStatus(AsyncStatus.ERROR);
+                    return;
+                }
                 const punchFromApi = await api.getPunchItem(
                     params.plant,
                     params.punchItemId,
@@ -127,20 +132,14 @@ const PunchPage = (): JSX.Element => {
                 fetchStatus={fetchPunchStatus}
                 errorMessage={'Unable to load punch item.'}
             >
-                <Switch>
-                    <Route
-                        exact
-                        path={`${path}/tag-info`}
-                        render={(): JSX.Element => (
-                            <TagInfoWrapper tagId={punch?.tagId} />
-                        )}
-                    />
-                    <Route
-                        exact
-                        path={`${path}`}
-                        render={determineComponentToRender}
-                    />
-                </Switch>
+                <Routes>
+                    <Route path={`${path}/tag-info`}>
+                        <TagInfoWrapper tagId={punch?.tagId} />
+                    </Route>
+                    <Route path={`${path}`}>
+                        {determineComponentToRender()}
+                    </Route>
+                </Routes>
             </AsyncPage>
             <NavigationFooter>
                 <FooterButton

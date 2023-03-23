@@ -24,6 +24,10 @@ const OutstandingIpos = (): JSX.Element => {
         const source = Axios.CancelToken.source();
         (async (): Promise<void> => {
             try {
+                if (!params.plant) {
+                    setFetchIpoStatus(AsyncStatus.ERROR);
+                    return;
+                }
                 const outstandingIposFromApi = await ipoApi.getOutstandingIpos(
                     params.plant
                 );

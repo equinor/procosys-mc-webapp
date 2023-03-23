@@ -13,13 +13,14 @@ import SideMenu from '../../components/navigation/SideMenu';
 import useCommonHooks from '../../utils/useCommonHooks';
 import { COLORS } from '../../style/GlobalStyles';
 import EdsIcon from '../../components/icons/EdsIcon';
-import { Route, Switch } from 'react-router-dom';
+import { Route } from 'react-router-dom';
 import Bookmarks from './Bookmarks/Bookmarks';
 import Search from './Search';
 import { OfflineStatus } from '../../typings/enums';
 import SyncErrors from './SyncErrors';
 import { OfflineSynchronizationErrors } from '../../services/apiTypes';
 import { LocalStorage } from '../../contexts/McAppContext';
+import { Routes } from 'react-router';
 
 const SearchPageWrapper = styled.main`
     padding: 0 4% 66px 4%;
@@ -71,31 +72,21 @@ const SearchPage = (): JSX.Element => {
                     rightContent={<SideMenu />}
                     isOffline={offlineState == OfflineStatus.OFFLINE}
                 />
-                <Switch>
-                    <Route
-                        exact
-                        path={`${path}`}
-                        render={(): JSX.Element => (
-                            <Search setSnackbarText={setSnackbarText} />
-                        )}
-                    />
-                    <Route
-                        exact
-                        path={`${path}/bookmarks`}
-                        render={(): JSX.Element => <Bookmarks />}
-                    />
-                    <Route
-                        exact
-                        path={`${path}/sync-errors`}
-                        render={(): JSX.Element => (
-                            <SyncErrors
-                                syncErrors={syncErrors}
-                                setSyncErrors={setSyncErrors}
-                                url={url}
-                            />
-                        )}
-                    />
-                </Switch>
+                <Routes>
+                    <Route path={`${path}`}>
+                        <Search setSnackbarText={setSnackbarText} />
+                    </Route>
+                    <Route path={`${path}/bookmarks`}>
+                        <Bookmarks />
+                    </Route>
+                    <Route path={`${path}/sync-errors`}>
+                        <SyncErrors
+                            syncErrors={syncErrors}
+                            setSyncErrors={setSyncErrors}
+                            url={url}
+                        />
+                    </Route>
+                </Routes>
                 {snackbar}
             </SearchPageWrapper>
             <NavigationFooter>

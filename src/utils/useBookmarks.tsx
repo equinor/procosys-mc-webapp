@@ -40,6 +40,10 @@ const useBookmarks = () => {
         if (!currentProject) return;
         setBookmarksStatus(AsyncStatus.LOADING);
         try {
+            if (!params.plant) {
+                setBookmarksStatus(AsyncStatus.ERROR);
+                return;
+            }
             const bookmarksFromApi = await api.getBookmarks(
                 params.plant,
                 currentProject?.id,
@@ -98,9 +102,17 @@ const useBookmarks = () => {
     ): Promise<void> => {
         try {
             if (isBookmarked) {
-                await api.deleteBookmark(params.plant, entityType, entityId);
+                await api.deleteBookmark(
+                    params.plant ?? 'undefined',
+                    entityType,
+                    entityId
+                );
             } else {
-                await api.postSetBookmark(params.plant, entityType, entityId);
+                await api.postSetBookmark(
+                    params.plant ?? 'undefined',
+                    entityType,
+                    entityId
+                );
             }
             await getCurrentBookmarks();
         } catch (error) {
@@ -114,7 +126,10 @@ const useBookmarks = () => {
                 setBookmarksStatus(AsyncStatus.LOADING);
                 updateOfflineStatus(OfflineStatus.ONLINE, '');
                 setOfflineState(OfflineStatus.ONLINE);
-                await api.putCancelOffline(params.plant, currentProject.id);
+                await api.putCancelOffline(
+                    params.plant ?? 'undefined',
+                    currentProject.id
+                );
                 await db.delete();
                 setOfflineAction(OfflineAction.INACTIVE);
                 setBookmarksStatus(AsyncStatus.EMPTY_RESPONSE);
@@ -130,7 +145,10 @@ const useBookmarks = () => {
         try {
             if (currentProject) {
                 setBookmarksStatus(AsyncStatus.LOADING);
-                await api.putCancelOffline(params.plant, currentProject.id);
+                await api.putCancelOffline(
+                    params.plant ?? 'undefined',
+                    currentProject.id
+                );
                 setBookmarksStatus(AsyncStatus.EMPTY_RESPONSE);
                 setCurrentBookmarks(null);
             }

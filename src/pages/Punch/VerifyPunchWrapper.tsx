@@ -32,6 +32,10 @@ const VerifyPunchWrapper = ({
         newUrl: string
     ): Promise<void> => {
         setPunchActionStatus(AsyncStatus.LOADING);
+        if (!params.plant || !params.punchItemId) {
+            setPunchActionStatus(AsyncStatus.ERROR);
+            return;
+        }
         try {
             await api.postPunchAction(
                 params.plant,
@@ -48,7 +52,7 @@ const VerifyPunchWrapper = ({
 
     return (
         <VerifyPunch
-            plantId={params.plant}
+            plantId={params.plant ?? 'undefined'}
             punchItem={punchItem}
             canUnclear={canUnclear}
             canVerify={canVerify}

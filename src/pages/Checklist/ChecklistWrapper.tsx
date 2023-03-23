@@ -22,8 +22,8 @@ const ChecklistWrapper = ({
     return (
         <>
             <Checklist
-                checklistId={params.checklistId}
-                plantId={params.plant}
+                checklistId={params.checklistId ?? 'undefined'}
+                plantId={params.plant ?? 'undefined'}
                 apiSettings={procosysApiSettings}
                 getAccessToken={auth.getAccessToken}
                 setSnackbarText={setSnackbarText}

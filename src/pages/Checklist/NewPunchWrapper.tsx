@@ -62,6 +62,10 @@ const NewPunchWrapper = (): JSX.Element => {
     useEffect(() => {
         (async (): Promise<void> => {
             try {
+                if (!params.plant) {
+                    setFetchNewPunchStatus(AsyncStatus.ERROR);
+                    return;
+                }
                 const [
                     categoriesFromApi,
                     typesFromApi,
@@ -99,7 +103,7 @@ const NewPunchWrapper = (): JSX.Element => {
     const handleSubmit = async (e: React.FormEvent): Promise<void> => {
         e.preventDefault();
         const NewPunchDTO: NewPunchType = {
-            CheckListId: parseInt(params.checklistId),
+            CheckListId: params.checklistId ? parseInt(params.checklistId) : -1,
             CategoryId: parseInt(formFields.category),
             Description: formFields.description,
             TypeId: parseInt(formFields.type),
@@ -114,6 +118,10 @@ const NewPunchWrapper = (): JSX.Element => {
         };
         setSubmitPunchStatus(AsyncStatus.LOADING);
         try {
+            if (!params.plant) {
+                setSubmitPunchStatus(AsyncStatus.ERROR);
+                return;
+            }
             await api.postNewPunch(params.plant, NewPunchDTO);
             setSubmitPunchStatus(AsyncStatus.SUCCESS);
         } catch (error) {
@@ -142,7 +150,7 @@ const NewPunchWrapper = (): JSX.Element => {
                     priorities={priorities}
                     handleSubmit={handleSubmit}
                     submitPunchStatus={submitPunchStatus}
-                    plantId={params.plant}
+                    plantId={params.plant ?? 'undefined'}
                     chosenPerson={chosenPerson}
                     setChosenPerson={setChosenPerson}
                     fetchNewPunchStatus={fetchNewPunchStatus}

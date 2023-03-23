@@ -1,5 +1,5 @@
 import React from 'react';
-import { Route, Switch } from 'react-router-dom';
+import { Route } from 'react-router-dom';
 import { PlantContextProvider } from './contexts/PlantContext';
 import SelectProject from './pages/SelectProject/SelectProject';
 import SearchPage from './pages/Search/SearchPage';
@@ -9,47 +9,58 @@ import ChecklistPage from './pages/Checklist/ChecklistPage';
 import PunchPage from './pages/Punch/PunchPage';
 import SavedSearchRouter from './SavedSearchRouter';
 import BookmarksRouter from './BookmarksRouter';
+import { Routes } from 'react-router';
 
 const McRouter = (): JSX.Element => {
     return (
         <PlantContextProvider>
-            <Switch>
-                <Route exact path={'/'} component={SelectPlant} />
-                <Route exact path={'/:plant'} component={SelectProject} />
+            <Routes>
+                <Route path={'/'}>
+                    <SelectPlant />
+                </Route>
+                <Route path={'/:plant'}>
+                    <SelectProject />
+                </Route>
                 <Route
-                    path={'/:plant/:project/bookmarks/:searchType/:entityId'}
-                    component={BookmarksRouter}
-                />
-                <Route
-                    path={
-                        '/:plant/:project/saved-search/:savedSearchType/:savedSearchId'
-                    }
-                    component={SavedSearchRouter}
-                />
-                <Route
-                    path={
-                        '/:plant/:project/:searchType/:entityId/punch-item/:punchItemId'
-                    }
-                    component={PunchPage}
-                />
+                    path={'/:plant/:project/bookmarks/:searchType/:entityId/*'}
+                >
+                    <BookmarksRouter />
+                </Route>
                 <Route
                     path={
-                        '/:plant/:project/:searchType/:entityId/checklist/:checklistId/punch-item/:punchItemId'
+                        '/:plant/:project/saved-search/:savedSearchType/:savedSearchId/*'
                     }
-                    component={PunchPage}
-                />
+                >
+                    <SavedSearchRouter />
+                </Route>
                 <Route
                     path={
-                        '/:plant/:project/:searchType/:entityId/checklist/:checklistId'
+                        '/:plant/:project/:searchType/:entityId/punch-item/:punchItemId/*'
                     }
-                    component={ChecklistPage}
-                />
+                >
+                    <PunchPage />
+                </Route>
                 <Route
-                    path={'/:plant/:project/:searchType/:entityId'}
-                    component={EntityPage}
-                />
-                <Route path={'/:plant/:project'} component={SearchPage} />
-            </Switch>
+                    path={
+                        '/:plant/:project/:searchType/:entityId/checklist/:checklistId/punch-item/:punchItemId/*'
+                    }
+                >
+                    <PunchPage />
+                </Route>
+                <Route
+                    path={
+                        '/:plant/:project/:searchType/:entityId/checklist/:checklistId/*'
+                    }
+                >
+                    <ChecklistPage />
+                </Route>
+                <Route path={'/:plant/:project/:searchType/:entityId/*'}>
+                    <EntityPage />
+                </Route>
+                <Route path={'/:plant/:project/*'}>
+                    <SearchPage />
+                </Route>
+            </Routes>
         </PlantContextProvider>
     );
 };

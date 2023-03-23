@@ -56,6 +56,14 @@ const SavedSearchPage = (): JSX.Element => {
     useEffect(() => {
         (async (): Promise<void> => {
             try {
+                if (
+                    !params.plant ||
+                    !params.savedSearchId ||
+                    !params.savedSearchType
+                ) {
+                    setFetchResultsStatus(AsyncStatus.ERROR);
+                    return;
+                }
                 const [savedSearchesFromApi, resultsFromAPI] =
                     await Promise.all([
                         api.getSavedSearches(params.plant, abortSignal),
@@ -89,6 +97,14 @@ const SavedSearchPage = (): JSX.Element => {
     const handleLoadMore = async (): Promise<void> => {
         setFetchMoreResultsStatus(AsyncStatus.LOADING);
         try {
+            if (
+                !params.plant ||
+                !params.savedSearchId ||
+                !params.savedSearchType
+            ) {
+                setFetchMoreResultsStatus(AsyncStatus.ERROR);
+                return;
+            }
             const newResults = await api.getSavedSearchResults(
                 params.plant,
                 params.savedSearchId,

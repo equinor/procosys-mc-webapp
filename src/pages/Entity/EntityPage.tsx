@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Route, Switch } from 'react-router-dom';
+import { Route } from 'react-router-dom';
 import styled from 'styled-components';
 import useCommonHooks from '../../utils/useCommonHooks';
 import { AsyncStatus } from '../../contexts/McAppContext';
@@ -27,6 +27,7 @@ import {
 } from '@equinor/procosys-webapp-components';
 import EntityPageDetailsCard from './EntityPageDetailsCard';
 import { OfflineStatus, SearchType } from '../../typings/enums';
+import { Routes } from 'react-router';
 
 const EntityPageWrapper = styled.main``;
 
@@ -68,7 +69,12 @@ const EntityPage = (): JSX.Element => {
     useEffect(() => {
         (async (): Promise<void> => {
             try {
-                if (details) {
+                if (
+                    details &&
+                    params.plant &&
+                    params.searchType &&
+                    params.entityId
+                ) {
                     const [punchListFromApi, scopeFromApi] = await Promise.all([
                         api.getPunchList(
                             params.plant,
@@ -111,6 +117,10 @@ const EntityPage = (): JSX.Element => {
     useEffect(() => {
         (async (): Promise<void> => {
             try {
+                if (!params.plant || !params.searchType || !params.entityId) {
+                    setFetchDetailsStatus(AsyncStatus.ERROR);
+                    return;
+                }
                 let detailsFromApi;
                 if (params.searchType !== SearchType.IPO) {
                     detailsFromApi = await api.getEntityDetails(
@@ -152,62 +162,50 @@ const EntityPage = (): JSX.Element => {
                 details={details}
             />
             <ContentWrapper>
-                <Switch>
-                    <Route
-                        exact
-                        path={`${path}`}
-                        render={(): JSX.Element => (
-                            <Scope
-                                fetchScopeStatus={fetchScopeStatus}
-                                onChecklistClick={(checklistId: number): void =>
-                                    history.push(
-                                        `${history.location.pathname}/checklist/${checklistId}`
-                                    )
-                                }
-                                scope={scope}
-                                isPoScope={history.location.pathname.includes(
-                                    '/PO/'
-                                )}
-                                isIpoScope={history.location.pathname.includes(
-                                    '/IPO/'
-                                )}
-                            />
-                        )}
-                    />
-                    <Route
-                        exact
-                        path={`${path}/punch-list`}
-                        render={(): JSX.Element => (
-                            <PunchList
-                                fetchPunchListStatus={fetchPunchListStatus}
-                                onPunchClick={(punch: PunchPreview): void =>
-                                    history.push(
-                                        `${removeSubdirectories(
-                                            history.location.pathname
-                                        )}/punch-item/${punch.id}`
-                                    )
-                                }
-                                punchList={punchList}
-                                isPoPunchList={history.location.pathname.includes(
-                                    '/PO/'
-                                )}
-                                isIpoPunchList={history.location.pathname.includes(
-                                    '/IPO/'
-                                )}
-                            />
-                        )}
-                    />
-                    <Route
-                        exact
-                        path={`${path}/WO-info`}
-                        render={(): JSX.Element => (
-                            <WorkOrderInfo
-                                workOrder={details}
-                                fetchWorkOrderStatus={fetchDetailsStatus}
-                            />
-                        )}
-                    />
-                </Switch>
+                <Routes>
+                    <Route path={`${path}`}>
+                        <Scope
+                            fetchScopeStatus={fetchScopeStatus}
+                            onChecklistClick={(checklistId: number): void =>
+                                history.push(
+                                    `${history.location.pathname}/checklist/${checklistId}`
+                                )
+                            }
+                            scope={scope}
+                            isPoScope={history.location.pathname.includes(
+                                '/PO/'
+                            )}
+                            isIpoScope={history.location.pathname.includes(
+                                '/IPO/'
+                            )}
+                        />
+                    </Route>
+                    <Route path={`${path}/punch-list`}>
+                        <PunchList
+                            fetchPunchListStatus={fetchPunchListStatus}
+                            onPunchClick={(punch: PunchPreview): void =>
+                                history.push(
+                                    `${removeSubdirectories(
+                                        history.location.pathname
+                                    )}/punch-item/${punch.id}`
+                                )
+                            }
+                            punchList={punchList}
+                            isPoPunchList={history.location.pathname.includes(
+                                '/PO/'
+                            )}
+                            isIpoPunchList={history.location.pathname.includes(
+                                '/IPO/'
+                            )}
+                        />
+                    </Route>
+                    <Route path={`${path}/WO-info`}>
+                        <WorkOrderInfo
+                            workOrder={details}
+                            fetchWorkOrderStatus={fetchDetailsStatus}
+                        />
+                    </Route>
+                </Routes>
             </ContentWrapper>
             <NavigationFooter footerStatus={fetchFooterStatus}>
                 <FooterButton

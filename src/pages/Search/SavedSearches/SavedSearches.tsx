@@ -47,6 +47,10 @@ const SavedSearches = ({
         const abortSignal = controller.signal;
         (async (): Promise<void> => {
             try {
+                if (!params.plant) {
+                    setFetchSearchesStatus(AsyncStatus.ERROR);
+                    return;
+                }
                 const searchesFromApi = await api.getSavedSearches(
                     params.plant,
                     abortSignal
@@ -69,6 +73,10 @@ const SavedSearches = ({
     const deleteASavedSearch = async (id: number): Promise<void> => {
         setDeleteSearchStatus(AsyncStatus.LOADING);
         try {
+            if (!params.plant) {
+                setDeleteSearchStatus(AsyncStatus.ERROR);
+                return;
+            }
             await api.deleteSavedSearch(params.plant, id);
             setSearches((prevSearches) =>
                 prevSearches.filter((search) => search.id != id)

@@ -68,6 +68,10 @@ const ClearPunchWrapper = ({
     useEffect(() => {
         (async (): Promise<void> => {
             try {
+                if (!params.plant) {
+                    setFetchOptionsStatus(AsyncStatus.ERROR);
+                    return;
+                }
                 const [
                     categoriesFromApi,
                     typesFromApi,
@@ -102,6 +106,10 @@ const ClearPunchWrapper = ({
     ): Promise<void> => {
         setUpdatePunchStatus(AsyncStatus.LOADING);
         setSnackbarText('Saving change.');
+        if (!params.plant || !params.punchItemId) {
+            setUpdatePunchStatus(AsyncStatus.ERROR);
+            return;
+        }
         try {
             await api.putUpdatePunch(
                 params.plant,
@@ -120,6 +128,10 @@ const ClearPunchWrapper = ({
 
     const clearPunch = async (): Promise<void> => {
         setClearPunchStatus(AsyncStatus.LOADING);
+        if (!params.plant || !params.punchItemId) {
+            setClearPunchStatus(AsyncStatus.ERROR);
+            return;
+        }
         try {
             await api.postPunchAction(
                 params.plant,
@@ -134,7 +146,7 @@ const ClearPunchWrapper = ({
 
     return (
         <ClearPunch
-            plantId={params.plant}
+            plantId={params.plant ?? 'undefined'}
             punchItem={punchItem}
             setPunchItem={setPunchItem}
             canEdit={canEdit}

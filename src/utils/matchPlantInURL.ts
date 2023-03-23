@@ -9,7 +9,7 @@ export class URLError extends Error {
 
 const matchPlantInURL = (
     availablePlants: Plant[],
-    plantFromURL: string
+    plantFromURL: string | undefined
 ): Plant | undefined => {
     if (availablePlants.length < 1) return;
     const matchedPlant = availablePlants.find(

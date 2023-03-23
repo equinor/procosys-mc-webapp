@@ -76,15 +76,15 @@ const WorkOrderInfo = ({
                     <Attachments
                         getAttachments={(): Promise<Attachment[]> =>
                             api.getWorkOrderAttachments(
-                                params.plant,
-                                params.entityId,
+                                params.plant ?? 'undefined',
+                                params.entityId ?? 'undefined',
                                 abortSignal
                             )
                         }
                         getAttachment={(attachmentId: number): Promise<Blob> =>
                             api.getWorkOrderAttachment(
-                                params.plant,
-                                params.entityId,
+                                params.plant ?? 'undefined',
+                                params.entityId ?? 'undefined',
                                 attachmentId,
                                 abortSignal
                             )
@@ -94,8 +94,8 @@ const WorkOrderInfo = ({
                             title: string
                         ): Promise<void> =>
                             api.postWorkOrderAttachment(
-                                params.plant,
-                                params.entityId,
+                                params.plant ?? 'undefined',
+                                params.entityId ?? 'undefined',
                                 title,
                                 file
                             )
@@ -104,8 +104,8 @@ const WorkOrderInfo = ({
                             attachmentId: number
                         ): Promise<void> =>
                             api.deleteWorkOrderAttachment(
-                                params.plant,
-                                params.entityId,
+                                params.plant ?? 'undefined',
+                                params.entityId ?? 'undefined',
                                 attachmentId
                             )
                         }

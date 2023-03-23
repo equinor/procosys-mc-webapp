@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import { BrowserRouter as Router, Route } from 'react-router-dom';
 import { McAppContextProvider } from './contexts/McAppContext';
 import GeneralRouter from './GeneralRouter';
 import ErrorBoundary from './components/error/ErrorBoundary';
@@ -12,6 +12,7 @@ import {
 import { AppConfig, FeatureFlags } from './services/appConfiguration';
 import { SavedSearchType, SearchType } from './typings/enums';
 import { ProcosysIPOApiService } from './services/procosysIPOApi';
+import { Routes } from 'react-router';
 
 export type McParams = {
     plant: string;
@@ -55,13 +56,14 @@ const App = ({
             >
                 <Router basename={'/mc'}>
                     <ErrorBoundary>
-                        <Switch>
-                            <Route
-                                path="/:plant?/:project?"
-                                component={GeneralRouter}
-                            />
-                            <Route render={(): JSX.Element => <h1>404</h1>} />
-                        </Switch>
+                        <Routes>
+                            <Route path="/:plant?/:project?">
+                                <GeneralRouter />
+                            </Route>
+                            <Route>
+                                <h1>404</h1>
+                            </Route>
+                        </Routes>
                     </ErrorBoundary>
                 </Router>
             </McAppContextProvider>
