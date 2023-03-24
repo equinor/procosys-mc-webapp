@@ -34,7 +34,7 @@ const newPunchInitialValues = {
 };
 
 const NewPunchWrapper = (): JSX.Element => {
-    const { api, params, url, history, offlineState } = useCommonHooks();
+    const { api, params, url, navigate, offlineState } = useCommonHooks();
     const { formFields, createChangeHandler } = useFormFields(
         newPunchInitialValues
     );
@@ -96,7 +96,7 @@ const NewPunchWrapper = (): JSX.Element => {
 
     useEffect(() => {
         if (submitPunchStatus === AsyncStatus.SUCCESS) {
-            history.push(removeSubdirectories(url, 1));
+            navigate(removeSubdirectories(url, 1));
         }
     }, [submitPunchStatus]);
 

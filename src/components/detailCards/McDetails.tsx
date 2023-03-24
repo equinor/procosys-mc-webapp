@@ -87,7 +87,7 @@ const McDetails = ({
     handleBookmarkClicked,
     clickable = true,
 }: McDetailsProps): JSX.Element => {
-    const { history, url } = useCommonHooks();
+    const { navigate, url } = useCommonHooks();
     const [loadingBookmark, setLoadingBookmark] = useState<boolean>(false);
 
     useEffect(() => {
@@ -98,7 +98,7 @@ const McDetails = ({
         <McDetailsWrapper
             onClick={(): void => {
                 if (clickable) {
-                    history.push(`${url}/MC/${mcPkgDetails.id}`);
+                    navigate(`${url}/MC/${mcPkgDetails.id}`);
                 }
             }}
             key={mcPkgDetails.mcPkgNo}

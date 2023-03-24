@@ -92,7 +92,7 @@ const VersionInfo = styled.div`
 `;
 
 const SideMenu = (): JSX.Element => {
-    const { auth, history, params, offlineState } = useCommonHooks();
+    const { auth, navigate, params, offlineState } = useCommonHooks();
     const { currentPlant, currentProject } = useContext(PlantContext);
     const [drawerIsOpen, setDrawerIsOpen] = useState(false);
     const updateServiceWorker = (): void => {
@@ -146,7 +146,7 @@ const SideMenu = (): JSX.Element => {
                             window.localStorage.removeItem(StorageKey.PLANT);
                             window.localStorage.removeItem(StorageKey.PROJECT);
                             setDrawerIsOpen(false);
-                            history.push('/');
+                            navigate('/');
                         }}
                         disabled={offlineState == OfflineStatus.OFFLINE}
                     >
@@ -167,7 +167,7 @@ const SideMenu = (): JSX.Element => {
                                         StorageKey.PROJECT
                                     );
                                     setDrawerIsOpen(false);
-                                    history.push(`/${params.plant}`);
+                                    navigate(`/${params.plant}`);
                                 }}
                                 disabled={offlineState == OfflineStatus.OFFLINE}
                             >

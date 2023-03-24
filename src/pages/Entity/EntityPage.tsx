@@ -36,7 +36,7 @@ const ContentWrapper = styled.div`
 `;
 
 const EntityPage = (): JSX.Element => {
-    const { api, ipoApi, params, path, history, url, offlineState } =
+    const { api, ipoApi, params, path, navigate, url, offlineState, location } =
         useCommonHooks();
     const [scope, setScope] = useState<ChecklistPreview[]>();
     const [punchList, setPunchList] = useState<PunchPreview[]>();
@@ -57,8 +57,8 @@ const EntityPage = (): JSX.Element => {
     );
     const controller = new AbortController();
     const abortSignal = controller.signal;
-    const isOnPunchListPage = history.location.pathname.includes('/punch-list');
-    const isOnWoInfoPage = history.location.pathname.includes('/wo-info');
+    const isOnPunchListPage = location.pathname.includes('/punch-list');
+    const isOnWoInfoPage = location.pathname.includes('/wo-info');
 
     useEffect(() => {
         return (): void => {
@@ -167,36 +167,28 @@ const EntityPage = (): JSX.Element => {
                         <Scope
                             fetchScopeStatus={fetchScopeStatus}
                             onChecklistClick={(checklistId: number): void =>
-                                history.push(
-                                    `${history.location.pathname}/checklist/${checklistId}`
+                                navigate(
+                                    `${location.pathname}/checklist/${checklistId}`
                                 )
                             }
                             scope={scope}
-                            isPoScope={history.location.pathname.includes(
-                                '/PO/'
-                            )}
-                            isIpoScope={history.location.pathname.includes(
-                                '/IPO/'
-                            )}
+                            isPoScope={location.pathname.includes('/PO/')}
+                            isIpoScope={location.pathname.includes('/IPO/')}
                         />
                     </Route>
                     <Route path={`${path}/punch-list`}>
                         <PunchList
                             fetchPunchListStatus={fetchPunchListStatus}
                             onPunchClick={(punch: PunchPreview): void =>
-                                history.push(
+                                navigate(
                                     `${removeSubdirectories(
-                                        history.location.pathname
+                                        location.pathname
                                     )}/punch-item/${punch.id}`
                                 )
                             }
                             punchList={punchList}
-                            isPoPunchList={history.location.pathname.includes(
-                                '/PO/'
-                            )}
-                            isIpoPunchList={history.location.pathname.includes(
-                                '/IPO/'
-                            )}
+                            isPoPunchList={location.pathname.includes('/PO/')}
+                            isIpoPunchList={location.pathname.includes('/IPO/')}
                         />
                     </Route>
                     <Route path={`${path}/WO-info`}>
@@ -210,7 +202,7 @@ const EntityPage = (): JSX.Element => {
             <NavigationFooter footerStatus={fetchFooterStatus}>
                 <FooterButton
                     active={!(isOnPunchListPage || isOnWoInfoPage)}
-                    goTo={(): void => history.push(url)}
+                    goTo={(): void => navigate(url)}
                     icon={<EdsIcon name="list" color={COLORS.mossGreen} />}
                     label="Scope"
                     numberOfItems={scope?.length}
@@ -218,7 +210,7 @@ const EntityPage = (): JSX.Element => {
                 {params.searchType === SearchType.WO ? (
                     <FooterButton
                         active={isOnWoInfoPage}
-                        goTo={(): void => history.push(`${url}/WO-info`)}
+                        goTo={(): void => navigate(`${url}/WO-info`)}
                         icon={
                             <EdsIcon
                                 name="info_circle"
@@ -232,7 +224,7 @@ const EntityPage = (): JSX.Element => {
                 )}
                 <FooterButton
                     active={isOnPunchListPage}
-                    goTo={(): void => history.push(`${url}/punch-list`)}
+                    goTo={(): void => navigate(`${url}/punch-list`)}
                     icon={
                         <EdsIcon
                             name="warning_outlined"

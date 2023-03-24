@@ -39,7 +39,7 @@ const ButtonWrapper = styled.div`
 `;
 
 const SavedSearchPage = (): JSX.Element => {
-    const { url, params, api, history, offlineState } = useCommonHooks();
+    const { url, params, api, navigate, offlineState } = useCommonHooks();
     const [savedSearch, setSavedSearch] = useState<SavedSearch>();
     const [results, setResults] = useState<
         ChecklistSavedSearchResult[] | PunchItemSavedSearchResult[]
@@ -185,7 +185,7 @@ const SavedSearchPage = (): JSX.Element => {
                                 checklist.responsibleCode,
                             ]}
                             onClick={(): void =>
-                                history.push(`${url}/checklist/${checklist.id}`)
+                                navigate(`${url}/checklist/${checklist.id}`)
                             }
                         />
                     ))}
@@ -211,7 +211,7 @@ const SavedSearchPage = (): JSX.Element => {
                             chips={[punch.formularType, punch.responsibleCode]}
                             tag={punch.tagNo}
                             onClick={(): void =>
-                                history.push(`${url}/punch-item/${punch.id}`)
+                                navigate(`${url}/punch-item/${punch.id}`)
                             }
                         />
                     ))}

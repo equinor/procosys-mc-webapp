@@ -47,7 +47,7 @@ const WorkOrderInfo = ({
     workOrder,
     fetchWorkOrderStatus,
 }: WorkOrderInfoProps): JSX.Element => {
-    const { history, url, api, params, offlineState } = useCommonHooks();
+    const { navigate, url, api, params, offlineState } = useCommonHooks();
     const { permissions } = useContext(PlantContext);
     const { snackbar, setSnackbarText } = useSnackbar();
     const abortController = new AbortController();
@@ -130,7 +130,7 @@ const WorkOrderInfo = ({
                     <Button
                         key={'scopePage'}
                         onClick={(): void =>
-                            history.push(removeSubdirectories(url, 1))
+                            navigate(removeSubdirectories(url, 1))
                         }
                     >
                         Scope page

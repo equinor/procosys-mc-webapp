@@ -26,7 +26,8 @@ import { OfflineStatus } from '../../typings/enums';
 import { Routes } from 'react-router';
 
 const PunchPage = (): JSX.Element => {
-    const { api, params, path, history, url, offlineState } = useCommonHooks();
+    const { api, params, path, navigate, url, offlineState, location } =
+        useCommonHooks();
     const [punch, setPunch] = useState<PunchItem>();
     const [fetchPunchStatus, setFetchPunchStatus] = useState<AsyncStatus>(
         AsyncStatus.LOADING
@@ -143,8 +144,8 @@ const PunchPage = (): JSX.Element => {
             </AsyncPage>
             <NavigationFooter>
                 <FooterButton
-                    active={!history.location.pathname.includes('/tag-info')}
-                    goTo={(): void => history.push(url)}
+                    active={!location.pathname.includes('/tag-info')}
+                    goTo={(): void => navigate(url)}
                     icon={
                         <EdsIcon
                             name="warning_filled"
@@ -154,8 +155,8 @@ const PunchPage = (): JSX.Element => {
                     label="Punch item"
                 />
                 <FooterButton
-                    active={history.location.pathname.includes('/tag-info')}
-                    goTo={(): void => history.push(`${url}/tag-info`)}
+                    active={location.pathname.includes('/tag-info')}
+                    goTo={(): void => navigate(`${url}/tag-info`)}
                     icon={<EdsIcon name="tag" />}
                     label={'Tag info'}
                 />

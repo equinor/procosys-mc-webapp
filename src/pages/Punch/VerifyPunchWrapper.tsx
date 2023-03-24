@@ -20,7 +20,7 @@ const VerifyPunchWrapper = ({
     canUnclear,
     canVerify,
 }: VerifyPunchProps): JSX.Element => {
-    const { url, history, params, api } = useCommonHooks();
+    const { url, navigate, params, api } = useCommonHooks();
     const [punchActionStatus, setPunchActionStatus] = useState(
         AsyncStatus.INACTIVE
     );
@@ -43,7 +43,7 @@ const VerifyPunchWrapper = ({
                 punchAction
             );
             setPunchActionStatus(AsyncStatus.SUCCESS);
-            history.push(newUrl);
+            navigate(newUrl);
         } catch (error) {
             setPunchActionStatus(AsyncStatus.ERROR);
             setSnackbarText(`Couldn't handle ${punchAction}`);

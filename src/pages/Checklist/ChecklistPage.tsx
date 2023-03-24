@@ -28,7 +28,8 @@ const ContentWrapper = styled.div`
 `;
 
 const ChecklistPage = (): JSX.Element => {
-    const { history, url, path, api, params, offlineState } = useCommonHooks();
+    const { navigate, url, path, api, params, offlineState, location } =
+        useCommonHooks();
     const { permissions } = useContext(PlantContext);
     const [punchList, setPunchList] = useState<PunchPreview[]>();
     const [details, setDetails] = useState<ChecklistResponse>();
@@ -41,19 +42,11 @@ const ChecklistPage = (): JSX.Element => {
     const [refreshChecklistStatus, setRefreshChecklistStatus] = useState(false);
     const abortController = new AbortController();
     const abortSignal = abortController.signal;
-    const isOnNewPunchPage = history.location.pathname.includes('/new-punch');
-    const isOnPunchListPage = history.location.pathname.includes('/punch-list');
-    const isOnTagInfoPage = history.location.pathname.includes('/tag-info');
-    const goBackToPunchListPage = removeSubdirectories(
-        history.location.pathname
-    );
+    const isOnNewPunchPage = location.pathname.includes('/new-punch');
+    const isOnPunchListPage = location.pathname.includes('/punch-list');
+    const isOnTagInfoPage = location.pathname.includes('/tag-info');
+    const goBackToPunchListPage = removeSubdirectories(location.pathname);
     const goBackToEntityPage = removeSubdirectories(url, 2);
-
-    useEffect(() => {
-        return (): void => {
-            abortController.abort();
-        };
-    }, []);
 
     useEffect(() => {
         (async (): Promise<void> => {
@@ -113,13 +106,11 @@ const ChecklistPage = (): JSX.Element => {
                 }
                 midContent={'MCCR'}
                 rightContent={
-                    history.location.pathname.includes(
-                        '/new-punch'
-                    ) ? undefined : (
+                    location.pathname.includes('/new-punch') ? undefined : (
                         <Button
                             variant="ghost"
                             onClick={(): void =>
-                                history.push(`${url}/punch-list/new-punch`)
+                                navigate(`${url}/punch-list/new-punch`)
                             }
                             disabled={
                                 !permissions.includes('PUNCHLISTITEM/CREATE')
@@ -149,9 +140,9 @@ const ChecklistPage = (): JSX.Element => {
                         <PunchList
                             fetchPunchListStatus={fetchPunchListStatus}
                             onPunchClick={(punch: PunchPreview): void =>
-                                history.push(
+                                navigate(
                                     `${removeSubdirectories(
-                                        history.location.pathname
+                                        location.pathname
                                     )}/punch-item/${punch.id}`
                                 )
                             }
@@ -167,19 +158,19 @@ const ChecklistPage = (): JSX.Element => {
             <NavigationFooter footerStatus={fetchPunchListStatus}>
                 <FooterButton
                     active={!(isOnPunchListPage || isOnTagInfoPage)}
-                    goTo={(): void => history.push(`${url}`)}
+                    goTo={(): void => navigate(`${url}`)}
                     icon={<EdsIcon name="playlist_added" />}
                     label={'Checklist'}
                 />
                 <FooterButton
                     active={isOnTagInfoPage}
-                    goTo={(): void => history.push(`${url}/tag-info`)}
+                    goTo={(): void => navigate(`${url}/tag-info`)}
                     icon={<EdsIcon name="tag" />}
                     label={'Tag info'}
                 />
                 <FooterButton
                     active={isOnPunchListPage}
-                    goTo={(): void => history.push(`${url}/punch-list`)}
+                    goTo={(): void => navigate(`${url}/punch-list`)}
                     icon={<EdsIcon name="warning_outlined" />}
                     label={'Punch list'}
                     numberOfItems={punchList?.length}

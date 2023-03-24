@@ -39,12 +39,12 @@ type OutstandingIPOsProps = {
 };
 
 const OutstandingIpoResult = ({ ipo }: OutstandingIPOsProps): JSX.Element => {
-    const { history, url } = useCommonHooks();
+    const { navigate, url } = useCommonHooks();
 
     return (
         <OutstandingIpoWrapper
             onClick={(): void => {
-                history.push(`${url}/IPO/${ipo.invitationId}`);
+                navigate(`${url}/IPO/${ipo.invitationId}`);
             }}
         >
             <IconWrapper>

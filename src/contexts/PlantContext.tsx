@@ -28,7 +28,7 @@ const PlantContext = React.createContext({} as PlantContextProps);
 export const PlantContextProvider: React.FC<{ children: ReactNode }> = ({
     children,
 }) => {
-    const { params, api, history, auth, offlineState } = useCommonHooks();
+    const { params, api, navigate, auth, offlineState } = useCommonHooks();
     const [currentPlant, setCurrentPlant] = useState<Plant | undefined>();
     const { availablePlants } = useContext(McAppContext);
     const [availableProjects, setAvailableProjects] = useState<Project[]>([]);
@@ -48,13 +48,13 @@ export const PlantContextProvider: React.FC<{ children: ReactNode }> = ({
             StorageKey.MC_REDIRECTPATH
         );
         if (redirectPath && redirectPath.length > 1) {
-            history.push(redirectPath);
+            navigate(redirectPath);
             window.localStorage.removeItem(StorageKey.MC_REDIRECTPATH);
         }
 
         if (params.plant || !plantInStorage || !projectInStorage) return;
         if (projectInStorage)
-            history.push(`/${plantInStorage}/${projectInStorage}`);
+            navigate(`/${plantInStorage}/${projectInStorage}`);
     }, [params.plant, params.project]);
 
     useEffect(() => {

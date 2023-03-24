@@ -45,7 +45,7 @@ const ClearPunchWrapper = ({
     canEdit,
     canClear,
 }: ClearPunchWrapperProps): JSX.Element => {
-    const { api, params, history, url, offlineState } = useCommonHooks();
+    const { api, params, navigate, url, offlineState } = useCommonHooks();
     const { snackbar, setSnackbarText } = useSnackbar();
     const [categories, setCategories] = useState<PunchCategory[]>([]);
     const [types, setTypes] = useState<PunchType[]>([]);
@@ -162,7 +162,7 @@ const ClearPunchWrapper = ({
             setClearPunchStatus={setClearPunchStatus}
             clearPunch={clearPunch}
             redirectAfterClearing={(): void => {
-                history.push(url);
+                navigate(url);
             }}
             fetchOptionsStatus={fetchOptionsStatus}
             updatePunchStatus={updatePunchStatus}
