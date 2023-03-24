@@ -162,7 +162,7 @@ export const handleNewPunch = async (
     const punchCommenturl = `PunchListItem/Comments?plantId=${plantId}&punchItemId=${newPunchItemId}&&${apiVersion}`;
     const apiResponseComment: APIComment[] = [];
     const commentEntity: IEntity = {
-        entitytype: EntityType.PunchComment,
+        entitytype: EntityType.PunchComments,
         entityid: newPunchItemId,
         parententityid: newPunch.CheckListId,
         responseObj: apiResponseComment,

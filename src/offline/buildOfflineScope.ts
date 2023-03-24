@@ -318,7 +318,7 @@ const buildOfflineScope = async (
                     await api.getPunchComments(plantId, punch.id);
 
                     addEntityToMap({
-                        entitytype: EntityType.PunchComment,
+                        entitytype: EntityType.PunchComments,
                         entityid: punch.id,
                         parententityid: checklist.id,
                         responseObj: currentResponseObj,
