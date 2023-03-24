@@ -24,16 +24,16 @@ export const handlePostComment = async (
 
     const commentListEntity =
         await offlineContentRepository.getEntityByTypeAndId(
-            EntityType.PunchComment,
+            EntityType.PunchComments,
             punchId
         );
 
     const newComment = {
         id: newCommentId,
         text: comment,
-        firstName: '',
-        lastName: '',
-        createdAt: new Date(Date.now()).toLocaleString().split(',')[0],
+        firstName: '<offline user>',
+        lastName: '<offline user>',
+        createdAt: new Date(),
     };
 
     const commentList: APIComment[] = commentListEntity.responseObj;
