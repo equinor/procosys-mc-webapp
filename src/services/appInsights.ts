@@ -10,7 +10,7 @@ type InitializeAppInsights = {
 const initializeAppInsights = (
     instrumentationKey: string
 ): InitializeAppInsights => {
-    const browserHistory = createBrowserHistory({ basename: '' });
+    const browserHistory = createBrowserHistory();
     const reactPlugin = new ReactPlugin();
     const appInsights = new ApplicationInsights({
         config: {

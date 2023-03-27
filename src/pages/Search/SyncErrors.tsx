@@ -48,7 +48,7 @@ const SyncErrors = ({
 }: SyncErrorProps): JSX.Element => {
     const currentPlant = localStorage.getItem(StorageKey.PLANT);
     const currentProject = getOfflineProjectIdfromLocalStorage();
-    const { setOfflineState, api, history } = useCommonHooks();
+    const { setOfflineState, api, navigate } = useCommonHooks();
 
     const [showDeleteConfirmation, setShowDeleteConfirmation] =
         useState<boolean>(false);
@@ -59,7 +59,7 @@ const SyncErrors = ({
 
     useEffect(() => {
         if (!syncErrors) {
-            history.push(`${url}/bookmarks`);
+            navigate(`${url}/bookmarks`);
         }
     }, [syncErrors]);
 

@@ -1,12 +1,13 @@
 import React from 'react';
-import { Route, useRouteMatch } from 'react-router-dom';
+import { Route } from 'react-router-dom';
 import SavedSearchPage from './pages/SavedSearch/SavedSearchPage';
 import PunchPage from './pages/Punch/PunchPage';
 import ChecklistPage from './pages/Checklist/ChecklistPage';
-import { Routes } from 'react-router';
+import { Routes, useLocation } from 'react-router';
 
 const SavedSearchRouter = (): JSX.Element => {
-    const { path } = useRouteMatch();
+    const location = useLocation();
+    const path = location.pathname;
     return (
         <Routes>
             <Route

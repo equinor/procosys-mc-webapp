@@ -54,7 +54,7 @@ const SavedSearchResult = ({
     deleteSavedSearch,
     deleteSavedSearchStatus,
 }: SavedSearchProps): JSX.Element => {
-    const { history, url } = useCommonHooks();
+    const { navigate, url } = useCommonHooks();
 
     const determineIcon = (): JSX.Element => {
         if (search.type === ApiSavedSearchType.CHECKLIST) {
@@ -68,7 +68,7 @@ const SavedSearchResult = ({
         <SavedSearchWrapper
             role="link"
             onClick={(): void =>
-                history.push(
+                navigate(
                     `${url}/saved-search/${
                         search.type === ApiSavedSearchType.CHECKLIST
                             ? 'checklist'

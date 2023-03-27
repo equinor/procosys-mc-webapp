@@ -1,10 +1,5 @@
 import { useContext } from 'react';
-import {
-    useLocation,
-    useNavigate,
-    useParams,
-    useRouteMatch,
-} from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { McParams } from '../App';
 import McAppContext from '../contexts/McAppContext';
 
@@ -23,7 +18,8 @@ const useCommonHooks = () => {
     const params = useParams<McParams>();
     const navigate = useNavigate();
     const location = useLocation();
-    const { url, path } = useRouteMatch();
+    const path = location.pathname;
+    const url = window.location.href;
     return {
         api,
         ipoApi,

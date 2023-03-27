@@ -33,7 +33,7 @@ const SearchPageWrapper = styled.main`
 
 const SearchPage = (): JSX.Element => {
     const { snackbar, setSnackbarText } = useSnackbar();
-    const { history, url, path, offlineState } = useCommonHooks();
+    const { navigate, url, path, offlineState, location } = useCommonHooks();
     const [syncErrors, setSyncErrors] =
         useState<OfflineSynchronizationErrors | null>(null);
 
@@ -60,7 +60,7 @@ const SearchPage = (): JSX.Element => {
 
     useEffect(() => {
         if (syncErrors) {
-            history.push(`${url}/sync-errors`);
+            navigate(`${url}/sync-errors`);
         }
     }, [syncErrors]);
 
@@ -92,16 +92,16 @@ const SearchPage = (): JSX.Element => {
             <NavigationFooter>
                 <FooterButton
                     active={
-                        !history.location.pathname.includes('/bookmarks') &&
-                        !history.location.pathname.includes('/sync-errors')
+                        !location.pathname.includes('/bookmarks') &&
+                        !location.pathname.includes('/sync-errors')
                     }
-                    goTo={(): void => history.push(`${url}`)}
+                    goTo={(): void => navigate(`${url}`)}
                     icon={<EdsIcon name="search" color={COLORS.mossGreen} />}
                     label="Search"
                 />
                 <FooterButton
-                    active={history.location.pathname.includes('/bookmarks')}
-                    goTo={(): void => history.push(`${url}/bookmarks`)}
+                    active={location.pathname.includes('/bookmarks')}
+                    goTo={(): void => navigate(`${url}/bookmarks`)}
                     icon={
                         <EdsIcon
                             name="bookmark_outlined"
@@ -112,10 +112,8 @@ const SearchPage = (): JSX.Element => {
                 />
                 {syncErrors != null ? (
                     <FooterButton
-                        active={history.location.pathname.includes(
-                            '/sync-errors'
-                        )}
-                        goTo={(): void => history.push(`${url}/sync-errors`)}
+                        active={location.pathname.includes('/sync-errors')}
+                        goTo={(): void => navigate(`${url}/sync-errors`)}
                         icon={
                             <EdsIcon
                                 name="error_outlined"

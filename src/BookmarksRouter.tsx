@@ -1,12 +1,13 @@
 import React from 'react';
-import { Route, useRouteMatch } from 'react-router-dom';
+import { Route } from 'react-router-dom';
 import PunchPage from './pages/Punch/PunchPage';
 import ChecklistPage from './pages/Checklist/ChecklistPage';
 import EntityPage from './pages/Entity/EntityPage';
-import { Routes } from 'react-router';
+import { Routes, useLocation } from 'react-router';
 
 const BookmarksRouter = (): JSX.Element => {
-    const { path } = useRouteMatch();
+    const location = useLocation();
+    const path = location.pathname;
     return (
         <Routes>
             <Route

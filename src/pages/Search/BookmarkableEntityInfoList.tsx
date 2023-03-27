@@ -42,7 +42,7 @@ const BookmarkableEntityInfoList = ({
     entityInfoList,
     offlinePlanningState,
 }: BookmarkableEntityInfoListProps): JSX.Element => {
-    const { history, url } = useCommonHooks();
+    const { navigate, url } = useCommonHooks();
     if (
         searchType === SearchType.MC &&
         (isArrayOfType<McPkgPreview>(entityInfoList, 'mcPkgNo') ||
@@ -98,9 +98,7 @@ const BookmarkableEntityInfoList = ({
                                       ]
                                     : undefined
                             }
-                            onClick={(): void =>
-                                history.push(`${url}/WO/${id}`)
-                            }
+                            onClick={(): void => navigate(`${url}/WO/${id}`)}
                             isBookmarked={bookmarked}
                             offlinePlanningState={offlinePlanningState}
                             handleBookmarkClicked={(): Promise<void> =>
@@ -132,9 +130,7 @@ const BookmarkableEntityInfoList = ({
                             }
                             headerText={entityInfo.tagNo}
                             description={entityInfo.description}
-                            onClick={(): void =>
-                                history.push(`${url}/Tag/${id}`)
-                            }
+                            onClick={(): void => navigate(`${url}/Tag/${id}`)}
                             isBookmarked={bookmarked}
                             offlinePlanningState={offlinePlanningState}
                             handleBookmarkClicked={(): Promise<void> =>
@@ -170,9 +166,7 @@ const BookmarkableEntityInfoList = ({
                             headerText={entityInfo.title}
                             description={entityInfo.description}
                             details={[entityInfo.responsibleCode]}
-                            onClick={(): void =>
-                                history.push(`${url}/PO/${id}`)
-                            }
+                            onClick={(): void => navigate(`${url}/PO/${id}`)}
                             isBookmarked={bookmarked}
                             offlinePlanningState={offlinePlanningState}
                             handleBookmarkClicked={(): Promise<void> =>
