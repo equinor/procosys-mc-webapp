@@ -1086,6 +1086,20 @@ const procosysApiService = (
         );
     };
 
+    const putUnderPlanning = async (
+        plantId: string,
+        projectId: string
+    ): Promise<void> => {
+        const dto = {
+            ProjectId: projectId,
+        };
+        await putByFetch(
+            `OfflineScope/UnderPlanning?plantId=PCS${plantId}${apiVersion}`,
+            dto,
+            { 'Content-Type': 'application/json' }
+        );
+    };
+
     /**
      * This endpoint returns info about the current application.
      * We use it to ensure that we can access the server, before we start offline syncronization.
@@ -1147,6 +1161,7 @@ const procosysApiService = (
         putOfflineScopePunchlistItemSynchronized,
         postOfflineScopeSynchronizeErrors,
         putOfflineScopeOffline,
+        putUnderPlanning,
         getApplication,
     };
 };
