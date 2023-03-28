@@ -1086,19 +1086,6 @@ const procosysApiService = (
         );
     };
 
-    const putCancelOffline = async (
-        plantId: string,
-        projectId: number
-    ): Promise<void> => {
-        await putByFetch(
-            `OfflineScope/Cancel?plantId=PCS$${plantId}${apiVersion}`,
-            {
-                ProjectId: projectId,
-            },
-            { 'Content-Type': 'application/json' }
-        );
-    };
-
     /**
      * This endpoint returns info about the current application.
      * We use it to ensure that we can access the server, before we start offline syncronization.
@@ -1138,7 +1125,7 @@ const procosysApiService = (
         postSetBookmark,
         getBookmarks,
         deleteBookmark,
-        putCancelOffline,
+        deleteBookmarks,
         getPersonsByName,
         getSavedSearches,
         deleteSavedSearch,
