@@ -1030,7 +1030,7 @@ const procosysApiService = (
         plantId: string,
         projectId: number
     ): Promise<void> => {
-        const dto = { ProjectId: projectId };
+        const dto = { ProjectId: projectId, KeepBookmarks: false };
         await putByFetch(
             `OfflineScope/Synchronized?plantId=PCS$${plantId}${apiVersion}`,
             dto,
