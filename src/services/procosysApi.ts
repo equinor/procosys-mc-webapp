@@ -1088,7 +1088,7 @@ const procosysApiService = (
 
     const putUnderPlanning = async (
         plantId: string,
-        projectId: string
+        projectId: number
     ): Promise<void> => {
         const dto = {
             ProjectId: projectId,
