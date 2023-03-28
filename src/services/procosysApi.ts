@@ -493,7 +493,7 @@ const procosysApiService = (
 
     const deleteBookmarks = async (
         plantId: string,
-        projectId: string
+        projectId: number
     ): Promise<void> => {
         await deleteByFetch(
             `Bookmark?plantId=PCS$${plantId}&projectId=${projectId}${apiVersion}`
