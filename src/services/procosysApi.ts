@@ -491,16 +491,12 @@ const procosysApiService = (
         await deleteByFetch(url);
     };
 
-    const putCancelOffline = async (
+    const deleteBookmarks = async (
         plantId: string,
-        projectId: number
+        projectId: string
     ): Promise<void> => {
-        await putByFetch(
-            `OfflineScope/Cancel?plantId=PCS$${plantId}${apiVersion}`,
-            {
-                ProjectId: projectId,
-            },
-            { 'Content-Type': 'application/json' }
+        await deleteByFetch(
+            `Bookmark?plantId=PCS$${plantId}&projectId=${projectId}${apiVersion}`
         );
     };
 
@@ -1087,6 +1083,19 @@ const procosysApiService = (
         await postByFetch(
             `OfflineScope/SynchronizeErrors?plantId=PCS$${plantId}${apiVersion}`,
             offlineSynchronizationErrors
+        );
+    };
+
+    const putCancelOffline = async (
+        plantId: string,
+        projectId: number
+    ): Promise<void> => {
+        await putByFetch(
+            `OfflineScope/Cancel?plantId=PCS$${plantId}${apiVersion}`,
+            {
+                ProjectId: projectId,
+            },
+            { 'Content-Type': 'application/json' }
         );
     };
 
