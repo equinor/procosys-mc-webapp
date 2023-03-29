@@ -1030,7 +1030,7 @@ const procosysApiService = (
         plantId: string,
         projectId: number
     ): Promise<void> => {
-        const dto = { ProjectId: projectId, KeepBookmarks: false };
+        const dto = { ProjectId: projectId, KeepBookmarks: true };
         await putByFetch(
             `OfflineScope/Synchronized?plantId=PCS$${plantId}${apiVersion}`,
             dto,
@@ -1094,7 +1094,7 @@ const procosysApiService = (
             ProjectId: projectId,
         };
         await putByFetch(
-            `OfflineScope/UnderPlanning?plantId=PCS${plantId}${apiVersion}`,
+            `OfflineScope/UnderPlanning?plantId=PCS$${plantId}${apiVersion}`,
             dto,
             { 'Content-Type': 'application/json' }
         );
