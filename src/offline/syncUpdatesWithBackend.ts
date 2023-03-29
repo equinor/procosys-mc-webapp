@@ -421,7 +421,7 @@ const updateIdOnEntityRequest = (
             }
         } else if (offlineUpdate.url.startsWith('PunchListItem/AddComment')) {
             offlineUpdate.entityId = newId;
-            offlineUpdate.bodyData = newId.toString();
+            offlineUpdate.bodyData.PunchItemId = newId.toString();
         } else if (offlineUpdate.url.startsWith('PunchListItem?')) {
             offlineUpdate.entityId = newId;
         }
