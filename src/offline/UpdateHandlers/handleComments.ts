@@ -48,7 +48,7 @@ export const handlePostComment = async (
     await offlineContentRepository.replaceEntity(commentListEntity);
 
     await offlineUpdateRepository.addUpdateRequest(
-        newCommentId,
+        punchId,
         EntityType.PunchItem,
         offlinePostRequest
     );
