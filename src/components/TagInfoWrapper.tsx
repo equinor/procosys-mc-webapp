@@ -7,9 +7,13 @@ import useCommonHooks from '../utils/useCommonHooks';
 
 type TagInfoWrapperProps = {
     tagId?: number;
+    setSnackbarText: React.Dispatch<React.SetStateAction<string>>;
 };
 
-const TagInfoWrapper = ({ tagId }: TagInfoWrapperProps): JSX.Element => {
+const TagInfoWrapper = ({
+    tagId,
+    setSnackbarText,
+}: TagInfoWrapperProps): JSX.Element => {
     const { api, params } = useCommonHooks();
     const [fetchTagStatus, setFetchTagStatus] = useState(AsyncStatus.LOADING);
     const [tagInfo, setTagInfo] = useState<TagDetails>();
