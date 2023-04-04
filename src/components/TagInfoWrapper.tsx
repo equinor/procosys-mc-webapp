@@ -36,6 +36,8 @@ const TagInfoWrapper = ({
                 setAdditionalFields(tagResponse.additionalFields);
                 setFetchTagStatus(AsyncStatus.SUCCESS);
             } catch (error) {
+                if (!(error instanceof Error)) return;
+                setSnackbarText(error.message);
                 setFetchTagStatus(AsyncStatus.ERROR);
             }
         })();
