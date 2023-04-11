@@ -85,6 +85,7 @@ const BookmarksPopUps = ({
                         setOfflineAction(OfflineAction.INACTIVE);
                         setIsSure(false);
                     }}
+                    open={offlineAction == OfflineAction.STARTING}
                 >
                     <BookmarksPopup>
                         <h3>
@@ -103,7 +104,7 @@ const BookmarksPopUps = ({
                             variant={
                                 enteredPin1 && !enteredPinIsValid
                                     ? 'error'
-                                    : 'default'
+                                    : undefined
                             }
                         />
                         <Spacer />
@@ -125,7 +126,7 @@ const BookmarksPopUps = ({
                             variant={
                                 enteredPin2 && enteredPin1 != enteredPin2
                                     ? 'error'
-                                    : 'default'
+                                    : undefined
                             }
                         />
                         <Spacer />
@@ -169,6 +170,7 @@ const BookmarksPopUps = ({
                     onClose={(): void =>
                         setOfflineAction(OfflineAction.INACTIVE)
                     }
+                    open={offlineAction == OfflineAction.CANCELLING}
                 >
                     <BookmarksPopup>
                         <h3>Do you really wish to cancel offline mode?</h3>
@@ -204,7 +206,7 @@ const BookmarksPopUps = ({
                 </Scrim>
             ) : null}
             {noNetworkConnection ? (
-                <Scrim>
+                <Scrim open={noNetworkConnection}>
                     <BookmarksPopup>
                         <h3>You don&apos;t have an internet connection</h3>
                         <p>

@@ -5,8 +5,10 @@ import EdsIcon from '../icons/EdsIcon';
 import PlantContext from '../../contexts/PlantContext';
 import useCommonHooks from '../../utils/useCommonHooks';
 import { COLORS } from '../../style/GlobalStyles';
-import { StorageKey } from '@equinor/procosys-webapp-components';
+import { isOfType, StorageKey } from '@equinor/procosys-webapp-components';
 import { OfflineStatus } from '../../typings/enums';
+import packageJson from '../../../package.json';
+import { LocalStorage } from '../../contexts/McAppContext';
 
 const SideMenuWrapper = styled.aside<{ isActive: boolean }>`
     width: 297px;
@@ -17,11 +19,12 @@ const SideMenuWrapper = styled.aside<{ isActive: boolean }>`
     z-index: 1000;
     background-color: ${COLORS.white};
     border-right: 2px solid ${COLORS.fadedBlue};
-    overflow-y: auto;
+    overflow: auto;
     opacity: ${(props): string => (props.isActive ? '1' : '0')};
     transform: ${(props): string =>
         props.isActive ? 'translateX(0)' : 'translateX(-300px)'};
     transition: transform 0.4s ease-in;
+    margin-bottom: 32px;
 `;
 
 const TopContent = styled.div`
@@ -79,11 +82,30 @@ const PlantInfo = styled.div`
     flex-direction: column;
     background-color: ${COLORS.fadedBlue};
 `;
+const VersionInfo = styled.div`
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    & p {
+        margin: 0 0 16px 0;
+    }
+`;
 
 const SideMenu = (): JSX.Element => {
     const { auth, history, params, offlineState } = useCommonHooks();
     const { currentPlant, currentProject } = useContext(PlantContext);
     const [drawerIsOpen, setDrawerIsOpen] = useState(false);
+    const updateServiceWorker = (): void => {
+        if (isOfType<Navigator>(navigator, 'serviceWorker')) {
+            navigator.serviceWorker.controller?.postMessage({
+                type: 'SKIP_WAITING',
+            });
+        }
+        localStorage.setItem(LocalStorage.SW_UPDATE, 'false');
+        if (isOfType<Location>(location, 'reload')) {
+            location.reload();
+        }
+    };
 
     return (
         <>
@@ -155,6 +177,23 @@ const SideMenu = (): JSX.Element => {
                         </>
                     )}
                 </PlantInfo>
+                <VersionInfo>
+                    <p>
+                        Versions <br />
+                        MC App: {packageJson.version} <br />
+                        WebApp Components:{' '}
+                        {
+                            packageJson.dependencies[
+                                '@equinor/procosys-webapp-components'
+                            ]
+                        }
+                    </p>
+                    {localStorage.getItem(LocalStorage.SW_UPDATE) == 'true' ? (
+                        <Button onClick={updateServiceWorker}>
+                            Update to newest version
+                        </Button>
+                    ) : null}
+                </VersionInfo>
             </SideMenuWrapper>
         </>
     );

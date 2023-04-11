@@ -84,7 +84,9 @@ const SavedSearchResult = ({
             </ContentWrapper>
             <DeleteButton
                 aria-label="Delete saved search"
-                onClick={(e): void => {
+                onClick={(
+                    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+                ): void => {
                     e.stopPropagation();
                     deleteSavedSearch(search.id);
                 }}

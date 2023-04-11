@@ -22,7 +22,7 @@ import { OfflineSynchronizationErrors } from '../../services/apiTypes';
 import { LocalStorage } from '../../contexts/McAppContext';
 
 const SearchPageWrapper = styled.main`
-    padding: 0 4%;
+    padding: 0 4% 66px 4%;
     margin: 0;
     & > p {
         margin: 0;

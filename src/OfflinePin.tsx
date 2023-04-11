@@ -80,7 +80,7 @@ const OfflinePin = ({ setUserPin }: OfflinePinProps): JSX.Element => {
                     ): void => {
                         setEnteredPin(e.target.value);
                     }}
-                    variant={failedPin ? 'error' : 'default'}
+                    variant={failedPin ? 'error' : undefined}
                 />
                 <Spacer />
                 <Button onClick={testUserPin}>Submit</Button>
