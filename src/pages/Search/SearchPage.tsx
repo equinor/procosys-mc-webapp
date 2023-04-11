@@ -52,6 +52,8 @@ const SearchPage = (): JSX.Element => {
                 }
             } catch (error) {
                 console.log(error);
+                if (!(error instanceof Error)) return;
+                setSnackbarText(error.message);
             }
         }
         setSyncErrors(null);
