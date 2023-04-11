@@ -57,7 +57,9 @@ const SavedSearches = ({
                 } else {
                     setFetchSearchesStatus(AsyncStatus.EMPTY_RESPONSE);
                 }
-            } catch {
+            } catch (error) {
+                if (!(error instanceof Error)) return;
+                setSnackbarText(error.message);
                 setFetchSearchesStatus(AsyncStatus.ERROR);
             }
         })();
@@ -75,8 +77,9 @@ const SavedSearches = ({
             );
             setSearchToBeDeleted(0);
             setDeleteSearchStatus(AsyncStatus.SUCCESS);
-        } catch {
-            setSnackbarText('Unable to delete the search');
+        } catch (error) {
+            if (!(error instanceof Error)) return;
+            setSnackbarText(error.message);
             setDeleteSearchStatus(AsyncStatus.ERROR);
         }
     };
