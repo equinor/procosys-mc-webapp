@@ -491,16 +491,12 @@ const procosysApiService = (
         await deleteByFetch(url);
     };
 
-    const putCancelOffline = async (
+    const deleteBookmarks = async (
         plantId: string,
         projectId: number
     ): Promise<void> => {
-        await putByFetch(
-            `OfflineScope/Cancel?plantId=PCS$${plantId}${apiVersion}`,
-            {
-                ProjectId: projectId,
-            },
-            { 'Content-Type': 'application/json' }
+        await deleteByFetch(
+            `Bookmark?plantId=PCS$${plantId}&projectId=${projectId}${apiVersion}`
         );
     };
 
@@ -1034,7 +1030,7 @@ const procosysApiService = (
         plantId: string,
         projectId: number
     ): Promise<void> => {
-        const dto = { ProjectId: projectId };
+        const dto = { ProjectId: projectId, KeepBookmarks: true };
         await putByFetch(
             `OfflineScope/Synchronized?plantId=PCS$${plantId}${apiVersion}`,
             dto,
@@ -1090,6 +1086,20 @@ const procosysApiService = (
         );
     };
 
+    const putUnderPlanning = async (
+        plantId: string,
+        projectId: number
+    ): Promise<void> => {
+        const dto = {
+            ProjectId: projectId,
+        };
+        await putByFetch(
+            `OfflineScope/UnderPlanning?plantId=PCS$${plantId}${apiVersion}`,
+            dto,
+            { 'Content-Type': 'application/json' }
+        );
+    };
+
     /**
      * This endpoint returns info about the current application.
      * We use it to ensure that we can access the server, before we start offline syncronization.
@@ -1129,7 +1139,7 @@ const procosysApiService = (
         postSetBookmark,
         getBookmarks,
         deleteBookmark,
-        putCancelOffline,
+        deleteBookmarks,
         getPersonsByName,
         getSavedSearches,
         deleteSavedSearch,
@@ -1151,6 +1161,7 @@ const procosysApiService = (
         putOfflineScopePunchlistItemSynchronized,
         postOfflineScopeSynchronizeErrors,
         putOfflineScopeOffline,
+        putUnderPlanning,
         getApplication,
     };
 };
