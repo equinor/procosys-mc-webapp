@@ -6,6 +6,7 @@ import {
     EntityId,
     PunchItem,
     PunchPreview,
+    APIComment,
 } from '../../services/apiTypes';
 import {
     generateRandomId,
@@ -17,7 +18,6 @@ import {
 } from './utils';
 import { OfflineUpdateRequest } from '../OfflineUpdateRequest';
 import { OfflineUpdateRepository } from '../OfflineUpdateRepository';
-import { APIComment } from '@equinor/procosys-webapp-components/dist/typings/apiTypes';
 
 const offlineContentRepository = new OfflineContentRepository();
 const offlineUpdateRepository = new OfflineUpdateRepository();
