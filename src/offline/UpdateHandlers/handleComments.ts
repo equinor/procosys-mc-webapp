@@ -3,7 +3,7 @@ import { OfflineUpdateRequest } from '../OfflineUpdateRequest';
 import { OfflineUpdateRepository } from '../OfflineUpdateRepository';
 import { generateRandomId } from './utils';
 import { EntityType } from '../../typings/enums';
-import { APIComment } from '../../services/apiTypes';
+import { APIComment } from '@equinor/procosys-webapp-components/dist/typings/apiTypes';
 
 const offlineContentRepository = new OfflineContentRepository();
 const offlineUpdateRepository = new OfflineUpdateRepository();
