@@ -506,6 +506,14 @@ export interface Attachment {
     fileName: string;
 }
 
+export interface APIComment {
+    createdAt: Date;
+    firstName: string;
+    lastName: string;
+    text: string;
+    id: number;
+}
+
 export interface TagDetails {
     id: number;
     tagNo: string;
