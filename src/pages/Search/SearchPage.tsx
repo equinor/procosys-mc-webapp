@@ -94,6 +94,7 @@ const SearchPage = (): JSX.Element => {
                                 syncErrors={syncErrors}
                                 setSyncErrors={setSyncErrors}
                                 url={url}
+                                setSnackbarText={setSnackbarText}
                             />
                         )}
                     />
