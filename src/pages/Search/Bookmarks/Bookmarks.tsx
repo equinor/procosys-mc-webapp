@@ -15,7 +15,11 @@ export const ButtonsWrapper = styled.div`
     padding-top: 16px;
 `;
 
-const Bookmarks = (): JSX.Element => {
+interface BookmarksProps {
+    setSnackbarText: React.Dispatch<React.SetStateAction<string>>;
+}
+
+const Bookmarks = ({ setSnackbarText }: BookmarksProps): JSX.Element => {
     const {
         currentBookmarks,
         bookmarksStatus,
@@ -28,7 +32,7 @@ const Bookmarks = (): JSX.Element => {
         setUserPin,
         offlineAction,
         setOfflineAction,
-    } = useBookmarks();
+    } = useBookmarks({ setSnackbarText });
     const { offlineState, api, featureFlags } = useCommonHooks();
     const [noNetworkConnection, setNoNetworkConnection] =
         useState<boolean>(false);

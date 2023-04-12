@@ -84,7 +84,9 @@ const SearchPage = (): JSX.Element => {
                     <Route
                         exact
                         path={`${path}/bookmarks`}
-                        render={(): JSX.Element => <Bookmarks />}
+                        render={(): JSX.Element => (
+                            <Bookmarks setSnackbarText={setSnackbarText} />
+                        )}
                     />
                     <Route
                         exact
