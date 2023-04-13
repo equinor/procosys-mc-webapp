@@ -7,10 +7,10 @@ import {
 } from '../services/apiTypes';
 
 import { ProcosysApiService } from '../services/procosysApi';
-import { EntityType, SearchType } from '../typings/enums';
+import { EntityType } from '../typings/enums';
 import { OfflineContentRepository } from './OfflineContentRepository';
-import { IEntity } from './IEntity';
 import { fetchAppConfig, fetchAuthConfig } from '../services/appConfiguration';
+import { IEntity, SearchType } from '@equinor/procosys-webapp-components';
 
 /**
  * This function will be called when user want to go offline with given bookmarks.

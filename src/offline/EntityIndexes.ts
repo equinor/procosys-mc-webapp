@@ -1,4 +1,4 @@
-import { IEntity } from './IEntity';
+import { IEntity } from '@equinor/procosys-webapp-components';
 
 export type EntityIndexes = Pick<
     IEntity,

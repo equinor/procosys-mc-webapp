@@ -1,5 +1,4 @@
-import { SearchType } from '../typings/enums';
-import { IEntity } from './IEntity';
+import { IEntity, SearchType } from '@equinor/procosys-webapp-components';
 
 export class Entity implements IEntity {
     apipath: string;

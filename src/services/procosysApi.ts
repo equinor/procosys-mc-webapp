@@ -3,6 +3,7 @@ import {
     HTTPError,
     IEntity,
     PunchAction,
+    SearchType,
     UpdatePunchData,
     getErrorMessage,
 } from '@equinor/procosys-webapp-components';
@@ -10,7 +11,7 @@ import {
     PunchComment,
     APIComment,
 } from '@equinor/procosys-webapp-components/dist/typings/apiTypes';
-import { SavedSearchType, SearchType } from '../typings/enums';
+import { SavedSearchType } from '../typings/enums';
 import objectToCamelCase from '../utils/objectToCamelCase';
 import removeBaseUrlFromUrl from '../utils/removeBaseUrlFromUrl';
 import {

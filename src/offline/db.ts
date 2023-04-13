@@ -1,9 +1,9 @@
 import Dexie, { Table } from 'dexie';
 import { Entity } from './Entity';
 import { EntityIndexes } from './EntityIndexes';
-import { IEntity } from './IEntity';
 import { OfflineUpdateRequest } from './OfflineUpdateRequest';
 import { applyEncryptionMiddleware, cryptoOptions } from 'dexie-encrypted';
+import { IEntity } from '@equinor/procosys-webapp-components';
 
 const nacl = require('tweetnacl');
 

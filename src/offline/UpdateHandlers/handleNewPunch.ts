@@ -1,4 +1,3 @@
-import { IEntity } from '../IEntity';
 import { OfflineContentRepository } from '../OfflineContentRepository';
 import { EntityType } from '../../typings/enums';
 import {
@@ -17,6 +16,7 @@ import {
 } from './utils';
 import { OfflineUpdateRequest } from '../OfflineUpdateRequest';
 import { OfflineUpdateRepository } from '../OfflineUpdateRepository';
+import { IEntity } from '@equinor/procosys-webapp-components';
 
 const offlineContentRepository = new OfflineContentRepository();
 const offlineUpdateRepository = new OfflineUpdateRepository();

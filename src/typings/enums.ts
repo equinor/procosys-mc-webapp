@@ -44,14 +44,6 @@ export enum SavedSearchType {
     PUNCH = 'punch',
 }
 
-export enum SearchType {
-    PO = 'PO',
-    MC = 'MC',
-    WO = 'WO',
-    Tag = 'Tag',
-    IPO = 'IPO',
-}
-
 export enum OfflineStatus {
     ONLINE,
     OFFLINE,
