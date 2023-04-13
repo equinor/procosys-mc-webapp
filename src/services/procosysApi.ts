@@ -1,4 +1,5 @@
 import {
+    IEntity,
     PunchAction,
     PunchEndpoints,
     UpdatePunchData,
@@ -7,7 +8,6 @@ import {
     PunchComment,
     APIComment,
 } from '@equinor/procosys-webapp-components/dist/typings/apiTypes';
-import { IEntity } from '../offline/IEntity';
 import { SavedSearchType, SearchType } from '../typings/enums';
 import objectToCamelCase from '../utils/objectToCamelCase';
 import removeBaseUrlFromUrl from '../utils/removeBaseUrlFromUrl';
