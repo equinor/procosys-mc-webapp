@@ -93,6 +93,7 @@ const SearchArea = ({
                 searchStatus={searchStatus}
                 searchResults={hits}
                 searchType={searchType}
+                setSnackbarText={setSnackbarText}
             />
         </SearchAreaWrapper>
     );
