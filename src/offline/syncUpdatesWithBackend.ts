@@ -1,4 +1,3 @@
-import { HTTPError } from '../services/HTTPError';
 import { ProcosysApiService } from '../services/procosysApi';
 import { EntityType, OfflineStatus } from '../typings/enums';
 import { OfflineUpdateRepository } from './OfflineUpdateRepository';
@@ -10,7 +9,7 @@ import {
 
 import { OfflineSynchronizationErrors } from '../services/apiTypes';
 import { getOfflineProjectIdfromLocalStorage } from './OfflineStatus';
-import { StorageKey } from '@equinor/procosys-webapp-components';
+import { HTTPError, StorageKey } from '@equinor/procosys-webapp-components';
 import { db } from './db';
 import { LocalStorage } from '../contexts/McAppContext';
 
