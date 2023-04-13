@@ -1,4 +1,5 @@
-import { EntityType, SearchType } from '../typings/enums';
+import { SearchType } from '@equinor/procosys-webapp-components';
+import { EntityType } from '../typings/enums';
 import { db } from './db';
 import { Entity } from './Entity';
 import { EntityIndexes } from './EntityIndexes';

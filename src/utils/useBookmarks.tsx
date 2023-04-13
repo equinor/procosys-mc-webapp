@@ -1,7 +1,11 @@
-import { AsyncStatus, isOfType } from '@equinor/procosys-webapp-components';
+import {
+    AsyncStatus,
+    SearchType,
+    isOfType,
+} from '@equinor/procosys-webapp-components';
 import { useContext, useEffect, useState } from 'react';
 import PlantContext from '../contexts/PlantContext';
-import { EntityType, OfflineStatus, SearchType } from '../typings/enums';
+import { EntityType, OfflineStatus } from '../typings/enums';
 import { Bookmarks } from '../services/apiTypes';
 import useCommonHooks from './useCommonHooks';
 import buildOfflineScope from '../offline/buildOfflineScope';

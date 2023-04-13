@@ -3,11 +3,12 @@ import styled from 'styled-components';
 import { Button } from '@equinor/eds-core-react';
 import useBookmarks, { OfflineAction } from '../../../utils/useBookmarks';
 import BookmarkableEntityInfoList from '../BookmarkableEntityInfoList';
-import { OfflineStatus, SearchType } from '../../../typings/enums';
+import { OfflineStatus } from '../../../typings/enums';
 import useCommonHooks from '../../../utils/useCommonHooks';
 import AsyncPage from '../../../components/AsyncPage';
 import BookmarksPopUps, { BookmarksPopup } from './BookmarksPopups';
 import hasConnectionToServer from '../../../utils/hasConnectionToServer';
+import { SearchType } from '@equinor/procosys-webapp-components';
 
 export const ButtonsWrapper = styled.div`
     display: flex;

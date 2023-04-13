@@ -1,6 +1,7 @@
 import {
     EntityDetails,
     isArrayOfType,
+    SearchType,
     TextIcon,
 } from '@equinor/procosys-webapp-components';
 import React from 'react';
@@ -14,7 +15,6 @@ import {
     WoPreview,
 } from '../../services/apiTypes';
 import { COLORS } from '../../style/GlobalStyles';
-import { SearchType } from '../../typings/enums';
 import useCommonHooks from '../../utils/useCommonHooks';
 
 interface BookmarkableEntityInfoListProps {
