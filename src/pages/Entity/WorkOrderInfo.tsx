@@ -6,7 +6,6 @@ import {
     ErrorPage,
     HomeButton,
     removeSubdirectories,
-    useSnackbar,
 } from '@equinor/procosys-webapp-components';
 import styled from 'styled-components';
 import AsyncPage from '../../components/AsyncPage';

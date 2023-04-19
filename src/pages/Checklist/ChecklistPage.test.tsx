@@ -1,17 +1,10 @@
 import { withPlantContext } from '../../test/contexts';
 import React from 'react';
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import { ENDPOINTS, causeApiError, server, rest } from '../../test/setupServer';
+import { render, screen } from '@testing-library/react';
+import { ENDPOINTS, causeApiError } from '../../test/setupServer';
 import { MemoryRouter, Route } from 'react-router-dom';
 import ChecklistPage from './ChecklistPage';
-import {
-    dummyChecklistResponse,
-    dummyPunchCategories,
-    dummyPunchOrganizations,
-    dummyPunchPriorities,
-    dummyPunchSorts,
-    dummyPunchTypes,
-} from '../../test/dummyData';
+import { dummyChecklistResponse } from '../../test/dummyData';
 import userEvent from '@testing-library/user-event';
 import { OfflineStatus } from '../../typings/enums';
 

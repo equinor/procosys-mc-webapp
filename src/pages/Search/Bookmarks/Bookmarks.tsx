@@ -6,7 +6,7 @@ import BookmarkableEntityInfoList from '../BookmarkableEntityInfoList';
 import { OfflineStatus, SearchType } from '../../../typings/enums';
 import useCommonHooks from '../../../utils/useCommonHooks';
 import AsyncPage from '../../../components/AsyncPage';
-import BookmarksPopUps, { BookmarksPopup } from './BookmarksPopups';
+import BookmarksPopUps from './BookmarksPopups';
 import hasConnectionToServer from '../../../utils/hasConnectionToServer';
 
 export const ButtonsWrapper = styled.div`

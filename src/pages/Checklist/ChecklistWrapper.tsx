@@ -1,5 +1,5 @@
 import React from 'react';
-import { Checklist, useSnackbar } from '@equinor/procosys-webapp-components';
+import { Checklist } from '@equinor/procosys-webapp-components';
 import useCommonHooks from '../../utils/useCommonHooks';
 import styled from 'styled-components';
 import { OfflineStatus } from '../../typings/enums';

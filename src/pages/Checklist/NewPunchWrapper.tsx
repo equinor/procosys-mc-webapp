@@ -14,7 +14,6 @@ import {
     NewPunch,
     removeSubdirectories,
     useFormFields,
-    useSnackbar,
 } from '@equinor/procosys-webapp-components';
 import AsyncPage from '../../components/AsyncPage';
 import usePersonsSearchFacade from '../../utils/usePersonsSearchFacade';
