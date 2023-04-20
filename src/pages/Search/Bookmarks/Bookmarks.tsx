@@ -6,7 +6,7 @@ import BookmarkableEntityInfoList from '../BookmarkableEntityInfoList';
 import { OfflineStatus } from '../../../typings/enums';
 import useCommonHooks from '../../../utils/useCommonHooks';
 import AsyncPage from '../../../components/AsyncPage';
-import BookmarksPopUps, { BookmarksPopup } from './BookmarksPopups';
+import BookmarksPopUps from './BookmarksPopups';
 import hasConnectionToServer from '../../../utils/hasConnectionToServer';
 import { SearchType } from '@equinor/procosys-webapp-components';
 
@@ -16,7 +16,11 @@ export const ButtonsWrapper = styled.div`
     padding-top: 16px;
 `;
 
-const Bookmarks = (): JSX.Element => {
+interface BookmarksProps {
+    setSnackbarText: React.Dispatch<React.SetStateAction<string>>;
+}
+
+const Bookmarks = ({ setSnackbarText }: BookmarksProps): JSX.Element => {
     const {
         currentBookmarks,
         bookmarksStatus,
@@ -29,7 +33,7 @@ const Bookmarks = (): JSX.Element => {
         setUserPin,
         offlineAction,
         setOfflineAction,
-    } = useBookmarks();
+    } = useBookmarks({ setSnackbarText });
     const { offlineState, api, featureFlags } = useCommonHooks();
     const [noNetworkConnection, setNoNetworkConnection] =
         useState<boolean>(false);

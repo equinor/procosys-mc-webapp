@@ -41,8 +41,9 @@ const VerifyPunchWrapper = ({
             setPunchActionStatus(AsyncStatus.SUCCESS);
             history.push(newUrl);
         } catch (error) {
+            if (!(error instanceof Error)) return;
+            setSnackbarText(error.message);
             setPunchActionStatus(AsyncStatus.ERROR);
-            setSnackbarText(`Couldn't handle ${punchAction}`);
         }
     };
 

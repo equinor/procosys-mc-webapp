@@ -32,11 +32,16 @@ const Search = ({ setSnackbarText }: SearchProps): JSX.Element => {
             return (
                 <>
                     <SavedSearches setSnackbarText={setSnackbarText} />{' '}
-                    <OutstandingIpos />{' '}
+                    <OutstandingIpos setSnackbarText={setSnackbarText} />{' '}
                 </>
             );
         }
-        return <SearchArea searchType={searchType} />;
+        return (
+            <SearchArea
+                searchType={searchType}
+                setSnackbarText={setSnackbarText}
+            />
+        );
     };
 
     return (

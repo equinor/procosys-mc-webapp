@@ -18,15 +18,19 @@ type SearchResultsProps = {
     searchStatus: SearchStatus;
     searchResults: SearchResultsType;
     searchType: string;
+    setSnackbarText: React.Dispatch<React.SetStateAction<string>>;
 };
 
 const SearchResults = ({
     searchStatus,
     searchResults,
     searchType,
+    setSnackbarText,
 }: SearchResultsProps): JSX.Element => {
     const { offlineState, featureFlags } = useCommonHooks();
-    const { isBookmarked, handleBookmarkClicked } = useBookmarks();
+    const { isBookmarked, handleBookmarkClicked } = useBookmarks({
+        setSnackbarText,
+    });
     const getPlaceholderTextType = (): string => {
         if (searchType === SearchType.MC) {
             return 'MC Package number';

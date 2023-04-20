@@ -21,9 +21,13 @@ const SearchAreaWrapper = styled.div`
 
 type SearchAreaProps = {
     searchType: string;
+    setSnackbarText: React.Dispatch<React.SetStateAction<string>>;
 };
 
-const SearchArea = ({ searchType }: SearchAreaProps): JSX.Element => {
+const SearchArea = ({
+    searchType,
+    setSnackbarText,
+}: SearchAreaProps): JSX.Element => {
     const searchbarRef = useRef<HTMLInputElement>(
         document.createElement('input')
     );
@@ -61,6 +65,7 @@ const SearchArea = ({ searchType }: SearchAreaProps): JSX.Element => {
                 <TagPhotoRecognition
                     setQuery={setQuery}
                     tagOcrEndpoint={appConfig.ocrFunctionEndpoint}
+                    setSnackbarText={setSnackbarText}
                 />
             ) : null}
             <TallSearchField
@@ -91,6 +96,7 @@ const SearchArea = ({ searchType }: SearchAreaProps): JSX.Element => {
                 searchStatus={searchStatus}
                 searchResults={hits}
                 searchType={searchType}
+                setSnackbarText={setSnackbarText}
             />
         </SearchAreaWrapper>
     );

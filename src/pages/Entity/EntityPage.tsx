@@ -25,6 +25,7 @@ import {
     removeSubdirectories,
     Scope,
     SearchType,
+    useSnackbar,
 } from '@equinor/procosys-webapp-components';
 import EntityPageDetailsCard from './EntityPageDetailsCard';
 import { OfflineStatus } from '../../typings/enums';
@@ -38,6 +39,7 @@ const ContentWrapper = styled.div`
 const EntityPage = (): JSX.Element => {
     const { api, ipoApi, params, path, history, url, offlineState } =
         useCommonHooks();
+    const { snackbar, setSnackbarText } = useSnackbar();
     const [scope, setScope] = useState<ChecklistPreview[]>();
     const [punchList, setPunchList] = useState<PunchPreview[]>();
     const [details, setDetails] = useState<
@@ -101,7 +103,9 @@ const EntityPage = (): JSX.Element => {
                     }
                     setFetchFooterStatus(AsyncStatus.SUCCESS);
                 }
-            } catch {
+            } catch (error) {
+                if (!(error instanceof Error)) return;
+                setSnackbarText(error.message);
                 setFetchPunchListStatus(AsyncStatus.ERROR);
                 setFetchScopeStatus(AsyncStatus.ERROR);
                 setFetchFooterStatus(AsyncStatus.ERROR);
@@ -128,7 +132,9 @@ const EntityPage = (): JSX.Element => {
                 }
                 setDetails(detailsFromApi);
                 setFetchDetailsStatus(AsyncStatus.SUCCESS);
-            } catch {
+            } catch (error) {
+                if (!(error instanceof Error)) return;
+                setSnackbarText(error.message);
                 setFetchDetailsStatus(AsyncStatus.ERROR);
             }
         })();
@@ -203,12 +209,14 @@ const EntityPage = (): JSX.Element => {
                         path={`${path}/WO-info`}
                         render={(): JSX.Element => (
                             <WorkOrderInfo
-                                workOrder={details}
+                                setSnackbarText={setSnackbarText}
                                 fetchWorkOrderStatus={fetchDetailsStatus}
+                                workOrder={details}
                             />
                         )}
                     />
                 </Switch>
+                {snackbar}
             </ContentWrapper>
             <NavigationFooter footerStatus={fetchFooterStatus}>
                 <FooterButton

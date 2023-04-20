@@ -6,7 +6,6 @@ import {
     ErrorPage,
     HomeButton,
     removeSubdirectories,
-    useSnackbar,
 } from '@equinor/procosys-webapp-components';
 import styled from 'styled-components';
 import AsyncPage from '../../components/AsyncPage';
@@ -39,17 +38,18 @@ const Description = styled.p`
 `;
 
 type WorkOrderInfoProps = {
-    workOrder?: WoPreview | McPkgPreview | Tag | PoPreview | IpoDetails;
+    setSnackbarText: React.Dispatch<React.SetStateAction<string>>;
     fetchWorkOrderStatus: AsyncStatus;
+    workOrder?: WoPreview | McPkgPreview | Tag | PoPreview | IpoDetails;
 };
 
 const WorkOrderInfo = ({
-    workOrder,
+    setSnackbarText,
     fetchWorkOrderStatus,
+    workOrder,
 }: WorkOrderInfoProps): JSX.Element => {
     const { history, url, api, params, offlineState } = useCommonHooks();
     const { permissions } = useContext(PlantContext);
-    const { snackbar, setSnackbarText } = useSnackbar();
     const abortController = new AbortController();
     const abortSignal = abortController.signal;
     if (
@@ -116,7 +116,6 @@ const WorkOrderInfo = ({
                         }
                         abortController={abortController}
                     />
-                    {snackbar}
                 </TagInfoWrapper>
             </AsyncPage>
         );
