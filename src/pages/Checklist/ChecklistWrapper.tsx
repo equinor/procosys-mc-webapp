@@ -1,5 +1,5 @@
 import React from 'react';
-import { Checklist, useSnackbar } from '@equinor/procosys-webapp-components';
+import { Checklist } from '@equinor/procosys-webapp-components';
 import useCommonHooks from '../../utils/useCommonHooks';
 import styled from 'styled-components';
 import { OfflineStatus } from '../../typings/enums';
@@ -10,14 +10,15 @@ export const BottomSpacer = styled.div`
 
 type ChecklistWrapperProps = {
     refreshChecklistStatus: React.Dispatch<React.SetStateAction<boolean>>;
+    setSnackbarText: React.Dispatch<React.SetStateAction<string>>;
 };
 
 const ChecklistWrapper = ({
     refreshChecklistStatus,
+    setSnackbarText,
 }: ChecklistWrapperProps): JSX.Element => {
     const { auth, params, procosysApiSettings, offlineState } =
         useCommonHooks();
-    const { snackbar, setSnackbarText } = useSnackbar();
 
     return (
         <>
@@ -30,7 +31,6 @@ const ChecklistWrapper = ({
                 refreshChecklistStatus={refreshChecklistStatus}
                 offlineState={offlineState == OfflineStatus.OFFLINE}
             />
-            {snackbar}
             <BottomSpacer />
         </>
     );

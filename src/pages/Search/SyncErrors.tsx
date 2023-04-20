@@ -25,13 +25,6 @@ import { BookmarksPopup } from './Bookmarks/BookmarksPopups';
 const ErrorsWrapper = styled.div`
     margin: -16px 0 66px 0;
 `;
-interface SyncErrorProps {
-    syncErrors: OfflineSynchronizationErrors | null;
-    setSyncErrors: React.Dispatch<
-        React.SetStateAction<OfflineSynchronizationErrors | null>
-    >;
-    url: string;
-}
 
 const ButtonWrapper = styled.div`
     display: flex;
@@ -40,11 +33,20 @@ const ButtonWrapper = styled.div`
         margin-right: 12px;
     }
 `;
+interface SyncErrorProps {
+    syncErrors: OfflineSynchronizationErrors | null;
+    setSyncErrors: React.Dispatch<
+        React.SetStateAction<OfflineSynchronizationErrors | null>
+    >;
+    url: string;
+    setSnackbarText: React.Dispatch<React.SetStateAction<string>>;
+}
 
 const SyncErrors = ({
     syncErrors,
     setSyncErrors,
     url,
+    setSnackbarText,
 }: SyncErrorProps): JSX.Element => {
     const currentPlant = localStorage.getItem(StorageKey.PLANT);
     const currentProject = getOfflineProjectIdfromLocalStorage();
@@ -64,16 +66,24 @@ const SyncErrors = ({
     }, [syncErrors]);
 
     const deleteFailedUpdates = async (): Promise<void> => {
-        localStorage.removeItem(LocalStorage.SYNCH_ERRORS);
-        //Set offline scope to synchronized and elete offline database.
-        if (currentPlant && currentProject) {
-            await api.putOfflineScopeSynchronized(currentPlant, currentProject);
-        }
+        try {
+            localStorage.removeItem(LocalStorage.SYNCH_ERRORS);
+            //Set offline scope to synchronized and elete offline database.
+            if (currentPlant && currentProject) {
+                await api.putOfflineScopeSynchronized(
+                    currentPlant,
+                    currentProject
+                );
+            }
 
-        await db.delete();
-        setOfflineState(OfflineStatus.ONLINE);
-        updateOfflineStatus(OfflineStatus.ONLINE, '');
-        setSyncErrors(null);
+            await db.delete();
+            setOfflineState(OfflineStatus.ONLINE);
+            updateOfflineStatus(OfflineStatus.ONLINE, '');
+            setSyncErrors(null);
+        } catch (error) {
+            if (!(error instanceof Error)) return;
+            setSnackbarText(error.message);
+        }
     };
 
     return (
