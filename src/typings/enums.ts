@@ -58,3 +58,8 @@ export enum OfflineStatus {
     SYNCHING,
     SYNC_FAIL,
 }
+
+export enum OfflineScopeStatus {
+    UNDER_PLANNING = 'UnderPlanning',
+    IS_OFFLINE = 'IsOffline',
+}

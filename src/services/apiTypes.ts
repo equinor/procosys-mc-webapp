@@ -1,5 +1,6 @@
 import { CheckItem } from '@equinor/procosys-webapp-components/dist/typings/apiTypes';
 import * as tg from 'generic-type-guard';
+import { OfflineScopeStatus } from '../typings/enums';
 
 export type Entities =
     | Plant
@@ -581,7 +582,7 @@ export interface TagBookmark {
 export interface Bookmarks {
     openDefinition: {
         offlineAt?: Date;
-        status: string;
+        status: OfflineScopeStatus;
     };
     bookmarkedMcPkgs: McPkgBookmark[];
     bookmarkedPurchaseOrders: PoPreview[];

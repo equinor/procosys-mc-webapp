@@ -16,6 +16,7 @@ export enum OfflineAction {
     DOWNLOADING = 2,
     CANCELLING = 3,
     SYNCHING = 4,
+    TRYING_STARTING = 5,
 }
 
 interface UseBookmarks {
@@ -168,6 +169,13 @@ const useBookmarks = ({ setSnackbarText }: UseBookmarks) => {
             checklistIds,
             punchItemIds
         );
+    };
+
+    const tryStartOffline = async (): Promise<void> => {
+        // TODO: check for scope under planning
+        //if under planning
+        setOfflineAction(OfflineAction.STARTING);
+        // if not under planning
     };
 
     const startOffline = async (userPin: string): Promise<void> => {

@@ -3,7 +3,11 @@ import styled from 'styled-components';
 import { Button } from '@equinor/eds-core-react';
 import useBookmarks, { OfflineAction } from '../../../utils/useBookmarks';
 import BookmarkableEntityInfoList from '../BookmarkableEntityInfoList';
-import { OfflineStatus, SearchType } from '../../../typings/enums';
+import {
+    OfflineScopeStatus,
+    OfflineStatus,
+    SearchType,
+} from '../../../typings/enums';
 import useCommonHooks from '../../../utils/useCommonHooks';
 import AsyncPage from '../../../components/AsyncPage';
 import BookmarksPopUps from './BookmarksPopups';
@@ -82,6 +86,7 @@ const Bookmarks = ({ setSnackbarText }: BookmarksProps): JSX.Element => {
                     noNetworkConnection={noNetworkConnection}
                     setNoNetworkConnection={setNoNetworkConnection}
                     startSync={startSync}
+                    bookmarks={currentBookmarks}
                 />
 
                 <ButtonsWrapper>
@@ -110,11 +115,17 @@ const Bookmarks = ({ setSnackbarText }: BookmarksProps): JSX.Element => {
                             ) : (
                                 <>
                                     <Button
-                                        onClick={(): void =>
-                                            setOfflineAction(
-                                                OfflineAction.STARTING
-                                            )
-                                        }
+                                        onClick={(): void => {
+                                            currentBookmarks?.openDefinition
+                                                .status ==
+                                            OfflineScopeStatus.UNDER_PLANNING
+                                                ? setOfflineAction(
+                                                      OfflineAction.STARTING
+                                                  )
+                                                : setOfflineAction(
+                                                      OfflineAction.TRYING_STARTING
+                                                  );
+                                        }}
                                     >
                                         Start offline mode
                                     </Button>
