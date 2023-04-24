@@ -16,9 +16,13 @@ import {
 } from '../../test/dummyData';
 import userEvent from '@testing-library/user-event';
 import { OfflineStatus } from '../../typings/enums';
+import { createRoot } from 'react-dom/client';
 
 const renderPunchPage = (): void => {
-    render(
+    const container = document.createElement('div');
+    document.body.appendChild(container);
+    const root = createRoot(container);
+    root.render(
         withPlantContext({
             Component: (
                 <MemoryRouter

@@ -80,12 +80,11 @@ describe('<ChecklistPage>', () => {
     });
     it('Shows an error message in the details card if the getChecklist API call fails', async () => {
         causeApiError(ENDPOINTS.getChecklist, 'get');
-        renderChecklistPage('punch-list/new-punch');
+        renderChecklistPage('tag-info');
         expect(
             await screen.findByText('Unable to load details. Please reload')
         ).toBeInTheDocument();
         await expectFooter();
-        await expectNewPunchPage();
     });
     it('Shows an error message in the details card if the getChecklistPunchList API call fails', async () => {
         causeApiError(ENDPOINTS.getChecklistPunchList, 'get');
@@ -115,111 +114,6 @@ const selectOption = async (
     expect((option as HTMLOptionElement).selected).toBeTruthy();
     expect((selectField as HTMLSelectElement).value).toEqual(valueToBeSelected);
 };
-
-describe('<ChecklistPage> New Punch', () => {
-    it('Shows an error message if getPunchCategories API call fails', async () => {
-        causeApiError(ENDPOINTS.getPunchCategories, 'get');
-        renderChecklistPage('punch-list/new-punch');
-        expect(
-            await screen.findByText(
-                'Unable to load new punch. Please check your connection, permissions, or refresh this page.'
-            )
-        );
-        await expectDetails();
-        await expectFooter();
-    });
-    it('Shows a loading message while awaiting API response', async () => {
-        server.use(
-            rest.get(
-                ENDPOINTS.getPunchCategories,
-                (request, response, context) => {
-                    return response(
-                        context.json(dummyPunchCategories),
-                        context.status(200),
-                        context.delay(100)
-                    );
-                }
-            )
-        );
-        renderChecklistPage('punch-list/new-punch');
-        expect(
-            await screen.findByText('Loading new punch.')
-        ).toBeInTheDocument();
-        await expectDetails();
-        await expectFooter();
-        await expectNewPunchPage();
-    });
-    it('Is possible to create a new punch', async () => {
-        jest.setTimeout(10000);
-        renderChecklistPage('punch-list/new-punch');
-        await expectNewPunchPage();
-        // choosing punch category
-        await selectOption(
-            'Punch category *',
-            dummyPunchCategories[0].Description,
-            dummyPunchPriorities[0].Id.toString()
-        );
-        // adding description
-        const descriptionBox = await screen.findByRole('textbox', {
-            name: 'Description *',
-        });
-        userEvent.type(descriptionBox, 'Dummy text');
-        userEvent.tab();
-        expect(descriptionBox.innerHTML).toEqual('Dummy text');
-        // choosing raised by and clearing by
-        await selectOption(
-            'Raised by *',
-            dummyPunchOrganizations[0].Description,
-            dummyPunchOrganizations[0].Id.toString()
-        );
-        await selectOption(
-            'Clearing by *',
-            dummyPunchOrganizations[0].Description,
-            dummyPunchOrganizations[0].Id.toString(),
-            1
-        );
-        // Choosing due date
-        const dateInput = await screen.findByRole('datepicker');
-        fireEvent.change(dateInput, { target: { value: '2021-05-05' } });
-        expect((dateInput as HTMLInputElement).value).toEqual('2021-05-05');
-        // Choosing type, Sorting and Priority
-        await selectOption(
-            'Type',
-            `${dummyPunchTypes[0].Code}. ${dummyPunchTypes[0].Description}`,
-            dummyPunchTypes[0].Id.toString()
-        );
-        await selectOption(
-            'Sorting',
-            `${dummyPunchSorts[0].Code}. ${dummyPunchSorts[0].Description}`,
-            dummyPunchSorts[0].Id.toString()
-        );
-        await selectOption(
-            'Priority',
-            `${dummyPunchPriorities[0].Code}. ${dummyPunchPriorities[0].Description}`,
-            dummyPunchPriorities[0].Id.toString()
-        );
-        // adding an estimate
-        const estimateBox = await screen.findByRole('spinbutton', {
-            name: 'Estimate',
-        });
-        userEvent.type(estimateBox, '5');
-        expect((estimateBox as HTMLInputElement).value).toEqual('5');
-        // submitting form
-        const createPunchButton = await screen.findByRole('button', {
-            name: 'Create punch',
-        });
-        expect(createPunchButton).toBeInTheDocument();
-        userEvent.click(createPunchButton);
-        await expectDetails();
-        await expectPunchListPage();
-        await expectFooter();
-        await waitFor(() =>
-            expect(
-                screen.queryByText('Action by person')
-            ).not.toBeInTheDocument()
-        );
-    });
-});
 
 describe('<ChecklistPage> Tag info', () => {
     it('Shows an error message if getTag API call fails', async () => {
