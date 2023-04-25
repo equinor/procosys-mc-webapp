@@ -7,9 +7,13 @@ import useCommonHooks from '../utils/useCommonHooks';
 
 type TagInfoWrapperProps = {
     tagId?: number;
+    setSnackbarText: React.Dispatch<React.SetStateAction<string>>;
 };
 
-const TagInfoWrapper = ({ tagId }: TagInfoWrapperProps): JSX.Element => {
+const TagInfoWrapper = ({
+    tagId,
+    setSnackbarText,
+}: TagInfoWrapperProps): JSX.Element => {
     const { api, params } = useCommonHooks();
     const [fetchTagStatus, setFetchTagStatus] = useState(AsyncStatus.LOADING);
     const [tagInfo, setTagInfo] = useState<TagDetails>();
@@ -32,6 +36,8 @@ const TagInfoWrapper = ({ tagId }: TagInfoWrapperProps): JSX.Element => {
                 setAdditionalFields(tagResponse.additionalFields);
                 setFetchTagStatus(AsyncStatus.SUCCESS);
             } catch (error) {
+                if (!(error instanceof Error)) return;
+                setSnackbarText(error.message);
                 setFetchTagStatus(AsyncStatus.ERROR);
             }
         })();

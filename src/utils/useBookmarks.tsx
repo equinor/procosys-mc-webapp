@@ -18,10 +18,14 @@ export enum OfflineAction {
     SYNCHING = 4,
 }
 
+interface UseBookmarks {
+    setSnackbarText: React.Dispatch<React.SetStateAction<string>>;
+}
+
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-const useBookmarks = () => {
+const useBookmarks = ({ setSnackbarText }: UseBookmarks) => {
     const { currentPlant, currentProject } = useContext(PlantContext);
-    const { params, api, setOfflineState, auth, configurationAccessToken } =
+    const { params, api, setOfflineState, configurationAccessToken } =
         useCommonHooks();
     const [currentBookmarks, setCurrentBookmarks] = useState<Bookmarks | null>(
         null
@@ -58,7 +62,9 @@ const useBookmarks = () => {
                 setBookmarksStatus(AsyncStatus.SUCCESS);
                 setCurrentBookmarks(bookmarksFromApi);
             }
-        } catch {
+        } catch (error) {
+            if (!(error instanceof Error)) return;
+            setSnackbarText(error.message);
             setBookmarksStatus(AsyncStatus.ERROR);
         }
     };
@@ -105,6 +111,8 @@ const useBookmarks = () => {
             await getCurrentBookmarks();
         } catch (error) {
             if (!(error instanceof Error)) return;
+            setSnackbarText(error.message);
+            await getCurrentBookmarks();
         }
     };
 
@@ -121,7 +129,10 @@ const useBookmarks = () => {
             }
         } catch (error) {
             if (!(error instanceof Error)) return;
-            // TODO: handle
+            setSnackbarText(error.message);
+            setOfflineAction(OfflineAction.INACTIVE);
+            setBookmarksStatus(AsyncStatus.SUCCESS);
+            setOfflineState(OfflineStatus.OFFLINE); // TODO: evaluate whether this one should be here or not
         }
     };
 
@@ -135,7 +146,8 @@ const useBookmarks = () => {
             }
         } catch (error) {
             if (!(error instanceof Error)) return;
-            // TODO: handle
+            setSnackbarText(error.message);
+            setBookmarksStatus(AsyncStatus.SUCCESS);
         }
     };
 
@@ -159,27 +171,38 @@ const useBookmarks = () => {
     };
 
     const startOffline = async (userPin: string): Promise<void> => {
-        setBookmarksStatus(AsyncStatus.LOADING);
-        setOfflineAction(OfflineAction.DOWNLOADING);
+        try {
+            setBookmarksStatus(AsyncStatus.LOADING);
+            setOfflineAction(OfflineAction.DOWNLOADING);
 
-        localStorage.removeItem(LocalStorage.SYNCH_ERRORS); //just to be sure...
-        db.create(userPin);
+            localStorage.removeItem(LocalStorage.SYNCH_ERRORS); //just to be sure...
+            db.create(userPin);
 
-        if (currentPlant && currentProject) {
-            await buildOfflineScope(
-                api,
-                currentPlant.slug,
-                currentProject.id,
-                configurationAccessToken
+            if (currentPlant && currentProject) {
+                await buildOfflineScope(
+                    api,
+                    currentPlant.slug,
+                    currentProject.id,
+                    configurationAccessToken
+                );
+            }
+            await sendOfflineStatusToBackend();
+            updateOfflineStatus(
+                OfflineStatus.OFFLINE,
+                userPin,
+                currentProject?.id
             );
-        }
-        await sendOfflineStatusToBackend();
-        updateOfflineStatus(OfflineStatus.OFFLINE, userPin, currentProject?.id);
 
-        setOfflineState(OfflineStatus.OFFLINE);
-        localStorage.removeItem(LocalStorage.LOGIN_TRIES); //just to be sure...
-        setBookmarksStatus(AsyncStatus.SUCCESS);
-        setOfflineAction(OfflineAction.INACTIVE);
+            setOfflineState(OfflineStatus.OFFLINE);
+            localStorage.removeItem(LocalStorage.LOGIN_TRIES); //just to be sure...
+            setBookmarksStatus(AsyncStatus.SUCCESS);
+            setOfflineAction(OfflineAction.INACTIVE);
+        } catch (error) {
+            if (!(error instanceof Error)) return;
+            setSnackbarText(error.message);
+            setBookmarksStatus(AsyncStatus.SUCCESS);
+            setOfflineAction(OfflineAction.INACTIVE);
+        }
     };
 
     const finishOffline = async (): Promise<void> => {
