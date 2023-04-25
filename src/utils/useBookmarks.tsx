@@ -122,11 +122,11 @@ const useBookmarks = ({ setSnackbarText }: UseBookmarks) => {
             if (currentProject) {
                 setBookmarksStatus(AsyncStatus.LOADING);
                 updateOfflineStatus(OfflineStatus.ONLINE, '');
-                setOfflineState(OfflineStatus.ONLINE);
                 await api.putUnderPlanning(params.plant, currentProject.id);
                 await db.delete();
+                setOfflineState(OfflineStatus.ONLINE);
                 setOfflineAction(OfflineAction.INACTIVE);
-                setBookmarksStatus(AsyncStatus.SUCCESS);
+                await getCurrentBookmarks();
             }
         } catch (error) {
             if (!(error instanceof Error)) return;
@@ -172,10 +172,20 @@ const useBookmarks = ({ setSnackbarText }: UseBookmarks) => {
     };
 
     const tryStartOffline = async (): Promise<void> => {
-        // TODO: check for scope under planning
-        //if under planning
-        setOfflineAction(OfflineAction.STARTING);
-        // if not under planning
+        try {
+            if (currentProject) {
+                setBookmarksStatus(AsyncStatus.LOADING);
+                await api.putUnderPlanning(params.plant, currentProject.id);
+                await db.delete();
+                setBookmarksStatus(AsyncStatus.SUCCESS);
+                setOfflineAction(OfflineAction.STARTING);
+            }
+        } catch (error) {
+            if (!(error instanceof Error)) return;
+            setSnackbarText(error.message);
+            setOfflineAction(OfflineAction.TRYING_STARTING);
+            setBookmarksStatus(AsyncStatus.SUCCESS);
+        }
     };
 
     const startOffline = async (userPin: string): Promise<void> => {
@@ -241,6 +251,7 @@ const useBookmarks = ({ setSnackbarText }: UseBookmarks) => {
         setUserPin,
         offlineAction,
         setOfflineAction,
+        tryStartOffline,
     };
 };
 

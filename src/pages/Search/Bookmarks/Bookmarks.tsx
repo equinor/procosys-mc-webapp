@@ -36,6 +36,7 @@ const Bookmarks = ({ setSnackbarText }: BookmarksProps): JSX.Element => {
         setUserPin,
         offlineAction,
         setOfflineAction,
+        tryStartOffline,
     } = useBookmarks({ setSnackbarText });
     const { offlineState, api, featureFlags } = useCommonHooks();
     const [noNetworkConnection, setNoNetworkConnection] =
@@ -87,6 +88,7 @@ const Bookmarks = ({ setSnackbarText }: BookmarksProps): JSX.Element => {
                     setNoNetworkConnection={setNoNetworkConnection}
                     startSync={startSync}
                     bookmarks={currentBookmarks}
+                    tryStartOffline={tryStartOffline}
                 />
 
                 <ButtonsWrapper>

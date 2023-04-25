@@ -35,6 +35,7 @@ interface BookmarksPopUpsProps {
     setNoNetworkConnection: React.Dispatch<React.SetStateAction<boolean>>;
     startSync: () => void;
     bookmarks: Bookmarks | null;
+    tryStartOffline: () => Promise<void>;
 }
 
 const BookmarksPopUps = ({
@@ -48,6 +49,7 @@ const BookmarksPopUps = ({
     setNoNetworkConnection,
     startSync,
     bookmarks,
+    tryStartOffline,
 }: BookmarksPopUpsProps): JSX.Element => {
     const [isSure, setIsSure] = useState<boolean>(false);
     const [enteredPin1, setEnteredPin1] = useState<string>('');
@@ -95,7 +97,37 @@ const BookmarksPopUps = ({
                         bookmarks?.openDefinition.status ==
                             OfflineScopeStatus.IS_OFFLINE
                     }
-                ></Scrim>
+                >
+                    <BookmarksPopup>
+                        <h3>
+                            You are already in offline mode with these bookmarks
+                            on another device or another browser
+                        </h3>
+                        <p>You now have two choices</p>
+                        <p>
+                            You can click dismiss, and then stop offline mode on
+                            your other device/browser before retrying
+                        </p>
+                        <p>
+                            You can continue starting offline mode on this
+                            device/browser
+                        </p>
+                        <ButtonsWrapper>
+                            <Button
+                                onClick={(): void =>
+                                    setOfflineAction(OfflineAction.INACTIVE)
+                                }
+                            >
+                                Dismiss
+                            </Button>
+                            <Button
+                                onClick={(): Promise<void> => tryStartOffline()}
+                            >
+                                Continue
+                            </Button>
+                        </ButtonsWrapper>
+                    </BookmarksPopup>
+                </Scrim>
             ) : null}
             {offlineAction == OfflineAction.STARTING ? (
                 <Scrim
