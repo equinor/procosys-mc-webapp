@@ -17,7 +17,7 @@ import {
 } from '../../offline/OfflineStatus';
 import { OfflineSynchronizationErrors } from '../../services/apiTypes';
 import { COLORS } from '../../style/GlobalStyles';
-import { OfflineStatus } from '../../typings/enums';
+import { OfflineScopeStatus, OfflineStatus } from '../../typings/enums';
 import useCommonHooks from '../../utils/useCommonHooks';
 import { ButtonsWrapper } from './Bookmarks/Bookmarks';
 import { BookmarksPopup } from './Bookmarks/BookmarksPopups';
@@ -70,10 +70,19 @@ const SyncErrors = ({
             localStorage.removeItem(LocalStorage.SYNCH_ERRORS);
             //Set offline scope to synchronized and elete offline database.
             if (currentPlant && currentProject) {
-                await api.putOfflineScopeSynchronized(
+                const bookmarks = await api.getBookmarks(
                     currentPlant,
                     currentProject
                 );
+                if (
+                    bookmarks?.openDefinition.status ==
+                    OfflineScopeStatus.IS_OFFLINE
+                ) {
+                    await api.putOfflineScopeSynchronized(
+                        currentPlant,
+                        currentProject
+                    );
+                }
             }
 
             await db.delete();
