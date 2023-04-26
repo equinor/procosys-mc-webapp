@@ -134,7 +134,6 @@ const useBookmarks = ({ setSnackbarText }: UseBookmarks) => {
                 await getCurrentBookmarks();
             }
         } catch (error) {
-            // TODO: check if failed because not offline
             if (!(error instanceof Error)) return;
             if (currentProject) {
                 const bookmarks = await api.getBookmarks(

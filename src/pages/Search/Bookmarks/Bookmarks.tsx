@@ -38,7 +38,7 @@ const Bookmarks = ({ setSnackbarText }: BookmarksProps): JSX.Element => {
         setOfflineAction,
         tryStartOffline,
     } = useBookmarks({ setSnackbarText });
-    const { offlineState, api, featureFlags } = useCommonHooks();
+    const { offlineState, api, featureFlags, params } = useCommonHooks();
     const [noNetworkConnection, setNoNetworkConnection] =
         useState<boolean>(false);
 
@@ -117,9 +117,13 @@ const Bookmarks = ({ setSnackbarText }: BookmarksProps): JSX.Element => {
                             ) : (
                                 <>
                                     <Button
-                                        onClick={(): void => {
-                                            currentBookmarks?.openDefinition
-                                                .status ==
+                                        onClick={async (): Promise<void> => {
+                                            const bookmarks =
+                                                await api.getBookmarks(
+                                                    params.plant,
+                                                    params.project
+                                                );
+                                            bookmarks?.openDefinition.status ==
                                             OfflineScopeStatus.UNDER_PLANNING
                                                 ? setOfflineAction(
                                                       OfflineAction.STARTING
