@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import styled from 'styled-components';
 import { Button } from '@equinor/eds-core-react';
 import useBookmarks, { OfflineAction } from '../../../utils/useBookmarks';
@@ -12,6 +12,7 @@ import useCommonHooks from '../../../utils/useCommonHooks';
 import AsyncPage from '../../../components/AsyncPage';
 import BookmarksPopUps from './BookmarksPopups';
 import hasConnectionToServer from '../../../utils/hasConnectionToServer';
+import PlantContext from '../../../contexts/PlantContext';
 
 export const ButtonsWrapper = styled.div`
     display: flex;
@@ -41,6 +42,7 @@ const Bookmarks = ({ setSnackbarText }: BookmarksProps): JSX.Element => {
     const { offlineState, api, featureFlags, params } = useCommonHooks();
     const [noNetworkConnection, setNoNetworkConnection] =
         useState<boolean>(false);
+    const { currentProject } = useContext(PlantContext);
 
     const startSync = async (): Promise<void> => {
         const connection = await hasConnectionToServer(api);
@@ -118,19 +120,22 @@ const Bookmarks = ({ setSnackbarText }: BookmarksProps): JSX.Element => {
                                 <>
                                     <Button
                                         onClick={async (): Promise<void> => {
-                                            const bookmarks =
-                                                await api.getBookmarks(
-                                                    params.plant,
-                                                    params.project
-                                                );
-                                            bookmarks?.openDefinition.status ==
-                                            OfflineScopeStatus.UNDER_PLANNING
-                                                ? setOfflineAction(
-                                                      OfflineAction.STARTING
-                                                  )
-                                                : setOfflineAction(
-                                                      OfflineAction.TRYING_STARTING
-                                                  );
+                                            if (currentProject) {
+                                                const bookmarks =
+                                                    await api.getBookmarks(
+                                                        params.plant,
+                                                        currentProject.id
+                                                    );
+                                                bookmarks?.openDefinition
+                                                    .status ==
+                                                OfflineScopeStatus.UNDER_PLANNING
+                                                    ? setOfflineAction(
+                                                          OfflineAction.STARTING
+                                                      )
+                                                    : setOfflineAction(
+                                                          OfflineAction.TRYING_STARTING
+                                                      );
+                                            }
                                         }}
                                     >
                                         Start offline mode

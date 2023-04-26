@@ -12,18 +12,21 @@ import {
     ReloadButton,
     LoadingPage,
     SkeletonLoadingPage,
+    StorageKey,
 } from '@equinor/procosys-webapp-components';
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 import procosysIPOApiService from './services/procosysIPOApi';
 import OfflinePin from './OfflinePin';
 import {
+    getOfflineProjectIdfromLocalStorage,
     getOfflineStatusfromLocalStorage,
     updateOfflineStatus,
 } from './offline/OfflineStatus';
 import { syncronizeOfflineUpdatesWithBackend } from './offline/syncUpdatesWithBackend';
-import { OfflineStatus } from './typings/enums';
+import { OfflineScopeStatus, OfflineStatus } from './typings/enums';
 import hasConnectionToServer from './utils/hasConnectionToServer';
 import { LocalStorage } from './contexts/McAppContext';
+import ConfirmSync from './ConfirmSync';
 
 const onUpdate = (registration: ServiceWorkerRegistration): void => {
     localStorage.setItem(LocalStorage.SW_UPDATE, 'true');
@@ -139,6 +142,11 @@ const setUserPin = (pin: string): void => {
     userPin = pin;
 };
 
+let isSure = false;
+const setIsSure = (): void => {
+    isSure = true;
+};
+
 const renderApp = async (): Promise<void> => {
     //If user is offline, the rendering of the app will be stalled, until pin is provided.
     const status = getOfflineStatusfromLocalStorage();
@@ -165,6 +173,30 @@ const renderApp = async (): Promise<void> => {
             } = await initialize();
 
             api = procosysApiInstance;
+            const currentPlant = localStorage.getItem(StorageKey.PLANT);
+            const currentProject = getOfflineProjectIdfromLocalStorage();
+
+            if (!currentPlant || !currentProject) {
+                throw Error(
+                    'Not able to synchronize because current plant or current project was not found on local storage.'
+                );
+            }
+
+            const offlineBookmarks = await api.getBookmarks(
+                currentPlant,
+                currentProject
+            );
+            if (
+                offlineBookmarks?.openDefinition.status ==
+                OfflineScopeStatus.UNDER_PLANNING
+            ) {
+                render(<ConfirmSync setIsSure={setIsSure} />);
+
+                if (isSure == false) {
+                    setTimeout(renderApp, 1000);
+                    return;
+                }
+            }
 
             render(
                 <SkeletonLoadingPage
