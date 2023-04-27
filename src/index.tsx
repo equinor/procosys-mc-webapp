@@ -207,7 +207,11 @@ const renderApp = async (): Promise<void> => {
                 />
             );
 
-            await syncronizeOfflineUpdatesWithBackend(procosysApiInstance);
+            await syncronizeOfflineUpdatesWithBackend(
+                procosysApiInstance,
+                offlineBookmarks?.openDefinition.status ==
+                    OfflineScopeStatus.UNDER_PLANNING
+            );
             console.log('Synchronization is done.');
 
             render(

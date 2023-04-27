@@ -273,6 +273,7 @@ const useBookmarks = ({ setSnackbarText }: UseBookmarks) => {
         offlineAction,
         setOfflineAction,
         tryStartOffline,
+        getCurrentBookmarks,
     };
 };
 

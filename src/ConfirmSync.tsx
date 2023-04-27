@@ -36,8 +36,9 @@ const ConfirmSync = ({ setIsSure }: ConfirmSyncProps): JSX.Element => {
             <Navbar leftContent={<ProcosysButton />} isOffline={true} />
             <ContentWrapper>
                 <h3>
-                    You have already stopped offline mode on another device or
-                    browser. Do you still wish to upload your changes?
+                    You have already uploaded changes to the selected bookmarks
+                    since you started offline on this device/browser. Do you
+                    still wish to upload your changes?
                 </h3>
                 <ButtonsWrapper>
                     <Button onClick={(): void => setIsSure()}>Yes</Button>

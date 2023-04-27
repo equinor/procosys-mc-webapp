@@ -100,13 +100,13 @@ const BookmarksPopUps = ({
                 >
                     <BookmarksPopup>
                         <h3>
-                            You are already in offline mode with these bookmarks
-                            on another device or another browser
+                            You are already in offline mode on another device or
+                            another browser
                         </h3>
-                        <p>You now have two choices</p>
                         <p>
                             You can click dismiss, and then stop offline mode on
-                            your other device/browser before retrying
+                            your other device/browser before starting offline
+                            mode here
                         </p>
                         <p>
                             You can continue starting offline mode on this
@@ -123,7 +123,7 @@ const BookmarksPopUps = ({
                             <Button
                                 onClick={(): Promise<void> => tryStartOffline()}
                             >
-                                Continue
+                                Start offline
                             </Button>
                         </ButtonsWrapper>
                     </BookmarksPopup>
