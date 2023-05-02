@@ -14,7 +14,13 @@ const OutstandingIpoWrapper = styled.div`
     margin: 16px 0;
 `;
 
-const OutstandingIpos = (): JSX.Element => {
+interface OutstandingIposProps {
+    setSnackbarText: React.Dispatch<React.SetStateAction<string>>;
+}
+
+const OutstandingIpos = ({
+    setSnackbarText,
+}: OutstandingIposProps): JSX.Element => {
     const { params, ipoApi } = useCommonHooks();
     const [outstandingIpos, setOutstandingIpos] =
         useState<OutstandingIposType>();
@@ -33,7 +39,9 @@ const OutstandingIpos = (): JSX.Element => {
                 } else {
                     setFetchIpoStatus(AsyncStatus.EMPTY_RESPONSE);
                 }
-            } catch {
+            } catch (error) {
+                if (!(error instanceof Error)) return;
+                setSnackbarText(error.message);
                 setFetchIpoStatus(AsyncStatus.ERROR);
             }
         })();

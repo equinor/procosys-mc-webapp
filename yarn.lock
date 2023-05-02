@@ -1201,22 +1201,11 @@
     babel-jest "^29.1.2"
     react-popper "2.3.0"
 
-"@equinor/procosys-webapp-components@^3.0.10":
-  version "3.0.10"
-  resolved "https://registry.yarnpkg.com/@equinor/procosys-webapp-components/-/procosys-webapp-components-3.0.10.tgz#fdeda0f0952be225fd47f7b58200b1d2393aeb11"
-  integrity sha512-jtEKoYpR93piP33CCe2PKUYlm2oS4APVqHOtWVq/d5WU7mNHG8Nk38dTzmOn0omAX2WZXcNktT+/37fNrJ8sug==
 
-"@eslint-community/eslint-utils@^4.2.0":
-  version "4.4.0"
-  resolved "https://registry.yarnpkg.com/@eslint-community/eslint-utils/-/eslint-utils-4.4.0.tgz#a23514e8fb9af1269d5f7788aa556798d61c6b59"
-  integrity sha512-1/sA4dwrzBAyeUoQ6oxahHKmrZvsnLCg4RfxW3ZFGGmQkSNQPFNLV9CUEFQP1x9EYXHTo5p6xdhZM1Ne9p/AfA==
-  dependencies:
-    eslint-visitor-keys "^3.3.0"
-
-"@eslint-community/regexpp@^4.4.0":
-  version "4.5.0"
-  resolved "https://registry.yarnpkg.com/@eslint-community/regexpp/-/regexpp-4.5.0.tgz#f6f729b02feee2c749f57e334b7a1b5f40a81724"
-  integrity sha512-vITaYzIcNmjn5tF5uxcZ/ft7/RXGrMUIS9HalWckEOF6ESiwXKoMzAQf2UW0aVd6rnOeExTJVd5hmWXucBKGXQ==
+"@equinor/procosys-webapp-components@^3.1.0":
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/@equinor/procosys-webapp-components/-/procosys-webapp-components-3.1.0.tgz#a563f8ced3e41e1f200cad0142e91d8208fb806d"
+  integrity sha512-I5LcHieHjaIXiRDC/MxLQLcNqHdE3oYYp6W3QpJUiPzD+qKADze0Lyh07iR/COf5i4lJQmzcLt+l3HXHaIrLsA==
 
 "@eslint/eslintrc@^0.4.3":
   version "0.4.3"

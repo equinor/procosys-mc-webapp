@@ -52,6 +52,8 @@ const SearchPage = (): JSX.Element => {
                 }
             } catch (error) {
                 console.log(error);
+                if (!(error instanceof Error)) return;
+                setSnackbarText(error.message);
             }
         }
         setSyncErrors(null);
@@ -82,7 +84,9 @@ const SearchPage = (): JSX.Element => {
                     <Route
                         exact
                         path={`${path}/bookmarks`}
-                        render={(): JSX.Element => <Bookmarks />}
+                        render={(): JSX.Element => (
+                            <Bookmarks setSnackbarText={setSnackbarText} />
+                        )}
                     />
                     <Route
                         exact
@@ -92,6 +96,7 @@ const SearchPage = (): JSX.Element => {
                                 syncErrors={syncErrors}
                                 setSyncErrors={setSyncErrors}
                                 url={url}
+                                setSnackbarText={setSnackbarText}
                             />
                         )}
                     />

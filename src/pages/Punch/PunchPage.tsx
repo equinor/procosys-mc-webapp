@@ -16,6 +16,7 @@ import {
     NavigationFooter,
     FooterButton,
     removeSubdirectories,
+    useSnackbar,
 } from '@equinor/procosys-webapp-components';
 import { DotProgress } from '@equinor/eds-core-react';
 import AsyncPage from '../../components/AsyncPage';
@@ -26,6 +27,7 @@ import { OfflineStatus } from '../../typings/enums';
 
 const PunchPage = (): JSX.Element => {
     const { api, params, path, history, url, offlineState } = useCommonHooks();
+    const { snackbar, setSnackbarText } = useSnackbar();
     const [punch, setPunch] = useState<PunchItem>();
     const [fetchPunchStatus, setFetchPunchStatus] = useState<AsyncStatus>(
         AsyncStatus.LOADING
@@ -44,7 +46,9 @@ const PunchPage = (): JSX.Element => {
                 );
                 setPunch(punchFromApi);
                 setFetchPunchStatus(AsyncStatus.SUCCESS);
-            } catch {
+            } catch (error) {
+                if (!(error instanceof Error)) return;
+                setSnackbarText(error.message);
                 setFetchPunchStatus(AsyncStatus.ERROR);
             }
         })();
@@ -132,7 +136,10 @@ const PunchPage = (): JSX.Element => {
                         exact
                         path={`${path}/tag-info`}
                         render={(): JSX.Element => (
-                            <TagInfoWrapper tagId={punch?.tagId} />
+                            <TagInfoWrapper
+                                tagId={punch?.tagId}
+                                setSnackbarText={setSnackbarText}
+                            />
                         )}
                     />
                     <Route
@@ -142,6 +149,7 @@ const PunchPage = (): JSX.Element => {
                     />
                 </Switch>
             </AsyncPage>
+            {snackbar}
             <NavigationFooter>
                 <FooterButton
                     active={!history.location.pathname.includes('/tag-info')}

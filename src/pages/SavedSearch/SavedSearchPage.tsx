@@ -13,6 +13,7 @@ import {
     InfoItem,
     Navbar,
     removeSubdirectories,
+    useSnackbar,
 } from '@equinor/procosys-webapp-components';
 import styled from 'styled-components';
 import { Button, DotProgress } from '@equinor/eds-core-react';
@@ -40,6 +41,7 @@ const ButtonWrapper = styled.div`
 
 const SavedSearchPage = (): JSX.Element => {
     const { url, params, api, history, offlineState } = useCommonHooks();
+    const { snackbar, setSnackbarText } = useSnackbar();
     const [savedSearch, setSavedSearch] = useState<SavedSearch>();
     const [results, setResults] = useState<
         ChecklistSavedSearchResult[] | PunchItemSavedSearchResult[]
@@ -77,7 +79,9 @@ const SavedSearchPage = (): JSX.Element => {
                 } else {
                     setFetchResultsStatus(AsyncStatus.EMPTY_RESPONSE);
                 }
-            } catch {
+            } catch (error) {
+                if (!(error instanceof Error)) return;
+                setSnackbarText(error.message);
                 setFetchResultsStatus(AsyncStatus.ERROR);
             }
         })();
@@ -117,7 +121,9 @@ const SavedSearchPage = (): JSX.Element => {
             } else {
                 setFetchMoreResultsStatus(AsyncStatus.ERROR);
             }
-        } catch {
+        } catch (error) {
+            if (!(error instanceof Error)) return;
+            setSnackbarText(error.message);
             setFetchMoreResultsStatus(AsyncStatus.ERROR);
         }
     };
@@ -266,6 +272,7 @@ const SavedSearchPage = (): JSX.Element => {
                     {determineLoadMoreButton()}
                 </div>
             </AsyncPage>
+            {snackbar}
         </main>
     );
 };

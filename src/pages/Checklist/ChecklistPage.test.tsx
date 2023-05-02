@@ -1,18 +1,10 @@
 import { withPlantContext } from '../../test/contexts';
 import React from 'react';
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import { ENDPOINTS, causeApiError, server, rest } from '../../test/setupServer';
+import { render, screen } from '@testing-library/react';
+import { ENDPOINTS, causeApiError } from '../../test/setupServer';
 import { MemoryRouter, Route } from 'react-router-dom';
 import ChecklistPage from './ChecklistPage';
-import {
-    dummyChecklistResponse,
-    dummyPersonsSearch,
-    dummyPunchCategories,
-    dummyPunchOrganizations,
-    dummyPunchPriorities,
-    dummyPunchSorts,
-    dummyPunchTypes,
-} from '../../test/dummyData';
+import { dummyChecklistResponse } from '../../test/dummyData';
 import userEvent from '@testing-library/user-event';
 import { OfflineStatus } from '../../typings/enums';
 
@@ -96,24 +88,6 @@ describe('<ChecklistPage>', () => {
         await expectTagInfoPage();
     });
 });
-
-const selectOption = async (
-    selectFieldName: string,
-    optionToBeSelected: string,
-    valueToBeSelected: string,
-    optionIndex = 0
-): Promise<void> => {
-    const selectField = await screen.findByRole('combobox', {
-        name: selectFieldName,
-    });
-    expect(selectField).toBeInTheDocument();
-    // Options in select fields are always visible, since both 'Raised by' and 'Clearing by' uses same options this has to be done:
-    const options = await screen.findAllByText(optionToBeSelected);
-    const option = options[optionIndex];
-    userEvent.selectOptions(selectField, option);
-    expect((option as HTMLOptionElement).selected).toBeTruthy();
-    expect((selectField as HTMLSelectElement).value).toEqual(valueToBeSelected);
-};
 
 describe('<ChecklistPage> Tag info', () => {
     it('Shows an error message if getTag API call fails', async () => {
