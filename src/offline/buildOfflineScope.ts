@@ -91,7 +91,12 @@ const buildOfflineScope = async (
             checklist.id
         );
         //Punch comments
-        await api.getPunchComments(plantId, punch.id);
+        await api.getPunchComments(
+            plantId,
+            punch.id,
+            abortSignal,
+            punchCommentsEntity
+        );
 
         addEntityToMap(punchCommentsEntity);
 
