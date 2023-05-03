@@ -3,7 +3,6 @@ import {
     ChecklistPreview,
     ChecklistResponse,
     PunchPreview,
-    Tag,
 } from '../services/apiTypes';
 
 import { ProcosysApiService } from '../services/procosysApi';
