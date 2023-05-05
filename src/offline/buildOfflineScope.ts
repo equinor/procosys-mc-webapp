@@ -85,6 +85,21 @@ const buildOfflineScope = async (
 
         addEntityToMap(punchItemEntity);
 
+        const punchCommentsEntity = createEntityObj(
+            EntityType.PunchComments,
+            punch.id,
+            checklist.id
+        );
+        //Punch comments
+        await api.getPunchComments(
+            plantId,
+            punch.id,
+            abortSignal,
+            punchCommentsEntity
+        );
+
+        addEntityToMap(punchCommentsEntity);
+
         //Punch attachments
         const punchAttachmentsEntity = createEntityObj(
             EntityType.PunchAttachments,

@@ -419,6 +419,9 @@ const updateIdOnEntityRequest = (
                 );
                 offlineUpdate.entityId = newId;
             }
+        } else if (offlineUpdate.url.startsWith('PunchListItem/AddComment')) {
+            offlineUpdate.entityId = newId;
+            offlineUpdate.bodyData.PunchItemId = newId.toString();
         } else if (offlineUpdate.url.startsWith('PunchListItem?')) {
             offlineUpdate.entityId = newId;
         }
