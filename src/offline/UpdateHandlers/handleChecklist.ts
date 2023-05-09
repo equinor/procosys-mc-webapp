@@ -300,7 +300,7 @@ const updateStatusInScopeList = async (
 ): Promise<void> => {
     const checklistsEntity =
         await offlineContentRepository.getEntityByTypeAndId(
-            EntityType.Checklists,
+            EntityType.Checklist,
             parentEntityId,
             searchType
         );
