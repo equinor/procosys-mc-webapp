@@ -1,14 +1,15 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import styled from 'styled-components';
 import { Button } from '@equinor/eds-core-react';
 import useBookmarks, { OfflineAction } from '../../../utils/useBookmarks';
 import BookmarkableEntityInfoList from '../BookmarkableEntityInfoList';
-import { OfflineStatus } from '../../../typings/enums';
+import { OfflineScopeStatus, OfflineStatus } from '../../../typings/enums';
 import useCommonHooks from '../../../utils/useCommonHooks';
 import AsyncPage from '../../../components/AsyncPage';
 import BookmarksPopUps from './BookmarksPopups';
 import hasConnectionToServer from '../../../utils/hasConnectionToServer';
 import { SearchType } from '@equinor/procosys-webapp-components';
+import PlantContext from '../../../contexts/PlantContext';
 
 export const ButtonsWrapper = styled.div`
     display: flex;
@@ -33,10 +34,13 @@ const Bookmarks = ({ setSnackbarText }: BookmarksProps): JSX.Element => {
         setUserPin,
         offlineAction,
         setOfflineAction,
+        tryStartOffline,
+        getCurrentBookmarks,
     } = useBookmarks({ setSnackbarText });
-    const { offlineState, api, featureFlags } = useCommonHooks();
+    const { offlineState, api, featureFlags, params } = useCommonHooks();
     const [noNetworkConnection, setNoNetworkConnection] =
         useState<boolean>(false);
+    const { currentProject } = useContext(PlantContext);
 
     const startSync = async (): Promise<void> => {
         const connection = await hasConnectionToServer(api);
@@ -83,6 +87,8 @@ const Bookmarks = ({ setSnackbarText }: BookmarksProps): JSX.Element => {
                     noNetworkConnection={noNetworkConnection}
                     setNoNetworkConnection={setNoNetworkConnection}
                     startSync={startSync}
+                    bookmarks={currentBookmarks}
+                    tryStartOffline={tryStartOffline}
                 />
 
                 <ButtonsWrapper>
@@ -111,11 +117,20 @@ const Bookmarks = ({ setSnackbarText }: BookmarksProps): JSX.Element => {
                             ) : (
                                 <>
                                     <Button
-                                        onClick={(): void =>
-                                            setOfflineAction(
-                                                OfflineAction.STARTING
-                                            )
-                                        }
+                                        onClick={async (): Promise<void> => {
+                                            if (currentProject) {
+                                                await getCurrentBookmarks();
+                                                currentBookmarks?.openDefinition
+                                                    .status ==
+                                                OfflineScopeStatus.UNDER_PLANNING
+                                                    ? setOfflineAction(
+                                                          OfflineAction.STARTING
+                                                      )
+                                                    : setOfflineAction(
+                                                          OfflineAction.TRYING_STARTING
+                                                      );
+                                            }
+                                        }}
                                     >
                                         Start offline mode
                                     </Button>

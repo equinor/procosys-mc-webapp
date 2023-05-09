@@ -37,6 +37,7 @@ export enum EntityType {
     PunchAttachment = 'PunchAttachment',
     ChecklistAttachments = 'ChecklistAttachments',
     ChecklistAttachment = 'ChecklistAttachment',
+    PunchComments = 'PunchComments',
 }
 
 export enum SavedSearchType {
@@ -49,4 +50,9 @@ export enum OfflineStatus {
     OFFLINE,
     SYNCHING,
     SYNC_FAIL,
+}
+
+export enum OfflineScopeStatus {
+    UNDER_PLANNING = 'UnderPlanning',
+    IS_OFFLINE = 'IsOffline',
 }

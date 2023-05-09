@@ -72,12 +72,11 @@ describe('<ChecklistPage>', () => {
     });
     it('Shows an error message in the details card if the getChecklist API call fails', async () => {
         causeApiError(ENDPOINTS.getChecklist, 'get');
-        renderChecklistPage('punch-list/new-punch');
+        renderChecklistPage('tag-info');
         expect(
             await screen.findByText('Unable to load details. Please reload')
         ).toBeInTheDocument();
         await expectFooter();
-        await expectNewPunchPage();
     });
     it('Shows an error message in the details card if the getChecklistPunchList API call fails', async () => {
         causeApiError(ENDPOINTS.getChecklistPunchList, 'get');

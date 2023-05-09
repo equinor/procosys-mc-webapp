@@ -537,6 +537,16 @@ export const dummyPunchItemCleared = {
     ClearedByLastName: 'dummy-last-name',
 };
 
+export const dummyCommentsReponse = [
+    {
+        createdAt: '2021-02-05T09:05:09Z',
+        firstName: 'dummy-first-name',
+        lastName: 'dummy-last-name',
+        text: 'dummyComment',
+        id: 123,
+    },
+];
+
 export const dummyAttachmentsResponse = [
     {
         Id: 123,
