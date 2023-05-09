@@ -461,8 +461,8 @@ const procosysApiService = (
 
     const getBookmarks = async (
         plantId: string,
-        projectId: number,
-        abortSignal: AbortSignal,
+        projectId: number | string,
+        abortSignal?: AbortSignal,
         entity?: IEntity
     ): Promise<Bookmarks | null> => {
         const data = await getByFetch(

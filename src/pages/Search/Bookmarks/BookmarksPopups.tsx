@@ -5,6 +5,8 @@ import styled from 'styled-components';
 import { COLORS, SHADOW } from '../../../style/GlobalStyles';
 import { ButtonsWrapper } from './Bookmarks';
 import { OfflineAction } from '../../../utils/useBookmarks';
+import { Bookmarks } from '../../../services/apiTypes';
+import { OfflineScopeStatus } from '../../../typings/enums';
 
 export const BookmarksPopup = styled.div`
     display: flex;
@@ -32,6 +34,8 @@ interface BookmarksPopUpsProps {
     noNetworkConnection: boolean;
     setNoNetworkConnection: React.Dispatch<React.SetStateAction<boolean>>;
     startSync: () => void;
+    bookmarks: Bookmarks | null;
+    tryStartOffline: () => Promise<void>;
 }
 
 const BookmarksPopUps = ({
@@ -44,6 +48,8 @@ const BookmarksPopUps = ({
     noNetworkConnection,
     setNoNetworkConnection,
     startSync,
+    bookmarks,
+    tryStartOffline,
 }: BookmarksPopUpsProps): JSX.Element => {
     const [isSure, setIsSure] = useState<boolean>(false);
     const [enteredPin1, setEnteredPin1] = useState<string>('');
@@ -78,6 +84,51 @@ const BookmarksPopUps = ({
 
     return (
         <>
+            {offlineAction == OfflineAction.TRYING_STARTING &&
+            bookmarks?.openDefinition.status ==
+                OfflineScopeStatus.IS_OFFLINE ? (
+                <Scrim
+                    isDismissable
+                    onClose={(): void =>
+                        setOfflineAction(OfflineAction.INACTIVE)
+                    }
+                    open={
+                        offlineAction == OfflineAction.TRYING_STARTING &&
+                        bookmarks?.openDefinition.status ==
+                            OfflineScopeStatus.IS_OFFLINE
+                    }
+                >
+                    <BookmarksPopup>
+                        <h3>
+                            You are already in offline mode on another device or
+                            another browser
+                        </h3>
+                        <p>
+                            You can click dismiss, and then stop offline mode on
+                            your other device/browser before starting offline
+                            mode here
+                        </p>
+                        <p>
+                            You can continue starting offline mode on this
+                            device/browser
+                        </p>
+                        <ButtonsWrapper>
+                            <Button
+                                onClick={(): void =>
+                                    setOfflineAction(OfflineAction.INACTIVE)
+                                }
+                            >
+                                Dismiss
+                            </Button>
+                            <Button
+                                onClick={(): Promise<void> => tryStartOffline()}
+                            >
+                                Start offline
+                            </Button>
+                        </ButtonsWrapper>
+                    </BookmarksPopup>
+                </Scrim>
+            ) : null}
             {offlineAction == OfflineAction.STARTING ? (
                 <Scrim
                     isDismissable

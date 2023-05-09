@@ -1,7 +1,12 @@
 import { AsyncStatus, isOfType } from '@equinor/procosys-webapp-components';
 import { useContext, useEffect, useState } from 'react';
 import PlantContext from '../contexts/PlantContext';
-import { EntityType, OfflineStatus, SearchType } from '../typings/enums';
+import {
+    EntityType,
+    OfflineScopeStatus,
+    OfflineStatus,
+    SearchType,
+} from '../typings/enums';
 import { Bookmarks } from '../services/apiTypes';
 import useCommonHooks from './useCommonHooks';
 import buildOfflineScope from '../offline/buildOfflineScope';
@@ -16,6 +21,7 @@ export enum OfflineAction {
     DOWNLOADING = 2,
     CANCELLING = 3,
     SYNCHING = 4,
+    TRYING_STARTING = 5,
 }
 
 interface UseBookmarks {
@@ -121,18 +127,34 @@ const useBookmarks = ({ setSnackbarText }: UseBookmarks) => {
             if (currentProject) {
                 setBookmarksStatus(AsyncStatus.LOADING);
                 updateOfflineStatus(OfflineStatus.ONLINE, '');
-                setOfflineState(OfflineStatus.ONLINE);
                 await api.putUnderPlanning(params.plant, currentProject.id);
                 await db.delete();
+                setOfflineState(OfflineStatus.ONLINE);
                 setOfflineAction(OfflineAction.INACTIVE);
-                setBookmarksStatus(AsyncStatus.SUCCESS);
+                await getCurrentBookmarks();
             }
         } catch (error) {
             if (!(error instanceof Error)) return;
+            if (currentProject) {
+                const bookmarks = await api.getBookmarks(
+                    params.plant,
+                    currentProject.id
+                );
+                if (
+                    bookmarks?.openDefinition.status ==
+                    OfflineScopeStatus.UNDER_PLANNING
+                ) {
+                    await db.delete();
+                    setOfflineState(OfflineStatus.ONLINE);
+                    setOfflineAction(OfflineAction.INACTIVE);
+                    await getCurrentBookmarks();
+                    return;
+                }
+            }
             setSnackbarText(error.message);
             setOfflineAction(OfflineAction.INACTIVE);
             setBookmarksStatus(AsyncStatus.SUCCESS);
-            setOfflineState(OfflineStatus.OFFLINE); // TODO: evaluate whether this one should be here or not
+            setOfflineState(OfflineStatus.OFFLINE);
         }
     };
 
@@ -168,6 +190,23 @@ const useBookmarks = ({ setSnackbarText }: UseBookmarks) => {
             checklistIds,
             punchItemIds
         );
+    };
+
+    const tryStartOffline = async (): Promise<void> => {
+        try {
+            if (currentProject) {
+                setBookmarksStatus(AsyncStatus.LOADING);
+                await api.putUnderPlanning(params.plant, currentProject.id);
+                await db.delete();
+                setBookmarksStatus(AsyncStatus.SUCCESS);
+                setOfflineAction(OfflineAction.STARTING);
+            }
+        } catch (error) {
+            if (!(error instanceof Error)) return;
+            setSnackbarText(error.message);
+            setOfflineAction(OfflineAction.TRYING_STARTING);
+            setBookmarksStatus(AsyncStatus.SUCCESS);
+        }
     };
 
     const startOffline = async (userPin: string): Promise<void> => {
@@ -233,6 +272,8 @@ const useBookmarks = ({ setSnackbarText }: UseBookmarks) => {
         setUserPin,
         offlineAction,
         setOfflineAction,
+        tryStartOffline,
+        getCurrentBookmarks,
     };
 };
 
