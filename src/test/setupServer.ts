@@ -26,6 +26,7 @@ import {
     testChecklistSavedSearch,
     testPunchListItemSavedSearch,
     dummyIPOIsAliveResponse,
+    dummyCommentsReponse,
 } from './dummyData';
 import objectToCamelCase from '../utils/objectToCamelCase';
 
@@ -281,6 +282,14 @@ export const server = setupServer(
             context.status(200)
         );
     }),
+
+    rest.get(ENDPOINTS.getPunchComments, (_, response, context) => {
+        return response(
+            context.json(dummyCommentsReponse),
+            context.status(200)
+        );
+    }),
+
     rest.post(ENDPOINTS.postNewPunch, (_, response, context) => {
         return response(context.status(200));
     }),
