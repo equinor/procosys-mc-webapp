@@ -1,4 +1,4 @@
-import { HTTPError } from '../services/HTTPError';
+import { HTTPError } from '@equinor/procosys-webapp-components';
 import { ProcosysApiService } from '../services/procosysApi';
 
 /**

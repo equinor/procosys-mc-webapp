@@ -24,10 +24,11 @@ import {
     PunchList,
     removeSubdirectories,
     Scope,
+    SearchType,
     useSnackbar,
 } from '@equinor/procosys-webapp-components';
 import EntityPageDetailsCard from './EntityPageDetailsCard';
-import { OfflineStatus, SearchType } from '../../typings/enums';
+import { OfflineStatus } from '../../typings/enums';
 
 const EntityPageWrapper = styled.main``;
 

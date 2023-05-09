@@ -1,14 +1,17 @@
 import {
+    GetOperationProps,
+    HTTPError,
+    IEntity,
     PunchAction,
-    PunchEndpoints,
+    SearchType,
     UpdatePunchData,
+    getErrorMessage,
 } from '@equinor/procosys-webapp-components';
 import {
     PunchComment,
     APIComment,
 } from '@equinor/procosys-webapp-components/dist/typings/apiTypes';
-import { IEntity } from '../offline/IEntity';
-import { SavedSearchType, SearchType } from '../typings/enums';
+import { SavedSearchType } from '../typings/enums';
 import objectToCamelCase from '../utils/objectToCamelCase';
 import removeBaseUrlFromUrl from '../utils/removeBaseUrlFromUrl';
 import {
@@ -48,18 +51,10 @@ import {
     EntityId,
     OfflineSynchronizationErrors,
 } from './apiTypes';
-import { HTTPError } from './HTTPError';
 
 type ProcosysApiServiceProps = {
     baseURL: string;
     apiVersion: string;
-};
-
-type GetOperationProps = {
-    abortSignal?: AbortSignal;
-    method: string;
-    headers: any;
-    responseType?: string;
 };
 
 export const typeGuardErrorMessage = (expectedType: string): string => {
@@ -257,18 +252,6 @@ const procosysApiService = (
             const errorMessage = await getErrorMessage(response);
             throw new HTTPError(response.status, errorMessage);
         }
-    };
-
-    const getErrorMessage = async (response: Response): Promise<string> => {
-        let errorMessage;
-        const text = await response.text();
-        if (text) {
-            errorMessage = text;
-        } else {
-            errorMessage = `Server responded with http error code ${response.status}. ${response.statusText}`;
-        }
-        console.error('Error occured on server call.', errorMessage);
-        return errorMessage;
     };
 
     const getPlants = async (entity?: IEntity): Promise<Plant[]> => {

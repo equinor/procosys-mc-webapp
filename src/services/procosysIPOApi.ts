@@ -1,7 +1,9 @@
-import { objectToCamelCase } from '@equinor/procosys-webapp-components';
+import {
+    HTTPError,
+    objectToCamelCase,
+} from '@equinor/procosys-webapp-components';
 import { IpoDetails, OutstandingIposType } from './apiTypes';
 import { StorageKey } from '@equinor/procosys-webapp-components';
-import { HTTPError } from './HTTPError';
 
 type ProcosysIPOApiServiceProps = {
     baseURL: string;

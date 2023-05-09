@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 
-import { IEntity } from '../offline/IEntity';
+import { IEntity } from '@equinor/procosys-webapp-components';
 import removeBaseUrlFromUrl from '../utils/removeBaseUrlFromUrl';
 
 const Settings = require('../settings.json');

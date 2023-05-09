@@ -1,7 +1,7 @@
+import { IEntity } from '@equinor/procosys-webapp-components';
 import { ChecklistResponse } from '../services/apiTypes';
 import { EntityType } from '../typings/enums';
 import removeBaseUrlFromUrl from '../utils/removeBaseUrlFromUrl';
-import { IEntity } from './IEntity';
 import { OfflineContentRepository } from './OfflineContentRepository';
 import { OfflineUpdateRequest } from './OfflineUpdateRequest';
 import { updateOfflineDatabase as updateOfflineDatabase } from './updateOfflineDatabase';
