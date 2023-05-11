@@ -62,6 +62,7 @@ const EntityPage = (): JSX.Element => {
     const abortSignal = controller.signal;
     const isOnPunchListPage = history.location.pathname.includes('/punch-list');
     const isOnWoInfoPage = history.location.pathname.includes('/wo-info');
+    const isOnIpoInfoPage = history.location.pathname.includes('/IPO-info');
 
     useEffect(() => {
         return (): void => {
@@ -228,7 +229,13 @@ const EntityPage = (): JSX.Element => {
             </ContentWrapper>
             <NavigationFooter footerStatus={fetchFooterStatus}>
                 <FooterButton
-                    active={!(isOnPunchListPage || isOnWoInfoPage)}
+                    active={
+                        !(
+                            isOnPunchListPage ||
+                            isOnWoInfoPage ||
+                            isOnIpoInfoPage
+                        )
+                    }
                     goTo={(): void => history.push(url)}
                     icon={<EdsIcon name="list" color={COLORS.mossGreen} />}
                     label="Scope"
@@ -251,7 +258,7 @@ const EntityPage = (): JSX.Element => {
                 )}
                 {params.searchType === SearchType.IPO ? (
                     <FooterButton
-                        active={isOnWoInfoPage}
+                        active={isOnIpoInfoPage}
                         goTo={(): void => history.push(`${url}/IPO-info`)}
                         icon={
                             <EdsIcon
