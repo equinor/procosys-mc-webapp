@@ -29,6 +29,7 @@ import {
 } from '@equinor/procosys-webapp-components';
 import EntityPageDetailsCard from './EntityPageDetailsCard';
 import { OfflineStatus } from '../../typings/enums';
+import ViewIpo from './ViewIpo';
 
 const EntityPageWrapper = styled.main``;
 
@@ -215,6 +216,13 @@ const EntityPage = (): JSX.Element => {
                             />
                         )}
                     />
+                    <Route
+                        exact
+                        path={`${path}/IPO-info`}
+                        render={(): JSX.Element => (
+                            <ViewIpo ipoDetails={details} />
+                        )}
+                    />
                 </Switch>
                 {snackbar}
             </ContentWrapper>
@@ -237,6 +245,21 @@ const EntityPage = (): JSX.Element => {
                             />
                         }
                         label="WO info"
+                    />
+                ) : (
+                    <></>
+                )}
+                {params.searchType === SearchType.IPO ? (
+                    <FooterButton
+                        active={isOnWoInfoPage}
+                        goTo={(): void => history.push(`${url}/IPO-info`)}
+                        icon={
+                            <EdsIcon
+                                name="info_circle"
+                                color={COLORS.mossGreen}
+                            />
+                        }
+                        label="IPO"
                     />
                 ) : (
                     <></>
