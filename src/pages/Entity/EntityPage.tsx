@@ -221,7 +221,10 @@ const EntityPage = (): JSX.Element => {
                         exact
                         path={`${path}/IPO-info`}
                         render={(): JSX.Element => (
-                            <ViewIpo ipoDetails={details} />
+                            <ViewIpo
+                                fetchDetailsStatus={fetchDetailsStatus}
+                                ipoDetails={details}
+                            />
                         )}
                     />
                 </Switch>
