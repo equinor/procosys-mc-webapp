@@ -19,6 +19,7 @@ import { Button, TextField } from '@equinor/eds-core-react';
 import useCommonHooks from '../../utils/useCommonHooks';
 import styled from 'styled-components';
 import { COLORS } from '../../style/GlobalStyles';
+import useViewIpoFacade from './useViewIpoFacade';
 
 const ContentWrapper = styled.main`
     min-height: 0px;
@@ -62,6 +63,7 @@ const ViewIpo = ({
     ipoDetails,
 }: ViewIpoProps): JSX.Element => {
     const { history, url } = useCommonHooks();
+    const { getRepresentativeAndResponse } = useViewIpoFacade();
     if (
         ipoDetails === undefined ||
         isOfType<IpoDetails>(ipoDetails, 'participants')
@@ -73,7 +75,7 @@ const ViewIpo = ({
             >
                 <ContentWrapper>
                     <h5>Description</h5>
-                    <p>{ipoDetails?.description}</p>
+                    <p>{ipoDetails?.description ?? '-'}</p>
                     <h5>Date and time for punch round</h5>
                     <p>
                         Date:{' '}
@@ -100,9 +102,11 @@ const ViewIpo = ({
                                 { hour: '2-digit', minute: '2-digit' }
                             )}
                     </p>
-                    <p>Location: {ipoDetails?.location}</p>
+                    <p>Location: {ipoDetails?.location ?? '-'}</p>
                     <h5>Participants</h5>
                     {ipoDetails?.participants.map((participant) => {
+                        const { representative, response } =
+                            getRepresentativeAndResponse(participant);
                         return (
                             <CollapsibleCard
                                 key={participant.id}
@@ -111,11 +115,9 @@ const ViewIpo = ({
                             >
                                 <SignaturesContainer>
                                     <TitleCell>Representative</TitleCell>
-                                    <ValueCell>Vilde</ValueCell>
+                                    <ValueCell>{representative}</ValueCell>
                                     <TitleCell>Outlook Response</TitleCell>
-                                    <ValueCell>
-                                        {participant.attended}
-                                    </ValueCell>
+                                    <ValueCell>{response}</ValueCell>
                                     <TitleCell>Attended</TitleCell>
                                     <ValueCell>
                                         {participant.attended}
