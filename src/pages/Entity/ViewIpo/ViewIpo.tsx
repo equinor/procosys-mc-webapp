@@ -1,15 +1,13 @@
 import React from 'react';
 import {
     AsyncStatus,
-    CollapsibleCard,
     ErrorPage,
     HomeButton,
     isOfType,
     removeSubdirectories,
 } from '@equinor/procosys-webapp-components';
-import { Button, TextField } from '@equinor/eds-core-react';
+import { Button } from '@equinor/eds-core-react';
 import styled from 'styled-components';
-import useViewIpoFacade from './useViewIpoFacade';
 import AsyncPage from '../../../components/AsyncPage';
 import {
     WoPreview,
@@ -18,7 +16,6 @@ import {
     PoPreview,
     IpoDetails,
 } from '../../../services/apiTypes';
-import { COLORS } from '../../../style/GlobalStyles';
 import useCommonHooks from '../../../utils/useCommonHooks';
 import SignatureCard from './SignatureCard';
 
