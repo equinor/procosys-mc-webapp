@@ -1,12 +1,5 @@
 import React from 'react';
 import {
-    IpoDetails,
-    McPkgPreview,
-    PoPreview,
-    Tag,
-    WoPreview,
-} from '../../services/apiTypes';
-import {
     AsyncStatus,
     CollapsibleCard,
     ErrorPage,
@@ -14,12 +7,20 @@ import {
     isOfType,
     removeSubdirectories,
 } from '@equinor/procosys-webapp-components';
-import AsyncPage from '../../components/AsyncPage';
 import { Button, TextField } from '@equinor/eds-core-react';
-import useCommonHooks from '../../utils/useCommonHooks';
 import styled from 'styled-components';
-import { COLORS } from '../../style/GlobalStyles';
 import useViewIpoFacade from './useViewIpoFacade';
+import AsyncPage from '../../../components/AsyncPage';
+import {
+    WoPreview,
+    McPkgPreview,
+    Tag,
+    PoPreview,
+    IpoDetails,
+} from '../../../services/apiTypes';
+import { COLORS } from '../../../style/GlobalStyles';
+import useCommonHooks from '../../../utils/useCommonHooks';
+import SignatureCard from './SignatureCard';
 
 const ContentWrapper = styled.main`
     min-height: 0px;
@@ -33,26 +34,6 @@ const ContentWrapper = styled.main`
     }
 `;
 
-const SignaturesContainer = styled.div`
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    p:nth-child(n + 3) {
-        border-top: solid 2px ${COLORS.lightGrey};
-    }
-`;
-
-const TitleCell = styled.p`
-    font-weight: bold;
-    grid-column: 1 / span 1;
-    border-right: solid 2px ${COLORS.lightGrey};
-    padding: 4px;
-`;
-
-const ValueCell = styled.p`
-    grid-column: 2 / span 1;
-    padding: 4px;
-`;
-
 interface ViewIpoProps {
     fetchDetailsStatus: AsyncStatus;
     ipoDetails?: WoPreview | McPkgPreview | Tag | PoPreview | IpoDetails;
@@ -63,7 +44,6 @@ const ViewIpo = ({
     ipoDetails,
 }: ViewIpoProps): JSX.Element => {
     const { history, url } = useCommonHooks();
-    const { getRepresentativeAndResponse } = useViewIpoFacade();
     if (
         ipoDetails === undefined ||
         isOfType<IpoDetails>(ipoDetails, 'participants')
@@ -105,43 +85,11 @@ const ViewIpo = ({
                     <p>Location: {ipoDetails?.location ?? '-'}</p>
                     <h5>Participants</h5>
                     {ipoDetails?.participants.map((participant) => {
-                        const { representative, response } =
-                            getRepresentativeAndResponse(participant);
                         return (
-                            <CollapsibleCard
+                            <SignatureCard
                                 key={participant.id}
-                                cardTitle={participant.organization}
-                                chevronPosition="right"
-                            >
-                                <SignaturesContainer>
-                                    <TitleCell>Representative</TitleCell>
-                                    <ValueCell>{representative}</ValueCell>
-                                    <TitleCell>Outlook Response</TitleCell>
-                                    <ValueCell>{response}</ValueCell>
-                                    <TitleCell>Attended</TitleCell>
-                                    <ValueCell>
-                                        {participant.attended}
-                                    </ValueCell>
-                                    <TitleCell>Notes</TitleCell>
-                                    <ValueCell>
-                                        <TextField
-                                            value={participant.note}
-                                            onChange={(): void => {
-                                                //TODO
-                                            }}
-                                            id={`notesFor${participant.id}`}
-                                        />
-                                    </ValueCell>
-                                    <TitleCell></TitleCell>
-                                    <ValueCell>
-                                        <Button>Complete IPO</Button>
-                                    </ValueCell>
-                                    <TitleCell>Signed by</TitleCell>
-                                    <ValueCell>Vilde</ValueCell>
-                                    <TitleCell>Signed at</TitleCell>
-                                    <ValueCell>Today</ValueCell>
-                                </SignaturesContainer>
-                            </CollapsibleCard>
+                                participant={participant}
+                            />
                         );
                     })}
                 </ContentWrapper>

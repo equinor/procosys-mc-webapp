@@ -219,7 +219,7 @@ export interface IpoDetails {
 
 export interface IpoParticipant {
     id: number;
-    organization: string;
+    organization: IpoOrganization;
     sortKey: number;
     signedBy: {
         id: number;
@@ -268,6 +268,15 @@ export interface IpoParticipant {
     };
     rowVersion: string;
 }
+
+export type IpoOrganization =
+    | 'Commissioning'
+    | 'ConstructionCompany'
+    | 'Contractor'
+    | 'Operation'
+    | 'TechnicalIntegrity'
+    | 'Supplier'
+    | 'External';
 // COMM PKG AND LISTS
 
 export interface CommPkg {
