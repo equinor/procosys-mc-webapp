@@ -8,15 +8,17 @@ import {
 } from '../../services/apiTypes';
 import {
     AsyncStatus,
+    CollapsibleCard,
     ErrorPage,
     HomeButton,
     isOfType,
     removeSubdirectories,
 } from '@equinor/procosys-webapp-components';
 import AsyncPage from '../../components/AsyncPage';
-import { Button } from '@equinor/eds-core-react';
+import { Button, TextField } from '@equinor/eds-core-react';
 import useCommonHooks from '../../utils/useCommonHooks';
 import styled from 'styled-components';
+import { COLORS } from '../../style/GlobalStyles';
 
 const ContentWrapper = styled.main`
     min-height: 0px;
@@ -25,9 +27,29 @@ const ContentWrapper = styled.main`
         word-break: break-word;
         margin: 0;
     }
-    & h6 {
+    & h5 {
         margin: 8px 0px 8px 0px;
     }
+`;
+
+const SignaturesContainer = styled.div`
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    p:nth-child(n + 3) {
+        border-top: solid 2px ${COLORS.lightGrey};
+    }
+`;
+
+const TitleCell = styled.p`
+    font-weight: bold;
+    grid-column: 1 / span 1;
+    border-right: solid 2px ${COLORS.lightGrey};
+    padding: 4px;
+`;
+
+const ValueCell = styled.p`
+    grid-column: 2 / span 1;
+    padding: 4px;
 `;
 
 interface ViewIpoProps {
@@ -50,9 +72,9 @@ const ViewIpo = ({
                 errorMessage={'Unable to load the IPO. Please try again.'}
             >
                 <ContentWrapper>
-                    <h6>Description</h6>
+                    <h5>Description</h5>
                     <p>{ipoDetails?.description}</p>
-                    <h6>Date and time for punch round</h6>
+                    <h5>Date and time for punch round</h5>
                     <p>
                         Date:{' '}
                         {ipoDetails &&
@@ -79,6 +101,47 @@ const ViewIpo = ({
                             )}
                     </p>
                     <p>Location: {ipoDetails?.location}</p>
+                    <h5>Participants</h5>
+                    {ipoDetails?.participants.map((participant) => {
+                        return (
+                            <CollapsibleCard
+                                key={participant.id}
+                                cardTitle={participant.organization}
+                                chevronPosition="right"
+                            >
+                                <SignaturesContainer>
+                                    <TitleCell>Representative</TitleCell>
+                                    <ValueCell>Vilde</ValueCell>
+                                    <TitleCell>Outlook Response</TitleCell>
+                                    <ValueCell>
+                                        {participant.attended}
+                                    </ValueCell>
+                                    <TitleCell>Attended</TitleCell>
+                                    <ValueCell>
+                                        {participant.attended}
+                                    </ValueCell>
+                                    <TitleCell>Notes</TitleCell>
+                                    <ValueCell>
+                                        <TextField
+                                            value={participant.note}
+                                            onChange={(): void => {
+                                                //TODO
+                                            }}
+                                            id={`notesFor${participant.id}`}
+                                        />
+                                    </ValueCell>
+                                    <TitleCell></TitleCell>
+                                    <ValueCell>
+                                        <Button>Complete IPO</Button>
+                                    </ValueCell>
+                                    <TitleCell>Signed by</TitleCell>
+                                    <ValueCell>Vilde</ValueCell>
+                                    <TitleCell>Signed at</TitleCell>
+                                    <ValueCell>Today</ValueCell>
+                                </SignaturesContainer>
+                            </CollapsibleCard>
+                        );
+                    })}
                 </ContentWrapper>
             </AsyncPage>
         );
