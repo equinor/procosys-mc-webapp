@@ -1,5 +1,6 @@
 import {
     HTTPError,
+    getErrorMessage,
     objectToCamelCase,
 } from '@equinor/procosys-webapp-components';
 import { IpoDetails, OutstandingIposType } from './apiTypes';
@@ -61,6 +62,40 @@ const procosysIPOApiService = (
         }
     };
 
+    /**
+     * Generic method for doing a PUT call.
+     */
+    const putByFetch = async (
+        url: string,
+        bodyData: any,
+        additionalHeaders?: any
+    ): Promise<any> => {
+        const plantInStorage = window.localStorage.getItem(StorageKey.PLANT);
+        let headers;
+        if (plantInStorage !== undefined) {
+            headers = {
+                Authorization: `Bearer ${token}`,
+                'x-plant': `PCS$${plantInStorage}`,
+                ...additionalHeaders,
+            };
+        } else {
+            headers = {
+                Authorization: `Bearer ${token}`,
+                ...additionalHeaders,
+            };
+        }
+        const PutOperation = {
+            method: 'PUT',
+            headers: headers,
+            body: JSON.stringify(bodyData),
+        };
+        const response = await fetch(`${baseURL}/${url}`, PutOperation);
+        if (!response.ok) {
+            const errorMessage = await getErrorMessage(response);
+            throw new HTTPError(response.status, errorMessage);
+        }
+    };
+
     const getOutstandingIpos = async (
         plantId: string
     ): Promise<OutstandingIposType> => {
@@ -72,7 +107,7 @@ const procosysIPOApiService = (
 
     const getIpoDetails = async (
         plantId: string,
-        id: string
+        id: string | number
     ): Promise<IpoDetails> => {
         const IpoDetails = await getByFetch(
             `Invitations/${id}/?plantId=PCS$${plantId}`
@@ -80,9 +115,24 @@ const procosysIPOApiService = (
         return IpoDetails;
     };
 
+    const putAttendedStatus = async (
+        ipoId: number | string,
+        participantId: number,
+        attended: boolean,
+        rowVersion: string
+    ): Promise<void> => {
+        const endpoint = `Invitations/${ipoId}/AttendedStatus`;
+        putByFetch(
+            endpoint,
+            { id: participantId, attended, rowVersion },
+            { 'Content-Type': 'application/json' }
+        );
+    };
+
     return {
         getOutstandingIpos,
         getIpoDetails,
+        putAttendedStatus,
     };
 };
 

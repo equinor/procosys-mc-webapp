@@ -2,7 +2,7 @@ import React from 'react';
 import { CollapsibleCard } from '@equinor/procosys-webapp-components';
 import { IpoParticipant } from '../../../services/apiTypes';
 import useViewIpoFacade from './useViewIpoFacade';
-import { TextField, Button } from '@equinor/eds-core-react';
+import { TextField, Button, Switch } from '@equinor/eds-core-react';
 import styled from 'styled-components';
 import { COLORS } from '../../../style/GlobalStyles';
 
@@ -28,11 +28,21 @@ const ValueCell = styled.p`
 
 interface SignatureCardProps {
     participant: IpoParticipant;
+    setRefreshDetails: React.Dispatch<React.SetStateAction<boolean>>;
+    setSnackbarText: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const SignatureCard = ({ participant }: SignatureCardProps): JSX.Element => {
-    const { getRepresentativeAndResponse, getOrganizationText } =
-        useViewIpoFacade();
+const SignatureCard = ({
+    participant,
+    setRefreshDetails,
+    setSnackbarText,
+}: SignatureCardProps): JSX.Element => {
+    const {
+        getRepresentativeAndResponse,
+        getOrganizationText,
+        updateAttendedStatus,
+        attended,
+    } = useViewIpoFacade({ participant, setRefreshDetails, setSnackbarText });
     const { representative, response } =
         getRepresentativeAndResponse(participant);
     return (
@@ -51,7 +61,21 @@ const SignatureCard = ({ participant }: SignatureCardProps): JSX.Element => {
                 <TitleCell>Outlook Response</TitleCell>
                 <ValueCell>{response}</ValueCell>
                 <TitleCell>Attended</TitleCell>
-                <ValueCell>{participant.attended}</ValueCell>
+                <ValueCell>
+                    <Switch
+                        id={`attendance${participant.id}`}
+                        disabled={!participant.canEditAttendedStatusAndNote}
+                        label={attended ? 'Attended' : 'Did not attend'}
+                        checked={attended}
+                        onChange={(): void => {
+                            updateAttendedStatus(
+                                participant.id,
+                                !attended,
+                                participant.rowVersion
+                            );
+                        }}
+                    />
+                </ValueCell>
                 <TitleCell>Notes</TitleCell>
                 <ValueCell>
                     <TextField

@@ -1,4 +1,6 @@
 import { IpoOrganization, IpoParticipant } from '../../../services/apiTypes';
+import useCommonHooks from '../../../utils/useCommonHooks';
+import { useState } from 'react';
 
 export interface RepresentativeAndResponse {
     representative: string;
@@ -40,9 +42,28 @@ interface IUseViewIpoFacade {
         organization: IpoOrganization,
         sortKey: number
     ) => string | undefined;
+    updateAttendedStatus: (
+        participantId: number,
+        attended: boolean,
+        rowVersion: string
+    ) => Promise<void>;
+    attended: boolean;
 }
 
-const useViewIpoFacade = (): IUseViewIpoFacade => {
+interface UseViewIpoFacadeProps {
+    participant: IpoParticipant;
+    setRefreshDetails: React.Dispatch<React.SetStateAction<boolean>>;
+    setSnackbarText: React.Dispatch<React.SetStateAction<string>>;
+}
+
+const useViewIpoFacade = ({
+    participant,
+    setRefreshDetails,
+    setSnackbarText,
+}: UseViewIpoFacadeProps): IUseViewIpoFacade => {
+    const { ipoApi, params } = useCommonHooks();
+    const [attended, setAttended] = useState<boolean>(participant.attended);
+
     const getRepresentativeAndResponse = (
         participant: IpoParticipant
     ): RepresentativeAndResponse => {
@@ -78,7 +99,33 @@ const useViewIpoFacade = (): IUseViewIpoFacade => {
         return organizationText;
     };
 
-    return { getRepresentativeAndResponse, getOrganizationText };
+    const updateAttendedStatus = async (
+        participantId: number,
+        attended: boolean,
+        rowVersion: string
+    ): Promise<void> => {
+        try {
+            await ipoApi.putAttendedStatus(
+                params.entityId,
+                participantId,
+                attended,
+                rowVersion
+            );
+            setRefreshDetails((prev) => !prev);
+            setAttended((prev) => !prev);
+            setSnackbarText('Attended status updated');
+        } catch (error) {
+            if (!(error instanceof Error)) return;
+            setSnackbarText(error.message);
+        }
+    };
+
+    return {
+        getRepresentativeAndResponse,
+        getOrganizationText,
+        updateAttendedStatus,
+        attended,
+    };
 };
 
 export default useViewIpoFacade;

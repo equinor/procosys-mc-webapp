@@ -29,7 +29,7 @@ import {
 } from '@equinor/procosys-webapp-components';
 import EntityPageDetailsCard from './EntityPageDetailsCard';
 import { OfflineStatus } from '../../typings/enums';
-import ViewIpo from './ViewIpo';
+import ViewIpo from './ViewIpo/ViewIpo';
 
 const EntityPageWrapper = styled.main``;
 
@@ -58,6 +58,7 @@ const EntityPage = (): JSX.Element => {
     const [fetchDetailsStatus, setFetchDetailsStatus] = useState(
         AsyncStatus.LOADING
     );
+    const [refreshDetails, setRefreshDetails] = useState<boolean>(false);
     const controller = new AbortController();
     const abortSignal = controller.signal;
     const isOnPunchListPage = history.location.pathname.includes('/punch-list');
@@ -140,7 +141,7 @@ const EntityPage = (): JSX.Element => {
                 setFetchDetailsStatus(AsyncStatus.ERROR);
             }
         })();
-    }, [api, params]);
+    }, [api, params, refreshDetails]);
 
     return (
         <EntityPageWrapper>
@@ -224,6 +225,8 @@ const EntityPage = (): JSX.Element => {
                             <ViewIpo
                                 fetchDetailsStatus={fetchDetailsStatus}
                                 ipoDetails={details}
+                                setRefreshDetails={setRefreshDetails}
+                                setSnackbarText={setSnackbarText}
                             />
                         )}
                     />
