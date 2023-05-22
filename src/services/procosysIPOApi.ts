@@ -129,10 +129,25 @@ const procosysIPOApiService = (
         );
     };
 
+    const putNote = async (
+        ipoId: number | string,
+        participantId: number,
+        note: string,
+        rowVersion: string
+    ): Promise<void> => {
+        const endpoint = `Invitations/${ipoId}/Note`;
+        putByFetch(
+            endpoint,
+            { id: participantId, note, rowVersion },
+            { 'Content-Type': 'application/json' }
+        );
+    };
+
     return {
         getOutstandingIpos,
         getIpoDetails,
         putAttendedStatus,
+        putNote,
     };
 };
 

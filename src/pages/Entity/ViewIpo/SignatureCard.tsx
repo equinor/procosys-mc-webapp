@@ -42,6 +42,9 @@ const SignatureCard = ({
         getOrganizationText,
         updateAttendedStatus,
         attended,
+        updateNote,
+        note,
+        setNote,
     } = useViewIpoFacade({ participant, setRefreshDetails, setSnackbarText });
     const { representative, response } =
         getRepresentativeAndResponse(participant);
@@ -69,7 +72,6 @@ const SignatureCard = ({
                         checked={attended}
                         onChange={(): void => {
                             updateAttendedStatus(
-                                participant.id,
                                 !attended,
                                 participant.rowVersion
                             );
@@ -79,9 +81,16 @@ const SignatureCard = ({
                 <TitleCell>Notes</TitleCell>
                 <ValueCell>
                     <TextField
-                        value={participant.note}
-                        onChange={(): void => {
-                            //TODO
+                        value={note}
+                        onChange={(
+                            e: React.ChangeEvent<
+                                HTMLTextAreaElement | HTMLInputElement
+                            >
+                        ): void => {
+                            setNote(e.target.value);
+                        }}
+                        onBlur={(): void => {
+                            updateNote(participant.rowVersion);
                         }}
                         id={`notesFor${participant.id}`}
                     />

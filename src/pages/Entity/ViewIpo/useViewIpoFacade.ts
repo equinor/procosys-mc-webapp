@@ -43,11 +43,13 @@ interface IUseViewIpoFacade {
         sortKey: number
     ) => string | undefined;
     updateAttendedStatus: (
-        participantId: number,
-        attended: boolean,
+        attanded: boolean,
         rowVersion: string
     ) => Promise<void>;
     attended: boolean;
+    updateNote: (rowVersion: string) => Promise<void>;
+    note: string;
+    setNote: React.Dispatch<React.SetStateAction<string>>;
 }
 
 interface UseViewIpoFacadeProps {
@@ -63,6 +65,7 @@ const useViewIpoFacade = ({
 }: UseViewIpoFacadeProps): IUseViewIpoFacade => {
     const { ipoApi, params } = useCommonHooks();
     const [attended, setAttended] = useState<boolean>(participant.attended);
+    const [note, setNote] = useState<string>(participant.note);
 
     const getRepresentativeAndResponse = (
         participant: IpoParticipant
@@ -100,14 +103,13 @@ const useViewIpoFacade = ({
     };
 
     const updateAttendedStatus = async (
-        participantId: number,
         attended: boolean,
         rowVersion: string
     ): Promise<void> => {
         try {
             await ipoApi.putAttendedStatus(
                 params.entityId,
-                participantId,
+                participant.id,
                 attended,
                 rowVersion
             );
@@ -120,11 +122,30 @@ const useViewIpoFacade = ({
         }
     };
 
+    const updateNote = async (rowVersion: string): Promise<void> => {
+        try {
+            await ipoApi.putNote(
+                params.entityId,
+                participant.id,
+                note,
+                rowVersion
+            );
+            setRefreshDetails((prev) => !prev);
+            setSnackbarText('Note updated');
+        } catch (error) {
+            if (!(error instanceof Error)) return;
+            setSnackbarText(error.message);
+        }
+    };
+
     return {
         getRepresentativeAndResponse,
         getOrganizationText,
         updateAttendedStatus,
         attended,
+        updateNote,
+        note,
+        setNote,
     };
 };
 
