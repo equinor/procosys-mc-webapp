@@ -90,7 +90,9 @@ const procosysIPOApiService = (
             body: JSON.stringify(bodyData),
         };
         const response = await fetch(`${baseURL}/${url}`, PutOperation);
-        if (!response.ok) {
+        if (response.ok) {
+            return await response.text();
+        } else {
             const errorMessage = await getErrorMessage(response);
             throw new HTTPError(response.status, errorMessage);
         }
@@ -120,13 +122,14 @@ const procosysIPOApiService = (
         participantId: number,
         attended: boolean,
         rowVersion: string
-    ): Promise<void> => {
+    ): Promise<string> => {
         const endpoint = `Invitations/${ipoId}/AttendedStatus`;
-        putByFetch(
+        const newRowVersion = await putByFetch(
             endpoint,
             { id: participantId, attended, rowVersion },
             { 'Content-Type': 'application/json' }
         );
+        return newRowVersion;
     };
 
     const putNote = async (
@@ -134,13 +137,14 @@ const procosysIPOApiService = (
         participantId: number,
         note: string,
         rowVersion: string
-    ): Promise<void> => {
+    ): Promise<string> => {
         const endpoint = `Invitations/${ipoId}/Note`;
-        putByFetch(
+        const newRowVersion = await putByFetch(
             endpoint,
             { id: participantId, note, rowVersion },
             { 'Content-Type': 'application/json' }
         );
+        return newRowVersion;
     };
 
     return {

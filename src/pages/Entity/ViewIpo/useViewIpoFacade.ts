@@ -1,6 +1,6 @@
 import { IpoOrganization, IpoParticipant } from '../../../services/apiTypes';
 import useCommonHooks from '../../../utils/useCommonHooks';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export interface RepresentativeAndResponse {
     representative: string;
@@ -66,6 +66,9 @@ const useViewIpoFacade = ({
     const { ipoApi, params } = useCommonHooks();
     const [attended, setAttended] = useState<boolean>(participant.attended);
     const [note, setNote] = useState<string>(participant.note);
+    const [rowVersion, setRowVersion] = useState<string>(
+        participant.rowVersion
+    );
 
     const getRepresentativeAndResponse = (
         participant: IpoParticipant
@@ -102,18 +105,15 @@ const useViewIpoFacade = ({
         return organizationText;
     };
 
-    const updateAttendedStatus = async (
-        attended: boolean,
-        rowVersion: string
-    ): Promise<void> => {
+    const updateAttendedStatus = async (attended: boolean): Promise<void> => {
         try {
-            await ipoApi.putAttendedStatus(
+            const newRowVersion = await ipoApi.putAttendedStatus(
                 params.entityId,
                 participant.id,
                 attended,
                 rowVersion
             );
-            setRefreshDetails((prev) => !prev);
+            setRowVersion(newRowVersion);
             setAttended((prev) => !prev);
             setSnackbarText('Attended status updated');
         } catch (error) {
@@ -122,15 +122,15 @@ const useViewIpoFacade = ({
         }
     };
 
-    const updateNote = async (rowVersion: string): Promise<void> => {
+    const updateNote = async (): Promise<void> => {
         try {
-            await ipoApi.putNote(
+            const newRowVersion = await ipoApi.putNote(
                 params.entityId,
                 participant.id,
                 note,
                 rowVersion
             );
-            setRefreshDetails((prev) => !prev);
+            setRowVersion(newRowVersion);
             setSnackbarText('Note updated');
         } catch (error) {
             if (!(error instanceof Error)) return;
