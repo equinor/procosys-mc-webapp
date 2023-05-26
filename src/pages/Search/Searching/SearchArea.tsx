@@ -60,6 +60,17 @@ const SearchArea = ({
 
     return (
         <SearchAreaWrapper>
+            {searchType === SearchType.IPO ? (
+                <TallSearchField
+                    placeholder={'Type to search IPO no'}
+                    value={callOffQuery}
+                    onChange={(e: ChangeEvent<HTMLInputElement>): void =>
+                        setCallOffQuery(e.target.value)
+                    }
+                    ref={callOffSearchbarRef}
+                    aria-label="CallOffSearchbar"
+                />
+            ) : null}
             {searchType === SearchType.Tag &&
             offlineState != OfflineStatus.OFFLINE ? (
                 <TagPhotoRecognition

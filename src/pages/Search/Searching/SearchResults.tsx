@@ -34,6 +34,8 @@ const SearchResults = ({
     const getPlaceholderTextType = (): string => {
         if (searchType === SearchType.MC) {
             return 'MC Package number';
+        } else if (searchType === SearchType.IPO) {
+            return 'IPO number and/or linked MC package';
         } else if (searchType === SearchType.WO) {
             return 'Work Order number';
         } else if (searchType === SearchType.Tag) {

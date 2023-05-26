@@ -49,6 +49,12 @@ const Search = ({ setSnackbarText }: SearchProps): JSX.Element => {
             <p>Search for</p>
             <ButtonsWrapper>
                 <SearchTypeButton
+                    searchType={SearchType.IPO}
+                    currentSearchType={searchType}
+                    setCurrentSearchType={setSearchType}
+                    disabled={offlineState == OfflineStatus.OFFLINE}
+                />
+                <SearchTypeButton
                     searchType={SearchType.PO}
                     currentSearchType={searchType}
                     setCurrentSearchType={setSearchType}
