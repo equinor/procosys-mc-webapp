@@ -53,6 +53,7 @@ interface IUseViewIpoFacade {
     completeIpo: () => Promise<void>;
     uncompleteIpo: () => Promise<void>;
     signIpo: () => Promise<void>;
+    unsignIpo: () => Promise<void>;
 }
 
 interface UseViewIpoFacadeProps {
@@ -211,6 +212,27 @@ const useViewIpoFacade = ({
         }
     };
 
+    const unsignIpo = async (): Promise<void> => {
+        try {
+            setIsLoading(true);
+            await ipoApi.putUnsignIpo(
+                params.entityId,
+                rowVersion,
+                participant.id
+            );
+            setSnackbarText('Invitation signed');
+            const newDetails = await ipoApi.getIpoDetails(
+                params.plant,
+                params.entityId
+            );
+            setIpoDetails(newDetails);
+            setIsLoading(false);
+        } catch (error) {
+            if (!(error instanceof Error)) return;
+            setSnackbarText(error.message);
+        }
+    };
+
     return {
         getRepresentativeAndResponse,
         getOrganizationText,
@@ -223,6 +245,7 @@ const useViewIpoFacade = ({
         completeIpo,
         uncompleteIpo,
         signIpo,
+        unsignIpo,
     };
 };
 
