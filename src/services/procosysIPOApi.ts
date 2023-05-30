@@ -199,6 +199,32 @@ const procosysIPOApiService = (
         );
     };
 
+    const putAcceptIpo = async (
+        ipoId: string,
+        participantRowVersion: string,
+        ipoRowVersion: string
+    ): Promise<any> => {
+        const endpoint = `Invitations/${ipoId}/Accept`;
+        await putByFetch(
+            endpoint,
+            { invitationRowVersion: ipoRowVersion, participantRowVersion },
+            { 'Content-Type': 'application/json' }
+        );
+    };
+
+    const putUnacceptIpo = async (
+        ipoId: string,
+        participantRowVersion: string,
+        ipoRowVersion: string
+    ): Promise<any> => {
+        const endpoint = `Invitations/${ipoId}/Unaccept`;
+        await putByFetch(
+            endpoint,
+            { invitationRowVersion: ipoRowVersion, participantRowVersion },
+            { 'Content-Type': 'application/json' }
+        );
+    };
+
     return {
         getOutstandingIpos,
         getIpoDetails,
@@ -208,6 +234,8 @@ const procosysIPOApiService = (
         putUncompleteIpo,
         putSignIpo,
         putUnsignIpo,
+        putAcceptIpo,
+        putUnacceptIpo,
     };
 };
 

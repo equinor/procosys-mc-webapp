@@ -11,6 +11,8 @@ interface IpoSignButtonProps {
     uncompleteIpo: () => Promise<void>;
     signIpo: () => Promise<void>;
     unsignIpo: () => Promise<void>;
+    acceptIpo: () => Promise<void>;
+    unacceptIpo: () => Promise<void>;
 }
 
 const IpoSignatureButton = ({
@@ -21,6 +23,8 @@ const IpoSignatureButton = ({
     uncompleteIpo,
     signIpo,
     unsignIpo,
+    acceptIpo,
+    unacceptIpo,
 }: IpoSignButtonProps): JSX.Element => {
     const getSignButton = (): JSX.Element => {
         return (
@@ -100,31 +104,30 @@ const IpoSignatureButton = ({
                     ipoStatus === IpoStatusEnum.ACCEPTED
                 ) {
                     return (
-                        <SignatureButton
-                            name={'Unaccept punch-out'}
-                            onClick={(): Promise<void> =>
-                                handleButtonClick(async (): Promise<any> => {
-                                    return await unaccept(participant);
-                                })
-                            }
+                        <Button
+                            name={'Unaccept'}
+                            onClick={async (): Promise<void> => {
+                                await unacceptIpo();
+                            }}
                             disabled={isLoading}
-                        />
+                        >
+                            Unaccept
+                        </Button>
                     );
                 } else if (
                     participant.isSigner &&
-                    status === IpoStatusEnum.COMPLETED
+                    ipoStatus === IpoStatusEnum.COMPLETED
                 ) {
                     return (
-                        <SignatureButtonWithTooltip
-                            name={'Accept punch-out'}
-                            tooltip={tooltipAccept}
-                            onClick={(): Promise<void> =>
-                                handleButtonClick(async (): Promise<any> => {
-                                    return await accept(participant);
-                                })
-                            }
+                        <Button
+                            name={'Accept'}
+                            onClick={async (): Promise<void> => {
+                                await acceptIpo();
+                            }}
                             disabled={isLoading}
-                        />
+                        >
+                            Accept
+                        </Button>
                     );
                 }
             } else {

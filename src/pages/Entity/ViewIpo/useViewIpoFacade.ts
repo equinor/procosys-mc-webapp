@@ -54,6 +54,8 @@ interface IUseViewIpoFacade {
     uncompleteIpo: () => Promise<void>;
     signIpo: () => Promise<void>;
     unsignIpo: () => Promise<void>;
+    acceptIpo: () => Promise<void>;
+    unacceptIpo: () => Promise<void>;
 }
 
 interface UseViewIpoFacadeProps {
@@ -149,6 +151,8 @@ const useViewIpoFacade = ({
         }
     };
 
+    // TODO: simplify the functions below?
+
     const completeIpo = async (): Promise<void> => {
         try {
             setIsLoading(true);
@@ -220,7 +224,49 @@ const useViewIpoFacade = ({
                 rowVersion,
                 participant.id
             );
-            setSnackbarText('Invitation signed');
+            setSnackbarText('Invitation Unsigned');
+            const newDetails = await ipoApi.getIpoDetails(
+                params.plant,
+                params.entityId
+            );
+            setIpoDetails(newDetails);
+            setIsLoading(false);
+        } catch (error) {
+            if (!(error instanceof Error)) return;
+            setSnackbarText(error.message);
+        }
+    };
+
+    const acceptIpo = async (): Promise<void> => {
+        try {
+            setIsLoading(true);
+            await ipoApi.putAcceptIpo(
+                params.entityId,
+                rowVersion,
+                ipoRowVersion
+            );
+            setSnackbarText('Invitation Accepted');
+            const newDetails = await ipoApi.getIpoDetails(
+                params.plant,
+                params.entityId
+            );
+            setIpoDetails(newDetails);
+            setIsLoading(false);
+        } catch (error) {
+            if (!(error instanceof Error)) return;
+            setSnackbarText(error.message);
+        }
+    };
+
+    const unacceptIpo = async (): Promise<void> => {
+        try {
+            setIsLoading(true);
+            await ipoApi.putUnacceptIpo(
+                params.entityId,
+                rowVersion,
+                ipoRowVersion
+            );
+            setSnackbarText('Invitation unaccepted');
             const newDetails = await ipoApi.getIpoDetails(
                 params.plant,
                 params.entityId
@@ -246,6 +292,8 @@ const useViewIpoFacade = ({
         uncompleteIpo,
         signIpo,
         unsignIpo,
+        acceptIpo,
+        unacceptIpo,
     };
 };
 

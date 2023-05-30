@@ -67,6 +67,8 @@ const SignatureCard = ({
         uncompleteIpo,
         signIpo,
         unsignIpo,
+        acceptIpo,
+        unacceptIpo,
     } = useViewIpoFacade({
         participant,
         setSnackbarText,
@@ -132,6 +134,8 @@ const SignatureCard = ({
                         uncompleteIpo={uncompleteIpo}
                         signIpo={signIpo}
                         unsignIpo={unsignIpo}
+                        acceptIpo={acceptIpo}
+                        unacceptIpo={unacceptIpo}
                     />
                 </ValueCell>
                 <TitleCell>Signed by</TitleCell>
