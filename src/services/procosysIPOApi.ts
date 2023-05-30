@@ -147,11 +147,25 @@ const procosysIPOApiService = (
         return newRowVersion;
     };
 
+    const putCompleteIpo = async (
+        ipoId: string,
+        participantRowVersion: string,
+        ipoRowVersion: string
+    ): Promise<any> => {
+        const endpoint = `Invitations/${ipoId}/Complete`;
+        await putByFetch(
+            endpoint,
+            { invitationRowVersion: ipoRowVersion, participantRowVersion },
+            { 'Content-Type': 'application/json' }
+        );
+    };
+
     return {
         getOutstandingIpos,
         getIpoDetails,
         putAttendedStatus,
         putNote,
+        putCompleteIpo,
     };
 };
 

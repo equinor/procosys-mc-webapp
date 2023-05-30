@@ -1,6 +1,6 @@
 import { CheckItem } from '@equinor/procosys-webapp-components/dist/typings/apiTypes';
 import * as tg from 'generic-type-guard';
-import { OfflineScopeStatus } from '../typings/enums';
+import { IpoStatusEnum, OfflineScopeStatus } from '../typings/enums';
 
 export type Entities =
     | Plant
@@ -182,7 +182,7 @@ export interface IpoDetails {
     description: string;
     location: string;
     type: string;
-    status: string;
+    status: IpoStatusEnum;
     createdBy: {
         id: number;
         firstName: string;

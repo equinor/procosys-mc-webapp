@@ -5,6 +5,8 @@ import useViewIpoFacade from './useViewIpoFacade';
 import { TextField, Button, Switch } from '@equinor/eds-core-react';
 import styled from 'styled-components';
 import { COLORS } from '../../../style/GlobalStyles';
+import IpoSignatureButton from './IpoSignatureButton';
+import { IpoStatusEnum } from '../../../typings/enums';
 
 const SignaturesContainer = styled.div`
     display: grid;
@@ -30,12 +32,16 @@ interface SignatureCardProps {
     participant: IpoParticipant;
     setRefreshDetails: React.Dispatch<React.SetStateAction<boolean>>;
     setSnackbarText: React.Dispatch<React.SetStateAction<string>>;
+    ipoRowVersion: string;
+    ipoStatus: IpoStatusEnum;
 }
 
 const SignatureCard = ({
     participant,
     setRefreshDetails,
     setSnackbarText,
+    ipoRowVersion,
+    ipoStatus,
 }: SignatureCardProps): JSX.Element => {
     const {
         getRepresentativeAndResponse,
@@ -45,7 +51,14 @@ const SignatureCard = ({
         updateNote,
         note,
         setNote,
-    } = useViewIpoFacade({ participant, setRefreshDetails, setSnackbarText });
+        isLoading,
+        completeIpo,
+    } = useViewIpoFacade({
+        participant,
+        setRefreshDetails,
+        setSnackbarText,
+        ipoRowVersion,
+    });
     const { representative, response } =
         getRepresentativeAndResponse(participant);
     return (
@@ -97,7 +110,12 @@ const SignatureCard = ({
                 </ValueCell>
                 <TitleCell></TitleCell>
                 <ValueCell>
-                    <Button>Complete IPO</Button>
+                    <IpoSignatureButton
+                        ipoStatus={ipoStatus}
+                        participant={participant}
+                        isLoading={isLoading}
+                        completeIpo={completeIpo}
+                    />
                 </ValueCell>
                 <TitleCell>Signed by</TitleCell>
                 <ValueCell>

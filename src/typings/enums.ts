@@ -56,3 +56,21 @@ export enum OfflineScopeStatus {
     UNDER_PLANNING = 'UnderPlanning',
     IS_OFFLINE = 'IsOffline',
 }
+
+// IPO
+export enum IpoStatusEnum {
+    PLANNED = 'Planned',
+    COMPLETED = 'Completed',
+    ACCEPTED = 'Accepted',
+    CANCELED = 'Canceled',
+}
+
+export enum IpoOrganizationsEnum {
+    Commissioning = 'Commissioning',
+    ConstructionCompany = 'ConstructionCompany',
+    Contractor = 'Contractor',
+    Operation = 'Operation',
+    TechnicalIntegrity = 'TechnicalIntegrity',
+    Supplier = 'Supplier',
+    External = 'External',
+}

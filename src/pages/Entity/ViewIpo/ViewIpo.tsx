@@ -92,6 +92,8 @@ const ViewIpo = ({
                                 participant={participant}
                                 setRefreshDetails={setRefreshDetails}
                                 setSnackbarText={setSnackbarText}
+                                ipoRowVersion={ipoDetails.rowVersion}
+                                ipoStatus={ipoDetails.status}
                             />
                         );
                     })}
