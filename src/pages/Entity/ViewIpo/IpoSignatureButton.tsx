@@ -7,7 +7,8 @@ interface IpoSignButtonProps {
     ipoStatus: IpoStatusEnum;
     participant: IpoParticipant;
     isLoading: boolean;
-    completeIpo: (participant: IpoParticipant) => Promise<void>;
+    completeIpo: () => Promise<void>;
+    uncompleteIpo: () => Promise<void>;
 }
 
 const IpoSignatureButton = ({
@@ -15,10 +16,9 @@ const IpoSignatureButton = ({
     participant,
     isLoading,
     completeIpo,
+    uncompleteIpo,
 }: IpoSignButtonProps): JSX.Element => {
     if (ipoStatus === IpoStatusEnum.CANCELED) return <></>;
-    console.log(ipoStatus);
-    console.log(participant.isSigner);
     switch (participant.organization) {
         case IpoOrganizationsEnum.Contractor:
             if (participant.sortKey === 0) {
@@ -30,30 +30,30 @@ const IpoSignatureButton = ({
                         <Button
                             name={'Complete punch-out'}
                             onClick={async (): Promise<void> => {
-                                await completeIpo(participant);
+                                await completeIpo();
                             }}
                             disabled={isLoading}
                         >
                             Complete
                         </Button>
                     );
-                } //else if (
-                //             (participant.isSigner || isUsingAdminRights) &&
-                //             status === IpoStatusEnum.COMPLETED
-                //         ) {
-                //             return (
-                //                 <SignatureButton
-                //                     name={'Uncomplete'}
-                //                     onClick={(): Promise<void> =>
-                //                         handleButtonClick(async (): Promise<any> => {
-                //                             return await uncomplete(participant);
-                //                         })
-                //                     }
-                //                     disabled={loading}
-                //                 />
-                //             );
-                //         }
-                //     } else {
+                } else if (
+                    participant.isSigner &&
+                    ipoStatus === IpoStatusEnum.COMPLETED
+                ) {
+                    return (
+                        <Button
+                            name={'Uncomplete'}
+                            onClick={async (): Promise<void> => {
+                                await uncompleteIpo();
+                            }}
+                            disabled={isLoading}
+                        >
+                            Uncomplete
+                        </Button>
+                    );
+                }
+                //} else {
                 //         if (
                 //             (participant.isSigner || isUsingAdminRights) &&
                 //             participant.signedBy

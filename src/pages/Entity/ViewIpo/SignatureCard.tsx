@@ -64,6 +64,7 @@ const SignatureCard = ({
         setNote,
         isLoading,
         completeIpo,
+        uncompleteIpo,
     } = useViewIpoFacade({
         participant,
         setSnackbarText,
@@ -126,6 +127,7 @@ const SignatureCard = ({
                         participant={participant}
                         isLoading={isLoading}
                         completeIpo={completeIpo}
+                        uncompleteIpo={uncompleteIpo}
                     />
                 </ValueCell>
                 <TitleCell>Signed by</TitleCell>

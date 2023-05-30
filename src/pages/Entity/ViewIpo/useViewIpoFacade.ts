@@ -50,7 +50,8 @@ interface IUseViewIpoFacade {
     note: string;
     setNote: React.Dispatch<React.SetStateAction<string>>;
     isLoading: boolean;
-    completeIpo: (participant: IpoParticipant) => Promise<void>;
+    completeIpo: () => Promise<void>;
+    uncompleteIpo: () => Promise<void>;
 }
 
 interface UseViewIpoFacadeProps {
@@ -146,20 +147,31 @@ const useViewIpoFacade = ({
         }
     };
 
-    const completeIpo = async (participant: IpoParticipant): Promise<void> => {
+    const completeIpo = async (): Promise<void> => {
         try {
             setIsLoading(true);
-            const signer = participant.person
-                ? participant.person
-                : participant.functionalRole
-                ? participant.functionalRole
-                : undefined;
-
-            if (!signer) {
-                setIsLoading(false);
-                return;
-            }
             await ipoApi.putCompleteIpo(
+                params.entityId,
+                rowVersion,
+                ipoRowVersion
+            );
+            setSnackbarText('Invitation completed');
+            const newDetails = await ipoApi.getIpoDetails(
+                params.plant,
+                params.entityId
+            );
+            setIpoDetails(newDetails);
+            setIsLoading(false);
+        } catch (error) {
+            if (!(error instanceof Error)) return;
+            setSnackbarText(error.message);
+        }
+    };
+
+    const uncompleteIpo = async (): Promise<void> => {
+        try {
+            setIsLoading(true);
+            await ipoApi.putUncompleteIpo(
                 params.entityId,
                 rowVersion,
                 ipoRowVersion
@@ -187,6 +199,7 @@ const useViewIpoFacade = ({
         setNote,
         isLoading,
         completeIpo,
+        uncompleteIpo,
     };
 };
 
