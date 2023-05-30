@@ -52,6 +52,7 @@ interface IUseViewIpoFacade {
     isLoading: boolean;
     completeIpo: () => Promise<void>;
     uncompleteIpo: () => Promise<void>;
+    signIpo: () => Promise<void>;
 }
 
 interface UseViewIpoFacadeProps {
@@ -176,7 +177,28 @@ const useViewIpoFacade = ({
                 rowVersion,
                 ipoRowVersion
             );
-            setSnackbarText('Invitation completed');
+            setSnackbarText('Invitation uncompleted');
+            const newDetails = await ipoApi.getIpoDetails(
+                params.plant,
+                params.entityId
+            );
+            setIpoDetails(newDetails);
+            setIsLoading(false);
+        } catch (error) {
+            if (!(error instanceof Error)) return;
+            setSnackbarText(error.message);
+        }
+    };
+
+    const signIpo = async (): Promise<void> => {
+        try {
+            setIsLoading(true);
+            await ipoApi.putSignIpo(
+                params.entityId,
+                rowVersion,
+                participant.id
+            );
+            setSnackbarText('Invitation signed');
             const newDetails = await ipoApi.getIpoDetails(
                 params.plant,
                 params.entityId
@@ -200,6 +222,7 @@ const useViewIpoFacade = ({
         isLoading,
         completeIpo,
         uncompleteIpo,
+        signIpo,
     };
 };
 

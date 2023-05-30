@@ -59,10 +59,10 @@ export enum OfflineScopeStatus {
 
 // IPO
 export enum IpoStatusEnum {
+    CANCELED = 'Canceled',
     PLANNED = 'Planned',
     COMPLETED = 'Completed',
     ACCEPTED = 'Accepted',
-    CANCELED = 'Canceled',
 }
 
 export enum IpoOrganizationsEnum {

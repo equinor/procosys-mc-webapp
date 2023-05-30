@@ -173,6 +173,19 @@ const procosysIPOApiService = (
         );
     };
 
+    const putSignIpo = async (
+        ipoId: string,
+        participantRowVersion: string,
+        participantId: number
+    ): Promise<any> => {
+        const endpoint = `Invitations/${ipoId}/Sign`;
+        await putByFetch(
+            endpoint,
+            { participantId, participantRowVersion },
+            { 'Content-Type': 'application/json' }
+        );
+    };
+
     return {
         getOutstandingIpos,
         getIpoDetails,
@@ -180,6 +193,7 @@ const procosysIPOApiService = (
         putNote,
         putCompleteIpo,
         putUncompleteIpo,
+        putSignIpo,
     };
 };
 
