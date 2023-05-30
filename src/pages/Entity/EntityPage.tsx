@@ -225,8 +225,8 @@ const EntityPage = (): JSX.Element => {
                             <ViewIpo
                                 fetchDetailsStatus={fetchDetailsStatus}
                                 ipoDetails={details}
-                                setRefreshDetails={setRefreshDetails}
                                 setSnackbarText={setSnackbarText}
+                                setIpoDetails={setDetails}
                             />
                         )}
                     />

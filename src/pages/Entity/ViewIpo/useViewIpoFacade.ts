@@ -1,4 +1,12 @@
-import { IpoOrganization, IpoParticipant } from '../../../services/apiTypes';
+import {
+    IpoDetails,
+    IpoOrganization,
+    IpoParticipant,
+    McPkgPreview,
+    PoPreview,
+    Tag,
+    WoPreview,
+} from '../../../services/apiTypes';
 import { IpoOrganizationsEnum } from '../../../typings/enums';
 import useCommonHooks from '../../../utils/useCommonHooks';
 import { useState } from 'react';
@@ -47,16 +55,20 @@ interface IUseViewIpoFacade {
 
 interface UseViewIpoFacadeProps {
     participant: IpoParticipant;
-    setRefreshDetails: React.Dispatch<React.SetStateAction<boolean>>;
     setSnackbarText: React.Dispatch<React.SetStateAction<string>>;
     ipoRowVersion: string;
+    setIpoDetails: React.Dispatch<
+        React.SetStateAction<
+            WoPreview | McPkgPreview | Tag | PoPreview | IpoDetails | undefined
+        >
+    >;
 }
 
 const useViewIpoFacade = ({
     participant,
-    setRefreshDetails,
     setSnackbarText,
     ipoRowVersion,
+    setIpoDetails,
 }: UseViewIpoFacadeProps): IUseViewIpoFacade => {
     const { ipoApi, params } = useCommonHooks();
     const [attended, setAttended] = useState<boolean>(participant.attended);
@@ -153,7 +165,11 @@ const useViewIpoFacade = ({
                 ipoRowVersion
             );
             setSnackbarText('Invitation completed');
-            setRefreshDetails((prev) => !prev);
+            const newDetails = await ipoApi.getIpoDetails(
+                params.plant,
+                params.entityId
+            );
+            setIpoDetails(newDetails);
             setIsLoading(false);
         } catch (error) {
             if (!(error instanceof Error)) return;

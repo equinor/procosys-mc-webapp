@@ -34,15 +34,19 @@ const ContentWrapper = styled.main`
 interface ViewIpoProps {
     fetchDetailsStatus: AsyncStatus;
     ipoDetails?: WoPreview | McPkgPreview | Tag | PoPreview | IpoDetails;
-    setRefreshDetails: React.Dispatch<React.SetStateAction<boolean>>;
     setSnackbarText: React.Dispatch<React.SetStateAction<string>>;
+    setIpoDetails: React.Dispatch<
+        React.SetStateAction<
+            WoPreview | McPkgPreview | Tag | PoPreview | IpoDetails | undefined
+        >
+    >;
 }
 
 const ViewIpo = ({
     fetchDetailsStatus,
     ipoDetails,
-    setRefreshDetails,
     setSnackbarText,
+    setIpoDetails,
 }: ViewIpoProps): JSX.Element => {
     const { history, url } = useCommonHooks();
     if (
@@ -90,10 +94,10 @@ const ViewIpo = ({
                             <SignatureCard
                                 key={participant.id}
                                 participant={participant}
-                                setRefreshDetails={setRefreshDetails}
                                 setSnackbarText={setSnackbarText}
                                 ipoRowVersion={ipoDetails.rowVersion}
                                 ipoStatus={ipoDetails.status}
+                                setIpoDetails={setIpoDetails}
                             />
                         );
                     })}
