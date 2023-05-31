@@ -111,6 +111,7 @@ const SignatureCard = ({
                 <ValueCell>
                     <TextField
                         value={note}
+                        disabled={!participant.canEditAttendedStatusAndNote}
                         onChange={(
                             e: React.ChangeEvent<
                                 HTMLTextAreaElement | HTMLInputElement
