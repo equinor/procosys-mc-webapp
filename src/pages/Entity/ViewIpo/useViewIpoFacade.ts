@@ -9,7 +9,7 @@ import {
 } from '../../../services/apiTypes';
 import { IpoOrganizationsEnum } from '../../../typings/enums';
 import useCommonHooks from '../../../utils/useCommonHooks';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export interface RepresentativeAndResponse {
     representative: string;
@@ -83,6 +83,10 @@ const useViewIpoFacade = ({
     );
     const [isLoading, setIsLoading] = useState<boolean>(false);
 
+    useEffect(() => {
+        setRowVersion(participant.rowVersion);
+    }, [participant]);
+
     const getRepresentativeAndResponse = (
         participant: IpoParticipant
     ): RepresentativeAndResponse => {
@@ -151,7 +155,13 @@ const useViewIpoFacade = ({
         }
     };
 
-    // TODO: simplify the functions below?
+    const updateIpoDetails = async (): Promise<void> => {
+        const newDetails = await ipoApi.getIpoDetails(
+            params.plant,
+            params.entityId
+        );
+        setIpoDetails(newDetails);
+    };
 
     const completeIpo = async (): Promise<void> => {
         try {
@@ -162,15 +172,12 @@ const useViewIpoFacade = ({
                 ipoRowVersion
             );
             setSnackbarText('Invitation completed');
-            const newDetails = await ipoApi.getIpoDetails(
-                params.plant,
-                params.entityId
-            );
-            setIpoDetails(newDetails);
+            await updateIpoDetails();
             setIsLoading(false);
         } catch (error) {
             if (!(error instanceof Error)) return;
             setSnackbarText(error.message);
+            setIsLoading(false);
         }
     };
 
@@ -183,15 +190,12 @@ const useViewIpoFacade = ({
                 ipoRowVersion
             );
             setSnackbarText('Invitation uncompleted');
-            const newDetails = await ipoApi.getIpoDetails(
-                params.plant,
-                params.entityId
-            );
-            setIpoDetails(newDetails);
+            await updateIpoDetails();
             setIsLoading(false);
         } catch (error) {
             if (!(error instanceof Error)) return;
             setSnackbarText(error.message);
+            setIsLoading(false);
         }
     };
 
@@ -204,15 +208,12 @@ const useViewIpoFacade = ({
                 participant.id
             );
             setSnackbarText('Invitation signed');
-            const newDetails = await ipoApi.getIpoDetails(
-                params.plant,
-                params.entityId
-            );
-            setIpoDetails(newDetails);
+            await updateIpoDetails();
             setIsLoading(false);
         } catch (error) {
             if (!(error instanceof Error)) return;
             setSnackbarText(error.message);
+            setIsLoading(false);
         }
     };
 
@@ -225,15 +226,12 @@ const useViewIpoFacade = ({
                 participant.id
             );
             setSnackbarText('Invitation Unsigned');
-            const newDetails = await ipoApi.getIpoDetails(
-                params.plant,
-                params.entityId
-            );
-            setIpoDetails(newDetails);
+            await updateIpoDetails();
             setIsLoading(false);
         } catch (error) {
             if (!(error instanceof Error)) return;
             setSnackbarText(error.message);
+            setIsLoading(false);
         }
     };
 
@@ -246,15 +244,12 @@ const useViewIpoFacade = ({
                 ipoRowVersion
             );
             setSnackbarText('Invitation Accepted');
-            const newDetails = await ipoApi.getIpoDetails(
-                params.plant,
-                params.entityId
-            );
-            setIpoDetails(newDetails);
+            await updateIpoDetails();
             setIsLoading(false);
         } catch (error) {
             if (!(error instanceof Error)) return;
             setSnackbarText(error.message);
+            setIsLoading(false);
         }
     };
 
@@ -267,15 +262,12 @@ const useViewIpoFacade = ({
                 ipoRowVersion
             );
             setSnackbarText('Invitation unaccepted');
-            const newDetails = await ipoApi.getIpoDetails(
-                params.plant,
-                params.entityId
-            );
-            setIpoDetails(newDetails);
+            await updateIpoDetails();
             setIsLoading(false);
         } catch (error) {
             if (!(error instanceof Error)) return;
             setSnackbarText(error.message);
+            setIsLoading(false);
         }
     };
 
