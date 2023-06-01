@@ -3,6 +3,8 @@ import PlantContext from '../../contexts/PlantContext';
 import { SearchResults } from '../../services/apiTypes';
 import { ProcosysApiService } from '../../services/procosysApi';
 import useCommonHooks from '../../utils/useCommonHooks';
+import { SearchType } from '@equinor/procosys-webapp-components';
+import { ProcosysIPOApiService } from '../../services/procosysIPOApi';
 
 export enum SearchStatus {
     INACTIVE,
@@ -58,22 +60,36 @@ const fetchHits = async (
     projectId: number,
     abortSignal: AbortSignal,
     api: ProcosysApiService,
-    searchType: string
+    searchType: string,
+    ipoApi: ProcosysIPOApiService
 ): Promise<void> => {
     dispatch({ type: 'FETCH_START' });
     try {
-        const results = await api.getSearchResults(
-            query,
-            callOffQuery,
-            projectId,
-            plantId,
-            searchType,
-            abortSignal
-        );
-        dispatch({
-            type: 'FETCH_SUCCESS',
-            payload: results,
-        });
+        if (searchType === SearchType.IPO) {
+            const results = await ipoApi.getIpoOnSearch(
+                plantId,
+                query,
+                callOffQuery,
+                abortSignal
+            );
+            dispatch({
+                type: 'FETCH_SUCCESS',
+                payload: results,
+            });
+        } else {
+            const results = await api.getSearchResults(
+                query,
+                callOffQuery,
+                projectId,
+                plantId,
+                searchType,
+                abortSignal
+            );
+            dispatch({
+                type: 'FETCH_SUCCESS',
+                payload: results,
+            });
+        }
     } catch (err) {
         dispatch({ type: 'FETCH_ERROR', error: 'err' });
     }
@@ -81,7 +97,7 @@ const fetchHits = async (
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const useSearchPageFacade = (searchType: string) => {
-    const { api } = useCommonHooks();
+    const { api, ipoApi } = useCommonHooks();
     const [{ hits, searchStatus }, dispatch] = useReducer(fetchReducer, {
         hits: { maxAvailable: 0, items: [] },
         searchStatus: SearchStatus.INACTIVE,
@@ -115,7 +131,8 @@ const useSearchPageFacade = (searchType: string) => {
                     currentProject.id,
                     signal,
                     api,
-                    searchType
+                    searchType,
+                    ipoApi
                 ),
             300
         );
