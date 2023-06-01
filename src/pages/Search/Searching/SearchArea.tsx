@@ -60,17 +60,6 @@ const SearchArea = ({
 
     return (
         <SearchAreaWrapper>
-            {searchType === SearchType.IPO ? (
-                <TallSearchField
-                    placeholder={'Type to search IPO no'}
-                    value={callOffQuery}
-                    onChange={(e: ChangeEvent<HTMLInputElement>): void =>
-                        setCallOffQuery(e.target.value)
-                    }
-                    ref={callOffSearchbarRef}
-                    aria-label="CallOffSearchbar"
-                />
-            ) : null}
             {searchType === SearchType.Tag &&
             offlineState != OfflineStatus.OFFLINE ? (
                 <TagPhotoRecognition
@@ -83,6 +72,8 @@ const SearchArea = ({
                 placeholder={
                     searchType === SearchType.PO
                         ? 'Type to search PO no'
+                        : searchType === SearchType.IPO
+                        ? 'Type to search IPO no'
                         : `For example: "${getPlaceholderText()}"`
                 }
                 value={query}
@@ -92,9 +83,13 @@ const SearchArea = ({
                 ref={searchbarRef}
                 aria-label="Searchbar"
             />
-            {searchType === SearchType.PO ? (
+            {searchType === SearchType.PO || searchType === SearchType.IPO ? (
                 <TallSearchField
-                    placeholder={'Type to search call off no'}
+                    placeholder={
+                        searchType === SearchType.PO
+                            ? 'Type to search call off no'
+                            : 'Type to search MC pkg for IPO'
+                    }
                     value={callOffQuery}
                     onChange={(e: ChangeEvent<HTMLInputElement>): void =>
                         setCallOffQuery(e.target.value)

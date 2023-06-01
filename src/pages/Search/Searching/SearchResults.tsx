@@ -52,11 +52,12 @@ const SearchResults = ({
             return 'Work Orders';
         } else if (searchType === SearchType.Tag) {
             return 'Tags';
+        } else if (searchType === SearchType.IPO) {
+            return 'IPOs';
         } else {
             return 'Purchase Orders';
         }
     };
-
     if (searchType in SearchType === false) {
         return (
             <div>
