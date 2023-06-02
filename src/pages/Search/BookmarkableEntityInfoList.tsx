@@ -198,16 +198,15 @@ const BookmarkableEntityInfoList = ({
             <>
                 {entityInfoList.map((entityInfo) => {
                     const id = entityInfo.id;
-                    const bookmarked = isBookmarked(SearchType.IPO, id);
                     return (
                         <EntityDetails
                             key={id}
                             icon={
                                 <TextIcon color={COLORS.ipoIcon} text="IPO" />
                             }
-                            headerText={entityInfo.title}
-                            description={entityInfo.description}
-                            details={[entityInfo.type]}
+                            headerText={entityInfo.id.toString()}
+                            description={entityInfo.title}
+                            details={[entityInfo.type, entityInfo.projectName]}
                             onClick={(): void =>
                                 history.push(`${url}/IPO/${id}`)
                             }
