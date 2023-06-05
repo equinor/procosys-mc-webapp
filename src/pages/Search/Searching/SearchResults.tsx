@@ -101,6 +101,10 @@ const SearchResults = ({
                     </i>
                 </p>
                 <p></p>
+                {searchType === SearchType.IPO && (
+                    <p>IPOs cannot be bookmarked for offline use</p>
+                )}
+                <p></p>
                 <p>
                     Bookmarks: The entities in the search result can be
                     bookmarked by clicking the icon to the right of the entities
