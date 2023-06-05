@@ -299,7 +299,7 @@ const procosysApiService = (
 
     const getSearchResults = async (
         query: string,
-        callOffQuery: string,
+        secondaryQuery: string,
         projectId: number,
         plantId: string,
         searchType: string,
@@ -321,7 +321,7 @@ const procosysApiService = (
         } else if (searchType === SearchType.PO) {
             url = `PurchaseOrder/Search?plantId=${plantId}&startsWithPurchaseOrderNo=${encodeURIComponent(
                 query
-            )}&startsWithCallOffNo=${callOffQuery}&projectId=${projectId}${apiVersion}`;
+            )}&startsWithCallOffNo=${secondaryQuery}&projectId=${projectId}${apiVersion}`;
         } else {
             throw new Error('An error occurred, please try again.');
         }

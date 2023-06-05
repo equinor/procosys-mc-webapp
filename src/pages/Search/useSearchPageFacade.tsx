@@ -54,7 +54,7 @@ const fetchReducer = (state: SearchState, action: Action): SearchState => {
 
 const fetchHits = async (
     query: string,
-    callOffQuery: string,
+    secondaryQuery: string,
     dispatch: React.Dispatch<Action>,
     plantId: string,
     projectId: number,
@@ -69,7 +69,7 @@ const fetchHits = async (
             const results = await ipoApi.getIpoOnSearch(
                 plantId,
                 query,
-                callOffQuery,
+                secondaryQuery,
                 abortSignal
             );
             dispatch({
@@ -79,7 +79,7 @@ const fetchHits = async (
         } else {
             const results = await api.getSearchResults(
                 query,
-                callOffQuery,
+                secondaryQuery,
                 projectId,
                 plantId,
                 searchType,
@@ -103,17 +103,17 @@ const useSearchPageFacade = (searchType: string) => {
         searchStatus: SearchStatus.INACTIVE,
     });
     const [query, setQuery] = useState('');
-    const [callOffQuery, setCallOffQuery] = useState('');
+    const [secondaryQuery, setSecondaryQuery] = useState('');
     const { currentProject, currentPlant } = useContext(PlantContext);
 
     useEffect(() => {
-        setCallOffQuery('');
+        setSecondaryQuery('');
         setQuery('');
     }, [searchType]);
 
     useEffect(() => {
         if (!currentPlant || !currentProject) return;
-        if (query.length < 2 && callOffQuery.length < 2) {
+        if (query.length < 2 && secondaryQuery.length < 2) {
             dispatch({ type: 'FETCH_INACTIVE' });
             return;
         }
@@ -125,7 +125,7 @@ const useSearchPageFacade = (searchType: string) => {
             () =>
                 fetchHits(
                     query,
-                    callOffQuery,
+                    secondaryQuery,
                     dispatch,
                     currentPlant.id,
                     currentProject.id,
@@ -140,15 +140,15 @@ const useSearchPageFacade = (searchType: string) => {
             controller.abort('A new search has taken place instead');
             clearTimeout(timeOutId);
         };
-    }, [query, callOffQuery, currentProject, currentPlant, api, searchType]);
+    }, [query, secondaryQuery, currentProject, currentPlant, api, searchType]);
 
     return {
         hits,
         searchStatus,
         query,
         setQuery,
-        callOffQuery,
-        setCallOffQuery,
+        secondaryQuery,
+        setSecondaryQuery,
     };
 };
 

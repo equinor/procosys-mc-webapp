@@ -40,8 +40,8 @@ const SearchArea = ({
         searchStatus,
         query,
         setQuery,
-        callOffQuery,
-        setCallOffQuery,
+        secondaryQuery,
+        setSecondaryQuery,
     } = useSearchPageFacade(searchType);
 
     useEffect(() => {
@@ -90,9 +90,9 @@ const SearchArea = ({
                             ? 'Type to search call off no'
                             : 'Type to search MC pkg for IPO'
                     }
-                    value={callOffQuery}
+                    value={secondaryQuery}
                     onChange={(e: ChangeEvent<HTMLInputElement>): void =>
-                        setCallOffQuery(e.target.value)
+                        setSecondaryQuery(e.target.value)
                     }
                     ref={callOffSearchbarRef}
                     aria-label="CallOffSearchbar"
