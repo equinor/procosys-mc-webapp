@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { McAppContextProvider } from './contexts/McAppContext';
 import GeneralRouter from './GeneralRouter';
@@ -44,6 +44,17 @@ const App = ({
     configurationAccessToken,
     procosysIPOApiInstance,
 }: AppProps): JSX.Element => {
+    useEffect(() => {
+        const minutes = 3 * 60 * 1000;
+        const interval = setInterval(() => {
+            navigator.serviceWorker.controller?.postMessage({
+                type: 'STAY_AWAKE',
+            });
+        }, minutes);
+        return () => clearInterval(interval);
+    }),
+        [];
+
     return (
         <AppInsightsContext.Provider value={reactPlugin}>
             <McAppContextProvider

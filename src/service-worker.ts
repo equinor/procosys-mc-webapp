@@ -113,6 +113,8 @@ self.addEventListener('message', async (event: MessageEventInit) => {
                     );
                 }
             }
+        } else if (message.type === 'STAY_AWAKE') {
+            console.log('Sericeworker is awake');
         }
     }
 });
