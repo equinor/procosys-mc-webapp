@@ -114,7 +114,15 @@ self.addEventListener('message', async (event: MessageEventInit) => {
                 }
             }
         } else if (message.type === 'STAY_AWAKE') {
-            console.log('Sericeworker is awake');
+            2;
+            const today = new Date();
+            const time =
+                today.getHours() +
+                ':' +
+                today.getMinutes() +
+                ':' +
+                today.getSeconds();
+            console.log('Serviceworker is awake ' + time);
         }
     }
 });

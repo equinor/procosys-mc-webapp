@@ -45,7 +45,7 @@ const App = ({
     procosysIPOApiInstance,
 }: AppProps): JSX.Element => {
     useEffect(() => {
-        const minutes = 3 * 60 * 1000;
+        const minutes = 1 * 60 * 1000;
         const interval = setInterval(() => {
             navigator.serviceWorker.controller?.postMessage({
                 type: 'STAY_AWAKE',
