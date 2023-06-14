@@ -7,6 +7,8 @@ import {
 import React from 'react';
 import McDetails from '../../components/detailCards/McDetails';
 import {
+    IpoDetails,
+    IPOPreview,
     McPkgBookmark,
     McPkgPreview,
     PoPreview,
@@ -31,7 +33,8 @@ interface BookmarkableEntityInfoListProps {
         | TagPreview[]
         | TagBookmark[]
         | WoPreview[]
-        | PoPreview[];
+        | PoPreview[]
+        | IpoDetails[];
     offlinePlanningState: boolean;
 }
 
@@ -182,6 +185,32 @@ const BookmarkableEntityInfoList = ({
                                     bookmarked
                                 )
                             }
+                        />
+                    );
+                })}
+            </>
+        );
+    } else if (
+        searchType === SearchType.IPO &&
+        isArrayOfType<IPOPreview>(entityInfoList, 'id')
+    ) {
+        return (
+            <>
+                {entityInfoList.map((entityInfo) => {
+                    const id = entityInfo.id;
+                    return (
+                        <EntityDetails
+                            key={id}
+                            icon={
+                                <TextIcon color={COLORS.ipoIcon} text="IPO" />
+                            }
+                            headerText={entityInfo.id.toString()}
+                            description={entityInfo.title}
+                            details={[entityInfo.type, entityInfo.projectName]}
+                            onClick={(): void =>
+                                history.push(`${url}/IPO/${id}`)
+                            }
+                            offlinePlanningState={offlinePlanningState}
                         />
                     );
                 })}

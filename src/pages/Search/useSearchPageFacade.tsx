@@ -3,6 +3,8 @@ import PlantContext from '../../contexts/PlantContext';
 import { SearchResults } from '../../services/apiTypes';
 import { ProcosysApiService } from '../../services/procosysApi';
 import useCommonHooks from '../../utils/useCommonHooks';
+import { SearchType } from '@equinor/procosys-webapp-components';
+import { ProcosysIPOApiService } from '../../services/procosysIPOApi';
 
 export enum SearchStatus {
     INACTIVE,
@@ -52,28 +54,42 @@ const fetchReducer = (state: SearchState, action: Action): SearchState => {
 
 const fetchHits = async (
     query: string,
-    callOffQuery: string,
+    secondaryQuery: string,
     dispatch: React.Dispatch<Action>,
     plantId: string,
     projectId: number,
     abortSignal: AbortSignal,
     api: ProcosysApiService,
-    searchType: string
+    searchType: string,
+    ipoApi: ProcosysIPOApiService
 ): Promise<void> => {
     dispatch({ type: 'FETCH_START' });
     try {
-        const results = await api.getSearchResults(
-            query,
-            callOffQuery,
-            projectId,
-            plantId,
-            searchType,
-            abortSignal
-        );
-        dispatch({
-            type: 'FETCH_SUCCESS',
-            payload: results,
-        });
+        if (searchType === SearchType.IPO) {
+            const results = await ipoApi.getIpoOnSearch(
+                plantId,
+                query,
+                secondaryQuery,
+                abortSignal
+            );
+            dispatch({
+                type: 'FETCH_SUCCESS',
+                payload: results,
+            });
+        } else {
+            const results = await api.getSearchResults(
+                query,
+                secondaryQuery,
+                projectId,
+                plantId,
+                searchType,
+                abortSignal
+            );
+            dispatch({
+                type: 'FETCH_SUCCESS',
+                payload: results,
+            });
+        }
     } catch (err) {
         dispatch({ type: 'FETCH_ERROR', error: 'err' });
     }
@@ -81,23 +97,23 @@ const fetchHits = async (
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const useSearchPageFacade = (searchType: string) => {
-    const { api } = useCommonHooks();
+    const { api, ipoApi } = useCommonHooks();
     const [{ hits, searchStatus }, dispatch] = useReducer(fetchReducer, {
         hits: { maxAvailable: 0, items: [] },
         searchStatus: SearchStatus.INACTIVE,
     });
     const [query, setQuery] = useState('');
-    const [callOffQuery, setCallOffQuery] = useState('');
+    const [secondaryQuery, setSecondaryQuery] = useState('');
     const { currentProject, currentPlant } = useContext(PlantContext);
 
     useEffect(() => {
-        setCallOffQuery('');
+        setSecondaryQuery('');
         setQuery('');
     }, [searchType]);
 
     useEffect(() => {
         if (!currentPlant || !currentProject) return;
-        if (query.length < 2 && callOffQuery.length < 2) {
+        if (query.length < 2 && secondaryQuery.length < 2) {
             dispatch({ type: 'FETCH_INACTIVE' });
             return;
         }
@@ -109,13 +125,14 @@ const useSearchPageFacade = (searchType: string) => {
             () =>
                 fetchHits(
                     query,
-                    callOffQuery,
+                    secondaryQuery,
                     dispatch,
                     currentPlant.id,
                     currentProject.id,
                     signal,
                     api,
-                    searchType
+                    searchType,
+                    ipoApi
                 ),
             300
         );
@@ -123,15 +140,15 @@ const useSearchPageFacade = (searchType: string) => {
             controller.abort('A new search has taken place instead');
             clearTimeout(timeOutId);
         };
-    }, [query, callOffQuery, currentProject, currentPlant, api, searchType]);
+    }, [query, secondaryQuery, currentProject, currentPlant, api, searchType]);
 
     return {
         hits,
         searchStatus,
         query,
         setQuery,
-        callOffQuery,
-        setCallOffQuery,
+        secondaryQuery,
+        setSecondaryQuery,
     };
 };
 

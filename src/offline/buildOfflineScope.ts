@@ -358,7 +358,7 @@ const buildOfflineScope = async (
 
         //Scope (checklists)
         const scopeEntity = createEntityObj(
-            searchType + EntityType.Checklist,
+            searchType + EntityType.Checklists,
             entityId,
             entityId,
             searchType

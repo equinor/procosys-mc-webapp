@@ -3,8 +3,10 @@ import {
     getErrorMessage,
     objectToCamelCase,
 } from '@equinor/procosys-webapp-components';
-import { IpoDetails, OutstandingIposType } from './apiTypes';
+import { IpoDetails, OutstandingIposType, SearchResults } from './apiTypes';
 import { StorageKey } from '@equinor/procosys-webapp-components';
+import { isOfType } from './apiTypeGuards';
+import { typeGuardErrorMessage } from './procosysApi';
 
 type ProcosysIPOApiServiceProps = {
     baseURL: string;
@@ -225,6 +227,27 @@ const procosysIPOApiService = (
         );
     };
 
+    const getIpoOnSearch = async (
+        plantId: string,
+        id: string,
+        McPkNo: string,
+        abortSignal: AbortSignal
+    ): Promise<SearchResults> => {
+        const searchedIpo = await getByFetch(
+            `Invitations?plantId=PCS$${plantId}&IpoIdStartsWith=${id}&McPkgNoStartsWith=${McPkNo}`,
+            abortSignal
+        );
+        const returnResults = {
+            maxAvailable: searchedIpo.maxAvailable,
+            items: searchedIpo.invitations,
+        };
+        if (!isOfType<SearchResults>(returnResults, 'maxAvailable')) {
+            throw new Error(typeGuardErrorMessage('search results'));
+        }
+
+        return returnResults;
+    };
+
     return {
         getOutstandingIpos,
         getIpoDetails,
@@ -236,6 +259,7 @@ const procosysIPOApiService = (
         putUnsignIpo,
         putAcceptIpo,
         putUnacceptIpo,
+        getIpoOnSearch,
     };
 };
 

@@ -126,9 +126,22 @@ export interface PoPreview {
     responsibleCode: string;
 }
 
+export interface IPOPreview {
+    id: number;
+    projectName: string;
+    title: string;
+    description: string;
+    type: string;
+}
+
 export interface SearchResults {
     maxAvailable: number;
-    items: McPkgPreview[] | WoPreview[] | TagPreview[] | PoPreview[];
+    items:
+        | McPkgPreview[]
+        | WoPreview[]
+        | TagPreview[]
+        | PoPreview[]
+        | IpoDetails[];
 }
 
 export interface ChecklistSavedSearchResult {
