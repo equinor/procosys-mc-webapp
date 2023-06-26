@@ -29,6 +29,7 @@ import {
 } from '@equinor/procosys-webapp-components';
 import EntityPageDetailsCard from './EntityPageDetailsCard';
 import { OfflineStatus } from '../../typings/enums';
+import ViewIpo from './ViewIpo/ViewIpo';
 
 const EntityPageWrapper = styled.main``;
 
@@ -57,10 +58,12 @@ const EntityPage = (): JSX.Element => {
     const [fetchDetailsStatus, setFetchDetailsStatus] = useState(
         AsyncStatus.LOADING
     );
+    const [refreshDetails, setRefreshDetails] = useState<boolean>(false);
     const controller = new AbortController();
     const abortSignal = controller.signal;
     const isOnPunchListPage = history.location.pathname.includes('/punch-list');
     const isOnWoInfoPage = history.location.pathname.includes('/wo-info');
+    const isOnIpoInfoPage = history.location.pathname.includes('/IPO-info');
 
     useEffect(() => {
         return (): void => {
@@ -138,7 +141,7 @@ const EntityPage = (): JSX.Element => {
                 setFetchDetailsStatus(AsyncStatus.ERROR);
             }
         })();
-    }, [api, params]);
+    }, [api, params, refreshDetails]);
 
     return (
         <EntityPageWrapper>
@@ -215,12 +218,30 @@ const EntityPage = (): JSX.Element => {
                             />
                         )}
                     />
+                    <Route
+                        exact
+                        path={`${path}/IPO-info`}
+                        render={(): JSX.Element => (
+                            <ViewIpo
+                                fetchDetailsStatus={fetchDetailsStatus}
+                                ipoDetails={details}
+                                setSnackbarText={setSnackbarText}
+                                setIpoDetails={setDetails}
+                            />
+                        )}
+                    />
                 </Switch>
                 {snackbar}
             </ContentWrapper>
             <NavigationFooter footerStatus={fetchFooterStatus}>
                 <FooterButton
-                    active={!(isOnPunchListPage || isOnWoInfoPage)}
+                    active={
+                        !(
+                            isOnPunchListPage ||
+                            isOnWoInfoPage ||
+                            isOnIpoInfoPage
+                        )
+                    }
                     goTo={(): void => history.push(url)}
                     icon={<EdsIcon name="list" color={COLORS.mossGreen} />}
                     label="Scope"
@@ -237,6 +258,21 @@ const EntityPage = (): JSX.Element => {
                             />
                         }
                         label="WO info"
+                    />
+                ) : (
+                    <></>
+                )}
+                {params.searchType === SearchType.IPO ? (
+                    <FooterButton
+                        active={isOnIpoInfoPage}
+                        goTo={(): void => history.push(`${url}/IPO-info`)}
+                        icon={
+                            <EdsIcon
+                                name="info_circle"
+                                color={COLORS.mossGreen}
+                            />
+                        }
+                        label="IPO"
                     />
                 ) : (
                     <></>
