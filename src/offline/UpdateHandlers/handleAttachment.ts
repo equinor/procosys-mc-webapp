@@ -242,7 +242,8 @@ export const handlePostChecklistAttachment = async (
     await addAttachmentToAttachmentList(
         attachmentListEntity,
         newAttachmentId,
-        title
+        title,
+        offlinePostRequest.mimeType
     );
     await offlineUpdateRepository.addUpdateRequest(
         Number(checklistId),
