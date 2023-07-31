@@ -5,6 +5,7 @@ import { ProcosysApiService } from '../../services/procosysApi';
 import useCommonHooks from '../../utils/useCommonHooks';
 import { SearchType } from '@equinor/procosys-webapp-components';
 import { ProcosysIPOApiService } from '../../services/procosysIPOApi';
+import { SessionStorage } from '../../typings/enums';
 
 export enum SearchStatus {
     INACTIVE,
@@ -65,6 +66,9 @@ const fetchHits = async (
 ): Promise<void> => {
     dispatch({ type: 'FETCH_START' });
     try {
+        sessionStorage.setItem(SessionStorage.SEARCH_TYPE, searchType);
+        sessionStorage.setItem(SessionStorage.SEARCH_QUERY, query);
+        sessionStorage.setItem(SessionStorage.SECONDARY_QUERY, secondaryQuery);
         if (searchType === SearchType.IPO) {
             const results = await ipoApi.getIpoOnSearch(
                 plantId,

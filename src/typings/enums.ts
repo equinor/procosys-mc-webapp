@@ -87,4 +87,5 @@ export enum LocalStorage {
 export enum SessionStorage {
     SEARCH_TYPE = 'searchType',
     SEARCH_QUERY = 'searchQuery',
+    SECONDARY_QUERY = 'secondaryQuery',
 }
