@@ -83,3 +83,8 @@ export enum LocalStorage {
     SYNCH_ERRORS = 'SynchErrors',
     SW_UPDATE = 'serviceWorkerUpdate',
 }
+
+export enum SessionStorage {
+    SEARCH_TYPE = 'searchType',
+    SEARCH_QUERY = 'searchQuery',
+}
