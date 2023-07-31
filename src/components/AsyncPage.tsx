@@ -1,9 +1,11 @@
 import { Banner } from '@equinor/eds-core-react';
 import React from 'react';
-import { AsyncStatus } from '../contexts/McAppContext';
 import { COLORS } from '../style/GlobalStyles';
 import EdsIcon from './icons/EdsIcon';
-import { SkeletonLoadingPage } from '@equinor/procosys-webapp-components';
+import {
+    AsyncStatus,
+    SkeletonLoadingPage,
+} from '@equinor/procosys-webapp-components';
 
 type AsyncPageProps = {
     fetchStatus: AsyncStatus;

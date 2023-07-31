@@ -23,9 +23,12 @@ import {
     updateOfflineStatus,
 } from './offline/OfflineStatus';
 import { syncronizeOfflineUpdatesWithBackend } from './offline/syncUpdatesWithBackend';
-import { OfflineScopeStatus, OfflineStatus } from './typings/enums';
+import {
+    LocalStorage,
+    OfflineScopeStatus,
+    OfflineStatus,
+} from './typings/enums';
 import hasConnectionToServer from './utils/hasConnectionToServer';
-import { LocalStorage } from './contexts/McAppContext';
 import ConfirmSync from './ConfirmSync';
 
 const onUpdate = (registration: ServiceWorkerRegistration): void => {

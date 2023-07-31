@@ -6,7 +6,6 @@ import { COLORS } from '../../style/GlobalStyles';
 import useCommonHooks from '../../utils/useCommonHooks';
 import ClearPunchWrapper from './ClearPunchWrapper';
 import { PunchItem } from '../../services/apiTypes';
-import { AsyncStatus } from '../../contexts/McAppContext';
 import VerifyPunchWrapper from './VerifyPunchWrapper';
 import {
     SkeletonLoadingPage,
@@ -17,6 +16,7 @@ import {
     FooterButton,
     removeSubdirectories,
     useSnackbar,
+    AsyncStatus,
 } from '@equinor/procosys-webapp-components';
 import { DotProgress } from '@equinor/eds-core-react';
 import AsyncPage from '../../components/AsyncPage';

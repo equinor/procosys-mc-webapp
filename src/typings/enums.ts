@@ -74,3 +74,12 @@ export enum IpoOrganizationsEnum {
     Supplier = 'Supplier',
     External = 'External',
 }
+
+// Browser stores
+export enum LocalStorage {
+    LOGIN_TRIES = 'loginTries',
+    OFFLINE_PROJECT_ID = 'offlineProjectId',
+    OFFLINE_STATUS = 'offlineStatus',
+    SYNCH_ERRORS = 'SynchErrors',
+    SW_UPDATE = 'serviceWorkerUpdate',
+}

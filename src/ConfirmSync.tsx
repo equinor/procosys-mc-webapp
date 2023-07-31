@@ -6,7 +6,6 @@ import {
 } from '@equinor/procosys-webapp-components';
 import React from 'react';
 import styled from 'styled-components';
-import { LocalStorage } from './contexts/McAppContext';
 import { updateOfflineStatus } from './offline/OfflineStatus';
 import { OfflineStatus } from './typings/enums';
 import { db } from './offline/db';
@@ -17,9 +16,7 @@ const ContentWrapper = styled.main`
         margin-bottom: 16px;
     }
 `;
-const Spacer = styled.div`
-    height: 16px;
-`;
+
 const ButtonsWrapper = styled.div`
     display: flex;
     justify-content: space-between;
