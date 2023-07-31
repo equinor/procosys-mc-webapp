@@ -106,13 +106,22 @@ const useSearchPageFacade = (searchType: string) => {
         hits: { maxAvailable: 0, items: [] },
         searchStatus: SearchStatus.INACTIVE,
     });
-    const [query, setQuery] = useState('');
-    const [secondaryQuery, setSecondaryQuery] = useState('');
+    const [query, setQuery] = useState(
+        sessionStorage.getItem(SessionStorage.SEARCH_QUERY) ?? ''
+    );
+    const [secondaryQuery, setSecondaryQuery] = useState(
+        sessionStorage.getItem(SessionStorage.SECONDARY_QUERY) ?? ''
+    );
     const { currentProject, currentPlant } = useContext(PlantContext);
+    const [firstRender, setFirstRender] = useState<boolean>(true);
 
     useEffect(() => {
-        setSecondaryQuery('');
-        setQuery('');
+        if (firstRender) {
+            setFirstRender(false);
+        } else {
+            setSecondaryQuery('');
+            setQuery('');
+        }
     }, [searchType]);
 
     useEffect(() => {
