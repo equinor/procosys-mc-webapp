@@ -49,6 +49,7 @@ const render = (content: JSX.Element): void => {
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const initialize = async () => {
+    render(<LoadingPage loadingText={'Initializing service worker...'} />);
     console.log('Application is initializing');
     await navigator.serviceWorker.ready; //wait until service worker is active
     if (!('serviceWorker' in navigator)) {
@@ -60,8 +61,8 @@ const initialize = async () => {
     console.log('Offline status is ', offline);
 
     updateOfflineStatus(offline, userPin);
-
     // Get auth config, setup auth client and handle login
+    render(<LoadingPage loadingText={'Initializing authentication...'} />);
     const {
         clientSettings,
         scopes,
@@ -87,11 +88,13 @@ const initialize = async () => {
     }
 
     // Get config from App Configuration
+    render(<LoadingPage loadingText={'Initializing app config...'} />);
     const { appConfig, featureFlags } = await getAppConfig(
         configurationEndpoint,
         configurationAccessToken
     );
 
+    render(<LoadingPage loadingText={'Initializing access token...'} />);
     let accessToken = '';
     if (offline != OfflineStatus.OFFLINE) {
         accessToken = await authInstance.getAccessToken(
@@ -107,6 +110,7 @@ const initialize = async () => {
         accessToken
     );
 
+    render(<LoadingPage loadingText={'Initializing IPO access token...'} />);
     let accessTokenIPO = '';
     if (offline != OfflineStatus.OFFLINE) {
         accessTokenIPO = await authInstance.getAccessToken(
