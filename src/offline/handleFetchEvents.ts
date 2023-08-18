@@ -1,39 +1,51 @@
-import { IEntity } from '@equinor/procosys-webapp-components';
+import {
+    GetOperationProps,
+    IEntity,
+} from '@equinor/procosys-webapp-components';
 import { ChecklistResponse } from '../services/apiTypes';
-import { EntityType } from '../typings/enums';
+import { EntityType, OfflineStatus } from '../typings/enums';
 import removeBaseUrlFromUrl from '../utils/removeBaseUrlFromUrl';
 import { OfflineContentRepository } from './OfflineContentRepository';
 import { OfflineUpdateRequest } from './OfflineUpdateRequest';
 import { updateOfflineDatabase as updateOfflineDatabase } from './updateOfflineDatabase';
+import { getOfflineStatusfromLocalStorage } from './OfflineStatus';
 
 const offlineContentRepository = new OfflineContentRepository();
 
-export const handleFetchGET = async (event: FetchEvent): Promise<any> => {
-    const url = removeBaseUrlFromUrl(event.request.url);
+export const mcFetchGet = async (
+    endpoint: string,
+    getOperation?: GetOperationProps
+): Promise<any> => {
+    const url = removeBaseUrlFromUrl(endpoint);
+    if (getOfflineStatusfromLocalStorage() == OfflineStatus.OFFLINE) {
+        console.log('offline fetchig');
+        if (url.includes('CheckList/CustomItem/NextItemNo')) {
+            //Handle special case. Later: We should try to find a better way to handle this, to avoid this special handling.
+            return await handleCustomCheckItemNextItemNo(endpoint);
+        }
 
-    if (url.includes('CheckList/CustomItem/NextItemNo')) {
-        //Handle special case. Later: We should try to find a better way to handle this, to avoid this special handling.
-        return await handleCustomCheckItemNextItemNo(event.request.url);
-    }
-
-    // Try to get the response from offline content database.
-    const entity = await offlineContentRepository.getByApiPath(url);
-    if (entity) {
-        if (url.includes('/Attachment?')) {
-            const arrayBuffer = entity.responseObj as ArrayBuffer;
-            //const blob = new Blob([arrayBuffer], { type: 'image/jpeg' });
-            const blob = new Blob([arrayBuffer]);
-            return new Response(blob);
+        // Try to get the response from offline content database.
+        const entity = await offlineContentRepository.getByApiPath(url);
+        if (entity) {
+            if (url.includes('/Attachment?')) {
+                const arrayBuffer = entity.responseObj as ArrayBuffer;
+                //const blob = new Blob([arrayBuffer], { type: 'image/jpeg' });
+                const blob = new Blob([arrayBuffer]);
+                return new Response(blob);
+            } else {
+                const blob = new Blob([JSON.stringify(entity.responseObj)]);
+                return new Response(blob);
+            }
         } else {
-            const blob = new Blob([JSON.stringify(entity.responseObj)]);
-            return new Response(blob);
+            console.error(
+                'Offline-mode. Entity for given url is not found in local database. Will try to fetch.',
+                endpoint
+            );
+            return await fetch(endpoint, getOperation);
         }
     } else {
-        console.error(
-            'Offline-mode. Entity for given url is not found in local database. Will try to fetch.',
-            event.request.url
-        );
-        return await fetch(event.request);
+        console.log('not offline');
+        return await fetch(endpoint, getOperation);
     }
 };
 

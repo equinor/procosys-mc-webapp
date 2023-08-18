@@ -67,7 +67,9 @@ export default class OfflineStorage extends Dexie {
     }
 
     public async reInitAndVerifyPin(userPin: string): Promise<boolean> {
+        console.log('starting to init user pin');
         await this.init(userPin);
+        console.log('init user pin is done');
 
         //Check that we are able to encrypt data from the database
         try {

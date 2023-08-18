@@ -11,7 +11,7 @@ import {
     PunchComment,
     APIComment,
 } from '@equinor/procosys-webapp-components/dist/typings/apiTypes';
-import { SavedSearchType } from '../typings/enums';
+import { OfflineStatus, SavedSearchType } from '../typings/enums';
 import objectToCamelCase from '../utils/objectToCamelCase';
 import removeBaseUrlFromUrl from '../utils/removeBaseUrlFromUrl';
 import {
@@ -51,6 +51,9 @@ import {
     EntityId,
     OfflineSynchronizationErrors,
 } from './apiTypes';
+import { LocalStorage } from '../contexts/McAppContext';
+import { getOfflineStatusfromLocalStorage } from '../offline/OfflineStatus';
+import { mcFetchGet } from '../offline/handleFetchEvents';
 
 type ProcosysApiServiceProps = {
     baseURL: string;
@@ -95,7 +98,9 @@ const procosysApiService = (
                 Authorization: `Bearer ${token}`,
             },
         };
-        const res = await fetch(`${baseURL}/${url}`, GetOperation);
+
+        const res = await mcFetchGet(`${baseURL}/${url}`, GetOperation);
+
         if (res.ok) {
             const jsonResult = await res.json();
             const resultObj = objectToCamelCase(jsonResult);

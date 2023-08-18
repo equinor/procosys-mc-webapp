@@ -15,7 +15,6 @@ import { registerRoute } from 'workbox-routing';
 import { StaleWhileRevalidate } from 'workbox-strategies';
 import { db } from './offline/db';
 import {
-    handleFetchGET,
     handleFetchUpdate,
     handleOtherFetchEvents,
 } from './offline/handleFetchEvents';
@@ -139,7 +138,8 @@ self.addEventListener('fetch', function (event: FetchEvent) {
         const method = event.request.method;
         if (method == 'GET' && url.includes('/api/')) {
             //todo: We should find a better way to identify these requests!
-            event.respondWith(handleFetchGET(event));
+            //event.respondWith(handleFetchGET(event));
+            console.log('changed place to handle');
             return;
         } else if (
             (method == 'POST' || method == 'PUT' || method == 'DELETE') &&
