@@ -16,10 +16,9 @@ import EdsIcon from '../../components/icons/EdsIcon';
 import { Route, Switch } from 'react-router-dom';
 import Bookmarks from './Bookmarks/Bookmarks';
 import Search from './Search';
-import { OfflineStatus } from '../../typings/enums';
+import { LocalStorage, OfflineStatus } from '../../typings/enums';
 import SyncErrors from './SyncErrors';
 import { OfflineSynchronizationErrors } from '../../services/apiTypes';
-import { LocalStorage } from '../../contexts/McAppContext';
 
 const SearchPageWrapper = styled.main`
     padding: 0;

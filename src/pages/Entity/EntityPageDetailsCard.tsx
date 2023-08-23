@@ -1,5 +1,6 @@
 import { DotProgress } from '@equinor/eds-core-react';
 import {
+    AsyncStatus,
     EntityDetails,
     isOfType,
     SearchType,
@@ -8,7 +9,6 @@ import {
 import React from 'react';
 import styled from 'styled-components';
 import McDetails from '../../components/detailCards/McDetails';
-import { AsyncStatus } from '../../contexts/McAppContext';
 import {
     IpoDetails,
     McPkgPreview,

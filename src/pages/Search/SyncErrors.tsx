@@ -9,7 +9,6 @@ import {
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import EdsIcon from '../../components/icons/EdsIcon';
-import { LocalStorage } from '../../contexts/McAppContext';
 import { db } from '../../offline/db';
 import {
     getOfflineProjectIdfromLocalStorage,
@@ -17,7 +16,11 @@ import {
 } from '../../offline/OfflineStatus';
 import { OfflineSynchronizationErrors } from '../../services/apiTypes';
 import { COLORS } from '../../style/GlobalStyles';
-import { OfflineScopeStatus, OfflineStatus } from '../../typings/enums';
+import {
+    LocalStorage,
+    OfflineScopeStatus,
+    OfflineStatus,
+} from '../../typings/enums';
 import useCommonHooks from '../../utils/useCommonHooks';
 import { ButtonsWrapper } from './Bookmarks/Bookmarks';
 import { BookmarksPopup } from './Bookmarks/BookmarksPopups';

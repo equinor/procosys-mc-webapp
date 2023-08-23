@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { Route, Switch } from 'react-router-dom';
 import styled from 'styled-components';
 import useCommonHooks from '../../utils/useCommonHooks';
-import { AsyncStatus } from '../../contexts/McAppContext';
 import {
     ChecklistPreview,
     PunchPreview,
@@ -17,6 +16,7 @@ import EdsIcon from '../../components/icons/EdsIcon';
 import { COLORS } from '../../style/GlobalStyles';
 import WorkOrderInfo from './WorkOrderInfo';
 import {
+    AsyncStatus,
     BackButton,
     FooterButton,
     Navbar,

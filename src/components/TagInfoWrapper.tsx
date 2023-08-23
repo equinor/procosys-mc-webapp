@@ -1,7 +1,6 @@
-import { TagInfo } from '@equinor/procosys-webapp-components';
+import { AsyncStatus, TagInfo } from '@equinor/procosys-webapp-components';
 import React, { useState } from 'react';
 import { useEffect } from 'react';
-import { AsyncStatus } from '../contexts/McAppContext';
 import { AdditionalTagField, TagDetails } from '../services/apiTypes';
 import useCommonHooks from '../utils/useCommonHooks';
 

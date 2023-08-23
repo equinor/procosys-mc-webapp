@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import Axios from 'axios';
 import {
+    AsyncStatus,
     CollapsibleCard,
     SkeletonLoadingPage,
 } from '@equinor/procosys-webapp-components';
 import styled from 'styled-components';
 import useCommonHooks from '../utils/useCommonHooks';
-import { AsyncStatus } from '../contexts/McAppContext';
 import { OutstandingIposType } from '../services/apiTypes';
 import OutstandingIpoResult from './OutstandingIpoResult';
 
