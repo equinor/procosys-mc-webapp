@@ -16,8 +16,7 @@ import {
 } from './utils';
 import { OfflineUpdateRequest } from '../OfflineUpdateRequest';
 import { OfflineUpdateRepository } from '../OfflineUpdateRepository';
-import { IEntity } from '@equinor/procosys-webapp-components';
-import { APIComment } from '@equinor/procosys-webapp-components/dist/typings/apiTypes';
+import { APIComment, IEntity } from '@equinor/procosys-webapp-components';
 
 const offlineContentRepository = new OfflineContentRepository();
 const offlineUpdateRepository = new OfflineUpdateRepository();

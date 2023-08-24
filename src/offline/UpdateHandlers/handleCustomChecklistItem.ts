@@ -1,9 +1,11 @@
 import { OfflineContentRepository } from '../OfflineContentRepository';
 import { EntityType } from '../../typings/enums';
-import { ChecklistResponse } from '../../services/apiTypes';
 import { OfflineUpdateRequest } from '../OfflineUpdateRequest';
 import { OfflineUpdateRepository } from '../OfflineUpdateRepository';
-import { IEntity } from '@equinor/procosys-webapp-components';
+import {
+    IEntity,
+    ChecklistResponse,
+} from '@equinor/procosys-webapp-components';
 
 const offlineUpdateRepository = new OfflineUpdateRepository();
 const offlineContentRepository = new OfflineContentRepository();

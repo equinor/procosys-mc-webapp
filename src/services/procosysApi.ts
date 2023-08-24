@@ -8,11 +8,9 @@ import {
     ChecklistResponse,
     getErrorMessage,
     ItemToMultiSignOrVerify,
-} from '@equinor/procosys-webapp-components';
-import {
     PunchComment,
     APIComment,
-} from '@equinor/procosys-webapp-components/dist/typings/apiTypes';
+} from '@equinor/procosys-webapp-components';
 import { SavedSearchType } from '../typings/enums';
 import objectToCamelCase from '../utils/objectToCamelCase';
 import removeBaseUrlFromUrl from '../utils/removeBaseUrlFromUrl';

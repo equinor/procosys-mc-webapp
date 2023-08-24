@@ -1,5 +1,7 @@
-import { IEntity } from '@equinor/procosys-webapp-components';
-import { ChecklistResponse } from '../services/apiTypes';
+import {
+    ChecklistResponse,
+    IEntity,
+} from '@equinor/procosys-webapp-components';
 import { EntityType } from '../typings/enums';
 import removeBaseUrlFromUrl from '../utils/removeBaseUrlFromUrl';
 import { OfflineContentRepository } from './OfflineContentRepository';

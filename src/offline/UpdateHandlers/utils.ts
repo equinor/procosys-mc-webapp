@@ -1,4 +1,4 @@
-import { PunchPriority } from '@equinor/procosys-webapp-components/dist/typings/apiTypes';
+import { PunchPriority } from '@equinor/procosys-webapp-components';
 import {
     CompletionStatus,
     PunchCategory,
