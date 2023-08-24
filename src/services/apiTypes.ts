@@ -1,4 +1,4 @@
-import { CheckItem } from '@equinor/procosys-webapp-components/dist/typings/apiTypes';
+import { ChecklistResponse } from '@equinor/procosys-webapp-components';
 import * as tg from 'generic-type-guard';
 import { IpoStatusEnum, OfflineScopeStatus } from '../typings/enums';
 
@@ -347,38 +347,6 @@ export interface PunchPreview {
     callOffNo?: string;
 }
 
-// CHECKLIST
-export interface ChecklistDetails {
-    id: number;
-    tagNo: string;
-    tagDescription: string;
-    tagId: number;
-    mcPkgNo: string;
-    responsibleCode: string;
-    responsibleDescription: string;
-    status: CompletionStatus;
-    systemModule: string;
-    formularType: string;
-    formularGroup: string;
-    comment: string;
-    signedByUser: string | null;
-    signedByFirstName: string | null;
-    signedByLastName: string | null;
-    signedAt: Date | null;
-    verifiedByUser: string | null;
-    verifiedByFirstName: string | null;
-    verifiedByLastName: string | null;
-    verifiedAt: Date | null;
-    updatedAt: Date;
-    updatedByUser: string;
-    updatedByFirstName: string;
-    updatedByLastName: string;
-    isRestrictedForUser: boolean;
-    hasElectronicForm: boolean;
-    attachmentCount: number;
-    partOfCertificateSentToCommissioning: boolean;
-}
-
 export interface ColumnLabel {
     id: number;
     label: string;
@@ -412,13 +380,6 @@ export interface CustomCheckItem {
     itemNo: string;
     text: string;
     isOk: boolean;
-}
-
-export interface ChecklistResponse {
-    loopTags: LoopTag[];
-    checkList: ChecklistDetails;
-    checkItems: CheckItem[];
-    customCheckItems: CustomCheckItem[];
 }
 
 export interface PunchCategory {
