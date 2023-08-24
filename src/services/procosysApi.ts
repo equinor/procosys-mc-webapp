@@ -5,7 +5,9 @@ import {
     PunchAction,
     SearchType,
     UpdatePunchData,
+    ChecklistResponse,
     getErrorMessage,
+    ItemToMultiSignOrVerify,
 } from '@equinor/procosys-webapp-components';
 import {
     PunchComment,
@@ -28,7 +30,6 @@ import {
     SearchResults,
     ChecklistPreview,
     PunchPreview,
-    ChecklistResponse,
     PunchCategory,
     PunchType,
     PunchOrganization,
@@ -45,7 +46,6 @@ import {
     SavedSearch,
     PunchItemSavedSearchResult,
     ChecklistSavedSearchResult,
-    isPlants,
     Bookmarks,
     IpoDetails,
     EntityId,
@@ -568,6 +568,270 @@ const procosysApiService = (
             throw new Error('An error occurred, please try again.');
         }
         return data;
+    };
+
+    const postMultiVerify = async (
+        plantId: string,
+        checklistId: string,
+        targetChecklistIds: number[]
+    ): Promise<void> => {
+        await postByFetch(
+            `CheckList/MC/MultiVerify?plantId=PCS$${plantId}${apiVersion}`,
+            {
+                OriginalCheckListId: checklistId,
+                TargetCheckListIds: targetChecklistIds,
+            }
+        );
+    };
+
+    const postMultiSign = async (
+        plantId: string,
+        checklistId: string,
+        targetChecklistIds: number[],
+        copyMetaTable: boolean
+    ): Promise<void> => {
+        await postByFetch(
+            `CheckList/MC/MultiSign?plantId=PCS$${plantId}${apiVersion}`,
+            {
+                OriginalCheckListId: checklistId,
+                TargetCheckListIds: targetChecklistIds,
+                CopyMetaTable: copyMetaTable,
+            }
+        );
+    };
+
+    const putChecklistComment = async (
+        plantId: string,
+        checklistId: string,
+        Comment: string
+    ): Promise<void> => {
+        await putByFetch(
+            `CheckList/MC/Comment?plantId=PCS$${plantId}${apiVersion}`,
+            { CheckListId: checklistId, Comment: Comment },
+            { 'Content-Type': 'application/json' }
+        );
+    };
+
+    const postUnsign = async (
+        plantId: string,
+        checklistId: string
+    ): Promise<void> => {
+        await postByFetch(
+            `CheckList/MC/Unsign?plantId=PCS$${plantId}${apiVersion}`,
+            checklistId
+        );
+    };
+
+    const postSign = async (
+        plantId: string,
+        checklistId: string
+    ): Promise<void> => {
+        await postByFetch(
+            `CheckList/MC/Sign?plantId=PCS$${plantId}${apiVersion}`,
+            checklistId
+        );
+    };
+
+    const getCanMultiSign = async (
+        plantId: string,
+        checklistId: string,
+        abortSignal?: AbortSignal
+    ): Promise<ItemToMultiSignOrVerify[]> => {
+        const data = await getByFetch(
+            `CheckList/MC/CanMultiSign?plantId=PCS$${plantId}&checkListId=${checklistId}${apiVersion}`,
+            abortSignal
+        );
+        if (!isArrayOfType<ItemToMultiSignOrVerify>(data, 'tagNo')) {
+            throw new Error(typeGuardErrorMessage('Item To MultiSign'));
+        }
+        return data;
+    };
+
+    const getCanMultiVerify = async (
+        plantId: string,
+        checklistId: string,
+        abortSignal: AbortSignal
+    ): Promise<ItemToMultiSignOrVerify[]> => {
+        const data = await getByFetch(
+            `CheckList/MC/CanMultiVerify?plantId=PCS$${plantId}&checkListId=${checklistId}${apiVersion}`,
+            abortSignal
+        );
+        if (!isArrayOfType<ItemToMultiSignOrVerify>(data, 'tagNo')) {
+            throw new Error(typeGuardErrorMessage('Item To MultiVerify'));
+        }
+        return data;
+    };
+
+    const postUnverify = async (
+        plantId: string,
+        checklistId: string
+    ): Promise<void> => {
+        await postByFetch(
+            `CheckList/MC/Unverify?plantId=PCS$${plantId}${apiVersion}`,
+            checklistId
+        );
+    };
+
+    const postVerify = async (
+        plantId: string,
+        checklistId: string
+    ): Promise<void> => {
+        await postByFetch(
+            `CheckList/MC/Verify?plantId=PCS$${plantId}${apiVersion}`,
+            checklistId
+        );
+    };
+
+    const postSetOk = async (
+        plantId: string,
+        checklistId: string,
+        checkItemId: number
+    ): Promise<void> => {
+        await postByFetch(
+            `CheckList/Item/SetOk?plantId=PCS$${plantId}${apiVersion}`,
+            {
+                CheckListId: checklistId,
+                CheckItemId: checkItemId,
+            }
+        );
+    };
+
+    const postCustomSetOk = async (
+        plantId: string,
+        checklistId: string,
+        customCheckItemId: number
+    ): Promise<void> => {
+        await postByFetch(
+            `CheckList/CustomItem/SetOk?plantId=PCS$${plantId}${apiVersion}`,
+            {
+                CheckListId: checklistId,
+                CustomCheckItemId: customCheckItemId,
+            }
+        );
+    };
+
+    const postClear = async (
+        plantId: string,
+        checklistId: string,
+        checkItemId: number
+    ): Promise<void> => {
+        await postByFetch(
+            `CheckList/Item/Clear?plantId=PCS$${plantId}${apiVersion}`,
+            {
+                CheckListId: checklistId,
+                CheckItemId: checkItemId,
+            }
+        );
+    };
+
+    const postCustomClear = async (
+        plantId: string,
+        checklistId: string,
+        customCheckItemId: number
+    ): Promise<void> => {
+        await postByFetch(
+            `CheckList/CustomItem/Clear?plantId=PCS$${plantId}${apiVersion}`,
+            {
+                CheckListId: checklistId,
+                CustomCheckItemId: customCheckItemId,
+            }
+        );
+    };
+
+    const postSetNA = async (
+        plantId: string,
+        checklistId: string,
+        checkItemId: number
+    ): Promise<void> => {
+        await postByFetch(
+            `CheckList/Item/SetNA?plantId=PCS$${plantId}${apiVersion}`,
+            {
+                CheckListId: checklistId,
+                CheckItemId: checkItemId,
+            }
+        );
+    };
+
+    const putMetaTableStringCell = async (
+        plantId: string,
+        checklistId: string,
+        checkItemId: number,
+        columnId: number,
+        rowId: number,
+        value: string
+    ): Promise<void> => {
+        await putByFetch(
+            `CheckList/Item/MetaTableCell?plantId=PCS$${plantId}${apiVersion}`,
+            {
+                CheckListId: checklistId,
+                CheckItemId: checkItemId,
+                ColumnId: columnId,
+                RowId: rowId,
+                Value: value,
+            },
+            { 'Content-Type': 'application/json' }
+        );
+    };
+
+    const putMetaTableDateCell = async (
+        plantId: string,
+        checklistId: string,
+        checkItemId: number,
+        columnId: number,
+        rowId: number,
+        value: string
+    ): Promise<void> => {
+        await putByFetch(
+            `CheckList/Item/MetaTableCellDate?plantId=PCS$${plantId}${apiVersion}`,
+            {
+                CheckListId: checklistId,
+                CheckItemId: checkItemId,
+                ColumnId: columnId,
+                RowId: rowId,
+                Value: value,
+            },
+            { 'Content-Type': 'application/json' }
+        );
+    };
+
+    const getNextCustomItemNumber = async (
+        plantId: string,
+        checklistId: string,
+        abortSignal?: AbortSignal
+    ): Promise<string> => {
+        const data = await getByFetch(
+            `CheckList/CustomItem/NextItemNo?plantId=PCS$${plantId}&checkListId=${checklistId}${apiVersion}`,
+            abortSignal
+        );
+        return data;
+    };
+
+    const postCustomCheckItem = async (
+        plantId: string,
+        checklistId: string,
+        itemNo: string,
+        text: string,
+        isOk: boolean
+    ): Promise<number> => {
+        const data = await postByFetch(
+            `CheckList/CustomItem?plantId=PCS$${plantId}${apiVersion}`,
+            { ItemNo: itemNo, Text: text, IsOk: isOk, ChecklistId: checklistId }
+        );
+        return data.id;
+    };
+
+    const deleteCustomCheckItem = async (
+        plantId: string,
+        checklistId: string,
+        customCheckItemId: number
+    ): Promise<void> => {
+        await deleteByFetch(
+            `CheckList/CustomItem?plantId=PCS$${plantId}${apiVersion}`,
+            {
+                CustomCheckItemId: customCheckItemId,
+                ChecklistId: checklistId,
+            }
+        );
     };
 
     //------------
@@ -1146,6 +1410,25 @@ const procosysApiService = (
         putOfflineScopeOffline,
         putUnderPlanning,
         getApplication,
+        postMultiSign,
+        postMultiVerify,
+        putChecklistComment,
+        postUnsign,
+        postSign,
+        getCanMultiSign,
+        getCanMultiVerify,
+        postUnverify,
+        postVerify,
+        postSetOk,
+        postCustomSetOk,
+        postClear,
+        postCustomClear,
+        postSetNA,
+        putMetaTableStringCell,
+        putMetaTableDateCell,
+        getNextCustomItemNumber,
+        postCustomCheckItem,
+        deleteCustomCheckItem,
     };
 };
 
