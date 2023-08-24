@@ -1,11 +1,14 @@
 import { Button, Input, Label } from '@equinor/eds-core-react';
-import { Navbar, ProcosysButton } from '@equinor/procosys-webapp-components';
+import {
+    LocalStorage,
+    Navbar,
+    OfflineStatus,
+    ProcosysButton,
+    db,
+} from '@equinor/procosys-webapp-components';
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { LocalStorage } from './contexts/McAppContext';
-import { db } from './offline/db';
 import { updateOfflineStatus } from './offline/OfflineStatus';
-import { OfflineStatus } from './typings/enums';
 
 const ContentWrapper = styled.main`
     margin: 16px;

@@ -5,7 +5,6 @@ import withAccessControl from '../../services/withAccessControl';
 import { COLORS } from '../../style/GlobalStyles';
 import useCommonHooks from '../../utils/useCommonHooks';
 import ClearPunchWrapper from './ClearPunchWrapper';
-import { PunchItem } from '../../services/apiTypes';
 import { AsyncStatus } from '../../contexts/McAppContext';
 import VerifyPunchWrapper from './VerifyPunchWrapper';
 import {
@@ -17,13 +16,14 @@ import {
     FooterButton,
     removeSubdirectories,
     useSnackbar,
+    OfflineStatus,
+    PunchItem,
 } from '@equinor/procosys-webapp-components';
 import { DotProgress } from '@equinor/eds-core-react';
 import AsyncPage from '../../components/AsyncPage';
 import TagInfoWrapper from '../../components/TagInfoWrapper';
 import PlantContext from '../../contexts/PlantContext';
 import { DetailsWrapper } from '../Entity/EntityPageDetailsCard';
-import { OfflineStatus } from '../../typings/enums';
 
 const PunchPage = (): JSX.Element => {
     const { api, params, path, history, url, offlineState } = useCommonHooks();

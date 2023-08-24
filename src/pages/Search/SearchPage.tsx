@@ -8,6 +8,9 @@ import {
     NavigationFooter,
     FooterButton,
     isOfType,
+    LocalStorage,
+    OfflineStatus,
+    OfflineSynchronizationErrors,
 } from '@equinor/procosys-webapp-components';
 import SideMenu from '../../components/navigation/SideMenu';
 import useCommonHooks from '../../utils/useCommonHooks';
@@ -16,10 +19,7 @@ import EdsIcon from '../../components/icons/EdsIcon';
 import { Route, Switch } from 'react-router-dom';
 import Bookmarks from './Bookmarks/Bookmarks';
 import Search from './Search';
-import { OfflineStatus } from '../../typings/enums';
 import SyncErrors from './SyncErrors';
-import { OfflineSynchronizationErrors } from '../../services/apiTypes';
-import { LocalStorage } from '../../contexts/McAppContext';
 
 const SearchPageWrapper = styled.main`
     padding: 0;

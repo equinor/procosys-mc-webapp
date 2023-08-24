@@ -12,8 +12,8 @@ import {
     ProcosysButton,
     ReloadButton,
     StorageKey,
+    OfflineStatus,
 } from '@equinor/procosys-webapp-components';
-import { OfflineStatus } from '../typings/enums';
 
 export type PlantContextProps = {
     fetchProjectsAndPermissionsStatus: AsyncStatus;

@@ -11,45 +11,9 @@ export enum UpdatePunchEndpoint {
     Estimate = 'setEstimate',
 }
 
-export enum EntityType {
-    ChecklistPunchlist = 'ChecklistPunchlist',
-    AuthConfig = 'AuthConfig',
-    AppConfig = 'AppConfig',
-    Bookmarks = 'Bookmarks',
-    Permissions = 'Permissions',
-    Plants = 'Plants',
-    Projects = 'Projects',
-    PunchCategories = 'PunchCategories',
-    PunchOrganization = 'PunchOrganization',
-    PunchPriorities = 'PunchPriorities',
-    PunchSorts = 'PunchSorts',
-    PunchTypes = 'PunchTypes',
-    EntityDetails = 'EntityDetails',
-    Punchlist = 'Punchlist',
-    Checklists = 'Checklists',
-    WorkOrder = 'WorkOrder',
-    WorkOrderAttachments = 'WorkOrderAttachments',
-    WorkOrderAttachment = 'WorkOrderAttachment',
-    Checklist = 'Checklist',
-    Tag = 'Tag',
-    PunchItem = 'PunchItem',
-    PunchAttachments = 'PunchAttachments',
-    PunchAttachment = 'PunchAttachment',
-    ChecklistAttachments = 'ChecklistAttachments',
-    ChecklistAttachment = 'ChecklistAttachment',
-    PunchComments = 'PunchComments',
-}
-
 export enum SavedSearchType {
     CHECKLIST = 'checklist',
     PUNCH = 'punch',
-}
-
-export enum OfflineStatus {
-    ONLINE,
-    OFFLINE,
-    SYNCHING,
-    SYNC_FAIL,
 }
 
 export enum OfflineScopeStatus {

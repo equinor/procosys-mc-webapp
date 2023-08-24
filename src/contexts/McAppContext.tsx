@@ -4,14 +4,14 @@ import {
     ErrorPage,
     ReloadButton,
     LoadingPage,
+    OfflineStatus,
+    getOfflineStatusfromLocalStorage,
 } from '@equinor/procosys-webapp-components';
 import { Plant } from '../services/apiTypes';
 import { AppConfig, FeatureFlags } from '../services/appConfiguration';
 import { IAuthService } from '../services/authService';
 import { ProcosysApiService } from '../services/procosysApi';
 import { ProcosysIPOApiService } from '../services/procosysIPOApi';
-import { getOfflineStatusfromLocalStorage } from '../offline/OfflineStatus';
-import { OfflineStatus } from '../typings/enums';
 
 type McAppContextProps = {
     availablePlants: Plant[];
@@ -32,14 +32,6 @@ export enum AsyncStatus {
     SUCCESS,
     ERROR,
     EMPTY_RESPONSE,
-}
-
-export enum LocalStorage {
-    LOGIN_TRIES = 'loginTries',
-    OFFLINE_PROJECT_ID = 'offlineProjectId',
-    OFFLINE_STATUS = 'offlineStatus',
-    SYNCH_ERRORS = 'SynchErrors',
-    SW_UPDATE = 'serviceWorkerUpdate',
 }
 
 const McAppContext = React.createContext({} as McAppContextProps);

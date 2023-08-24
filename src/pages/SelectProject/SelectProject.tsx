@@ -1,13 +1,12 @@
 import React, { useContext } from 'react';
 import EdsIcon from '../../components/icons/EdsIcon';
-import { PageHeader } from '@equinor/procosys-webapp-components';
+import { OfflineStatus, PageHeader } from '@equinor/procosys-webapp-components';
 import PlantContext from '../../contexts/PlantContext';
 import { SelectPlantWrapper, SelectorButton } from '../SelectPlant/SelectPlant';
 import AsyncPage from '../../components/AsyncPage';
 import SideMenu from '../../components/navigation/SideMenu';
 import { Navbar, ProcosysButton } from '@equinor/procosys-webapp-components';
 import useCommonHooks from '../../utils/useCommonHooks';
-import { OfflineStatus } from '../../typings/enums';
 
 const SelectProject = (): JSX.Element => {
     const {

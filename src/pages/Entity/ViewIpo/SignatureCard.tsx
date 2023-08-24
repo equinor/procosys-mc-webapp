@@ -9,7 +9,7 @@ import {
     WoPreview,
 } from '../../../services/apiTypes';
 import useViewIpoFacade from './useViewIpoFacade';
-import { TextField, Button, Switch, Progress } from '@equinor/eds-core-react';
+import { TextField, Switch, Progress } from '@equinor/eds-core-react';
 import styled from 'styled-components';
 import { COLORS } from '../../../style/GlobalStyles';
 import IpoSignatureButton from './IpoSignatureButton';

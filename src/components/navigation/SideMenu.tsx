@@ -5,10 +5,13 @@ import EdsIcon from '../icons/EdsIcon';
 import PlantContext from '../../contexts/PlantContext';
 import useCommonHooks from '../../utils/useCommonHooks';
 import { COLORS } from '../../style/GlobalStyles';
-import { isOfType, StorageKey } from '@equinor/procosys-webapp-components';
-import { OfflineStatus } from '../../typings/enums';
+import {
+    isOfType,
+    LocalStorage,
+    OfflineStatus,
+    StorageKey,
+} from '@equinor/procosys-webapp-components';
 import packageJson from '../../../package.json';
-import { LocalStorage } from '../../contexts/McAppContext';
 
 const SideMenuWrapper = styled.aside<{ isActive: boolean }>`
     width: 297px;

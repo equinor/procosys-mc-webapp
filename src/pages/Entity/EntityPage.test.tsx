@@ -13,8 +13,7 @@ import {
     testScope,
     testWoPreview,
 } from '../../test/dummyData';
-import { OfflineStatus } from '../../typings/enums';
-import { SearchType } from '@equinor/procosys-webapp-components';
+import { OfflineStatus, SearchType } from '@equinor/procosys-webapp-components';
 
 const renderEntityPage = (
     searchType: SearchType,

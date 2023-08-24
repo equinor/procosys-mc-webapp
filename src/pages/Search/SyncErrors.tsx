@@ -1,26 +1,27 @@
 import { Button, Checkbox, Progress, Scrim } from '@equinor/eds-core-react';
 import {
     CollapsibleCard,
+    db,
     EntityDetails,
     isOfType,
+    LocalStorage,
+    OfflineStatus,
+    OfflineSynchronizationErrors,
     PageHeader,
     StorageKey,
 } from '@equinor/procosys-webapp-components';
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import EdsIcon from '../../components/icons/EdsIcon';
-import { LocalStorage } from '../../contexts/McAppContext';
-import { db } from '../../offline/db';
 import {
     getOfflineProjectIdfromLocalStorage,
     updateOfflineStatus,
 } from '../../offline/OfflineStatus';
-import { OfflineSynchronizationErrors } from '../../services/apiTypes';
 import { COLORS } from '../../style/GlobalStyles';
-import { OfflineScopeStatus, OfflineStatus } from '../../typings/enums';
 import useCommonHooks from '../../utils/useCommonHooks';
 import { ButtonsWrapper } from './Bookmarks/Bookmarks';
 import { BookmarksPopup } from './Bookmarks/BookmarksPopups';
+import { OfflineScopeStatus } from '../../typings/enums';
 
 const ErrorsWrapper = styled.div`
     margin: -16px 0 66px 0;

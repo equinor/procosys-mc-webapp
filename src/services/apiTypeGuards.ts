@@ -1,8 +1,11 @@
-import { SearchType } from '@equinor/procosys-webapp-components';
-import { SavedSearchType } from '../typings/enums';
 import {
+    SearchType,
     ChecklistDetails,
     ChecklistResponse,
+    CheckItem,
+} from '@equinor/procosys-webapp-components';
+import { SavedSearchType } from '../typings/enums';
+import {
     ChecklistSavedSearchResult,
     CustomCheckItem,
     LoopTag,
@@ -13,7 +16,6 @@ import {
     Tag,
     WoPreview,
 } from './apiTypes';
-import { CheckItem } from '@equinor/procosys-webapp-components/dist/typings/apiTypes';
 
 export class TypeguardError extends Error {
     constructor(message: string) {

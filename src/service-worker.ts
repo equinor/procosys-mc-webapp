@@ -8,17 +8,12 @@
 // You can also remove this file if you'd prefer not to use a
 // service worker, and the Workbox build step will be skipped.
 
+import { OfflineStatus, db } from '@equinor/procosys-webapp-components';
 import { clientsClaim } from 'workbox-core';
 import { ExpirationPlugin } from 'workbox-expiration';
 import { precacheAndRoute, createHandlerBoundToURL } from 'workbox-precaching';
 import { registerRoute } from 'workbox-routing';
 import { StaleWhileRevalidate } from 'workbox-strategies';
-import { db } from './offline/db';
-import {
-    handleFetchUpdate,
-    handleOtherFetchEvents,
-} from './offline/handleFetchEvents';
-import { OfflineStatus } from './typings/enums';
 
 declare const self: ServiceWorkerGlobalScope;
 
@@ -127,31 +122,31 @@ self.addEventListener('install', (event) => {
 /**
  * Handle fetch events. Will check if we are in offline mode.
  */
-self.addEventListener('fetch', function (event: FetchEvent) {
-    const url = event.request.url;
-    if (
-        offlineStatus == OfflineStatus.OFFLINE &&
-        !url.includes('Application?') //is used to check connection to server
-    ) {
-        //User is in offline mode.  Data must be fetched from offline database
-        console.log('Intercept fetch - offline mode', event.request.url);
-        const method = event.request.method;
-        if (method == 'GET' && url.includes('/api/')) {
-            //todo: We should find a better way to identify these requests!
-            //event.respondWith(handleFetchGET(event));
-            console.log('changed place to handle');
-            return;
-        } else if (
-            (method == 'POST' || method == 'PUT' || method == 'DELETE') &&
-            url.includes('/api/')
-        ) {
-            event.respondWith(handleFetchUpdate(event));
-            return;
-        }
-        event.respondWith(handleOtherFetchEvents(event));
-    } else {
-        //User is in online mode. The requests will be done the normal way.
-        console.log('Intercept fetch - online mode', event.request.url);
-        event.respondWith(fetch(event.request));
-    }
-});
+// self.addEventListener('fetch', function (event: FetchEvent) {
+//     const url = event.request.url;
+//     if (
+//         offlineStatus == OfflineStatus.OFFLINE &&
+//         !url.includes('Application?') //is used to check connection to server
+//     ) {
+//         //User is in offline mode.  Data must be fetched from offline database
+//         console.log('Intercept fetch - offline mode', event.request.url);
+//         const method = event.request.method;
+//         if (method == 'GET' && url.includes('/api/')) {
+//             //todo: We should find a better way to identify these requests!
+//             //event.respondWith(handleFetchGET(event));
+//             console.log('changed place to handle');
+//             return;
+//         } else if (
+//             (method == 'POST' || method == 'PUT' || method == 'DELETE') &&
+//             url.includes('/api/')
+//         ) {
+//             event.respondWith(handleFetchUpdate(event));
+//             return;
+//         }
+//         event.respondWith(handleOtherFetchEvents(event));
+//     } else {
+//         //User is in online mode. The requests will be done the normal way.
+//         console.log('Intercept fetch - online mode', event.request.url);
+//         event.respondWith(fetch(event.request));
+//     }
+// });

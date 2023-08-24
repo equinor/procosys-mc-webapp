@@ -3,8 +3,8 @@ import React from 'react';
 import { AsyncStatus } from '../../contexts/McAppContext';
 import { withMcAppContext } from '../../test/contexts';
 import { testPlants } from '../../test/dummyData';
-import { OfflineStatus } from '../../typings/enums';
 import SelectPlant from './SelectPlant';
+import { OfflineStatus } from '@equinor/procosys-webapp-components';
 
 describe('<SelectPlant />', () => {
     it('Renders plant buttons successfully upon loading', () => {

@@ -21,6 +21,7 @@ import {
     FooterButton,
     Navbar,
     NavigationFooter,
+    OfflineStatus,
     PunchList,
     removeSubdirectories,
     Scope,
@@ -28,7 +29,6 @@ import {
     useSnackbar,
 } from '@equinor/procosys-webapp-components';
 import EntityPageDetailsCard from './EntityPageDetailsCard';
-import { OfflineStatus } from '../../typings/enums';
 import ViewIpo from './ViewIpo/ViewIpo';
 
 const EntityPageWrapper = styled.main``;

@@ -15,8 +15,8 @@ import {
     dummyPunchTypes,
 } from '../../test/dummyData';
 import userEvent from '@testing-library/user-event';
-import { OfflineStatus } from '../../typings/enums';
 import { createRoot } from 'react-dom/client';
+import { OfflineStatus } from '@equinor/procosys-webapp-components';
 
 const renderPunchPage = (): void => {
     const container = document.createElement('div');

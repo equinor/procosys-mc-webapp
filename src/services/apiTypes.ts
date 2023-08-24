@@ -1,6 +1,10 @@
-import { CheckItem } from '@equinor/procosys-webapp-components/dist/typings/apiTypes';
 import * as tg from 'generic-type-guard';
 import { IpoStatusEnum, OfflineScopeStatus } from '../typings/enums';
+import {
+    ChecklistResponse,
+    NewPunch,
+    PunchItem,
+} from '@equinor/procosys-webapp-components';
 
 export type Entities =
     | Plant
@@ -348,36 +352,6 @@ export interface PunchPreview {
 }
 
 // CHECKLIST
-export interface ChecklistDetails {
-    id: number;
-    tagNo: string;
-    tagDescription: string;
-    tagId: number;
-    mcPkgNo: string;
-    responsibleCode: string;
-    responsibleDescription: string;
-    status: CompletionStatus;
-    systemModule: string;
-    formularType: string;
-    formularGroup: string;
-    comment: string;
-    signedByUser: string | null;
-    signedByFirstName: string | null;
-    signedByLastName: string | null;
-    signedAt: Date | null;
-    verifiedByUser: string | null;
-    verifiedByFirstName: string | null;
-    verifiedByLastName: string | null;
-    verifiedAt: Date | null;
-    updatedAt: Date;
-    updatedByUser: string;
-    updatedByFirstName: string;
-    updatedByLastName: string;
-    isRestrictedForUser: boolean;
-    hasElectronicForm: boolean;
-    attachmentCount: number;
-    partOfCertificateSentToCommissioning: boolean;
-}
 
 export interface ColumnLabel {
     id: number;
@@ -412,13 +386,6 @@ export interface CustomCheckItem {
     itemNo: string;
     text: string;
     isOk: boolean;
-}
-
-export interface ChecklistResponse {
-    loopTags: LoopTag[];
-    checkList: ChecklistDetails;
-    checkItems: CheckItem[];
-    customCheckItems: CustomCheckItem[];
 }
 
 export interface PunchCategory {
@@ -467,53 +434,6 @@ export interface NewPunch {
     DueDate: string | null;
     Estimate: number | null;
     TemporaryFileIds: string[];
-}
-
-export interface PunchItem {
-    id: number;
-    checklistId: number;
-    formularType: string;
-    status: CompletionStatus;
-    description: string;
-    typeCode: string;
-    typeDescription: string;
-    raisedByCode: string;
-    raisedByDescription: string;
-    clearingByCode: string;
-    clearingByDescription: string;
-    clearedAt: string | null;
-    clearedByUser: string | null;
-    clearedByFirstName: string | null;
-    clearedByLastName: string | null;
-    verifiedAt: string | null;
-    verifiedByUser: string | null;
-    verifiedByFirstName: string | null;
-    verifiedByLastName: string | null;
-    rejectedAt: string | null;
-    rejectedByUser: string | null;
-    rejectedByFirstName: string | null;
-    rejectedByLastName: string | null;
-    dueDate: string | null;
-    estimate: number | null;
-    priorityId: number | null;
-    priorityCode: string | null;
-    priorityDescription: string | null;
-    actionByPerson: number | null;
-    actionByPersonFirstName: string | null;
-    actionByPersonLastName: string | null;
-    materialRequired: boolean;
-    materialEta: string | null;
-    materialNo: string | null;
-    systemModule: string;
-    tagDescription: string;
-    tagId: number;
-    tagNo: string;
-    responsibleCode: string;
-    responsibleDescription: string;
-    sorting: string | null;
-    statusControlledBySwcr: boolean;
-    isRestrictedForUser: boolean;
-    attachmentCount: number;
 }
 
 export interface Attachment {
@@ -613,18 +533,4 @@ export interface Bookmarks {
 
 export interface EntityId {
     Id: number;
-}
-
-export interface OfflineSynchronizationError {
-    Id: number;
-    Url: string;
-    Method: string;
-    ErrorMsg: string;
-    ErrorCode: number;
-}
-
-export interface OfflineSynchronizationErrors {
-    ProjectId: number;
-    CheckListErrors: OfflineSynchronizationError[];
-    PunchListItemErrors: OfflineSynchronizationError[];
 }

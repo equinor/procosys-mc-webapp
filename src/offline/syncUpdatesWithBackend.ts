@@ -1,17 +1,19 @@
 import { ProcosysApiService } from '../services/procosysApi';
-import { EntityType, OfflineStatus } from '../typings/enums';
-import { OfflineUpdateRepository } from './OfflineUpdateRepository';
+
+import { getOfflineProjectIdfromLocalStorage } from './OfflineStatus';
 import {
+    EntityType,
+    HTTPError,
+    LocalStorage,
+    OfflineStatus,
+    OfflineSynchronizationErrors,
+    OfflineUpdateRepository,
     OfflineUpdateRequest,
     RequestType,
+    StorageKey,
     SyncStatus,
-} from './OfflineUpdateRequest';
-
-import { OfflineSynchronizationErrors } from '../services/apiTypes';
-import { getOfflineProjectIdfromLocalStorage } from './OfflineStatus';
-import { HTTPError, StorageKey } from '@equinor/procosys-webapp-components';
-import { db } from './db';
-import { LocalStorage } from '../contexts/McAppContext';
+    db,
+} from '@equinor/procosys-webapp-components';
 
 const offlineUpdateRepository = new OfflineUpdateRepository();
 

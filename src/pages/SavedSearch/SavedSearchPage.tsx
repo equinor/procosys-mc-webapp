@@ -12,13 +12,14 @@ import {
     BackButton,
     InfoItem,
     Navbar,
+    OfflineStatus,
     removeSubdirectories,
     useSnackbar,
 } from '@equinor/procosys-webapp-components';
 import styled from 'styled-components';
 import { Button, DotProgress } from '@equinor/eds-core-react';
 import { PageHeader } from '@equinor/procosys-webapp-components';
-import { OfflineStatus, SavedSearchType } from '../../typings/enums';
+import { SavedSearchType } from '../../typings/enums';
 
 const DetailsWrapper = styled.div`
     padding: 0 4%;

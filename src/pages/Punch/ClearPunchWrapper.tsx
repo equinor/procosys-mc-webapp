@@ -3,7 +3,6 @@ import { AsyncStatus } from '../../contexts/McAppContext';
 import useCommonHooks from '../../utils/useCommonHooks';
 import {
     PunchCategory,
-    PunchItem,
     PunchOrganization,
     PunchPriority,
     PunchSort,
@@ -15,9 +14,10 @@ import {
     UpdatePunchData,
     useSnackbar,
     PunchAction,
+    PunchItem,
+    OfflineStatus,
 } from '@equinor/procosys-webapp-components';
 import usePersonsSearchFacade from '../../utils/usePersonsSearchFacade';
-import { OfflineStatus } from '../../typings/enums';
 
 const punchEndpoints: PunchEndpoints = {
     updateCategory: 'SetCategory',

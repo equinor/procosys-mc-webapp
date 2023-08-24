@@ -1,3 +1,4 @@
+import { PunchItem } from '@equinor/procosys-webapp-components';
 import {
     Row,
     ColumnLabel,
@@ -9,7 +10,6 @@ import {
     PunchPreview,
     McPkgPreview,
     SearchResults,
-    PunchItem,
     WoPreview,
     TagPreview,
     PoPreview,

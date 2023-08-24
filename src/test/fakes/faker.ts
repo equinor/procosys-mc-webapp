@@ -10,13 +10,10 @@ import {
     CustomCheckItem,
     PunchPriority,
     NewPunch,
-    PunchItem,
     Attachment,
-    ChecklistDetails,
     TagDetails,
     AdditionalTagField,
     Tag,
-    ChecklistResponse,
     PunchCategory,
     PunchType,
     PunchOrganization,
@@ -41,6 +38,11 @@ import {
     MetaTable,
     Row,
 } from '@equinor/procosys-webapp-components/dist/typings/apiTypes';
+import {
+    ChecklistResponse,
+    PunchItem,
+    ChecklistDetails,
+} from '@equinor/procosys-webapp-components';
 
 export const TagSyntax = 'XXX-AA-XXXX-A-A-XX';
 /**

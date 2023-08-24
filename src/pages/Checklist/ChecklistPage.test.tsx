@@ -6,7 +6,7 @@ import { MemoryRouter, Route } from 'react-router-dom';
 import ChecklistPage from './ChecklistPage';
 import { dummyChecklistResponse } from '../../test/dummyData';
 import userEvent from '@testing-library/user-event';
-import { OfflineStatus } from '../../typings/enums';
+import { OfflineStatus } from '@equinor/procosys-webapp-components';
 
 const renderChecklistPage = (contentType?: string): void => {
     render(

@@ -11,7 +11,8 @@ import {
 import { causeApiError, ENDPOINTS, rest, server } from '../../test/setupServer';
 import { CompletionStatus } from '../../services/apiTypes';
 import userEvent from '@testing-library/user-event';
-import { OfflineStatus, SavedSearchType } from '../../typings/enums';
+import { SavedSearchType } from '../../typings/enums';
+import { OfflineStatus } from '@equinor/procosys-webapp-components';
 
 const renderSavedSearchPage = (savedSearchType: string): void => {
     render(

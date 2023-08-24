@@ -12,12 +12,12 @@ import useCommonHooks from '../../utils/useCommonHooks';
 import {
     ChosenPerson,
     NewPunch,
+    OfflineStatus,
     removeSubdirectories,
     useFormFields,
 } from '@equinor/procosys-webapp-components';
 import AsyncPage from '../../components/AsyncPage';
 import usePersonsSearchFacade from '../../utils/usePersonsSearchFacade';
-import { OfflineStatus } from '../../typings/enums';
 
 const newPunchInitialValues = {
     category: '',

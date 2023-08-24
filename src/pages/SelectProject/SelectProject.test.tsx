@@ -3,8 +3,8 @@ import React from 'react';
 import { AsyncStatus } from '../../contexts/McAppContext';
 import { withPlantContext } from '../../test/contexts';
 import { testProjects } from '../../test/dummyData';
-import { OfflineStatus } from '../../typings/enums';
 import SelectProject from '../SelectProject/SelectProject';
+import { OfflineStatus } from '@equinor/procosys-webapp-components';
 
 describe('<SelectProject />', () => {
     it('Renders project buttons successfully upon loading', () => {

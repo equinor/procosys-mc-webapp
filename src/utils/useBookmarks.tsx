@@ -1,22 +1,20 @@
 import {
     AsyncStatus,
+    EntityType,
+    LocalStorage,
+    OfflineContentRepository,
+    OfflineStatus,
     SearchType,
+    db,
     isOfType,
 } from '@equinor/procosys-webapp-components';
 import { useContext, useEffect, useState } from 'react';
 import PlantContext from '../contexts/PlantContext';
-import {
-    EntityType,
-    OfflineScopeStatus,
-    OfflineStatus,
-} from '../typings/enums';
 import { Bookmarks } from '../services/apiTypes';
 import useCommonHooks from './useCommonHooks';
 import buildOfflineScope from '../offline/buildOfflineScope';
-import { db } from '../offline/db';
 import { updateOfflineStatus } from '../offline/OfflineStatus';
-import { OfflineContentRepository } from '../offline/OfflineContentRepository';
-import { LocalStorage } from '../contexts/McAppContext';
+import { OfflineScopeStatus } from '../typings/enums';
 
 export enum OfflineAction {
     INACTIVE = 0,

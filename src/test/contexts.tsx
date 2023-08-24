@@ -15,7 +15,7 @@ import { AppConfig, FeatureFlags } from '../services/appConfiguration';
 import procosysIPOApiService, {
     ProcosysIPOApiService,
 } from '../services/procosysIPOApi';
-import { OfflineStatus } from '../typings/enums';
+import { OfflineStatus } from '@equinor/procosys-webapp-components';
 
 const client = new Msal.PublicClientApplication({
     auth: { clientId: 'testId', authority: 'testAuthority' },

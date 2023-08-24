@@ -1,17 +1,20 @@
 import {
-    GetOperationProps,
+    FetchOperationProps,
     HTTPError,
     IEntity,
     PunchAction,
     SearchType,
     UpdatePunchData,
     getErrorMessage,
+    mcFetchGet,
+    ChecklistResponse,
+    PunchItem,
 } from '@equinor/procosys-webapp-components';
 import {
     PunchComment,
     APIComment,
+    OfflineSynchronizationErrors,
 } from '@equinor/procosys-webapp-components/dist/typings/apiTypes';
-import { OfflineStatus, SavedSearchType } from '../typings/enums';
 import objectToCamelCase from '../utils/objectToCamelCase';
 import removeBaseUrlFromUrl from '../utils/removeBaseUrlFromUrl';
 import {
@@ -28,12 +31,10 @@ import {
     SearchResults,
     ChecklistPreview,
     PunchPreview,
-    ChecklistResponse,
     PunchCategory,
     PunchType,
     PunchOrganization,
     NewPunch,
-    PunchItem,
     Attachment,
     McPkgPreview,
     PunchSort,
@@ -49,11 +50,8 @@ import {
     Bookmarks,
     IpoDetails,
     EntityId,
-    OfflineSynchronizationErrors,
 } from './apiTypes';
-import { LocalStorage } from '../contexts/McAppContext';
-import { getOfflineStatusfromLocalStorage } from '../offline/OfflineStatus';
-import { mcFetchGet } from '../offline/handleFetchEvents';
+import { SavedSearchType } from '../typings/enums';
 
 type ProcosysApiServiceProps = {
     baseURL: string;
@@ -91,7 +89,7 @@ const procosysApiService = (
         abortSignal?: AbortSignal,
         entity?: IEntity
     ): Promise<any> => {
-        const GetOperation: GetOperationProps = {
+        const GetOperation: FetchOperationProps = {
             abortSignal: abortSignal,
             method: 'GET',
             headers: {
@@ -120,7 +118,7 @@ const procosysApiService = (
         abortSignal?: AbortSignal,
         entity?: IEntity
     ): Promise<Blob> => {
-        const GetOperation: GetOperationProps = {
+        const GetOperation: FetchOperationProps = {
             abortSignal: abortSignal,
             method: 'GET',
             responseType: 'blob',
@@ -130,7 +128,7 @@ const procosysApiService = (
             },
         };
 
-        const res = await fetch(`${baseURL}/${url}`, GetOperation);
+        const res = await mcFetchGet(`${baseURL}/${url}`, GetOperation);
 
         if (res.ok) {
             const blob = await res.blob();

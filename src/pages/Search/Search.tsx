@@ -2,10 +2,10 @@ import React, { useState } from 'react';
 import SavedSearches from './SavedSearches/SavedSearches';
 import SearchArea from './Searching/SearchArea';
 import styled from 'styled-components';
-import { OfflineStatus } from '../../typings/enums';
 import useCommonHooks from '../../utils/useCommonHooks';
 import OutstandingIpos from '../../components/OutstandingIpos';
 import {
+    OfflineStatus,
     SearchType,
     SearchTypeButton,
 } from '@equinor/procosys-webapp-components';

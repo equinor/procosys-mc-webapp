@@ -6,14 +6,16 @@ import { Route, Switch } from 'react-router-dom';
 import ChecklistWrapper from './ChecklistWrapper';
 import NewPunchWrapper from './NewPunchWrapper';
 import { AsyncStatus } from '../../contexts/McAppContext';
-import { ChecklistResponse, PunchPreview } from '../../services/apiTypes';
+import { PunchPreview } from '../../services/apiTypes';
 import { Button } from '@equinor/eds-core-react';
 import TagInfoWrapper from '../../components/TagInfoWrapper';
 import {
     BackButton,
+    ChecklistResponse,
     FooterButton,
     Navbar,
     NavigationFooter,
+    OfflineStatus,
     PunchList,
     removeSubdirectories,
     useSnackbar,
@@ -21,7 +23,6 @@ import {
 import ChecklistDetailsCard from './ChecklistDetailsCard';
 import styled from 'styled-components';
 import PlantContext from '../../contexts/PlantContext';
-import { OfflineStatus } from '../../typings/enums';
 
 const ContentWrapper = styled.div`
     padding-bottom: 66px;

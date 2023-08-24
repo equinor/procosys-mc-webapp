@@ -13,19 +13,20 @@ import {
     LoadingPage,
     SkeletonLoadingPage,
     StorageKey,
+    LocalStorage,
+    getOfflineStatusfromLocalStorage,
+    OfflineStatus,
 } from '@equinor/procosys-webapp-components';
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 import procosysIPOApiService from './services/procosysIPOApi';
 import OfflinePin from './OfflinePin';
 import {
     getOfflineProjectIdfromLocalStorage,
-    getOfflineStatusfromLocalStorage,
     updateOfflineStatus,
 } from './offline/OfflineStatus';
 import { syncronizeOfflineUpdatesWithBackend } from './offline/syncUpdatesWithBackend';
-import { OfflineScopeStatus, OfflineStatus } from './typings/enums';
+import { OfflineScopeStatus } from './typings/enums';
 import hasConnectionToServer from './utils/hasConnectionToServer';
-import { LocalStorage } from './contexts/McAppContext';
 import ConfirmSync from './ConfirmSync';
 
 const onUpdate = (registration: ServiceWorkerRegistration): void => {

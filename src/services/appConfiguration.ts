@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 
-import { IEntity } from '@equinor/procosys-webapp-components';
-import removeBaseUrlFromUrl from '../utils/removeBaseUrlFromUrl';
-import { getOfflineStatusfromLocalStorage } from '../offline/OfflineStatus';
-import { OfflineStatus } from '../typings/enums';
-import { mcFetchGet } from '../offline/handleFetchEvents';
+import {
+    IEntity,
+    mcFetchGet,
+    removeBaseUrlFromUrl,
+} from '@equinor/procosys-webapp-components';
 
 const Settings = require('../settings.json');
 

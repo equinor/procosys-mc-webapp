@@ -4,11 +4,11 @@ import useSearchPageFacade from '../useSearchPageFacade';
 import SearchResults from './SearchResults';
 import styled from 'styled-components';
 import {
+    OfflineStatus,
     SearchType,
     TagPhotoRecognition,
 } from '@equinor/procosys-webapp-components';
 import useCommonHooks from '../../../utils/useCommonHooks';
-import { OfflineStatus } from '../../../typings/enums';
 
 export const TallSearchField = styled(SearchField)`
     height: 54px;

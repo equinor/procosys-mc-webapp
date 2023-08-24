@@ -5,6 +5,7 @@ import {
     CollapsibleCard,
     ErrorPage,
     HomeButton,
+    OfflineStatus,
     removeSubdirectories,
 } from '@equinor/procosys-webapp-components';
 import styled from 'styled-components';
@@ -22,7 +23,6 @@ import {
 import { removeHtmlFromText } from '../../utils/removeHtmlFromText';
 import useCommonHooks from '../../utils/useCommonHooks';
 import PlantContext from '../../contexts/PlantContext';
-import { OfflineStatus } from '../../typings/enums';
 
 const TagInfoWrapper = styled.main`
     min-height: 0px;
