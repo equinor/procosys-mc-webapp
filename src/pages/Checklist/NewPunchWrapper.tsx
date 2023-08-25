@@ -6,10 +6,10 @@ import {
     PunchSort,
     PunchType,
 } from '../../services/apiTypes';
-import { AsyncStatus } from '../../contexts/McAppContext';
 import { NewPunch as NewPunchType } from '../../services/apiTypes';
 import useCommonHooks from '../../utils/useCommonHooks';
 import {
+    AsyncStatus,
     ChosenPerson,
     NewPunch,
     removeSubdirectories,

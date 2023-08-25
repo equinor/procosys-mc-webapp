@@ -7,6 +7,7 @@ import { useContext, useEffect, useState } from 'react';
 import PlantContext from '../contexts/PlantContext';
 import {
     EntityType,
+    LocalStorage,
     OfflineScopeStatus,
     OfflineStatus,
 } from '../typings/enums';
@@ -16,7 +17,6 @@ import buildOfflineScope from '../offline/buildOfflineScope';
 import { db } from '../offline/db';
 import { updateOfflineStatus } from '../offline/OfflineStatus';
 import { OfflineContentRepository } from '../offline/OfflineContentRepository';
-import { LocalStorage } from '../contexts/McAppContext';
 
 export enum OfflineAction {
     INACTIVE = 0,

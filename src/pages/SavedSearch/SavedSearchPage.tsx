@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { AsyncStatus } from '../../contexts/McAppContext';
 import {
     ChecklistSavedSearchResult,
     PunchItemSavedSearchResult,
@@ -9,6 +8,7 @@ import useCommonHooks from '../../utils/useCommonHooks';
 import AsyncPage from '../../components/AsyncPage';
 import { isArrayOfType } from '../../services/apiTypeGuards';
 import {
+    AsyncStatus,
     BackButton,
     InfoItem,
     Navbar,

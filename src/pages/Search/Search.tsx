@@ -2,13 +2,14 @@ import React, { useState } from 'react';
 import SavedSearches from './SavedSearches/SavedSearches';
 import SearchArea from './Searching/SearchArea';
 import styled from 'styled-components';
-import { OfflineStatus } from '../../typings/enums';
+import { OfflineStatus, SessionStorage } from '../../typings/enums';
 import useCommonHooks from '../../utils/useCommonHooks';
 import OutstandingIpos from '../../components/OutstandingIpos';
 import {
     SearchType,
     SearchTypeButton,
 } from '@equinor/procosys-webapp-components';
+import { unfold_less } from '@equinor/eds-icons';
 
 const ButtonsWrapper = styled.div`
     display: flex;
@@ -23,7 +24,9 @@ interface SearchProps {
 }
 
 const Search = ({ setSnackbarText }: SearchProps): JSX.Element => {
-    const [searchType, setSearchType] = useState<string>();
+    const [searchType, setSearchType] = useState<string | undefined>(
+        sessionStorage.getItem(SessionStorage.SEARCH_TYPE) ?? undefined
+    );
     const { offlineState } = useCommonHooks();
 
     const determineComponent = (): JSX.Element => {

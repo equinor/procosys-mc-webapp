@@ -5,11 +5,11 @@ import useCommonHooks from '../../utils/useCommonHooks';
 import { Route, Switch } from 'react-router-dom';
 import ChecklistWrapper from './ChecklistWrapper';
 import NewPunchWrapper from './NewPunchWrapper';
-import { AsyncStatus } from '../../contexts/McAppContext';
 import { ChecklistResponse, PunchPreview } from '../../services/apiTypes';
 import { Button } from '@equinor/eds-core-react';
 import TagInfoWrapper from '../../components/TagInfoWrapper';
 import {
+    AsyncStatus,
     BackButton,
     FooterButton,
     Navbar,

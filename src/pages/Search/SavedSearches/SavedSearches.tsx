@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { AsyncStatus } from '../../../contexts/McAppContext';
 import { SavedSearch } from '../../../services/apiTypes';
 import useCommonHooks from '../../../utils/useCommonHooks';
 import {
+    AsyncStatus,
     CollapsibleCard,
     SkeletonLoadingPage,
 } from '@equinor/procosys-webapp-components';

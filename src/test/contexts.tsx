@@ -1,7 +1,7 @@
 import React from 'react';
 import { MemoryRouter } from 'react-router-dom';
 import PlantContext from '../contexts/PlantContext';
-import McAppContext, { AsyncStatus } from '../contexts/McAppContext';
+import McAppContext from '../contexts/McAppContext';
 import * as Msal from '@azure/msal-browser';
 import { Plant, Project } from '../services/apiTypes';
 import procosysApiService, {
@@ -16,6 +16,7 @@ import procosysIPOApiService, {
     ProcosysIPOApiService,
 } from '../services/procosysIPOApi';
 import { OfflineStatus } from '../typings/enums';
+import { AsyncStatus } from '@equinor/procosys-webapp-components';
 
 const client = new Msal.PublicClientApplication({
     auth: { clientId: 'testId', authority: 'testAuthority' },
