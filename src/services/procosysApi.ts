@@ -648,7 +648,7 @@ const procosysApiService = (
     const getCanMultiVerify = async (
         plantId: string,
         checklistId: string,
-        abortSignal: AbortSignal
+        abortSignal?: AbortSignal
     ): Promise<ItemToMultiSignOrVerify[]> => {
         const data = await getByFetch(
             `CheckList/MC/CanMultiVerify?plantId=PCS$${plantId}&checkListId=${checklistId}${apiVersion}`,
