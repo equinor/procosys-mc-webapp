@@ -1,5 +1,5 @@
 import {
-    GetOperationProps,
+    FetchOperationProps,
     HTTPError,
     IEntity,
     PunchAction,
@@ -49,6 +49,7 @@ import {
     EntityId,
     OfflineSynchronizationErrors,
 } from './apiTypes';
+import { mcFetchGet, mcFetchUpdate } from '../offline/handleFetchEvents';
 
 type ProcosysApiServiceProps = {
     baseURL: string;
@@ -86,14 +87,14 @@ const procosysApiService = (
         abortSignal?: AbortSignal,
         entity?: IEntity
     ): Promise<any> => {
-        const GetOperation: GetOperationProps = {
+        const GetOperation: FetchOperationProps = {
             abortSignal: abortSignal,
             method: 'GET',
             headers: {
                 Authorization: `Bearer ${token}`,
             },
         };
-        const res = await fetch(`${baseURL}/${url}`, GetOperation);
+        const res = await mcFetchGet(`${baseURL}/${url}`, GetOperation);
         if (res.ok) {
             const jsonResult = await res.json();
             const resultObj = objectToCamelCase(jsonResult);
@@ -113,7 +114,7 @@ const procosysApiService = (
         abortSignal?: AbortSignal,
         entity?: IEntity
     ): Promise<Blob> => {
-        const GetOperation: GetOperationProps = {
+        const GetOperation: FetchOperationProps = {
             abortSignal: abortSignal,
             method: 'GET',
             responseType: 'blob',
@@ -123,7 +124,7 @@ const procosysApiService = (
             },
         };
 
-        const res = await fetch(`${baseURL}/${url}`, GetOperation);
+        const res = await mcFetchGet(`${baseURL}/${url}`, GetOperation);
 
         if (res.ok) {
             const blob = await res.blob();
@@ -142,15 +143,18 @@ const procosysApiService = (
      * Generic method for doing a DELETE call. Should be used by all DELETE calls.
      */
     const deleteByFetch = async (url: string, data?: any): Promise<any> => {
-        const DeleteOperation = {
+        const DeleteOperation: FetchOperationProps = {
             method: 'DELETE',
             headers: {
                 Authorization: `Bearer ${token}`,
                 'Content-Type': 'application/json',
             },
-            body: data ? JSON.stringify(data) : null,
+            body: data ? JSON.stringify(data) : undefined,
         };
-        const response = await fetch(`${baseURL}/${url}`, DeleteOperation);
+        const response = await mcFetchUpdate(
+            `${baseURL}/${url}`,
+            DeleteOperation
+        );
 
         if (!response.ok) {
             const errorMessage = await getErrorMessage(response);
@@ -175,7 +179,7 @@ const procosysApiService = (
 
         let response = new Response();
         try {
-            response = await fetch(`${baseURL}/${url}`, PostOperation);
+            response = await mcFetchUpdate(`${baseURL}/${url}`, PostOperation);
         } catch (error) {
             console.error(
                 'Something went wrong when accessing the server.',
@@ -214,7 +218,10 @@ const procosysApiService = (
             },
             body: file,
         };
-        const response = await fetch(`${baseURL}/${url}`, PostOperation);
+        const response = await mcFetchUpdate(
+            `${baseURL}/${url}`,
+            PostOperation
+        );
         if (!response.ok) {
             const errorMessage = await getErrorMessage(response);
             throw new HTTPError(response.status, errorMessage);
@@ -245,7 +252,7 @@ const procosysApiService = (
             },
             body: JSON.stringify(bodyData),
         };
-        const response = await fetch(`${baseURL}/${url}`, PutOperation);
+        const response = await mcFetchUpdate(`${baseURL}/${url}`, PutOperation);
         if (!response.ok) {
             const errorMessage = await getErrorMessage(response);
             throw new HTTPError(response.status, errorMessage);
