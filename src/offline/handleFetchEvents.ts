@@ -51,13 +51,16 @@ export const mcFetchGet = async (
 
 export const mcFetchUpdate = async (
     endpoint: string,
-    fetchOperation: FetchOperationProps
+    fetchOperation: FetchOperationProps,
+    contentType: string
 ): Promise<Response> => {
     if (getOfflineStatusfromLocalStorage() == OfflineStatus.OFFLINE) {
+        console.log('offline update');
         const offlinePostRequest =
             await OfflineUpdateRequest.buildOfflineRequestObject(
                 fetchOperation,
-                endpoint
+                endpoint,
+                contentType
             );
 
         const data = await updateOfflineDatabase(offlinePostRequest);

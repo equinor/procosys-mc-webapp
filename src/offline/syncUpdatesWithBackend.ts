@@ -321,6 +321,7 @@ const performOfflineUpdate = async (
         response = await api.putByFetch(
             offlineUpdate.url,
             offlineUpdate.bodyData,
+            'application/json',
             { 'Content-Type': 'application/json' }
         );
     } else if (method == 'DELETE') {

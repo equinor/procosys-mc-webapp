@@ -100,11 +100,9 @@ export class OfflineUpdateRequest {
      */
     static async buildOfflineRequestObject(
         fetchOperation: FetchOperationProps,
-        endpoint: string
+        endpoint: string,
+        contentType: string
     ): Promise<OfflineUpdateRequest> {
-        const headers = fetchOperation.headers;
-        const contentType = headers.get('Content-Type');
-
         const url = removeBaseUrlFromUrl(endpoint);
 
         let type;

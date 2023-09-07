@@ -153,7 +153,8 @@ const procosysApiService = (
         };
         const response = await mcFetchUpdate(
             `${baseURL}/${url}`,
-            DeleteOperation
+            DeleteOperation,
+            'application/json'
         );
 
         if (!response.ok) {
@@ -179,7 +180,11 @@ const procosysApiService = (
 
         let response = new Response();
         try {
-            response = await mcFetchUpdate(`${baseURL}/${url}`, PostOperation);
+            response = await mcFetchUpdate(
+                `${baseURL}/${url}`,
+                PostOperation,
+                'application/json'
+            );
         } catch (error) {
             console.error(
                 'Something went wrong when accessing the server.',
@@ -220,7 +225,8 @@ const procosysApiService = (
         };
         const response = await mcFetchUpdate(
             `${baseURL}/${url}`,
-            PostOperation
+            PostOperation,
+            'form-data'
         );
         if (!response.ok) {
             const errorMessage = await getErrorMessage(response);
@@ -242,6 +248,7 @@ const procosysApiService = (
     const putByFetch = async (
         url: string,
         bodyData: any,
+        contentType: string,
         additionalHeaders?: any
     ): Promise<any> => {
         const PutOperation = {
@@ -252,7 +259,11 @@ const procosysApiService = (
             },
             body: JSON.stringify(bodyData),
         };
-        const response = await mcFetchUpdate(`${baseURL}/${url}`, PutOperation);
+        const response = await mcFetchUpdate(
+            `${baseURL}/${url}`,
+            PutOperation,
+            contentType
+        );
         if (!response.ok) {
             const errorMessage = await getErrorMessage(response);
             throw new HTTPError(response.status, errorMessage);
@@ -613,6 +624,7 @@ const procosysApiService = (
         await putByFetch(
             `CheckList/MC/Comment?plantId=PCS$${plantId}${apiVersion}`,
             { CheckListId: checklistId, Comment: Comment },
+            'application/json',
             { 'Content-Type': 'application/json' }
         );
     };
@@ -774,6 +786,7 @@ const procosysApiService = (
                 RowId: rowId,
                 Value: value,
             },
+            'application/json',
             { 'Content-Type': 'application/json' }
         );
     };
@@ -795,6 +808,7 @@ const procosysApiService = (
                 RowId: rowId,
                 Value: value,
             },
+            'application/json',
             { 'Content-Type': 'application/json' }
         );
     };
@@ -1005,6 +1019,7 @@ const procosysApiService = (
         await putByFetch(
             `PunchListItem/${endpoint}?plantId=PCS$${plantId}${apiVersion}`,
             dto,
+            'application/json',
             { 'Content-Type': 'application/json' }
         );
     };
@@ -1271,6 +1286,7 @@ const procosysApiService = (
         await putByFetch(
             `OfflineScope/Offline?plantId=PCS$${plantId}${apiVersion}`,
             dto,
+            'application/json',
             { 'Content-Type': 'application/json' }
         );
     };
@@ -1286,6 +1302,7 @@ const procosysApiService = (
         await putByFetch(
             `OfflineScope/Synchronized?plantId=PCS$${plantId}${apiVersion}`,
             dto,
+            'application/json',
             { 'Content-Type': 'application/json' }
         );
     };
@@ -1301,6 +1318,7 @@ const procosysApiService = (
         await putByFetch(
             `OfflineScope/CheckList/Synchronized?plantId=PCS$${plantId}${apiVersion}`,
             dto,
+            'application/json',
             { 'Content-Type': 'application/json' }
         );
     };
@@ -1321,6 +1339,7 @@ const procosysApiService = (
         await putByFetch(
             `OfflineScope/PunchListItem/Synchronized?plantId=PCS$${plantId}${apiVersion}`,
             dto,
+            'application/json',
             { 'Content-Type': 'application/json' }
         );
     };
@@ -1348,6 +1367,7 @@ const procosysApiService = (
         await putByFetch(
             `OfflineScope/UnderPlanning?plantId=PCS$${plantId}${apiVersion}`,
             dto,
+            'application/json',
             { 'Content-Type': 'application/json' }
         );
     };
