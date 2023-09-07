@@ -1,5 +1,5 @@
+import { AsyncStatus } from '@equinor/procosys-webapp-components';
 import React from 'react';
-import { AsyncStatus } from '../contexts/McAppContext';
 
 enum TextFieldVariants {
     ERROR = 'error',

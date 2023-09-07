@@ -5,6 +5,7 @@ import { ProcosysApiService } from '../../services/procosysApi';
 import useCommonHooks from '../../utils/useCommonHooks';
 import { SearchType } from '@equinor/procosys-webapp-components';
 import { ProcosysIPOApiService } from '../../services/procosysIPOApi';
+import { SessionStorage } from '../../typings/enums';
 
 export enum SearchStatus {
     INACTIVE,
@@ -65,6 +66,9 @@ const fetchHits = async (
 ): Promise<void> => {
     dispatch({ type: 'FETCH_START' });
     try {
+        sessionStorage.setItem(SessionStorage.SEARCH_TYPE, searchType);
+        sessionStorage.setItem(SessionStorage.SEARCH_QUERY, query);
+        sessionStorage.setItem(SessionStorage.SECONDARY_QUERY, secondaryQuery);
         if (searchType === SearchType.IPO) {
             const results = await ipoApi.getIpoOnSearch(
                 plantId,
@@ -102,13 +106,22 @@ const useSearchPageFacade = (searchType: string) => {
         hits: { maxAvailable: 0, items: [] },
         searchStatus: SearchStatus.INACTIVE,
     });
-    const [query, setQuery] = useState('');
-    const [secondaryQuery, setSecondaryQuery] = useState('');
+    const [query, setQuery] = useState(
+        sessionStorage.getItem(SessionStorage.SEARCH_QUERY) ?? ''
+    );
+    const [secondaryQuery, setSecondaryQuery] = useState(
+        sessionStorage.getItem(SessionStorage.SECONDARY_QUERY) ?? ''
+    );
     const { currentProject, currentPlant } = useContext(PlantContext);
+    const [firstRender, setFirstRender] = useState<boolean>(true);
 
     useEffect(() => {
-        setSecondaryQuery('');
-        setQuery('');
+        if (firstRender) {
+            setFirstRender(false);
+        } else {
+            setSecondaryQuery('');
+            setQuery('');
+        }
     }, [searchType]);
 
     useEffect(() => {

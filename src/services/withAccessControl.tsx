@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useContext, ReactElement } from 'react';
 import PlantContext from '../contexts/PlantContext';
-import McAppContext, { AsyncStatus } from '../contexts/McAppContext';
+import McAppContext from '../contexts/McAppContext';
 import { Button } from '@equinor/eds-core-react';
 import useCommonHooks from '../utils/useCommonHooks';
 import {
+    AsyncStatus,
     ErrorPage,
     HomeButton,
     SkeletonLoadingPage,

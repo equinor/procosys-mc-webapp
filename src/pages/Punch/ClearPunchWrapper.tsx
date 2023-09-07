@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { AsyncStatus } from '../../contexts/McAppContext';
 import useCommonHooks from '../../utils/useCommonHooks';
 import {
     PunchCategory,
@@ -15,6 +14,7 @@ import {
     UpdatePunchData,
     useSnackbar,
     PunchAction,
+    AsyncStatus,
 } from '@equinor/procosys-webapp-components';
 import usePersonsSearchFacade from '../../utils/usePersonsSearchFacade';
 import { OfflineStatus } from '../../typings/enums';

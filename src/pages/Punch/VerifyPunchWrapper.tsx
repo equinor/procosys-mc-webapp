@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { AsyncStatus } from '../../contexts/McAppContext';
 import { PunchItem } from '../../services/apiTypes';
 import useCommonHooks from '../../utils/useCommonHooks';
 import {
@@ -7,6 +6,7 @@ import {
     useSnackbar,
     VerifyPunch,
     PunchAction,
+    AsyncStatus,
 } from '@equinor/procosys-webapp-components';
 
 type VerifyPunchProps = {
