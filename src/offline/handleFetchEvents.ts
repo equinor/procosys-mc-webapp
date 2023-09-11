@@ -18,7 +18,6 @@ export const mcFetchGet = async (
 ): Promise<any> => {
     const url = removeBaseUrlFromUrl(endpoint);
     if (getOfflineStatusfromLocalStorage() == OfflineStatus.OFFLINE) {
-        console.log('offline fetchig');
         if (url.includes('CheckList/CustomItem/NextItemNo')) {
             //Handle special case. Later: We should try to find a better way to handle this, to avoid this special handling.
             return await handleCustomCheckItemNextItemNo(endpoint);
@@ -44,7 +43,6 @@ export const mcFetchGet = async (
             return await fetch(endpoint, getOperation);
         }
     } else {
-        console.log('not offline');
         return await fetch(endpoint, getOperation);
     }
 };
@@ -55,7 +53,6 @@ export const mcFetchUpdate = async (
     contentType: string
 ): Promise<Response> => {
     if (getOfflineStatusfromLocalStorage() == OfflineStatus.OFFLINE) {
-        console.log('offline update');
         const offlinePostRequest =
             await OfflineUpdateRequest.buildOfflineRequestObject(
                 fetchOperation,
