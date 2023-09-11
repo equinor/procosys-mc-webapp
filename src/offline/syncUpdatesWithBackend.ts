@@ -19,7 +19,7 @@ import { db } from './db';
 const offlineUpdateRepository = new OfflineUpdateRepository();
 
 /**
- * This function is called when offline mode is to be finished.
+ * This function is called when offline mode is to be finished. The functions is implemented so that it can be recalled if there are network issues.
  * All updates  made in offline mode will be synchroinzed using the main-api. This
  * will be done by re-posting all POST, PUT and DELETE that was done while being offline.
  *
@@ -286,7 +286,8 @@ const reportErrorsIfExists = async (
 };
 
 /**
- * Synchronize an update (POST,PUT or DELETE)
+ * Synchronize an update (POST,PUT or DELETE).
+ * If the update result in a new entity id being created, this will be returned.
  */
 const performOfflineUpdate = async (
     offlineUpdate: OfflineUpdateRequest,
@@ -405,7 +406,7 @@ const setEntityToSynchronized = async (
 };
 
 /**
- * Update entityId for offline update request
+ * Update entityId for offline update request (a temporary id was created when user was offline).
  * The specific Post/PUT operation must be identified, and the specific variable in the body must be updated.
  */
 const updateIdOnEntityRequest = (
