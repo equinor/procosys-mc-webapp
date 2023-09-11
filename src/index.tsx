@@ -1,6 +1,6 @@
 import GlobalStyles from './style/GlobalStyles';
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import App from './App';
 import authService from './services/authService';
 import * as MSAL from '@azure/msal-browser';
@@ -12,39 +12,47 @@ import {
     ReloadButton,
     LoadingPage,
     SkeletonLoadingPage,
+    StorageKey,
 } from '@equinor/procosys-webapp-components';
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 import procosysIPOApiService from './services/procosysIPOApi';
 import OfflinePin from './OfflinePin';
 import {
+    getOfflineProjectIdfromLocalStorage,
     getOfflineStatusfromLocalStorage,
     updateOfflineStatus,
 } from './offline/OfflineStatus';
 import { syncronizeOfflineUpdatesWithBackend } from './offline/syncUpdatesWithBackend';
-import { OfflineStatus } from './typings/enums';
+import {
+    LocalStorage,
+    OfflineScopeStatus,
+    OfflineStatus,
+} from './typings/enums';
 import hasConnectionToServer from './utils/hasConnectionToServer';
-import { LocalStorage } from './contexts/McAppContext';
+import ConfirmSync from './ConfirmSync';
 
 const onUpdate = (registration: ServiceWorkerRegistration): void => {
     localStorage.setItem(LocalStorage.SW_UPDATE, 'true');
 };
 
 serviceWorkerRegistration.register({ onUpdate });
-
+const container = document.getElementById('root');
+// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+const root = createRoot(container!);
 const render = (content: JSX.Element): void => {
-    ReactDOM.render(
+    root.render(
         <React.StrictMode>
             <>
                 <GlobalStyles />
                 {content}
             </>
-        </React.StrictMode>,
-        document.getElementById('root')
+        </React.StrictMode>
     );
 };
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const initialize = async () => {
+    render(<LoadingPage loadingText={'Initializing service worker...'} />);
     console.log('Application is initializing');
     await navigator.serviceWorker.ready; //wait until service worker is active
     if (!('serviceWorker' in navigator)) {
@@ -56,8 +64,8 @@ const initialize = async () => {
     console.log('Offline status is ', offline);
 
     updateOfflineStatus(offline, userPin);
-
     // Get auth config, setup auth client and handle login
+    render(<LoadingPage loadingText={'Initializing authentication...'} />);
     const {
         clientSettings,
         scopes,
@@ -83,11 +91,13 @@ const initialize = async () => {
     }
 
     // Get config from App Configuration
+    render(<LoadingPage loadingText={'Initializing app config...'} />);
     const { appConfig, featureFlags } = await getAppConfig(
         configurationEndpoint,
         configurationAccessToken
     );
 
+    render(<LoadingPage loadingText={'Initializing access token...'} />);
     let accessToken = '';
     if (offline != OfflineStatus.OFFLINE) {
         accessToken = await authInstance.getAccessToken(
@@ -103,6 +113,7 @@ const initialize = async () => {
         accessToken
     );
 
+    render(<LoadingPage loadingText={'Initializing IPO access token...'} />);
     let accessTokenIPO = '';
     if (offline != OfflineStatus.OFFLINE) {
         accessTokenIPO = await authInstance.getAccessToken(
@@ -137,6 +148,11 @@ const setUserPin = (pin: string): void => {
     userPin = pin;
 };
 
+let isSure = false;
+const setIsSure = (): void => {
+    isSure = true;
+};
+
 const renderApp = async (): Promise<void> => {
     //If user is offline, the rendering of the app will be stalled, until pin is provided.
     const status = getOfflineStatusfromLocalStorage();
@@ -163,6 +179,30 @@ const renderApp = async (): Promise<void> => {
             } = await initialize();
 
             api = procosysApiInstance;
+            const currentPlant = localStorage.getItem(StorageKey.PLANT);
+            const currentProject = getOfflineProjectIdfromLocalStorage();
+
+            if (!currentPlant || !currentProject) {
+                throw Error(
+                    'Not able to synchronize because current plant or current project was not found on local storage.'
+                );
+            }
+
+            const offlineBookmarks = await api.getBookmarks(
+                currentPlant,
+                currentProject
+            );
+            if (
+                offlineBookmarks?.openDefinition.status ==
+                OfflineScopeStatus.UNDER_PLANNING
+            ) {
+                render(<ConfirmSync setIsSure={setIsSure} />);
+
+                if (isSure == false) {
+                    setTimeout(renderApp, 1000);
+                    return;
+                }
+            }
 
             render(
                 <SkeletonLoadingPage
@@ -173,7 +213,11 @@ const renderApp = async (): Promise<void> => {
                 />
             );
 
-            await syncronizeOfflineUpdatesWithBackend(procosysApiInstance);
+            await syncronizeOfflineUpdatesWithBackend(
+                procosysApiInstance,
+                offlineBookmarks?.openDefinition.status ==
+                    OfflineScopeStatus.UNDER_PLANNING
+            );
             console.log('Synchronization is done.');
 
             render(

@@ -1,5 +1,8 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 
+import { IEntity } from '@equinor/procosys-webapp-components';
+import removeBaseUrlFromUrl from '../utils/removeBaseUrlFromUrl';
+
 const Settings = require('../settings.json');
 
 export type AuthSettings = {
@@ -48,18 +51,19 @@ type AppConfigResponse = {
  * @param callbackFunc  This function is used to create offline scope
  */
 export const fetchAuthConfig = async (
-    callbackFunc?: any
+    entity?: IEntity
 ): Promise<AuthConfigResponse> => {
     const data = await fetch(Settings.authSettingsEndpoint);
     const authConfigResp: AuthConfigResponse = await data.json();
-    if (callbackFunc) {
-        callbackFunc(authConfigResp, Settings.authSettingsEndpoint);
+    if (entity) {
+        entity.responseObj = authConfigResp;
+        entity.apipath = removeBaseUrlFromUrl(Settings.authSettingsEndpoint);
     }
     return authConfigResp;
 };
 
 export const getAuthConfig = async () => {
-    const authConfigResp = await fetchAuthConfig(null);
+    const authConfigResp = await fetchAuthConfig();
 
     // Todo: TypeGuard authsettings
     const clientSettings = {
@@ -84,7 +88,7 @@ export const getAuthConfig = async () => {
 export const fetchAppConfig = async (
     endpoint: string,
     accessToken: string,
-    callbackFunc?: any
+    entity?: IEntity
 ): Promise<AppConfigResponse> => {
     const data = await fetch(endpoint, {
         headers: {
@@ -93,8 +97,9 @@ export const fetchAppConfig = async (
     });
     const resp = await data.json();
 
-    if (callbackFunc) {
-        callbackFunc(resp, endpoint);
+    if (entity) {
+        entity.responseObj = resp;
+        entity.apipath = removeBaseUrlFromUrl(endpoint);
     }
 
     return resp;

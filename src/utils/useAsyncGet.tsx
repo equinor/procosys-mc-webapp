@@ -1,6 +1,6 @@
+import { AsyncStatus } from '@equinor/procosys-webapp-components';
 import Axios, { CancelToken } from 'axios';
 import { useEffect, useState } from 'react';
-import { AsyncStatus } from '../contexts/McAppContext';
 
 function useAsyncGet<T>(
     asyncFunction: (cancelToken: CancelToken) => Promise<T>

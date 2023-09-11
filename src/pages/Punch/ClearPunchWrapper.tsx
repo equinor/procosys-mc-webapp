@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { AsyncStatus } from '../../contexts/McAppContext';
 import useCommonHooks from '../../utils/useCommonHooks';
 import {
     PunchCategory,
@@ -15,6 +14,7 @@ import {
     UpdatePunchData,
     useSnackbar,
     PunchAction,
+    AsyncStatus,
 } from '@equinor/procosys-webapp-components';
 import usePersonsSearchFacade from '../../utils/usePersonsSearchFacade';
 import { OfflineStatus } from '../../typings/enums';
@@ -88,6 +88,8 @@ const ClearPunchWrapper = ({
                 setPriorities(prioritiesFromApi);
                 setFetchOptionsStatus(AsyncStatus.SUCCESS);
             } catch (error) {
+                if (!(error instanceof Error)) return;
+                setSnackbarText(error.message);
                 setFetchOptionsStatus(AsyncStatus.ERROR);
             }
         })();
@@ -112,9 +114,9 @@ const ClearPunchWrapper = ({
             setUpdatePunchStatus(AsyncStatus.SUCCESS);
             setSnackbarText('Change successfully saved.');
         } catch (error) {
-            const pcsError = error as Error;
+            if (!(error instanceof Error)) return;
+            setSnackbarText(error.message);
             setUpdatePunchStatus(AsyncStatus.ERROR);
-            setSnackbarText(pcsError.toString());
         }
     };
 
@@ -128,6 +130,8 @@ const ClearPunchWrapper = ({
             );
             setClearPunchStatus(AsyncStatus.SUCCESS);
         } catch (error) {
+            if (!(error instanceof Error)) return;
+            setSnackbarText(error.message);
             setClearPunchStatus(AsyncStatus.ERROR);
         }
     };

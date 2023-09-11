@@ -4,6 +4,7 @@ import {
     ErrorPage,
     ReloadButton,
     LoadingPage,
+    AsyncStatus,
 } from '@equinor/procosys-webapp-components';
 import { Plant } from '../services/apiTypes';
 import { AppConfig, FeatureFlags } from '../services/appConfiguration';
@@ -25,22 +26,6 @@ type McAppContextProps = {
     configurationAccessToken: string;
     ipoApi: ProcosysIPOApiService;
 };
-
-export enum AsyncStatus {
-    INACTIVE,
-    LOADING,
-    SUCCESS,
-    ERROR,
-    EMPTY_RESPONSE,
-}
-
-export enum LocalStorage {
-    LOGIN_TRIES = 'loginTries',
-    OFFLINE_PROJECT_ID = 'offlineProjectId',
-    OFFLINE_STATUS = 'offlineStatus',
-    SYNCH_ERRORS = 'SynchErrors',
-    SW_UPDATE = 'serviceWorkerUpdate',
-}
 
 const McAppContext = React.createContext({} as McAppContextProps);
 

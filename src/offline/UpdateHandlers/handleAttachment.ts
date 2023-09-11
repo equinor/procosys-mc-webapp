@@ -1,8 +1,7 @@
 import { OfflineContentRepository } from '../OfflineContentRepository';
 import { EntityType } from '../../typings/enums';
 import { generateRandomId } from './utils';
-import { Attachment } from '@equinor/procosys-webapp-components';
-import { IEntity } from '../IEntity';
+import { Attachment, IEntity } from '@equinor/procosys-webapp-components';
 import { isArrayOfType, isOfType } from '../../services/apiTypeGuards';
 import { PunchItem, PunchPreview } from '../../services/apiTypes';
 import { OfflineUpdateRequest } from '../OfflineUpdateRequest';
@@ -243,7 +242,8 @@ export const handlePostChecklistAttachment = async (
     await addAttachmentToAttachmentList(
         attachmentListEntity,
         newAttachmentId,
-        title
+        title,
+        offlinePostRequest.mimeType
     );
     await offlineUpdateRepository.addUpdateRequest(
         Number(checklistId),

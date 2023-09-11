@@ -2,10 +2,10 @@ import { Button } from '@equinor/eds-core-react';
 import React from 'react';
 import styled from 'styled-components';
 import EdsIcon from '../../../components/icons/EdsIcon';
-import { AsyncStatus } from '../../../contexts/McAppContext';
 import { SavedSearch, ApiSavedSearchType } from '../../../services/apiTypes';
 import { Caption, COLORS } from '../../../style/GlobalStyles';
 import useCommonHooks from '../../../utils/useCommonHooks';
+import { AsyncStatus } from '@equinor/procosys-webapp-components';
 
 const SavedSearchWrapper = styled.article`
     cursor: pointer;
@@ -84,7 +84,9 @@ const SavedSearchResult = ({
             </ContentWrapper>
             <DeleteButton
                 aria-label="Delete saved search"
-                onClick={(e): void => {
+                onClick={(
+                    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+                ): void => {
                     e.stopPropagation();
                     deleteSavedSearch(search.id);
                 }}

@@ -3,9 +3,12 @@ import { Search as SearchField } from '@equinor/eds-core-react';
 import useSearchPageFacade from '../useSearchPageFacade';
 import SearchResults from './SearchResults';
 import styled from 'styled-components';
-import { TagPhotoRecognition } from '@equinor/procosys-webapp-components';
+import {
+    SearchType,
+    TagPhotoRecognition,
+} from '@equinor/procosys-webapp-components';
 import useCommonHooks from '../../../utils/useCommonHooks';
-import { OfflineStatus, SearchType } from '../../../typings/enums';
+import { OfflineStatus } from '../../../typings/enums';
 
 export const TallSearchField = styled(SearchField)`
     height: 54px;
@@ -18,9 +21,13 @@ const SearchAreaWrapper = styled.div`
 
 type SearchAreaProps = {
     searchType: string;
+    setSnackbarText: React.Dispatch<React.SetStateAction<string>>;
 };
 
-const SearchArea = ({ searchType }: SearchAreaProps): JSX.Element => {
+const SearchArea = ({
+    searchType,
+    setSnackbarText,
+}: SearchAreaProps): JSX.Element => {
     const searchbarRef = useRef<HTMLInputElement>(
         document.createElement('input')
     );
@@ -33,8 +40,8 @@ const SearchArea = ({ searchType }: SearchAreaProps): JSX.Element => {
         searchStatus,
         query,
         setQuery,
-        callOffQuery,
-        setCallOffQuery,
+        secondaryQuery,
+        setSecondaryQuery,
     } = useSearchPageFacade(searchType);
 
     useEffect(() => {
@@ -58,12 +65,15 @@ const SearchArea = ({ searchType }: SearchAreaProps): JSX.Element => {
                 <TagPhotoRecognition
                     setQuery={setQuery}
                     tagOcrEndpoint={appConfig.ocrFunctionEndpoint}
+                    setSnackbarText={setSnackbarText}
                 />
             ) : null}
             <TallSearchField
                 placeholder={
                     searchType === SearchType.PO
                         ? 'Type to search PO no'
+                        : searchType === SearchType.IPO
+                        ? 'Type to search IPO no'
                         : `For example: "${getPlaceholderText()}"`
                 }
                 value={query}
@@ -73,12 +83,16 @@ const SearchArea = ({ searchType }: SearchAreaProps): JSX.Element => {
                 ref={searchbarRef}
                 aria-label="Searchbar"
             />
-            {searchType === SearchType.PO ? (
+            {searchType === SearchType.PO || searchType === SearchType.IPO ? (
                 <TallSearchField
-                    placeholder={'Type to search call off no'}
-                    value={callOffQuery}
+                    placeholder={
+                        searchType === SearchType.PO
+                            ? 'Type to search call off no'
+                            : 'Type to search MC pkg for IPO'
+                    }
+                    value={secondaryQuery}
                     onChange={(e: ChangeEvent<HTMLInputElement>): void =>
-                        setCallOffQuery(e.target.value)
+                        setSecondaryQuery(e.target.value)
                     }
                     ref={callOffSearchbarRef}
                     aria-label="CallOffSearchbar"
@@ -88,6 +102,7 @@ const SearchArea = ({ searchType }: SearchAreaProps): JSX.Element => {
                 searchStatus={searchStatus}
                 searchResults={hits}
                 searchType={searchType}
+                setSnackbarText={setSnackbarText}
             />
         </SearchAreaWrapper>
     );

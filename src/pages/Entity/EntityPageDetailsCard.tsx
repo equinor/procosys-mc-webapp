@@ -1,13 +1,14 @@
 import { DotProgress } from '@equinor/eds-core-react';
 import {
+    AsyncStatus,
     EntityDetails,
     isOfType,
+    SearchType,
     TextIcon,
 } from '@equinor/procosys-webapp-components';
 import React from 'react';
 import styled from 'styled-components';
 import McDetails from '../../components/detailCards/McDetails';
-import { AsyncStatus } from '../../contexts/McAppContext';
 import {
     IpoDetails,
     McPkgPreview,
@@ -16,7 +17,6 @@ import {
     WoPreview,
 } from '../../services/apiTypes';
 import { COLORS } from '../../style/GlobalStyles';
-import { SearchType } from '../../typings/enums';
 import useCommonHooks from '../../utils/useCommonHooks';
 
 export const DetailsWrapper = styled.p`
@@ -79,8 +79,8 @@ const EntityPageDetailsCard = ({
                 <EntityDetails
                     isDetailsCard={true}
                     headerText={params.entityId}
-                    description={details.description}
-                    details={[details.title]}
+                    description={details.title}
+                    details={[details.type, details.projectName]}
                     icon={<TextIcon color={COLORS.ipoIcon} text="IPO" />}
                 />
             );

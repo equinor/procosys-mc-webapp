@@ -37,6 +37,7 @@ export enum EntityType {
     PunchAttachment = 'PunchAttachment',
     ChecklistAttachments = 'ChecklistAttachments',
     ChecklistAttachment = 'ChecklistAttachment',
+    PunchComments = 'PunchComments',
 }
 
 export enum SavedSearchType {
@@ -44,17 +45,47 @@ export enum SavedSearchType {
     PUNCH = 'punch',
 }
 
-export enum SearchType {
-    PO = 'PO',
-    MC = 'MC',
-    WO = 'WO',
-    Tag = 'Tag',
-    IPO = 'IPO',
-}
-
 export enum OfflineStatus {
     ONLINE,
     OFFLINE,
     SYNCHING,
     SYNC_FAIL,
+}
+
+export enum OfflineScopeStatus {
+    UNDER_PLANNING = 'UnderPlanning',
+    IS_OFFLINE = 'IsOffline',
+}
+
+// IPO
+export enum IpoStatusEnum {
+    CANCELED = 'Canceled',
+    PLANNED = 'Planned',
+    COMPLETED = 'Completed',
+    ACCEPTED = 'Accepted',
+}
+
+export enum IpoOrganizationsEnum {
+    Commissioning = 'Commissioning',
+    ConstructionCompany = 'ConstructionCompany',
+    Contractor = 'Contractor',
+    Operation = 'Operation',
+    TechnicalIntegrity = 'TechnicalIntegrity',
+    Supplier = 'Supplier',
+    External = 'External',
+}
+
+// Browser stores
+export enum LocalStorage {
+    LOGIN_TRIES = 'loginTries',
+    OFFLINE_PROJECT_ID = 'offlineProjectId',
+    OFFLINE_STATUS = 'offlineStatus',
+    SYNCH_ERRORS = 'SynchErrors',
+    SW_UPDATE = 'serviceWorkerUpdate',
+}
+
+export enum SessionStorage {
+    SEARCH_TYPE = 'searchType',
+    SEARCH_QUERY = 'searchQuery',
+    SECONDARY_QUERY = 'secondaryQuery',
 }

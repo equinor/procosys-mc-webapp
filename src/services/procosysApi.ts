@@ -1,14 +1,19 @@
 import {
+    GetOperationProps,
+    HTTPError,
+    IEntity,
     PunchAction,
-    PunchEndpoints,
+    SearchType,
     UpdatePunchData,
+    getErrorMessage,
 } from '@equinor/procosys-webapp-components';
 import {
     PunchComment,
     APIComment,
 } from '@equinor/procosys-webapp-components/dist/typings/apiTypes';
-import { SavedSearchType, SearchType } from '../typings/enums';
+import { SavedSearchType } from '../typings/enums';
 import objectToCamelCase from '../utils/objectToCamelCase';
+import removeBaseUrlFromUrl from '../utils/removeBaseUrlFromUrl';
 import {
     isArrayofPerson,
     isArrayOfType,
@@ -46,18 +51,10 @@ import {
     EntityId,
     OfflineSynchronizationErrors,
 } from './apiTypes';
-import { HTTPError } from './HTTPError';
 
 type ProcosysApiServiceProps = {
     baseURL: string;
     apiVersion: string;
-};
-
-type GetOperationProps = {
-    abortSignal?: AbortSignal;
-    method: string;
-    headers: any;
-    responseType?: string;
 };
 
 export const typeGuardErrorMessage = (expectedType: string): string => {
@@ -69,15 +66,18 @@ const procosysApiService = (
     { baseURL, apiVersion }: ProcosysApiServiceProps,
     token: string
 ) => {
-    let callback = (resultObj: any, apiPath: string): string => resultObj;
-
-    const setCallbackFunction = (cbFunc: any): void => {
-        callback = cbFunc;
-    };
-
     // General
     const getVersion = (): string => {
         return apiVersion;
+    };
+
+    const updateOfflineEntityObj = (
+        entity: IEntity,
+        resultObj: any,
+        apiPath: string
+    ): void => {
+        entity.responseObj = resultObj;
+        entity.apipath = removeBaseUrlFromUrl(apiPath);
     };
 
     /**
@@ -85,7 +85,8 @@ const procosysApiService = (
      */
     const getByFetch = async (
         url: string,
-        abortSignal?: AbortSignal
+        abortSignal?: AbortSignal,
+        entity?: IEntity
     ): Promise<any> => {
         const GetOperation: GetOperationProps = {
             abortSignal: abortSignal,
@@ -98,7 +99,7 @@ const procosysApiService = (
         if (res.ok) {
             const jsonResult = await res.json();
             const resultObj = objectToCamelCase(jsonResult);
-            callback(resultObj, res.url);
+            entity && updateOfflineEntityObj(entity, resultObj, res.url);
             return resultObj;
         } else {
             console.error('Get by fetch failed. Url=' + url, res);
@@ -111,7 +112,8 @@ const procosysApiService = (
      */
     const getAttachmentByFetch = async (
         url: string,
-        abortSignal?: AbortSignal
+        abortSignal?: AbortSignal,
+        entity?: IEntity
     ): Promise<Blob> => {
         const GetOperation: GetOperationProps = {
             abortSignal: abortSignal,
@@ -130,7 +132,7 @@ const procosysApiService = (
 
             //ArrayBuffer must be used for storing in indexeddb (blob not supported by all browser, and not supported by Dexie-encrypted)
             const arrayBuffer = await blob.arrayBuffer();
-            callback(arrayBuffer, res.url);
+            entity && updateOfflineEntityObj(entity, arrayBuffer, res.url);
             return blob;
         } else {
             console.error('Get attachment by fetch failed. Url=' + url, res);
@@ -204,7 +206,8 @@ const procosysApiService = (
     const postAttachmentByFetch = async (
         url: string,
         file: FormData,
-        returnId: boolean
+        returnId: boolean,
+        entity?: IEntity
     ): Promise<any> => {
         const PostOperation = {
             method: 'POST',
@@ -221,7 +224,9 @@ const procosysApiService = (
         if (returnId == true) {
             const jsonResult = await response.json();
             const resultObj = objectToCamelCase(jsonResult);
-            callback(resultObj, response.url);
+
+            entity && updateOfflineEntityObj(entity, resultObj, response.url);
+
             return resultObj;
         }
     };
@@ -249,21 +254,11 @@ const procosysApiService = (
         }
     };
 
-    const getErrorMessage = async (response: Response): Promise<string> => {
-        let errorMessage;
-        const text = await response.text();
-        if (text) {
-            errorMessage = text;
-        } else {
-            errorMessage = `Server responded with http error code ${response.status}. ${response.statusText}`;
-        }
-        console.error('Error occured on server call.', errorMessage);
-        return errorMessage;
-    };
-
-    const getPlants = async (): Promise<Plant[]> => {
+    const getPlants = async (entity?: IEntity): Promise<Plant[]> => {
         const plants = await getByFetch(
-            `Plants?includePlantsWithoutAccess=false${apiVersion}`
+            `Plants?includePlantsWithoutAccess=false${apiVersion}`,
+            undefined,
+            entity
         );
         if (!isArrayOfType<Plant>(plants, 'title')) {
             throw new Error(typeGuardErrorMessage('plants'));
@@ -275,9 +270,14 @@ const procosysApiService = (
         return plantsWithSlug;
     };
 
-    const getProjectsForPlant = async (plantId: string): Promise<Project[]> => {
+    const getProjectsForPlant = async (
+        plantId: string,
+        entity?: IEntity
+    ): Promise<Project[]> => {
         const data = await getByFetch(
-            `Projects?plantId=${plantId}${apiVersion}`
+            `Projects?plantId=${plantId}${apiVersion}`,
+            undefined,
+            entity
         );
         if (!isArrayOfType<Project>(data, 'title')) {
             throw new Error(typeGuardErrorMessage('projects'));
@@ -286,17 +286,20 @@ const procosysApiService = (
     };
 
     const getPermissionsForPlant = async (
-        plantId: string
+        plantId: string,
+        entity?: IEntity
     ): Promise<string[]> => {
         const data = await getByFetch(
-            `Permissions?plantId=${plantId}${apiVersion}`
+            `Permissions?plantId=${plantId}${apiVersion}`,
+            undefined,
+            entity
         );
         return data as string[];
     };
 
     const getSearchResults = async (
         query: string,
-        callOffQuery: string,
+        secondaryQuery: string,
         projectId: number,
         plantId: string,
         searchType: string,
@@ -318,7 +321,7 @@ const procosysApiService = (
         } else if (searchType === SearchType.PO) {
             url = `PurchaseOrder/Search?plantId=${plantId}&startsWithPurchaseOrderNo=${encodeURIComponent(
                 query
-            )}&startsWithCallOffNo=${callOffQuery}&projectId=${projectId}${apiVersion}`;
+            )}&startsWithCallOffNo=${secondaryQuery}&projectId=${projectId}${apiVersion}`;
         } else {
             throw new Error('An error occurred, please try again.');
         }
@@ -379,7 +382,8 @@ const procosysApiService = (
         plantId: string,
         searchType: string,
         entityId: string,
-        abortSignal?: AbortSignal
+        abortSignal?: AbortSignal,
+        entity?: IEntity
     ): Promise<McPkgPreview | WoPreview | Tag | PoPreview> => {
         let url = '';
         if (searchType === SearchType.MC) {
@@ -395,7 +399,7 @@ const procosysApiService = (
         } else {
             throw new Error('The chosen scope type is not supported.');
         }
-        const data = await getByFetch(url, abortSignal);
+        const data = await getByFetch(url, abortSignal, entity);
         if (!isCorrectDetails(data, searchType)) {
             throw new Error(typeGuardErrorMessage('details'));
         }
@@ -405,11 +409,13 @@ const procosysApiService = (
     const getPunchAttachments = async (
         plantId: string,
         punchItemId: number,
-        abortSignal?: AbortSignal
+        abortSignal?: AbortSignal,
+        entity?: IEntity
     ): Promise<Attachment[]> => {
         const data = await getByFetch(
             `PunchListItem/Attachments?plantId=PCS$${plantId}&punchItemId=${punchItemId}&thumbnailSize=128${apiVersion}`,
-            abortSignal
+            abortSignal,
+            entity
         );
         return data as Attachment[];
     };
@@ -438,12 +444,14 @@ const procosysApiService = (
 
     const getBookmarks = async (
         plantId: string,
-        projectId: number,
-        abortSignal: AbortSignal
+        projectId: number | string,
+        abortSignal?: AbortSignal,
+        entity?: IEntity
     ): Promise<Bookmarks | null> => {
         const data = await getByFetch(
             `OfflineScope?plantId=PCS$${plantId}&projectId=${projectId}${apiVersion}`,
-            abortSignal
+            abortSignal,
+            entity
         );
         return data;
     };
@@ -466,16 +474,12 @@ const procosysApiService = (
         await deleteByFetch(url);
     };
 
-    const putCancelOffline = async (
+    const deleteBookmarks = async (
         plantId: string,
         projectId: number
     ): Promise<void> => {
-        await putByFetch(
-            `OfflineScope/Cancel?plantId=PCS$${plantId}${apiVersion}`,
-            {
-                ProjectId: projectId,
-            },
-            { 'Content-Type': 'application/json' }
+        await deleteByFetch(
+            `Bookmark?plantId=PCS$${plantId}&projectId=${projectId}${apiVersion}`
         );
     };
 
@@ -487,7 +491,8 @@ const procosysApiService = (
         searchType: SearchType,
         entityId: string,
         ipoDetails: McPkgPreview | WoPreview | Tag | PoPreview | IpoDetails,
-        abortSignal?: AbortSignal
+        abortSignal?: AbortSignal,
+        entity?: IEntity
     ): Promise<ChecklistPreview[]> => {
         let url = '';
         if (searchType === SearchType.MC) {
@@ -524,7 +529,7 @@ const procosysApiService = (
         } else {
             throw new Error('The chosen scope type is not supported.');
         }
-        const data = await getByFetch(url, abortSignal);
+        const data = await getByFetch(url, abortSignal, entity);
         if (!isArrayOfType<ChecklistPreview>(data, 'hasElectronicForm')) {
             throw new Error(typeGuardErrorMessage('checklist preview'));
         }
@@ -534,11 +539,13 @@ const procosysApiService = (
     const getChecklist = async (
         plantId: string,
         checklistId: string,
-        abortSignal?: AbortSignal
+        abortSignal?: AbortSignal,
+        entity?: IEntity
     ): Promise<ChecklistResponse> => {
         const data = await getByFetch(
             `CheckList/MC?plantId=PCS$${plantId}&checklistId=${checklistId}${apiVersion}`,
-            abortSignal
+            abortSignal,
+            entity
         );
         if (!isChecklistResponse(data)) {
             throw new Error('An error occurred, please try again');
@@ -549,11 +556,13 @@ const procosysApiService = (
     const getChecklistPunchList = async (
         plantId: string,
         checklistId: string,
-        abortSignal?: AbortSignal
+        abortSignal?: AbortSignal,
+        entity?: IEntity
     ): Promise<PunchPreview[]> => {
         const data = await getByFetch(
             `CheckList/PunchList?plantId=PCS$${plantId}&checklistId=${checklistId}${apiVersion}`,
-            abortSignal
+            abortSignal,
+            entity
         );
         if (!isArrayOfType<PunchPreview>(data, 'cleared')) {
             throw new Error('An error occurred, please try again.');
@@ -570,7 +579,8 @@ const procosysApiService = (
         searchType: SearchType,
         entityId: string,
         entityDetails: McPkgPreview | WoPreview | Tag | PoPreview | IpoDetails,
-        abortSignal?: AbortSignal
+        abortSignal?: AbortSignal,
+        entity?: IEntity
     ): Promise<PunchPreview[]> => {
         let url = '';
         if (searchType === SearchType.MC) {
@@ -603,7 +613,7 @@ const procosysApiService = (
         } else {
             throw new Error('The chosen scope type is not supported.');
         }
-        const data = await getByFetch(url, abortSignal);
+        const data = await getByFetch(url, abortSignal, entity);
         if (!isArrayOfType<PunchPreview>(data, 'responsibleCode')) {
             throw new Error(typeGuardErrorMessage('punch preview'));
         }
@@ -612,11 +622,13 @@ const procosysApiService = (
 
     const getPunchCategories = async (
         plantId: string,
-        abortSignal: AbortSignal
+        abortSignal: AbortSignal,
+        entity?: IEntity
     ): Promise<PunchCategory[]> => {
         const data = await getByFetch(
             `PunchListItem/Categories?plantId=PCS$${plantId}${apiVersion}`,
-            abortSignal
+            abortSignal,
+            entity
         );
         if (!isArrayOfType<PunchCategory>(data, 'code')) {
             throw new Error(typeGuardErrorMessage('punch categories'));
@@ -626,11 +638,13 @@ const procosysApiService = (
 
     const getPunchTypes = async (
         plantId: string,
-        abortSignal: AbortSignal
+        abortSignal: AbortSignal,
+        entity?: IEntity
     ): Promise<PunchType[]> => {
         const data = await getByFetch(
             `PunchListItem/Types?plantId=PCS$${plantId}${apiVersion}`,
-            abortSignal
+            abortSignal,
+            entity
         );
         if (!isArrayOfType<PunchType>(data, 'code')) {
             throw new Error(typeGuardErrorMessage('punch types'));
@@ -640,11 +654,13 @@ const procosysApiService = (
 
     const getPunchOrganizations = async (
         plantId: string,
-        abortSignal: AbortSignal
+        abortSignal: AbortSignal,
+        entity?: IEntity
     ): Promise<PunchOrganization[]> => {
         const data = await getByFetch(
             `PunchListItem/Organizations?plantId=PCS$${plantId}${apiVersion}`,
-            abortSignal
+            abortSignal,
+            entity
         );
         if (!isArrayOfType<PunchOrganization>(data, 'code')) {
             throw new Error(typeGuardErrorMessage('punch organizations'));
@@ -654,11 +670,13 @@ const procosysApiService = (
 
     const getPunchSorts = async (
         plantId: string,
-        abortSignal: AbortSignal
+        abortSignal: AbortSignal,
+        entity?: IEntity
     ): Promise<PunchSort[]> => {
         const data = await getByFetch(
             `PunchListItem/Sorts?plantId=PCS$${plantId}${apiVersion}`,
-            abortSignal
+            abortSignal,
+            entity
         );
         if (!isArrayOfType<PunchSort>(data, 'code')) {
             throw new Error(typeGuardErrorMessage('punch sorts'));
@@ -667,11 +685,13 @@ const procosysApiService = (
     };
     const getPunchPriorities = async (
         plantId: string,
-        abortSignal: AbortSignal
+        abortSignal: AbortSignal,
+        entity?: IEntity
     ): Promise<PunchPriority[]> => {
         const data = await getByFetch(
             `PunchListItem/Priorities?plantId=PCS$${plantId}${apiVersion}`,
-            abortSignal
+            abortSignal,
+            entity
         );
         if (!isArrayOfType<PunchPriority>(data, 'code')) {
             throw new Error(typeGuardErrorMessage('punch priorities'));
@@ -692,11 +712,13 @@ const procosysApiService = (
     const getPunchItem = async (
         plantId: string,
         punchItemId: string,
-        abortSignal?: AbortSignal
+        abortSignal?: AbortSignal,
+        entity?: IEntity
     ): Promise<PunchItem> => {
         const data = await getByFetch(
             `PunchListItem?plantId=PCS$${plantId}&punchItemId=${punchItemId}${apiVersion}`,
-            abortSignal
+            abortSignal,
+            entity
         );
         if (!isOfType<PunchItem>(data, 'raisedByCode')) {
             throw new Error(typeGuardErrorMessage('punchItem'));
@@ -734,11 +756,13 @@ const procosysApiService = (
         plantId: string,
         punchItemId: number,
         attachmentId: number,
-        abortSignal?: AbortSignal
+        abortSignal?: AbortSignal,
+        entity?: IEntity
     ): Promise<Blob> => {
         const data = await getAttachmentByFetch(
             `PunchListItem/Attachment?plantId=PCS$${plantId}&punchItemId=${punchItemId}&attachmentId=${attachmentId}${apiVersion}`,
-            abortSignal
+            abortSignal,
+            entity
         );
         return data as Blob;
     };
@@ -746,11 +770,13 @@ const procosysApiService = (
     const getPunchComments = async (
         plantId: string,
         punchItemId: number,
-        abortSignal?: AbortSignal
+        abortSignal?: AbortSignal,
+        entity?: IEntity
     ): Promise<APIComment[]> => {
         const data = await getByFetch(
             `PunchListItem/Comments?plantId=PCS$${plantId}&punchItemId=${punchItemId}&${apiVersion}`,
-            abortSignal
+            abortSignal,
+            entity
         );
         return data;
     };
@@ -810,11 +836,13 @@ const procosysApiService = (
     const getPersonsByName = async (
         plantId: string,
         searchString: string,
-        abortSignal: AbortSignal
+        abortSignal: AbortSignal,
+        entity?: IEntity
     ): Promise<Person[]> => {
         const data = await getByFetch(
             `Person/PersonSearch?plantId=${plantId}&searchString=${searchString}${apiVersion}`,
-            abortSignal
+            abortSignal,
+            entity
         );
         if (!isArrayofPerson(data)) {
             throw new Error('An error occurred, please try again.');
@@ -825,11 +853,13 @@ const procosysApiService = (
     const getTag = async (
         plantId: string,
         tagId: number,
-        abortSignal?: AbortSignal
+        abortSignal?: AbortSignal,
+        entity?: IEntity
     ): Promise<Tag> => {
         const data = await getByFetch(
             `Tag?plantId=PCS$${plantId}&tagId=${tagId}${apiVersion}`,
-            abortSignal
+            abortSignal,
+            entity
         );
         if (!isOfType<Tag>(data, 'tag')) {
             throw Error(typeGuardErrorMessage('tag'));
@@ -840,11 +870,13 @@ const procosysApiService = (
     const getWorkOrderAttachments = async (
         plantId: string,
         workOrderId: string,
-        abortSignal?: AbortSignal
+        abortSignal?: AbortSignal,
+        entity?: IEntity
     ): Promise<Attachment[]> => {
         const data = await getByFetch(
             `WorkOrder/Attachments?plantId=PCS$${plantId}&workOrderId=${workOrderId}&thumbnailSize=128${apiVersion}`,
-            abortSignal
+            abortSignal,
+            entity
         );
         if (!isArrayOfType<Attachment>(data, 'fileName')) {
             throw Error(typeGuardErrorMessage('attachments'));
@@ -856,11 +888,13 @@ const procosysApiService = (
         plantId: string,
         workOrderId: string,
         attachmentId: number,
-        abortSignal?: AbortSignal
+        abortSignal?: AbortSignal,
+        entity?: IEntity
     ): Promise<Blob> => {
         const data = await getAttachmentByFetch(
             `WorkOrder/Attachment?plantId=PCS$${plantId}&workOrderId=${workOrderId}&attachmentId=${attachmentId}${apiVersion}`,
-            abortSignal
+            abortSignal,
+            entity
         );
         return data;
     };
@@ -896,11 +930,13 @@ const procosysApiService = (
     const getChecklistAttachments = async (
         plantId: string,
         checklistId: string,
-        abortSignal?: AbortSignal
+        abortSignal?: AbortSignal,
+        entity?: IEntity
     ): Promise<Attachment[]> => {
         const data = await getByFetch(
             `CheckList/Attachments?plantId=PCS$${plantId}&checkListId=${checklistId}&thumbnailSize=128${apiVersion}`,
-            abortSignal
+            abortSignal,
+            entity
         );
         return data as Attachment[];
     };
@@ -909,11 +945,13 @@ const procosysApiService = (
         plantId: string,
         checklistId: string,
         attachmentId: number,
-        abortSignal?: AbortSignal
+        abortSignal?: AbortSignal,
+        entity?: IEntity
     ): Promise<Blob> => {
         const data = await getAttachmentByFetch(
             `CheckList/Attachment?plantId=PCS$${plantId}&checkListId=${checklistId}&attachmentId=${attachmentId}${apiVersion}`,
-            abortSignal
+            abortSignal,
+            entity
         );
         return data as Blob;
     };
@@ -975,7 +1013,7 @@ const procosysApiService = (
         plantId: string,
         projectId: number
     ): Promise<void> => {
-        const dto = { ProjectId: projectId };
+        const dto = { ProjectId: projectId, KeepBookmarks: true };
         await putByFetch(
             `OfflineScope/Synchronized?plantId=PCS$${plantId}${apiVersion}`,
             dto,
@@ -1031,6 +1069,20 @@ const procosysApiService = (
         );
     };
 
+    const putUnderPlanning = async (
+        plantId: string,
+        projectId: number
+    ): Promise<void> => {
+        const dto = {
+            ProjectId: projectId,
+        };
+        await putByFetch(
+            `OfflineScope/UnderPlanning?plantId=PCS$${plantId}${apiVersion}`,
+            dto,
+            { 'Content-Type': 'application/json' }
+        );
+    };
+
     /**
      * This endpoint returns info about the current application.
      * We use it to ensure that we can access the server, before we start offline syncronization.
@@ -1070,7 +1122,7 @@ const procosysApiService = (
         postSetBookmark,
         getBookmarks,
         deleteBookmark,
-        putCancelOffline,
+        deleteBookmarks,
         getPersonsByName,
         getSavedSearches,
         deleteSavedSearch,
@@ -1083,7 +1135,6 @@ const procosysApiService = (
         getChecklistAttachment,
         deleteChecklistAttachment,
         postChecklistAttachment,
-        setCallbackFunction,
         postByFetch,
         postAttachmentByFetch,
         deleteByFetch,
@@ -1093,6 +1144,7 @@ const procosysApiService = (
         putOfflineScopePunchlistItemSynchronized,
         postOfflineScopeSynchronizeErrors,
         putOfflineScopeOffline,
+        putUnderPlanning,
         getApplication,
     };
 };

@@ -1,5 +1,6 @@
 import { CheckItem } from '@equinor/procosys-webapp-components/dist/typings/apiTypes';
 import * as tg from 'generic-type-guard';
+import { IpoStatusEnum, OfflineScopeStatus } from '../typings/enums';
 
 export type Entities =
     | Plant
@@ -125,9 +126,22 @@ export interface PoPreview {
     responsibleCode: string;
 }
 
+export interface IPOPreview {
+    id: number;
+    projectName: string;
+    title: string;
+    description: string;
+    type: string;
+}
+
 export interface SearchResults {
     maxAvailable: number;
-    items: McPkgPreview[] | WoPreview[] | TagPreview[] | PoPreview[];
+    items:
+        | McPkgPreview[]
+        | WoPreview[]
+        | TagPreview[]
+        | PoPreview[]
+        | IpoDetails[];
 }
 
 export interface ChecklistSavedSearchResult {
@@ -181,7 +195,7 @@ export interface IpoDetails {
     description: string;
     location: string;
     type: string;
-    status: string;
+    status: IpoStatusEnum;
     createdBy: {
         id: number;
         firstName: string;
@@ -197,59 +211,7 @@ export interface IpoDetails {
     canCancel: boolean;
     canDelete: boolean;
     rowVersion: string;
-    participants: [
-        {
-            id: number;
-            organization: string;
-            sortKey: number;
-            signedBy: {
-                id: number;
-                firstName: string;
-                lastName: string;
-                userName: string;
-                azureOid: string;
-                email: string;
-                rowVersion: string;
-            };
-            signedAtUtc: Date;
-            note: string;
-            attended: boolean;
-            isAttendedTouched: boolean;
-            isSigner: boolean;
-            canEditAttendedStatusAndNote: boolean;
-            externalEmail: {
-                externalEmail: string;
-                response: string;
-            };
-            person: {
-                response: string;
-                firstName: string;
-                lastName: string;
-                userName: string;
-                azureOid: string;
-                email: string;
-            };
-            functionalRole: {
-                code: string;
-                email: string;
-                persons: [
-                    {
-                        response: string;
-                        id: number;
-                        firstName: string;
-                        lastName: string;
-                        userName: string;
-                        azureOid: string;
-                        email: string;
-                        required: boolean;
-                        rowVersion: string;
-                    }
-                ];
-                response: string;
-            };
-            rowVersion: string;
-        }
-    ];
+    participants: IpoParticipant[];
     mcPkgScope: [
         {
             mcPkgNo: string;
@@ -268,6 +230,66 @@ export interface IpoDetails {
     ];
 }
 
+export interface IpoParticipant {
+    id: number;
+    organization: IpoOrganization;
+    sortKey: number;
+    signedBy: {
+        id: number;
+        firstName: string;
+        lastName: string;
+        userName: string;
+        azureOid: string;
+        email: string;
+        rowVersion: string;
+    };
+    signedAtUtc: Date;
+    note: string;
+    attended: boolean;
+    isAttendedTouched: boolean;
+    isSigner: boolean;
+    canEditAttendedStatusAndNote: boolean;
+    externalEmail: {
+        externalEmail: string;
+        response: string;
+    };
+    person: {
+        response: string;
+        firstName: string;
+        lastName: string;
+        userName: string;
+        azureOid: string;
+        email: string;
+    };
+    functionalRole: {
+        code: string;
+        email: string;
+        persons: [
+            {
+                response: string;
+                id: number;
+                firstName: string;
+                lastName: string;
+                userName: string;
+                azureOid: string;
+                email: string;
+                required: boolean;
+                rowVersion: string;
+            }
+        ];
+        response: string;
+    };
+    rowVersion: string;
+}
+
+export type IpoOrganization =
+    | 'Commissioning'
+    | 'ConstructionCompany'
+    | 'Contractor'
+    | 'Operation'
+    | 'TechnicalIntegrity'
+    | 'Supplier'
+    | 'External';
 // COMM PKG AND LISTS
 
 export interface CommPkg {
@@ -581,7 +603,7 @@ export interface TagBookmark {
 export interface Bookmarks {
     openDefinition: {
         offlineAt?: Date;
-        status: string;
+        status: OfflineScopeStatus;
     };
     bookmarkedMcPkgs: McPkgBookmark[];
     bookmarkedPurchaseOrders: PoPreview[];

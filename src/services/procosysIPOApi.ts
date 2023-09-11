@@ -1,7 +1,12 @@
-import { objectToCamelCase } from '@equinor/procosys-webapp-components';
-import { IpoDetails, OutstandingIposType } from './apiTypes';
+import {
+    HTTPError,
+    getErrorMessage,
+    objectToCamelCase,
+} from '@equinor/procosys-webapp-components';
+import { IpoDetails, OutstandingIposType, SearchResults } from './apiTypes';
 import { StorageKey } from '@equinor/procosys-webapp-components';
-import { HTTPError } from './HTTPError';
+import { isOfType } from './apiTypeGuards';
+import { typeGuardErrorMessage } from './procosysApi';
 
 type ProcosysIPOApiServiceProps = {
     baseURL: string;
@@ -59,6 +64,42 @@ const procosysIPOApiService = (
         }
     };
 
+    /**
+     * Generic method for doing a PUT call.
+     */
+    const putByFetch = async (
+        url: string,
+        bodyData: any,
+        additionalHeaders?: any
+    ): Promise<any> => {
+        const plantInStorage = window.localStorage.getItem(StorageKey.PLANT);
+        let headers;
+        if (plantInStorage !== undefined) {
+            headers = {
+                Authorization: `Bearer ${token}`,
+                'x-plant': `PCS$${plantInStorage}`,
+                ...additionalHeaders,
+            };
+        } else {
+            headers = {
+                Authorization: `Bearer ${token}`,
+                ...additionalHeaders,
+            };
+        }
+        const PutOperation = {
+            method: 'PUT',
+            headers: headers,
+            body: JSON.stringify(bodyData),
+        };
+        const response = await fetch(`${baseURL}/${url}`, PutOperation);
+        if (response.ok) {
+            return await response.text();
+        } else {
+            const errorMessage = await getErrorMessage(response);
+            throw new HTTPError(response.status, errorMessage);
+        }
+    };
+
     const getOutstandingIpos = async (
         plantId: string
     ): Promise<OutstandingIposType> => {
@@ -70,7 +111,7 @@ const procosysIPOApiService = (
 
     const getIpoDetails = async (
         plantId: string,
-        id: string
+        id: string | number
     ): Promise<IpoDetails> => {
         const IpoDetails = await getByFetch(
             `Invitations/${id}/?plantId=PCS$${plantId}`
@@ -78,9 +119,147 @@ const procosysIPOApiService = (
         return IpoDetails;
     };
 
+    const putAttendedStatus = async (
+        ipoId: number | string,
+        participantId: number,
+        attended: boolean,
+        rowVersion: string
+    ): Promise<string> => {
+        const endpoint = `Invitations/${ipoId}/AttendedStatus`;
+        const newRowVersion = await putByFetch(
+            endpoint,
+            { id: participantId, attended, rowVersion },
+            { 'Content-Type': 'application/json' }
+        );
+        return newRowVersion;
+    };
+
+    const putNote = async (
+        ipoId: number | string,
+        participantId: number,
+        note: string,
+        rowVersion: string
+    ): Promise<string> => {
+        const endpoint = `Invitations/${ipoId}/Note`;
+        const newRowVersion = await putByFetch(
+            endpoint,
+            { id: participantId, note, rowVersion },
+            { 'Content-Type': 'application/json' }
+        );
+        return newRowVersion;
+    };
+
+    const putCompleteIpo = async (
+        ipoId: string,
+        participantRowVersion: string,
+        ipoRowVersion: string
+    ): Promise<any> => {
+        const endpoint = `Invitations/${ipoId}/Complete`;
+        await putByFetch(
+            endpoint,
+            { invitationRowVersion: ipoRowVersion, participantRowVersion },
+            { 'Content-Type': 'application/json' }
+        );
+    };
+
+    const putUncompleteIpo = async (
+        ipoId: string,
+        participantRowVersion: string,
+        ipoRowVersion: string
+    ): Promise<any> => {
+        const endpoint = `Invitations/${ipoId}/Uncomplete`;
+        await putByFetch(
+            endpoint,
+            { invitationRowVersion: ipoRowVersion, participantRowVersion },
+            { 'Content-Type': 'application/json' }
+        );
+    };
+
+    const putSignIpo = async (
+        ipoId: string,
+        participantRowVersion: string,
+        participantId: number
+    ): Promise<any> => {
+        const endpoint = `Invitations/${ipoId}/Sign`;
+        await putByFetch(
+            endpoint,
+            { participantId, participantRowVersion },
+            { 'Content-Type': 'application/json' }
+        );
+    };
+
+    const putUnsignIpo = async (
+        ipoId: string,
+        participantRowVersion: string,
+        participantId: number
+    ): Promise<any> => {
+        const endpoint = `Invitations/${ipoId}/Unsign`;
+        await putByFetch(
+            endpoint,
+            { participantId, participantRowVersion },
+            { 'Content-Type': 'application/json' }
+        );
+    };
+
+    const putAcceptIpo = async (
+        ipoId: string,
+        participantRowVersion: string,
+        ipoRowVersion: string
+    ): Promise<any> => {
+        const endpoint = `Invitations/${ipoId}/Accept`;
+        await putByFetch(
+            endpoint,
+            { invitationRowVersion: ipoRowVersion, participantRowVersion },
+            { 'Content-Type': 'application/json' }
+        );
+    };
+
+    const putUnacceptIpo = async (
+        ipoId: string,
+        participantRowVersion: string,
+        ipoRowVersion: string
+    ): Promise<any> => {
+        const endpoint = `Invitations/${ipoId}/Unaccept`;
+        await putByFetch(
+            endpoint,
+            { invitationRowVersion: ipoRowVersion, participantRowVersion },
+            { 'Content-Type': 'application/json' }
+        );
+    };
+
+    const getIpoOnSearch = async (
+        plantId: string,
+        id: string,
+        McPkNo: string,
+        abortSignal: AbortSignal
+    ): Promise<SearchResults> => {
+        const searchedIpo = await getByFetch(
+            `Invitations?plantId=PCS$${plantId}&IpoIdStartsWith=${id}&McPkgNoStartsWith=${McPkNo}`,
+            abortSignal
+        );
+        const returnResults = {
+            maxAvailable: searchedIpo.maxAvailable,
+            items: searchedIpo.invitations,
+        };
+        if (!isOfType<SearchResults>(returnResults, 'maxAvailable')) {
+            throw new Error(typeGuardErrorMessage('search results'));
+        }
+
+        return returnResults;
+    };
+
     return {
         getOutstandingIpos,
         getIpoDetails,
+        putAttendedStatus,
+        putNote,
+        putCompleteIpo,
+        putUncompleteIpo,
+        putSignIpo,
+        putUnsignIpo,
+        putAcceptIpo,
+        putUnacceptIpo,
+        getIpoOnSearch,
     };
 };
 

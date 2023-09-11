@@ -16,18 +16,21 @@ import EdsIcon from '../../components/icons/EdsIcon';
 import { Route, Switch } from 'react-router-dom';
 import Bookmarks from './Bookmarks/Bookmarks';
 import Search from './Search';
-import { OfflineStatus } from '../../typings/enums';
+import { LocalStorage, OfflineStatus } from '../../typings/enums';
 import SyncErrors from './SyncErrors';
 import { OfflineSynchronizationErrors } from '../../services/apiTypes';
-import { LocalStorage } from '../../contexts/McAppContext';
 
 const SearchPageWrapper = styled.main`
-    padding: 0 4% 66px 4%;
+    padding: 0;
     margin: 0;
     & > p {
         margin: 0;
         padding: 16px 0;
     }
+`;
+
+const ContentWrapper = styled.div`
+    padding: 0 4% 66px 4%;
 `;
 
 const SearchPage = (): JSX.Element => {
@@ -52,6 +55,8 @@ const SearchPage = (): JSX.Element => {
                 }
             } catch (error) {
                 console.log(error);
+                if (!(error instanceof Error)) return;
+                setSnackbarText(error.message);
             }
         }
         setSyncErrors(null);
@@ -71,32 +76,37 @@ const SearchPage = (): JSX.Element => {
                     rightContent={<SideMenu />}
                     isOffline={offlineState == OfflineStatus.OFFLINE}
                 />
-                <Switch>
-                    <Route
-                        exact
-                        path={`${path}`}
-                        render={(): JSX.Element => (
-                            <Search setSnackbarText={setSnackbarText} />
-                        )}
-                    />
-                    <Route
-                        exact
-                        path={`${path}/bookmarks`}
-                        render={(): JSX.Element => <Bookmarks />}
-                    />
-                    <Route
-                        exact
-                        path={`${path}/sync-errors`}
-                        render={(): JSX.Element => (
-                            <SyncErrors
-                                syncErrors={syncErrors}
-                                setSyncErrors={setSyncErrors}
-                                url={url}
-                            />
-                        )}
-                    />
-                </Switch>
-                {snackbar}
+                <ContentWrapper>
+                    <Switch>
+                        <Route
+                            exact
+                            path={`${path}`}
+                            render={(): JSX.Element => (
+                                <Search setSnackbarText={setSnackbarText} />
+                            )}
+                        />
+                        <Route
+                            exact
+                            path={`${path}/bookmarks`}
+                            render={(): JSX.Element => (
+                                <Bookmarks setSnackbarText={setSnackbarText} />
+                            )}
+                        />
+                        <Route
+                            exact
+                            path={`${path}/sync-errors`}
+                            render={(): JSX.Element => (
+                                <SyncErrors
+                                    syncErrors={syncErrors}
+                                    setSyncErrors={setSyncErrors}
+                                    url={url}
+                                    setSnackbarText={setSnackbarText}
+                                />
+                            )}
+                        />
+                    </Switch>
+                    {snackbar}
+                </ContentWrapper>
             </SearchPageWrapper>
             <NavigationFooter>
                 <FooterButton

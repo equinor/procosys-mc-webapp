@@ -1,6 +1,5 @@
-import { HTTPError } from '../services/HTTPError';
 import { ProcosysApiService } from '../services/procosysApi';
-import { EntityType, OfflineStatus } from '../typings/enums';
+import { EntityType, LocalStorage, OfflineStatus } from '../typings/enums';
 import { OfflineUpdateRepository } from './OfflineUpdateRepository';
 import {
     OfflineUpdateRequest,
@@ -10,9 +9,12 @@ import {
 
 import { EntityId, OfflineSynchronizationErrors } from '../services/apiTypes';
 import { getOfflineProjectIdfromLocalStorage } from './OfflineStatus';
-import { isOfType, StorageKey } from '@equinor/procosys-webapp-components';
+import {
+    HTTPError,
+    isOfType,
+    StorageKey,
+} from '@equinor/procosys-webapp-components';
 import { db } from './db';
-import { LocalStorage } from '../contexts/McAppContext';
 
 const offlineUpdateRepository = new OfflineUpdateRepository();
 
@@ -35,7 +37,8 @@ const offlineUpdateRepository = new OfflineUpdateRepository();
  * When synchronization of all entities are done, error messages, if any, will be posted and stored in database.
  **/
 export const syncronizeOfflineUpdatesWithBackend = async (
-    api: ProcosysApiService
+    api: ProcosysApiService,
+    skipSync = false
 ): Promise<void> => {
     const currentPlant = localStorage.getItem(StorageKey.PLANT);
     const currentProject = getOfflineProjectIdfromLocalStorage();
@@ -130,30 +133,35 @@ export const syncronizeOfflineUpdatesWithBackend = async (
         }
 
         //todo: Er det riktig å sette denne til syncronized hvis det er error?
-        const synchronizedEntityId = newEntityId
-            ? newEntityId
-            : updatesForEntity[0].entityId;
+        if (!skipSync) {
+            const synchronizedEntityId = newEntityId
+                ? newEntityId
+                : updatesForEntity[0].entityId;
 
-        try {
-            await setEntityToSynchronized(synchronizedEntityId, api);
-        } catch (error) {
-            console.error(
-                'An error occured when trying to set an entity to synchronized',
-                error
-            );
-            //what do we do?
+            try {
+                await setEntityToSynchronized(synchronizedEntityId, api);
+            } catch (error) {
+                console.error(
+                    'An error occured when trying to set an entity to synchronized',
+                    error
+                );
+                //what do we do?
+            }
         }
     }
 
     const errorsExists = await reportErrorsIfExists(
         currentPlant,
         currentProject,
-        api
+        api,
+        skipSync
     );
 
     if (!errorsExists) {
         //The offline scope will be set to synchronized and database will be delete, only if there are no errors.
-        await api.putOfflineScopeSynchronized(currentPlant, currentProject);
+        if (!skipSync) {
+            await api.putOfflineScopeSynchronized(currentPlant, currentProject);
+        }
         await db.delete();
     }
 };
@@ -209,7 +217,8 @@ const handleFailedUpdateRequest = async (
 const reportErrorsIfExists = async (
     plantId: string,
     projectId: number,
-    api: ProcosysApiService
+    api: ProcosysApiService,
+    skipSync: boolean
 ): Promise<boolean> => {
     const offlineSynchronizationErrors: OfflineSynchronizationErrors = {
         ProjectId: projectId,
@@ -240,8 +249,9 @@ const reportErrorsIfExists = async (
     }
 
     if (
-        offlineSynchronizationErrors.CheckListErrors.length > 0 ||
-        offlineSynchronizationErrors.PunchListItemErrors.length > 0
+        (offlineSynchronizationErrors.CheckListErrors.length > 0 ||
+            offlineSynchronizationErrors.PunchListItemErrors.length > 0) &&
+        !skipSync
     ) {
         try {
             await api.postOfflineScopeSynchronizeErrors(
@@ -440,6 +450,9 @@ const updateIdOnEntityRequest = (
                 );
                 offlineUpdate.entityId = newId;
             }
+        } else if (offlineUpdate.url.startsWith('PunchListItem/AddComment')) {
+            offlineUpdate.entityId = newId;
+            offlineUpdate.bodyData.PunchItemId = newId.toString();
         } else if (offlineUpdate.url.startsWith('PunchListItem?')) {
             offlineUpdate.entityId = newId;
         }

@@ -1,7 +1,6 @@
 import { DotProgress } from '@equinor/eds-core-react';
-import { InfoItem } from '@equinor/procosys-webapp-components';
+import { AsyncStatus, InfoItem } from '@equinor/procosys-webapp-components';
 import React from 'react';
-import { AsyncStatus } from '../../contexts/McAppContext';
 import { ChecklistResponse } from '../../services/apiTypes';
 import { DetailsWrapper } from '../Entity/EntityPageDetailsCard';
 

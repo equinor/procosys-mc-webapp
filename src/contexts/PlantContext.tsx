@@ -2,7 +2,7 @@ import React, { ReactNode, useContext, useEffect, useState } from 'react';
 import { Plant, Project } from '../services/apiTypes';
 import matchPlantInURL from '../utils/matchPlantInURL';
 import matchProjectInURL from '../utils/matchProjectInURL';
-import McAppContext, { AsyncStatus } from './McAppContext';
+import McAppContext from './McAppContext';
 import useCommonHooks from '../utils/useCommonHooks';
 import { Button } from '@equinor/eds-core-react';
 import {
@@ -12,6 +12,7 @@ import {
     ProcosysButton,
     ReloadButton,
     StorageKey,
+    AsyncStatus,
 } from '@equinor/procosys-webapp-components';
 import { OfflineStatus } from '../typings/enums';
 

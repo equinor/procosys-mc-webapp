@@ -2,10 +2,12 @@ import React from 'react';
 import { SearchStatus } from '../useSearchPageFacade';
 import { SearchResults as SearchResultsType } from '../../../services/apiTypes';
 import styled from 'styled-components';
-import { SkeletonLoadingPage } from '@equinor/procosys-webapp-components';
+import {
+    SearchType,
+    SkeletonLoadingPage,
+} from '@equinor/procosys-webapp-components';
 import BookmarkableEntityInfoList from '../BookmarkableEntityInfoList';
 import useBookmarks from '../../../utils/useBookmarks';
-import { SearchType } from '../../../typings/enums';
 import useCommonHooks from '../../../utils/useCommonHooks';
 
 const SearchResultAmountWrapper = styled.h6`
@@ -16,18 +18,24 @@ type SearchResultsProps = {
     searchStatus: SearchStatus;
     searchResults: SearchResultsType;
     searchType: string;
+    setSnackbarText: React.Dispatch<React.SetStateAction<string>>;
 };
 
 const SearchResults = ({
     searchStatus,
     searchResults,
     searchType,
+    setSnackbarText,
 }: SearchResultsProps): JSX.Element => {
     const { offlineState, featureFlags } = useCommonHooks();
-    const { isBookmarked, handleBookmarkClicked } = useBookmarks();
+    const { isBookmarked, handleBookmarkClicked } = useBookmarks({
+        setSnackbarText,
+    });
     const getPlaceholderTextType = (): string => {
         if (searchType === SearchType.MC) {
             return 'MC Package number';
+        } else if (searchType === SearchType.IPO) {
+            return 'IPO number and/or linked MC package';
         } else if (searchType === SearchType.WO) {
             return 'Work Order number';
         } else if (searchType === SearchType.Tag) {
@@ -44,11 +52,12 @@ const SearchResults = ({
             return 'Work Orders';
         } else if (searchType === SearchType.Tag) {
             return 'Tags';
+        } else if (searchType === SearchType.IPO) {
+            return 'IPOs';
         } else {
             return 'Purchase Orders';
         }
     };
-
     if (searchType in SearchType === false) {
         return (
             <div>
@@ -91,6 +100,10 @@ const SearchResults = ({
                         field{searchType === SearchType.PO ? 's' : ''} above.
                     </i>
                 </p>
+                <p></p>
+                {searchType === SearchType.IPO && (
+                    <p>IPOs cannot be bookmarked for offline use</p>
+                )}
                 <p></p>
                 <p>
                     Bookmarks: The entities in the search result can be

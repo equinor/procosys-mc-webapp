@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { AsyncStatus } from '../../contexts/McAppContext';
 import { PunchItem } from '../../services/apiTypes';
 import useCommonHooks from '../../utils/useCommonHooks';
 import {
@@ -7,6 +6,7 @@ import {
     useSnackbar,
     VerifyPunch,
     PunchAction,
+    AsyncStatus,
 } from '@equinor/procosys-webapp-components';
 
 type VerifyPunchProps = {
@@ -41,8 +41,9 @@ const VerifyPunchWrapper = ({
             setPunchActionStatus(AsyncStatus.SUCCESS);
             history.push(newUrl);
         } catch (error) {
+            if (!(error instanceof Error)) return;
+            setSnackbarText(error.message);
             setPunchActionStatus(AsyncStatus.ERROR);
-            setSnackbarText(`Couldn't handle ${punchAction}`);
         }
     };
 

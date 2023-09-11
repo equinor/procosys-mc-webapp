@@ -6,15 +6,14 @@ import {
     PunchSort,
     PunchType,
 } from '../../services/apiTypes';
-import { AsyncStatus } from '../../contexts/McAppContext';
 import { NewPunch as NewPunchType } from '../../services/apiTypes';
 import useCommonHooks from '../../utils/useCommonHooks';
 import {
+    AsyncStatus,
     ChosenPerson,
     NewPunch,
     removeSubdirectories,
     useFormFields,
-    useSnackbar,
 } from '@equinor/procosys-webapp-components';
 import AsyncPage from '../../components/AsyncPage';
 import usePersonsSearchFacade from '../../utils/usePersonsSearchFacade';
@@ -33,7 +32,13 @@ const newPunchInitialValues = {
     estimate: '',
 };
 
-const NewPunchWrapper = (): JSX.Element => {
+interface NewPunchWrapperProps {
+    setSnackbarText: React.Dispatch<React.SetStateAction<string>>;
+}
+
+const NewPunchWrapper = ({
+    setSnackbarText,
+}: NewPunchWrapperProps): JSX.Element => {
     const { api, params, url, history, offlineState } = useCommonHooks();
     const { formFields, createChangeHandler } = useFormFields(
         newPunchInitialValues
@@ -53,7 +58,6 @@ const NewPunchWrapper = (): JSX.Element => {
     const [submitPunchStatus, setSubmitPunchStatus] = useState(
         AsyncStatus.INACTIVE
     );
-    const { snackbar, setSnackbarText } = useSnackbar();
     const [tempIds, setTempIds] = useState<string[]>([]);
     const { hits, searchStatus, query, setQuery } = usePersonsSearchFacade();
     const controller = new AbortController();
@@ -82,6 +86,8 @@ const NewPunchWrapper = (): JSX.Element => {
                 setPriorities(prioritiesFromApi);
                 setFetchNewPunchStatus(AsyncStatus.SUCCESS);
             } catch (error) {
+                if (!(error instanceof Error)) return;
+                setSnackbarText(error.message);
                 setFetchNewPunchStatus(AsyncStatus.ERROR);
             }
         })();
@@ -117,8 +123,8 @@ const NewPunchWrapper = (): JSX.Element => {
             await api.postNewPunch(params.plant, NewPunchDTO);
             setSubmitPunchStatus(AsyncStatus.SUCCESS);
         } catch (error) {
-            const pcsError = error as Error;
-            setSnackbarText(pcsError.toString());
+            if (!(error instanceof Error)) return;
+            setSnackbarText(error.message);
             setSubmitPunchStatus(AsyncStatus.ERROR);
         }
     };
@@ -155,7 +161,6 @@ const NewPunchWrapper = (): JSX.Element => {
                     disablePersonsSearch={offlineState == OfflineStatus.OFFLINE}
                 />
             </AsyncPage>
-            {snackbar}
         </>
     );
 };

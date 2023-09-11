@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import Axios from 'axios';
-import { AsyncStatus } from '../../../contexts/McAppContext';
 import { SavedSearch } from '../../../services/apiTypes';
 import useCommonHooks from '../../../utils/useCommonHooks';
 import {
+    AsyncStatus,
     CollapsibleCard,
     SkeletonLoadingPage,
 } from '@equinor/procosys-webapp-components';
@@ -57,7 +56,9 @@ const SavedSearches = ({
                 } else {
                     setFetchSearchesStatus(AsyncStatus.EMPTY_RESPONSE);
                 }
-            } catch {
+            } catch (error) {
+                if (!(error instanceof Error)) return;
+                setSnackbarText(error.message);
                 setFetchSearchesStatus(AsyncStatus.ERROR);
             }
         })();
@@ -75,8 +76,9 @@ const SavedSearches = ({
             );
             setSearchToBeDeleted(0);
             setDeleteSearchStatus(AsyncStatus.SUCCESS);
-        } catch {
-            setSnackbarText('Unable to delete the search');
+        } catch (error) {
+            if (!(error instanceof Error)) return;
+            setSnackbarText(error.message);
             setDeleteSearchStatus(AsyncStatus.ERROR);
         }
     };
@@ -129,6 +131,7 @@ const SavedSearches = ({
                 <Scrim
                     isDismissable
                     onClose={(): void => setSearchToBeDeleted(0)}
+                    open={searchToBeDeleted != 0}
                 >
                     <DeletionPopup>
                         <p>Really delete this item?</p>

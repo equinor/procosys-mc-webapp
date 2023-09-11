@@ -5,17 +5,18 @@ import useCommonHooks from '../../utils/useCommonHooks';
 import { Route, Switch } from 'react-router-dom';
 import ChecklistWrapper from './ChecklistWrapper';
 import NewPunchWrapper from './NewPunchWrapper';
-import { AsyncStatus } from '../../contexts/McAppContext';
 import { ChecklistResponse, PunchPreview } from '../../services/apiTypes';
 import { Button } from '@equinor/eds-core-react';
 import TagInfoWrapper from '../../components/TagInfoWrapper';
 import {
+    AsyncStatus,
     BackButton,
     FooterButton,
     Navbar,
     NavigationFooter,
     PunchList,
     removeSubdirectories,
+    useSnackbar,
 } from '@equinor/procosys-webapp-components';
 import ChecklistDetailsCard from './ChecklistDetailsCard';
 import styled from 'styled-components';
@@ -47,6 +48,7 @@ const ChecklistPage = (): JSX.Element => {
         history.location.pathname
     );
     const goBackToEntityPage = removeSubdirectories(url, 2);
+    const { snackbar, setSnackbarText } = useSnackbar();
 
     useEffect(() => {
         return (): void => {
@@ -64,7 +66,9 @@ const ChecklistPage = (): JSX.Element => {
                 );
                 setDetails(detailsFromApi);
                 setFetchDetailsStatus(AsyncStatus.SUCCESS);
-            } catch {
+            } catch (error) {
+                if (!(error instanceof Error)) return;
+                setSnackbarText(error.message);
                 setFetchDetailsStatus(AsyncStatus.ERROR);
             }
         })();
@@ -84,7 +88,9 @@ const ChecklistPage = (): JSX.Element => {
                 } else {
                     setFetchPunchListStatus(AsyncStatus.SUCCESS);
                 }
-            } catch {
+            } catch (error) {
+                if (!(error instanceof Error)) return;
+                setSnackbarText(error.message);
                 setFetchPunchListStatus(AsyncStatus.ERROR);
             }
         })();
@@ -136,6 +142,7 @@ const ChecklistPage = (): JSX.Element => {
                                 refreshChecklistStatus={
                                     setRefreshChecklistStatus
                                 }
+                                setSnackbarText={setSnackbarText}
                             />
                         )}
                     />
@@ -143,7 +150,10 @@ const ChecklistPage = (): JSX.Element => {
                         exact
                         path={`${path}/tag-info`}
                         render={(): JSX.Element => (
-                            <TagInfoWrapper tagId={details?.checkList.tagId} />
+                            <TagInfoWrapper
+                                tagId={details?.checkList.tagId}
+                                setSnackbarText={setSnackbarText}
+                            />
                         )}
                     />
                     <Route
@@ -170,6 +180,7 @@ const ChecklistPage = (): JSX.Element => {
                         component={NewPunchWrapper}
                     />
                 </Switch>
+                {snackbar}
             </ContentWrapper>
             <NavigationFooter footerStatus={fetchPunchListStatus}>
                 <FooterButton

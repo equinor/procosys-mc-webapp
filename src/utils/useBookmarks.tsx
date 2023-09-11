@@ -1,14 +1,22 @@
-import { AsyncStatus, isOfType } from '@equinor/procosys-webapp-components';
+import {
+    AsyncStatus,
+    SearchType,
+    isOfType,
+} from '@equinor/procosys-webapp-components';
 import { useContext, useEffect, useState } from 'react';
 import PlantContext from '../contexts/PlantContext';
-import { EntityType, OfflineStatus, SearchType } from '../typings/enums';
+import {
+    EntityType,
+    LocalStorage,
+    OfflineScopeStatus,
+    OfflineStatus,
+} from '../typings/enums';
 import { Bookmarks } from '../services/apiTypes';
 import useCommonHooks from './useCommonHooks';
 import buildOfflineScope from '../offline/buildOfflineScope';
 import { db } from '../offline/db';
 import { updateOfflineStatus } from '../offline/OfflineStatus';
 import { OfflineContentRepository } from '../offline/OfflineContentRepository';
-import { LocalStorage } from '../contexts/McAppContext';
 
 export enum OfflineAction {
     INACTIVE = 0,
@@ -16,12 +24,17 @@ export enum OfflineAction {
     DOWNLOADING = 2,
     CANCELLING = 3,
     SYNCHING = 4,
+    TRYING_STARTING = 5,
+}
+
+interface UseBookmarks {
+    setSnackbarText: React.Dispatch<React.SetStateAction<string>>;
 }
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-const useBookmarks = () => {
+const useBookmarks = ({ setSnackbarText }: UseBookmarks) => {
     const { currentPlant, currentProject } = useContext(PlantContext);
-    const { params, api, setOfflineState, auth, configurationAccessToken } =
+    const { params, api, setOfflineState, configurationAccessToken } =
         useCommonHooks();
     const [currentBookmarks, setCurrentBookmarks] = useState<Bookmarks | null>(
         null
@@ -58,7 +71,9 @@ const useBookmarks = () => {
                 setBookmarksStatus(AsyncStatus.SUCCESS);
                 setCurrentBookmarks(bookmarksFromApi);
             }
-        } catch {
+        } catch (error) {
+            if (!(error instanceof Error)) return;
+            setSnackbarText(error.message);
             setBookmarksStatus(AsyncStatus.ERROR);
         }
     };
@@ -105,6 +120,8 @@ const useBookmarks = () => {
             await getCurrentBookmarks();
         } catch (error) {
             if (!(error instanceof Error)) return;
+            setSnackbarText(error.message);
+            await getCurrentBookmarks();
         }
     };
 
@@ -113,16 +130,34 @@ const useBookmarks = () => {
             if (currentProject) {
                 setBookmarksStatus(AsyncStatus.LOADING);
                 updateOfflineStatus(OfflineStatus.ONLINE, '');
-                setOfflineState(OfflineStatus.ONLINE);
-                await api.putCancelOffline(params.plant, currentProject.id);
+                await api.putUnderPlanning(params.plant, currentProject.id);
                 await db.delete();
+                setOfflineState(OfflineStatus.ONLINE);
                 setOfflineAction(OfflineAction.INACTIVE);
-                setBookmarksStatus(AsyncStatus.EMPTY_RESPONSE);
-                setCurrentBookmarks(null);
+                await getCurrentBookmarks();
             }
         } catch (error) {
             if (!(error instanceof Error)) return;
-            // TODO: handle
+            if (currentProject) {
+                const bookmarks = await api.getBookmarks(
+                    params.plant,
+                    currentProject.id
+                );
+                if (
+                    bookmarks?.openDefinition.status ==
+                    OfflineScopeStatus.UNDER_PLANNING
+                ) {
+                    await db.delete();
+                    setOfflineState(OfflineStatus.ONLINE);
+                    setOfflineAction(OfflineAction.INACTIVE);
+                    await getCurrentBookmarks();
+                    return;
+                }
+            }
+            setSnackbarText(error.message);
+            setOfflineAction(OfflineAction.INACTIVE);
+            setBookmarksStatus(AsyncStatus.SUCCESS);
+            setOfflineState(OfflineStatus.OFFLINE);
         }
     };
 
@@ -130,13 +165,14 @@ const useBookmarks = () => {
         try {
             if (currentProject) {
                 setBookmarksStatus(AsyncStatus.LOADING);
-                await api.putCancelOffline(params.plant, currentProject.id);
+                await api.deleteBookmarks(params.plant, currentProject.id);
                 setBookmarksStatus(AsyncStatus.EMPTY_RESPONSE);
                 setCurrentBookmarks(null);
             }
         } catch (error) {
             if (!(error instanceof Error)) return;
-            // TODO: handle
+            setSnackbarText(error.message);
+            setBookmarksStatus(AsyncStatus.SUCCESS);
         }
     };
 
@@ -159,28 +195,56 @@ const useBookmarks = () => {
         );
     };
 
-    const startOffline = async (userPin: string): Promise<void> => {
-        setBookmarksStatus(AsyncStatus.LOADING);
-        setOfflineAction(OfflineAction.DOWNLOADING);
-
-        localStorage.removeItem(LocalStorage.SYNCH_ERRORS); //just to be sure...
-        db.create(userPin);
-
-        if (currentPlant && currentProject) {
-            await buildOfflineScope(
-                api,
-                currentPlant.slug,
-                currentProject.id,
-                configurationAccessToken
-            );
+    const tryStartOffline = async (): Promise<void> => {
+        try {
+            if (currentProject) {
+                setBookmarksStatus(AsyncStatus.LOADING);
+                await api.putUnderPlanning(params.plant, currentProject.id);
+                await db.delete();
+                setBookmarksStatus(AsyncStatus.SUCCESS);
+                setOfflineAction(OfflineAction.STARTING);
+            }
+        } catch (error) {
+            if (!(error instanceof Error)) return;
+            setSnackbarText(error.message);
+            setOfflineAction(OfflineAction.TRYING_STARTING);
+            setBookmarksStatus(AsyncStatus.SUCCESS);
         }
-        await sendOfflineStatusToBackend();
-        updateOfflineStatus(OfflineStatus.OFFLINE, userPin, currentProject?.id);
+    };
 
-        setOfflineState(OfflineStatus.OFFLINE);
-        localStorage.removeItem(LocalStorage.LOGIN_TRIES); //just to be sure...
-        setBookmarksStatus(AsyncStatus.SUCCESS);
-        setOfflineAction(OfflineAction.INACTIVE);
+    const startOffline = async (userPin: string): Promise<void> => {
+        try {
+            setBookmarksStatus(AsyncStatus.LOADING);
+            setOfflineAction(OfflineAction.DOWNLOADING);
+
+            localStorage.removeItem(LocalStorage.SYNCH_ERRORS); //just to be sure...
+            db.create(userPin);
+
+            if (currentPlant && currentProject) {
+                await buildOfflineScope(
+                    api,
+                    currentPlant.slug,
+                    currentProject.id,
+                    configurationAccessToken
+                );
+            }
+            await sendOfflineStatusToBackend();
+            updateOfflineStatus(
+                OfflineStatus.OFFLINE,
+                userPin,
+                currentProject?.id
+            );
+
+            setOfflineState(OfflineStatus.OFFLINE);
+            localStorage.removeItem(LocalStorage.LOGIN_TRIES); //just to be sure...
+            setBookmarksStatus(AsyncStatus.SUCCESS);
+            setOfflineAction(OfflineAction.INACTIVE);
+        } catch (error) {
+            if (!(error instanceof Error)) return;
+            setSnackbarText(error.message);
+            setBookmarksStatus(AsyncStatus.SUCCESS);
+            setOfflineAction(OfflineAction.INACTIVE);
+        }
     };
 
     const finishOffline = async (): Promise<void> => {
@@ -211,6 +275,8 @@ const useBookmarks = () => {
         setUserPin,
         offlineAction,
         setOfflineAction,
+        tryStartOffline,
+        getCurrentBookmarks,
     };
 };
 

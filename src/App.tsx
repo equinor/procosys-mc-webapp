@@ -10,8 +10,9 @@ import {
     ReactPlugin,
 } from '@microsoft/applicationinsights-react-js';
 import { AppConfig, FeatureFlags } from './services/appConfiguration';
-import { SavedSearchType, SearchType } from './typings/enums';
+import { SavedSearchType } from './typings/enums';
 import { ProcosysIPOApiService } from './services/procosysIPOApi';
+import { SearchType } from '@equinor/procosys-webapp-components';
 
 export type McParams = {
     plant: string;

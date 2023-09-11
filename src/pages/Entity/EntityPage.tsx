@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { Route, Switch } from 'react-router-dom';
 import styled from 'styled-components';
 import useCommonHooks from '../../utils/useCommonHooks';
-import { AsyncStatus } from '../../contexts/McAppContext';
 import {
     ChecklistPreview,
     PunchPreview,
@@ -17,6 +16,7 @@ import EdsIcon from '../../components/icons/EdsIcon';
 import { COLORS } from '../../style/GlobalStyles';
 import WorkOrderInfo from './WorkOrderInfo';
 import {
+    AsyncStatus,
     BackButton,
     FooterButton,
     Navbar,
@@ -24,9 +24,12 @@ import {
     PunchList,
     removeSubdirectories,
     Scope,
+    SearchType,
+    useSnackbar,
 } from '@equinor/procosys-webapp-components';
 import EntityPageDetailsCard from './EntityPageDetailsCard';
-import { OfflineStatus, SearchType } from '../../typings/enums';
+import { OfflineStatus } from '../../typings/enums';
+import ViewIpo from './ViewIpo/ViewIpo';
 
 const EntityPageWrapper = styled.main``;
 
@@ -37,6 +40,7 @@ const ContentWrapper = styled.div`
 const EntityPage = (): JSX.Element => {
     const { api, ipoApi, params, path, history, url, offlineState } =
         useCommonHooks();
+    const { snackbar, setSnackbarText } = useSnackbar();
     const [scope, setScope] = useState<ChecklistPreview[]>();
     const [punchList, setPunchList] = useState<PunchPreview[]>();
     const [details, setDetails] = useState<
@@ -54,10 +58,12 @@ const EntityPage = (): JSX.Element => {
     const [fetchDetailsStatus, setFetchDetailsStatus] = useState(
         AsyncStatus.LOADING
     );
+    const [refreshDetails, setRefreshDetails] = useState<boolean>(false);
     const controller = new AbortController();
     const abortSignal = controller.signal;
     const isOnPunchListPage = history.location.pathname.includes('/punch-list');
     const isOnWoInfoPage = history.location.pathname.includes('/wo-info');
+    const isOnIpoInfoPage = history.location.pathname.includes('/IPO-info');
 
     useEffect(() => {
         return (): void => {
@@ -100,7 +106,9 @@ const EntityPage = (): JSX.Element => {
                     }
                     setFetchFooterStatus(AsyncStatus.SUCCESS);
                 }
-            } catch {
+            } catch (error) {
+                if (!(error instanceof Error)) return;
+                setSnackbarText(error.message);
                 setFetchPunchListStatus(AsyncStatus.ERROR);
                 setFetchScopeStatus(AsyncStatus.ERROR);
                 setFetchFooterStatus(AsyncStatus.ERROR);
@@ -127,11 +135,13 @@ const EntityPage = (): JSX.Element => {
                 }
                 setDetails(detailsFromApi);
                 setFetchDetailsStatus(AsyncStatus.SUCCESS);
-            } catch {
+            } catch (error) {
+                if (!(error instanceof Error)) return;
+                setSnackbarText(error.message);
                 setFetchDetailsStatus(AsyncStatus.ERROR);
             }
         })();
-    }, [api, params]);
+    }, [api, params, refreshDetails]);
 
     return (
         <EntityPageWrapper>
@@ -202,16 +212,36 @@ const EntityPage = (): JSX.Element => {
                         path={`${path}/WO-info`}
                         render={(): JSX.Element => (
                             <WorkOrderInfo
-                                workOrder={details}
+                                setSnackbarText={setSnackbarText}
                                 fetchWorkOrderStatus={fetchDetailsStatus}
+                                workOrder={details}
+                            />
+                        )}
+                    />
+                    <Route
+                        exact
+                        path={`${path}/IPO-info`}
+                        render={(): JSX.Element => (
+                            <ViewIpo
+                                fetchDetailsStatus={fetchDetailsStatus}
+                                ipoDetails={details}
+                                setSnackbarText={setSnackbarText}
+                                setIpoDetails={setDetails}
                             />
                         )}
                     />
                 </Switch>
+                {snackbar}
             </ContentWrapper>
             <NavigationFooter footerStatus={fetchFooterStatus}>
                 <FooterButton
-                    active={!(isOnPunchListPage || isOnWoInfoPage)}
+                    active={
+                        !(
+                            isOnPunchListPage ||
+                            isOnWoInfoPage ||
+                            isOnIpoInfoPage
+                        )
+                    }
                     goTo={(): void => history.push(url)}
                     icon={<EdsIcon name="list" color={COLORS.mossGreen} />}
                     label="Scope"
@@ -228,6 +258,21 @@ const EntityPage = (): JSX.Element => {
                             />
                         }
                         label="WO info"
+                    />
+                ) : (
+                    <></>
+                )}
+                {params.searchType === SearchType.IPO ? (
+                    <FooterButton
+                        active={isOnIpoInfoPage}
+                        goTo={(): void => history.push(`${url}/IPO-info`)}
+                        icon={
+                            <EdsIcon
+                                name="info_circle"
+                                color={COLORS.mossGreen}
+                            />
+                        }
+                        label="IPO"
                     />
                 ) : (
                     <></>
