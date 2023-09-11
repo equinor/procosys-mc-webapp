@@ -1,16 +1,16 @@
 import {
-    GetOperationProps,
+    FetchOperationProps,
     HTTPError,
     IEntity,
     PunchAction,
     SearchType,
     UpdatePunchData,
+    ChecklistResponse,
     getErrorMessage,
-} from '@equinor/procosys-webapp-components';
-import {
+    ItemToMultiSignOrVerify,
     PunchComment,
     APIComment,
-} from '@equinor/procosys-webapp-components/dist/typings/apiTypes';
+} from '@equinor/procosys-webapp-components';
 import { SavedSearchType } from '../typings/enums';
 import objectToCamelCase from '../utils/objectToCamelCase';
 import removeBaseUrlFromUrl from '../utils/removeBaseUrlFromUrl';
@@ -28,7 +28,6 @@ import {
     SearchResults,
     ChecklistPreview,
     PunchPreview,
-    ChecklistResponse,
     PunchCategory,
     PunchType,
     PunchOrganization,
@@ -45,12 +44,15 @@ import {
     SavedSearch,
     PunchItemSavedSearchResult,
     ChecklistSavedSearchResult,
-    isPlants,
     Bookmarks,
     IpoDetails,
     EntityId,
     OfflineSynchronizationErrors,
 } from './apiTypes';
+import {
+    handleFetchGet,
+    handleFetchUpdate,
+} from '../offline/handleFetchEvents';
 
 type ProcosysApiServiceProps = {
     baseURL: string;
@@ -88,14 +90,14 @@ const procosysApiService = (
         abortSignal?: AbortSignal,
         entity?: IEntity
     ): Promise<any> => {
-        const GetOperation: GetOperationProps = {
+        const GetOperation: FetchOperationProps = {
             abortSignal: abortSignal,
             method: 'GET',
             headers: {
                 Authorization: `Bearer ${token}`,
             },
         };
-        const res = await fetch(`${baseURL}/${url}`, GetOperation);
+        const res = await handleFetchGet(`${baseURL}/${url}`, GetOperation);
         if (res.ok) {
             const jsonResult = await res.json();
             const resultObj = objectToCamelCase(jsonResult);
@@ -115,7 +117,7 @@ const procosysApiService = (
         abortSignal?: AbortSignal,
         entity?: IEntity
     ): Promise<Blob> => {
-        const GetOperation: GetOperationProps = {
+        const GetOperation: FetchOperationProps = {
             abortSignal: abortSignal,
             method: 'GET',
             responseType: 'blob',
@@ -125,7 +127,7 @@ const procosysApiService = (
             },
         };
 
-        const res = await fetch(`${baseURL}/${url}`, GetOperation);
+        const res = await handleFetchGet(`${baseURL}/${url}`, GetOperation);
 
         if (res.ok) {
             const blob = await res.blob();
@@ -144,15 +146,19 @@ const procosysApiService = (
      * Generic method for doing a DELETE call. Should be used by all DELETE calls.
      */
     const deleteByFetch = async (url: string, data?: any): Promise<any> => {
-        const DeleteOperation = {
+        const DeleteOperation: FetchOperationProps = {
             method: 'DELETE',
             headers: {
                 Authorization: `Bearer ${token}`,
                 'Content-Type': 'application/json',
             },
-            body: data ? JSON.stringify(data) : null,
+            body: data ? JSON.stringify(data) : undefined,
         };
-        const response = await fetch(`${baseURL}/${url}`, DeleteOperation);
+        const response = await handleFetchUpdate(
+            `${baseURL}/${url}`,
+            DeleteOperation,
+            'application/json'
+        );
 
         if (!response.ok) {
             const errorMessage = await getErrorMessage(response);
@@ -177,7 +183,11 @@ const procosysApiService = (
 
         let response = new Response();
         try {
-            response = await fetch(`${baseURL}/${url}`, PostOperation);
+            response = await handleFetchUpdate(
+                `${baseURL}/${url}`,
+                PostOperation,
+                'application/json'
+            );
         } catch (error) {
             console.error(
                 'Something went wrong when accessing the server.',
@@ -216,7 +226,11 @@ const procosysApiService = (
             },
             body: file,
         };
-        const response = await fetch(`${baseURL}/${url}`, PostOperation);
+        const response = await handleFetchUpdate(
+            `${baseURL}/${url}`,
+            PostOperation,
+            'form-data'
+        );
         if (!response.ok) {
             const errorMessage = await getErrorMessage(response);
             throw new HTTPError(response.status, errorMessage);
@@ -237,6 +251,7 @@ const procosysApiService = (
     const putByFetch = async (
         url: string,
         bodyData: any,
+        contentType: string,
         additionalHeaders?: any
     ): Promise<any> => {
         const PutOperation = {
@@ -247,7 +262,11 @@ const procosysApiService = (
             },
             body: JSON.stringify(bodyData),
         };
-        const response = await fetch(`${baseURL}/${url}`, PutOperation);
+        const response = await handleFetchUpdate(
+            `${baseURL}/${url}`,
+            PutOperation,
+            contentType
+        );
         if (!response.ok) {
             const errorMessage = await getErrorMessage(response);
             throw new HTTPError(response.status, errorMessage);
@@ -570,6 +589,273 @@ const procosysApiService = (
         return data;
     };
 
+    const postMultiVerify = async (
+        plantId: string,
+        checklistId: string,
+        targetChecklistIds: number[]
+    ): Promise<void> => {
+        await postByFetch(
+            `CheckList/MC/MultiVerify?plantId=PCS$${plantId}${apiVersion}`,
+            {
+                OriginalCheckListId: checklistId,
+                TargetCheckListIds: targetChecklistIds,
+            }
+        );
+    };
+
+    const postMultiSign = async (
+        plantId: string,
+        checklistId: string,
+        targetChecklistIds: number[],
+        copyMetaTable: boolean
+    ): Promise<void> => {
+        await postByFetch(
+            `CheckList/MC/MultiSign?plantId=PCS$${plantId}${apiVersion}`,
+            {
+                OriginalCheckListId: checklistId,
+                TargetCheckListIds: targetChecklistIds,
+                CopyMetaTable: copyMetaTable,
+            }
+        );
+    };
+
+    const putChecklistComment = async (
+        plantId: string,
+        checklistId: string,
+        Comment: string
+    ): Promise<void> => {
+        await putByFetch(
+            `CheckList/MC/Comment?plantId=PCS$${plantId}${apiVersion}`,
+            { CheckListId: checklistId, Comment: Comment },
+            'application/json',
+            { 'Content-Type': 'application/json' }
+        );
+    };
+
+    const postUnsign = async (
+        plantId: string,
+        checklistId: string
+    ): Promise<void> => {
+        await postByFetch(
+            `CheckList/MC/Unsign?plantId=PCS$${plantId}${apiVersion}`,
+            checklistId
+        );
+    };
+
+    const postSign = async (
+        plantId: string,
+        checklistId: string
+    ): Promise<void> => {
+        await postByFetch(
+            `CheckList/MC/Sign?plantId=PCS$${plantId}${apiVersion}`,
+            checklistId
+        );
+    };
+
+    const getCanMultiSign = async (
+        plantId: string,
+        checklistId: string,
+        abortSignal?: AbortSignal
+    ): Promise<ItemToMultiSignOrVerify[]> => {
+        const data = await getByFetch(
+            `CheckList/MC/CanMultiSign?plantId=PCS$${plantId}&checkListId=${checklistId}${apiVersion}`,
+            abortSignal
+        );
+        if (!isArrayOfType<ItemToMultiSignOrVerify>(data, 'tagNo')) {
+            throw new Error(typeGuardErrorMessage('Item To MultiSign'));
+        }
+        return data;
+    };
+
+    const getCanMultiVerify = async (
+        plantId: string,
+        checklistId: string,
+        abortSignal?: AbortSignal
+    ): Promise<ItemToMultiSignOrVerify[]> => {
+        const data = await getByFetch(
+            `CheckList/MC/CanMultiVerify?plantId=PCS$${plantId}&checkListId=${checklistId}${apiVersion}`,
+            abortSignal
+        );
+        if (!isArrayOfType<ItemToMultiSignOrVerify>(data, 'tagNo')) {
+            throw new Error(typeGuardErrorMessage('Item To MultiVerify'));
+        }
+        return data;
+    };
+
+    const postUnverify = async (
+        plantId: string,
+        checklistId: string
+    ): Promise<void> => {
+        await postByFetch(
+            `CheckList/MC/Unverify?plantId=PCS$${plantId}${apiVersion}`,
+            checklistId
+        );
+    };
+
+    const postVerify = async (
+        plantId: string,
+        checklistId: string
+    ): Promise<void> => {
+        await postByFetch(
+            `CheckList/MC/Verify?plantId=PCS$${plantId}${apiVersion}`,
+            checklistId
+        );
+    };
+
+    const postSetOk = async (
+        plantId: string,
+        checklistId: string,
+        checkItemId: number
+    ): Promise<void> => {
+        await postByFetch(
+            `CheckList/Item/SetOk?plantId=PCS$${plantId}${apiVersion}`,
+            {
+                CheckListId: checklistId,
+                CheckItemId: checkItemId,
+            }
+        );
+    };
+
+    const postCustomSetOk = async (
+        plantId: string,
+        checklistId: string,
+        customCheckItemId: number
+    ): Promise<void> => {
+        await postByFetch(
+            `CheckList/CustomItem/SetOk?plantId=PCS$${plantId}${apiVersion}`,
+            {
+                CheckListId: checklistId,
+                CustomCheckItemId: customCheckItemId,
+            }
+        );
+    };
+
+    const postClear = async (
+        plantId: string,
+        checklistId: string,
+        checkItemId: number
+    ): Promise<void> => {
+        await postByFetch(
+            `CheckList/Item/Clear?plantId=PCS$${plantId}${apiVersion}`,
+            {
+                CheckListId: checklistId,
+                CheckItemId: checkItemId,
+            }
+        );
+    };
+
+    const postCustomClear = async (
+        plantId: string,
+        checklistId: string,
+        customCheckItemId: number
+    ): Promise<void> => {
+        await postByFetch(
+            `CheckList/CustomItem/Clear?plantId=PCS$${plantId}${apiVersion}`,
+            {
+                CheckListId: checklistId,
+                CustomCheckItemId: customCheckItemId,
+            }
+        );
+    };
+
+    const postSetNA = async (
+        plantId: string,
+        checklistId: string,
+        checkItemId: number
+    ): Promise<void> => {
+        await postByFetch(
+            `CheckList/Item/SetNA?plantId=PCS$${plantId}${apiVersion}`,
+            {
+                CheckListId: checklistId,
+                CheckItemId: checkItemId,
+            }
+        );
+    };
+
+    const putMetaTableStringCell = async (
+        plantId: string,
+        checklistId: string,
+        checkItemId: number,
+        columnId: number,
+        rowId: number,
+        value: string
+    ): Promise<void> => {
+        await putByFetch(
+            `CheckList/Item/MetaTableCell?plantId=PCS$${plantId}${apiVersion}`,
+            {
+                CheckListId: checklistId,
+                CheckItemId: checkItemId,
+                ColumnId: columnId,
+                RowId: rowId,
+                Value: value,
+            },
+            'application/json',
+            { 'Content-Type': 'application/json' }
+        );
+    };
+
+    const putMetaTableDateCell = async (
+        plantId: string,
+        checklistId: string,
+        checkItemId: number,
+        columnId: number,
+        rowId: number,
+        value: string
+    ): Promise<void> => {
+        await putByFetch(
+            `CheckList/Item/MetaTableCellDate?plantId=PCS$${plantId}${apiVersion}`,
+            {
+                CheckListId: checklistId,
+                CheckItemId: checkItemId,
+                ColumnId: columnId,
+                RowId: rowId,
+                Value: value,
+            },
+            'application/json',
+            { 'Content-Type': 'application/json' }
+        );
+    };
+
+    const getNextCustomItemNumber = async (
+        plantId: string,
+        checklistId: string,
+        abortSignal?: AbortSignal
+    ): Promise<string> => {
+        const data = await getByFetch(
+            `CheckList/CustomItem/NextItemNo?plantId=PCS$${plantId}&checkListId=${checklistId}${apiVersion}`,
+            abortSignal
+        );
+        return data;
+    };
+
+    const postCustomCheckItem = async (
+        plantId: string,
+        checklistId: string,
+        itemNo: string,
+        text: string,
+        isOk: boolean
+    ): Promise<number> => {
+        const data = await postByFetch(
+            `CheckList/CustomItem?plantId=PCS$${plantId}${apiVersion}`,
+            { ItemNo: itemNo, Text: text, IsOk: isOk, ChecklistId: checklistId }
+        );
+        return data.id;
+    };
+
+    const deleteCustomCheckItem = async (
+        plantId: string,
+        checklistId: string,
+        customCheckItemId: number
+    ): Promise<void> => {
+        await deleteByFetch(
+            `CheckList/CustomItem?plantId=PCS$${plantId}${apiVersion}`,
+            {
+                CustomCheckItemId: customCheckItemId,
+                ChecklistId: checklistId,
+            }
+        );
+    };
+
     //------------
     // PUNCH ITEMS
     // -----------
@@ -736,6 +1022,7 @@ const procosysApiService = (
         await putByFetch(
             `PunchListItem/${endpoint}?plantId=PCS$${plantId}${apiVersion}`,
             dto,
+            'application/json',
             { 'Content-Type': 'application/json' }
         );
     };
@@ -1002,6 +1289,7 @@ const procosysApiService = (
         await putByFetch(
             `OfflineScope/Offline?plantId=PCS$${plantId}${apiVersion}`,
             dto,
+            'application/json',
             { 'Content-Type': 'application/json' }
         );
     };
@@ -1017,6 +1305,7 @@ const procosysApiService = (
         await putByFetch(
             `OfflineScope/Synchronized?plantId=PCS$${plantId}${apiVersion}`,
             dto,
+            'application/json',
             { 'Content-Type': 'application/json' }
         );
     };
@@ -1032,6 +1321,7 @@ const procosysApiService = (
         await putByFetch(
             `OfflineScope/CheckList/Synchronized?plantId=PCS$${plantId}${apiVersion}`,
             dto,
+            'application/json',
             { 'Content-Type': 'application/json' }
         );
     };
@@ -1052,6 +1342,7 @@ const procosysApiService = (
         await putByFetch(
             `OfflineScope/PunchListItem/Synchronized?plantId=PCS$${plantId}${apiVersion}`,
             dto,
+            'application/json',
             { 'Content-Type': 'application/json' }
         );
     };
@@ -1079,6 +1370,7 @@ const procosysApiService = (
         await putByFetch(
             `OfflineScope/UnderPlanning?plantId=PCS$${plantId}${apiVersion}`,
             dto,
+            'application/json',
             { 'Content-Type': 'application/json' }
         );
     };
@@ -1146,6 +1438,25 @@ const procosysApiService = (
         putOfflineScopeOffline,
         putUnderPlanning,
         getApplication,
+        postMultiSign,
+        postMultiVerify,
+        putChecklistComment,
+        postUnsign,
+        postSign,
+        getCanMultiSign,
+        getCanMultiVerify,
+        postUnverify,
+        postVerify,
+        postSetOk,
+        postCustomSetOk,
+        postClear,
+        postCustomClear,
+        postSetNA,
+        putMetaTableStringCell,
+        putMetaTableDateCell,
+        getNextCustomItemNumber,
+        postCustomCheckItem,
+        deleteCustomCheckItem,
     };
 };
 

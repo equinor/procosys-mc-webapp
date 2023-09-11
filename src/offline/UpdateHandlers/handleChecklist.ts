@@ -2,14 +2,17 @@ import { OfflineContentRepository } from '../OfflineContentRepository';
 import { EntityType } from '../../typings/enums';
 import {
     ChecklistPreview,
-    ChecklistResponse,
     CompletionStatus,
     PunchPreview,
 } from '../../services/apiTypes';
 import { generateRandomId, getPunchTypeById } from './utils';
 import { OfflineUpdateRequest } from '../OfflineUpdateRequest';
 import { OfflineUpdateRepository } from '../OfflineUpdateRepository';
-import { IEntity, SearchType } from '@equinor/procosys-webapp-components';
+import {
+    IEntity,
+    ChecklistResponse,
+    SearchType,
+} from '@equinor/procosys-webapp-components';
 
 const offlineContentRepository = new OfflineContentRepository();
 const offlineUpdateRepository = new OfflineUpdateRepository();

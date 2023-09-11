@@ -14,11 +14,7 @@ import { precacheAndRoute, createHandlerBoundToURL } from 'workbox-precaching';
 import { registerRoute } from 'workbox-routing';
 import { StaleWhileRevalidate } from 'workbox-strategies';
 import { db } from './offline/db';
-import {
-    handleFetchGET,
-    handleFetchUpdate,
-    handleOtherFetchEvents,
-} from './offline/handleFetchEvents';
+import { handleOtherFetchEvents } from './offline/handleFetchEvents';
 import { OfflineStatus } from './typings/enums';
 
 declare const self: ServiceWorkerGlobalScope;
@@ -139,13 +135,13 @@ self.addEventListener('fetch', function (event: FetchEvent) {
         const method = event.request.method;
         if (method == 'GET' && url.includes('/api/')) {
             //todo: We should find a better way to identify these requests!
-            event.respondWith(handleFetchGET(event));
+            //event.respondWith(handleFetchGET(event));
             return;
         } else if (
             (method == 'POST' || method == 'PUT' || method == 'DELETE') &&
             url.includes('/api/')
         ) {
-            event.respondWith(handleFetchUpdate(event));
+            //event.respondWith(handleFetchUpdate(event));
             return;
         }
         event.respondWith(handleOtherFetchEvents(event));

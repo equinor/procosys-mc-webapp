@@ -1,7 +1,10 @@
 import { DotProgress } from '@equinor/eds-core-react';
-import { AsyncStatus, InfoItem } from '@equinor/procosys-webapp-components';
+import {
+    InfoItem,
+    ChecklistResponse,
+    AsyncStatus,
+} from '@equinor/procosys-webapp-components';
 import React from 'react';
-import { ChecklistResponse } from '../../services/apiTypes';
 import { DetailsWrapper } from '../Entity/EntityPageDetailsCard';
 
 type ChecklistDetailsCardProps = {

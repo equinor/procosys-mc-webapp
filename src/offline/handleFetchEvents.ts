@@ -1,53 +1,73 @@
-import { IEntity } from '@equinor/procosys-webapp-components';
-import { ChecklistResponse } from '../services/apiTypes';
-import { EntityType } from '../typings/enums';
+import {
+    ChecklistResponse,
+    FetchOperationProps,
+    IEntity,
+} from '@equinor/procosys-webapp-components';
+import { EntityType, OfflineStatus } from '../typings/enums';
 import removeBaseUrlFromUrl from '../utils/removeBaseUrlFromUrl';
 import { OfflineContentRepository } from './OfflineContentRepository';
 import { OfflineUpdateRequest } from './OfflineUpdateRequest';
 import { updateOfflineDatabase as updateOfflineDatabase } from './updateOfflineDatabase';
+import { getOfflineStatusfromLocalStorage } from './OfflineStatus';
 
 const offlineContentRepository = new OfflineContentRepository();
 
-export const handleFetchGET = async (event: FetchEvent): Promise<any> => {
-    const url = removeBaseUrlFromUrl(event.request.url);
+export const handleFetchGet = async (
+    endpoint: string,
+    getOperation?: FetchOperationProps
+): Promise<any> => {
+    const url = removeBaseUrlFromUrl(endpoint);
+    if (getOfflineStatusfromLocalStorage() == OfflineStatus.OFFLINE) {
+        if (url.includes('CheckList/CustomItem/NextItemNo')) {
+            //Handle special case. Later: We should try to find a better way to handle this, to avoid this special handling.
+            return await handleCustomCheckItemNextItemNo(endpoint);
+        }
 
-    if (url.includes('CheckList/CustomItem/NextItemNo')) {
-        //Handle special case. Later: We should try to find a better way to handle this, to avoid this special handling.
-        return await handleCustomCheckItemNextItemNo(event.request.url);
-    }
-
-    // Try to get the response from offline content database.
-    const entity = await offlineContentRepository.getByApiPath(url);
-    if (entity) {
-        if (url.includes('/Attachment?')) {
-            const arrayBuffer = entity.responseObj as ArrayBuffer;
-            //const blob = new Blob([arrayBuffer], { type: 'image/jpeg' });
-            const blob = new Blob([arrayBuffer]);
-            return new Response(blob);
+        // Try to get the response from offline content database.
+        const entity = await offlineContentRepository.getByApiPath(url);
+        if (entity) {
+            if (url.includes('/Attachment?')) {
+                const arrayBuffer = entity.responseObj as ArrayBuffer;
+                //const blob = new Blob([arrayBuffer], { type: 'image/jpeg' });
+                const blob = new Blob([arrayBuffer]);
+                return new Response(blob);
+            } else {
+                const blob = new Blob([JSON.stringify(entity.responseObj)]);
+                return new Response(blob);
+            }
         } else {
-            const blob = new Blob([JSON.stringify(entity.responseObj)]);
-            return new Response(blob);
+            console.error(
+                'Offline-mode. Entity for given url is not found in local database. Will try to fetch.',
+                endpoint
+            );
+            return await fetch(endpoint, getOperation);
         }
     } else {
-        console.error(
-            'Offline-mode. Entity for given url is not found in local database. Will try to fetch.',
-            event.request.url
-        );
-        return await fetch(event.request);
+        return await fetch(endpoint, getOperation);
     }
 };
 
 export const handleFetchUpdate = async (
-    event: FetchEvent
+    endpoint: string,
+    fetchOperation: FetchOperationProps,
+    contentType: string
 ): Promise<Response> => {
-    const offlinePostRequest =
-        await OfflineUpdateRequest.buildOfflineRequestObject(event.request);
+    if (getOfflineStatusfromLocalStorage() == OfflineStatus.OFFLINE) {
+        const offlinePostRequest =
+            await OfflineUpdateRequest.buildOfflineRequestObject(
+                fetchOperation,
+                endpoint,
+                contentType
+            );
 
-    const data = await updateOfflineDatabase(offlinePostRequest);
-    if (data) {
-        return new Response(JSON.stringify(data));
+        const data = await updateOfflineDatabase(offlinePostRequest);
+        if (data) {
+            return new Response(JSON.stringify(data));
+        } else {
+            return new Response();
+        }
     } else {
-        return new Response();
+        return await fetch(endpoint, fetchOperation);
     }
 };
 

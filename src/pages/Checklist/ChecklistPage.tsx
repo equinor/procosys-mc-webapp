@@ -5,7 +5,7 @@ import useCommonHooks from '../../utils/useCommonHooks';
 import { Route, Switch } from 'react-router-dom';
 import ChecklistWrapper from './ChecklistWrapper';
 import NewPunchWrapper from './NewPunchWrapper';
-import { ChecklistResponse, PunchPreview } from '../../services/apiTypes';
+import { PunchPreview } from '../../services/apiTypes';
 import { Button } from '@equinor/eds-core-react';
 import TagInfoWrapper from '../../components/TagInfoWrapper';
 import {
@@ -17,6 +17,7 @@ import {
     PunchList,
     removeSubdirectories,
     useSnackbar,
+    ChecklistResponse,
 } from '@equinor/procosys-webapp-components';
 import ChecklistDetailsCard from './ChecklistDetailsCard';
 import styled from 'styled-components';

@@ -1,3 +1,4 @@
+import { FetchOperationProps } from '@equinor/procosys-webapp-components';
 import { OfflineSynchronizationError } from '../services/apiTypes';
 import { EntityType } from '../typings/enums';
 import generateUniqueId from '../utils/generateUniqueId';
@@ -98,26 +99,25 @@ export class OfflineUpdateRequest {
      * Build an object for storing all necessary information about the update request.
      */
     static async buildOfflineRequestObject(
-        request: Request
+        fetchOperation: FetchOperationProps,
+        endpoint: string,
+        contentType: string
     ): Promise<OfflineUpdateRequest> {
-        const headers = request.headers;
-        const contentType = headers.get('Content-Type');
-
-        const url = removeBaseUrlFromUrl(request.url);
+        const url = removeBaseUrlFromUrl(endpoint);
 
         let type;
         let bodyData;
         let blob;
         let mimeType;
 
-        if (request.body) {
-            if (contentType == undefined || contentType.includes('json')) {
+        if (fetchOperation.body) {
+            if (typeof fetchOperation.body === 'string') {
                 //json
-                bodyData = await request.json();
+                bodyData = JSON.parse(fetchOperation.body);
                 type = RequestType.Json;
             } else if (contentType.includes('form-data')) {
                 //attachment
-                const formData = await request.formData();
+                const formData = fetchOperation.body;
                 const tempData = new Map();
                 let arrayBuffer;
                 for (const [key, value] of formData) {
@@ -140,7 +140,7 @@ export class OfflineUpdateRequest {
 
         return new OfflineUpdateRequest(
             url,
-            request.method,
+            fetchOperation.method,
             bodyData,
             type,
             Date.now(),
