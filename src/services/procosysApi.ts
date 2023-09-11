@@ -49,7 +49,10 @@ import {
     EntityId,
     OfflineSynchronizationErrors,
 } from './apiTypes';
-import { mcFetchGet, mcFetchUpdate } from '../offline/handleFetchEvents';
+import {
+    handleFetchGet,
+    handleFetchUpdate,
+} from '../offline/handleFetchEvents';
 
 type ProcosysApiServiceProps = {
     baseURL: string;
@@ -94,7 +97,7 @@ const procosysApiService = (
                 Authorization: `Bearer ${token}`,
             },
         };
-        const res = await mcFetchGet(`${baseURL}/${url}`, GetOperation);
+        const res = await handleFetchGet(`${baseURL}/${url}`, GetOperation);
         if (res.ok) {
             const jsonResult = await res.json();
             const resultObj = objectToCamelCase(jsonResult);
@@ -124,7 +127,7 @@ const procosysApiService = (
             },
         };
 
-        const res = await mcFetchGet(`${baseURL}/${url}`, GetOperation);
+        const res = await handleFetchGet(`${baseURL}/${url}`, GetOperation);
 
         if (res.ok) {
             const blob = await res.blob();
@@ -151,7 +154,7 @@ const procosysApiService = (
             },
             body: data ? JSON.stringify(data) : undefined,
         };
-        const response = await mcFetchUpdate(
+        const response = await handleFetchUpdate(
             `${baseURL}/${url}`,
             DeleteOperation,
             'application/json'
@@ -180,7 +183,7 @@ const procosysApiService = (
 
         let response = new Response();
         try {
-            response = await mcFetchUpdate(
+            response = await handleFetchUpdate(
                 `${baseURL}/${url}`,
                 PostOperation,
                 'application/json'
@@ -223,7 +226,7 @@ const procosysApiService = (
             },
             body: file,
         };
-        const response = await mcFetchUpdate(
+        const response = await handleFetchUpdate(
             `${baseURL}/${url}`,
             PostOperation,
             'form-data'
@@ -259,7 +262,7 @@ const procosysApiService = (
             },
             body: JSON.stringify(bodyData),
         };
-        const response = await mcFetchUpdate(
+        const response = await handleFetchUpdate(
             `${baseURL}/${url}`,
             PutOperation,
             contentType

@@ -2,7 +2,7 @@
 
 import { IEntity } from '@equinor/procosys-webapp-components';
 import removeBaseUrlFromUrl from '../utils/removeBaseUrlFromUrl';
-import { mcFetchGet } from '../offline/handleFetchEvents';
+import { handleFetchGet } from '../offline/handleFetchEvents';
 
 const Settings = require('../settings.json');
 
@@ -54,7 +54,7 @@ type AppConfigResponse = {
 export const fetchAuthConfig = async (
     entity?: IEntity
 ): Promise<AuthConfigResponse> => {
-    const data = await mcFetchGet(Settings.authSettingsEndpoint);
+    const data = await handleFetchGet(Settings.authSettingsEndpoint);
     const authConfigResp: AuthConfigResponse = await data.json();
     if (entity) {
         entity.responseObj = authConfigResp;
@@ -91,7 +91,7 @@ export const fetchAppConfig = async (
     accessToken: string,
     entity?: IEntity
 ): Promise<AppConfigResponse> => {
-    const data = await mcFetchGet(endpoint, {
+    const data = await handleFetchGet(endpoint, {
         method: 'GET',
         headers: {
             Authorization: 'Bearer ' + accessToken,

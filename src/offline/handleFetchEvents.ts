@@ -12,7 +12,7 @@ import { getOfflineStatusfromLocalStorage } from './OfflineStatus';
 
 const offlineContentRepository = new OfflineContentRepository();
 
-export const mcFetchGet = async (
+export const handleFetchGet = async (
     endpoint: string,
     getOperation?: FetchOperationProps
 ): Promise<any> => {
@@ -47,7 +47,7 @@ export const mcFetchGet = async (
     }
 };
 
-export const mcFetchUpdate = async (
+export const handleFetchUpdate = async (
     endpoint: string,
     fetchOperation: FetchOperationProps,
     contentType: string
