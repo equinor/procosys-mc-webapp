@@ -1405,15 +1405,15 @@
     "@tanstack/react-virtual" "3.0.0-beta.30"
     downshift "^7.1.2"
 
+"@equinor/eds-icons@0.10.0":
+  version "0.10.0"
+  resolved "https://registry.yarnpkg.com/@equinor/eds-icons/-/eds-icons-0.10.0.tgz#3e3227d07b26bba4732feab34af2f4c5f2858032"
+  integrity sha512-oYnbMtBLiwp30TzN8Q/MEJdqhyAQs87oD/x/mHFQ+BpFGlbbrcsWeTOD+rNY6JhxtJl5qfi9mAhJQgRMtauXsA==
+
 "@equinor/eds-icons@0.18.0":
   version "0.18.0"
   resolved "https://registry.yarnpkg.com/@equinor/eds-icons/-/eds-icons-0.18.0.tgz#bfa581cb997bf43cf182a2ec3656b8c4ad8fdeff"
   integrity sha512-2M0XaNp5r2lIIN5bOfhE3/i/utiURDCC06WXVj/3H2H3ZUNgcYjYnU4tr2BJHRi5/ruH6z1UxWwYTB0hUZCrGQ==
-
-"@equinor/eds-icons@^0.19.3":
-  version "0.19.3"
-  resolved "https://registry.yarnpkg.com/@equinor/eds-icons/-/eds-icons-0.19.3.tgz#08ce80c1ea6edf0b4144def73d1e5d0de392434f"
-  integrity sha512-Sh0W01PrwXPCi8/p9YKj0qKNtRU9R/xYJORinIzsNNRllpiu9wvuGAsQNE0gQaDDnrprsiRBH3+MdMSRXVs3Wg==
 
 "@equinor/eds-tokens@0.9.0":
   version "0.9.0"
