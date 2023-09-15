@@ -1,13 +1,13 @@
 {
   "name": "mc",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "homepage": "https://apps.procosys.com/mc",
   "private": true,
   "dependencies": {
     "@azure/msal-browser": "2.32.2",
     "@equinor/eds-core-react": "0.29.1",
     "@equinor/eds-icons": "0.10.0",
-    "@equinor/procosys-webapp-components": "5.0.0",
+    "@equinor/procosys-webapp-components": "5.0.1",
     "@koale/useworker": "^4.0.2",
     "@microsoft/applicationinsights-react-js": "^3.4.1",
     "@microsoft/applicationinsights-web": "^2.8.10",
