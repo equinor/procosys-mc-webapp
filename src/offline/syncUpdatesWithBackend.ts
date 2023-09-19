@@ -310,7 +310,7 @@ const performOfflineUpdate = async (
                 offlineUpdate.url,
                 offlineUpdate.bodyData
             );
-            if (isOfType<EntityId>(response, 'Id')) {
+            if (response != undefined && isOfType<EntityId>(response, 'Id')) {
                 newEntityId = response.Id;
             }
         } else if (offlineUpdate.type == RequestType.Attachment) {
