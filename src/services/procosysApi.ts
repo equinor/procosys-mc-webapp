@@ -523,7 +523,7 @@ const procosysApiService = (
                 'MCCR',
             ]}${apiVersion}`;
         } else if (searchType === SearchType.PO) {
-            url = `PurchaseOrder/CheckLists?plantId=PCS$${plantId}&callOffId=${entityId}&formularGroupsFilter${[
+            url = `PurchaseOrder/CheckLists?plantId=PCS$${plantId}&callOffId=${entityId}&formularGroupsFilter=${[
                 'MCCR',
             ]}${apiVersion}`;
         } else if (
