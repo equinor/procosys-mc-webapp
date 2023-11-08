@@ -38,6 +38,10 @@ export const handlePunchAction = async (
                 punch.clearedByFirstName = '<offline';
                 punch.clearedByLastName = 'user>';
                 punch.clearedByUser = '<offline user email>';
+                punch.rejectedAt = null;
+                punch.rejectedByFirstName = null;
+                punch.rejectedByLastName = null;
+                punch.rejectedByUser = null;
                 break;
             case PunchAction.UNCLEAR:
                 punch.clearedAt = null;
