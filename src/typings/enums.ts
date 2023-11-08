@@ -50,6 +50,7 @@ export enum OfflineStatus {
     OFFLINE,
     SYNCHING,
     SYNC_FAIL,
+    CANCELLING,
 }
 
 export enum OfflineScopeStatus {
