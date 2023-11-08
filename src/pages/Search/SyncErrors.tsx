@@ -70,7 +70,6 @@ const SyncErrors = ({
 
     const deleteFailedUpdates = async (): Promise<void> => {
         try {
-            localStorage.removeItem(LocalStorage.SYNCH_ERRORS);
             //Set offline scope to synchronized and elete offline database.
             if (currentPlant && currentProject) {
                 const bookmarks = await api.getBookmarks(
@@ -91,6 +90,7 @@ const SyncErrors = ({
             await db.delete();
             setOfflineState(OfflineStatus.ONLINE);
             updateOfflineStatus(OfflineStatus.ONLINE, '');
+            localStorage.removeItem(LocalStorage.SYNCH_ERRORS);
             setSyncErrors(null);
         } catch (error) {
             if (!(error instanceof Error)) return;
