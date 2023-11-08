@@ -57,6 +57,9 @@ export const handlePunchAction = async (
                 punch.rejectedAt = '<updated when online>';
                 punch.rejectedByFirstName = '<offline user>';
                 punch.rejectedByLastName = '<offline user>';
+                punch.clearedAt = null;
+                punch.clearedByFirstName = null;
+                punch.clearedByLastName = null;
         }
     }
     punchItemEntity.responseObj = punch;
