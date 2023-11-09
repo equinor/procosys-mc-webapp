@@ -330,6 +330,9 @@ const performOfflineUpdate = async (
                 fd,
                 false
             );
+            if (response != undefined && isOfType<EntityId>(response, 'Id')) {
+                newEntityId = response.Id;
+            }
         } else {
             throw Error(
                 'Not able to handle given offline update type. Offline update type: ' +
@@ -371,6 +374,7 @@ const performOfflineUpdate = async (
                 `The offline update given by ${offlineUpdate.url} did not respond with a new entityId.`
             );
         }
+        console.info('returning a new entity ID');
         return newEntityId;
     } else {
         return;
