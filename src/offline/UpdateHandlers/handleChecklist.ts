@@ -39,9 +39,9 @@ export const handleChecklistPostSign = async (
         checklistEntity.searchtype
     ) {
         checklist.checkList.signedAt = new Date();
-        checklist.checkList.signedByFirstName = '<offline user>';
-        checklist.checkList.signedByLastName = '<offline user>';
-        checklist.checkList.signedByUser = '<offline user>';
+        checklist.checkList.signedByFirstName = '<offline';
+        checklist.checkList.signedByLastName = 'user>';
+        checklist.checkList.signedByUser = '<offline user email>';
         await offlineContentRepository.replaceEntity(checklistEntity);
 
         await updateStatusInScopeList(
@@ -117,9 +117,9 @@ export const handleChecklistPostVerify = async (
 
     if (checklist) {
         checklist.checkList.verifiedAt = new Date();
-        checklist.checkList.verifiedByFirstName = '<offline user>';
-        checklist.checkList.verifiedByLastName = '<offline user>';
-        checklist.checkList.verifiedByUser = '<offline user>';
+        checklist.checkList.verifiedByFirstName = '<offline';
+        checklist.checkList.verifiedByLastName = 'user>';
+        checklist.checkList.verifiedByUser = '<offline user email>';
         await offlineContentRepository.replaceEntity(checklistEntity);
 
         if (checklistEntity.parententityid && checklistEntity.searchtype) {
