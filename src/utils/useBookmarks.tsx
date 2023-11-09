@@ -126,38 +126,12 @@ const useBookmarks = ({ setSnackbarText }: UseBookmarks) => {
     };
 
     const cancelOffline = async (): Promise<void> => {
-        try {
-            if (currentProject) {
-                setBookmarksStatus(AsyncStatus.LOADING);
-                updateOfflineStatus(OfflineStatus.ONLINE, '');
-                await api.putUnderPlanning(params.plant, currentProject.id);
-                await db.delete();
-                setOfflineState(OfflineStatus.ONLINE);
-                setOfflineAction(OfflineAction.INACTIVE);
-                await getCurrentBookmarks();
-            }
-        } catch (error) {
-            if (!(error instanceof Error)) return;
-            if (currentProject) {
-                const bookmarks = await api.getBookmarks(
-                    params.plant,
-                    currentProject.id
-                );
-                if (
-                    bookmarks?.openDefinition.status ==
-                    OfflineScopeStatus.UNDER_PLANNING
-                ) {
-                    await db.delete();
-                    setOfflineState(OfflineStatus.ONLINE);
-                    setOfflineAction(OfflineAction.INACTIVE);
-                    await getCurrentBookmarks();
-                    return;
-                }
-            }
-            setSnackbarText(error.message);
-            setOfflineAction(OfflineAction.INACTIVE);
-            setBookmarksStatus(AsyncStatus.SUCCESS);
-            setOfflineState(OfflineStatus.OFFLINE);
+        updateOfflineStatus(OfflineStatus.CANCELLING, '');
+        //After reloading, the application will be reauthenticated, and
+        //Cancellation will be started.
+        //Note: When running tests, location object does not have 'reload'.
+        if (isOfType<Location>(location, 'reload')) {
+            location.reload();
         }
     };
 

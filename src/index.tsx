@@ -30,6 +30,7 @@ import {
 } from './typings/enums';
 import hasConnectionToServer from './utils/hasConnectionToServer';
 import ConfirmSync from './ConfirmSync';
+import { db } from './offline/db';
 
 const onUpdate = (registration: ServiceWorkerRegistration): void => {
     localStorage.setItem(LocalStorage.SW_UPDATE, 'true');
@@ -161,6 +162,79 @@ const renderApp = async (): Promise<void> => {
         return;
     }
 
+    if (status == OfflineStatus.CANCELLING) {
+        let api = null;
+
+        try {
+            const {
+                authInstance,
+                procosysApiInstance,
+                appInsightsReactPlugin,
+                appConfig,
+                featureFlags,
+                configurationAccessToken,
+                procosysIPOApiInstance,
+            } = await initialize();
+
+            render(
+                <SkeletonLoadingPage
+                    nrOfRows={10}
+                    text={
+                        'Cancelling offline mode. Please do not exit the app until you have exited offline mode.'
+                    }
+                />
+            );
+
+            api = procosysApiInstance;
+            const currentPlant = localStorage.getItem(StorageKey.PLANT);
+            const currentProject = getOfflineProjectIdfromLocalStorage();
+
+            if (!currentPlant || !currentProject) {
+                throw Error(
+                    'Not able to synchronize because current plant or current project was not found on local storage.'
+                );
+            }
+
+            await api.putUnderPlanning(currentPlant, currentProject);
+            await db.delete();
+            updateOfflineStatus(OfflineStatus.ONLINE, '');
+
+            render(
+                <App
+                    authInstance={authInstance}
+                    procosysApiInstance={procosysApiInstance}
+                    appInsightsReactPlugin={appInsightsReactPlugin}
+                    appConfig={appConfig}
+                    featureFlags={featureFlags}
+                    configurationAccessToken={configurationAccessToken}
+                    procosysIPOApiInstance={procosysIPOApiInstance}
+                />
+            );
+        } catch (error) {
+            console.error(
+                'Error occured in synchronization with backend. ',
+                error
+            );
+
+            let errorMessage = '';
+
+            if (api && (await hasConnectionToServer(api))) {
+                errorMessage =
+                    'An error occured while cancelling offline mode. Reload this page to try again. Contact support if problem persist.';
+            } else {
+                errorMessage =
+                    'The application is not able to connect to the server. Please check you internet connection. Reload this page to try again. Contact support if problem persist.';
+            }
+
+            render(
+                <ErrorPage
+                    actions={[<ReloadButton key={'reload'} />]}
+                    title="Error occured while cancelling offline mode"
+                    description={errorMessage}
+                ></ErrorPage>
+            );
+        }
+    }
     if (status == OfflineStatus.SYNCHING) {
         //The user has selected to finish Offline,
         //so the synchronization with backend must be started.
