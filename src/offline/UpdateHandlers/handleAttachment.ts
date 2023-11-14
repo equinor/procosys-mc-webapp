@@ -199,6 +199,9 @@ export const handlePostWorkOrderAttachment = async (
         newAttachmentId,
         title
     );
+
+    offlinePostRequest.temporaryId = newAttachmentId;
+
     await offlineUpdateRepository.addUpdateRequest(
         Number(workOrderId),
         EntityType.WorkOrder,
@@ -248,6 +251,9 @@ export const handlePostChecklistAttachment = async (
         title,
         offlinePostRequest.mimeType
     );
+
+    offlinePostRequest.temporaryId = newAttachmentId;
+
     await offlineUpdateRepository.addUpdateRequest(
         Number(checklistId),
         EntityType.Checklist,
