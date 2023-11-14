@@ -576,6 +576,10 @@ export interface EntityId {
     Id: number;
 }
 
+export interface LowerCaseEntityId {
+    id: number;
+}
+
 export interface OfflineSynchronizationError {
     Id: number;
     Url: string;

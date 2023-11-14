@@ -211,10 +211,7 @@ const renderApp = async (): Promise<void> => {
                 />
             );
         } catch (error) {
-            console.error(
-                'Error occured in synchronization with backend. ',
-                error
-            );
+            console.error('Error occured in cancellation of offline. ', error);
 
             let errorMessage = '';
 

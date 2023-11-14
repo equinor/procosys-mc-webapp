@@ -150,6 +150,9 @@ export const handlePostPunchAttachment = async (
     }
     punchlistPunchPreview.attachmentCount++;
     await offlineContentRepository.replaceEntity(punchlistEntity);
+
+    offlinePostRequest.temporaryId = newAttachmentId;
+
     await offlineUpdateRepository.addUpdateRequest(
         punchId,
         EntityType.PunchItem,
@@ -196,6 +199,9 @@ export const handlePostWorkOrderAttachment = async (
         newAttachmentId,
         title
     );
+
+    offlinePostRequest.temporaryId = newAttachmentId;
+
     await offlineUpdateRepository.addUpdateRequest(
         Number(workOrderId),
         EntityType.WorkOrder,
@@ -245,6 +251,9 @@ export const handlePostChecklistAttachment = async (
         title,
         offlinePostRequest.mimeType
     );
+
+    offlinePostRequest.temporaryId = newAttachmentId;
+
     await offlineUpdateRepository.addUpdateRequest(
         Number(checklistId),
         EntityType.Checklist,
@@ -316,6 +325,7 @@ export const handleDeleteWorkOrderAttachment = async (
         );
 
     await deleteAttachmentFromList(attachmentListEntity, dto.AttachmentId);
+
     await offlineUpdateRepository.addUpdateRequest(
         dto.workOrderId,
         EntityType.WorkOrder,
@@ -343,6 +353,9 @@ export const handleDeletePunchAttachment = async (
             Number(dto.PunchItemId)
         );
     await deleteAttachmentFromList(attachmentListEntity, dto.AttachmentId);
+
+    offlinePostRequest.temporaryId = dto.AttachmentId;
+
     await offlineUpdateRepository.addUpdateRequest(
         dto.PunchItemId,
         EntityType.PunchItem,
@@ -368,6 +381,7 @@ export const handleDeleteCheckListAttachment = async (
         );
 
     await deleteAttachmentFromList(attachmentListEntity, dto.AttachmentId);
+
     await offlineUpdateRepository.addUpdateRequest(
         dto.CheckListId,
         EntityType.Checklist,
