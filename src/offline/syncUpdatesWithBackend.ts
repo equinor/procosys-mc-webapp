@@ -382,7 +382,6 @@ const performOfflineUpdate = async (
                 `The offline update given by ${offlineUpdate.url} did not respond with a new entityId.`
             );
         }
-        console.info('returning a new entity ID');
         return newEntityId;
     } else {
         return;
@@ -476,7 +475,11 @@ const updateIdOnEntityRequest = (
             if (offlineUpdate.bodyData.CustomCheckItemId == temporaryId) {
                 offlineUpdate.bodyData.CustomCheckItemId = newId.toString();
             }
-        } else if (offlineUpdate.url.startsWith('PunchListItem/Attachment?')) {
+        } else if (
+            offlineUpdate.url.startsWith('PunchListItem/Attachment?') ||
+            offlineUpdate.url.startsWith('CheckList/Attachment?') ||
+            offlineUpdate.url.startsWith('WorkOrder/Attachment?')
+        ) {
             offlineUpdate.bodyData.AttachmentId = newId;
         }
     } else {
