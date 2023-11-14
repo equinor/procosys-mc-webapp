@@ -7,7 +7,11 @@ import {
     SyncStatus,
 } from './OfflineUpdateRequest';
 
-import { EntityId, OfflineSynchronizationErrors } from '../services/apiTypes';
+import {
+    EntityId,
+    LowerCaseEntityId,
+    OfflineSynchronizationErrors,
+} from '../services/apiTypes';
 import { getOfflineProjectIdfromLocalStorage } from './OfflineStatus';
 import {
     HTTPError,
@@ -328,10 +332,14 @@ const performOfflineUpdate = async (
             response = await api.postAttachmentByFetch(
                 offlineUpdate.url,
                 fd,
-                false
+                true
             );
-            if (response != undefined && isOfType<EntityId>(response, 'Id')) {
-                newEntityId = response.Id;
+            if (
+                response != undefined &&
+                isOfType<LowerCaseEntityId>(response, 'id')
+            ) {
+                newEntityId = response.id;
+                offlineUpdate.responseIsNewEntityId = true;
             }
         } else {
             throw Error(
@@ -448,7 +456,7 @@ const updateIdOnEntityRequest = (
             offlineUpdate.entityId = newId;
             offlineUpdate.bodyData = newId.toString();
         } else if (offlineUpdate.url.startsWith('PunchListItem/Attachment?')) {
-            const oldId = offlineUpdate.entityId;
+            const oldId = temporaryId;
             if (oldId) {
                 offlineUpdate.url = offlineUpdate.url.replace(
                     oldId.toString(),
@@ -468,6 +476,8 @@ const updateIdOnEntityRequest = (
             if (offlineUpdate.bodyData.CustomCheckItemId == temporaryId) {
                 offlineUpdate.bodyData.CustomCheckItemId = newId.toString();
             }
+        } else if (offlineUpdate.url.startsWith('PunchListItem/Attachment?')) {
+            offlineUpdate.bodyData.AttachmentId = newId;
         }
     } else {
         console.error(
