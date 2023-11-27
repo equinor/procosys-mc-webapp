@@ -73,7 +73,11 @@ const SearchPage = (): JSX.Element => {
             <SearchPageWrapper>
                 <Navbar
                     leftContent={<ProcosysButton />}
-                    rightContent={<SideMenu />}
+                    rightContent={
+                        <SideMenu
+                            isOffline={offlineState == OfflineStatus.OFFLINE}
+                        />
+                    }
                     isOffline={offlineState == OfflineStatus.OFFLINE}
                 />
                 <ContentWrapper>
