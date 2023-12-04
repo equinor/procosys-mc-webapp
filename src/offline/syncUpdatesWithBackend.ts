@@ -455,7 +455,7 @@ const updateIdOnEntityRequest = (
             offlineUpdate.entityId = newId;
             offlineUpdate.bodyData = newId.toString();
         } else if (offlineUpdate.url.startsWith('PunchListItem/Attachment?')) {
-            const oldId = temporaryId;
+            const { entityId: oldId } = offlineUpdate;
             if (oldId) {
                 offlineUpdate.url = offlineUpdate.url.replace(
                     oldId.toString(),
