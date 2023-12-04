@@ -91,11 +91,11 @@ const VersionInfo = styled.div`
     }
 `;
 
-const SideMenu = ({
-    isOffline = false,
-}: {
+interface SideMenuProps {
     isOffline?: boolean;
-}): JSX.Element => {
+}
+
+const SideMenu = ({ isOffline = false }: SideMenuProps): JSX.Element => {
     const { auth, history, params, offlineState } = useCommonHooks();
     const { currentPlant, currentProject } = useContext(PlantContext);
     const [drawerIsOpen, setDrawerIsOpen] = useState(false);
