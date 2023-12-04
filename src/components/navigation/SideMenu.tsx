@@ -8,6 +8,7 @@ import { COLORS } from '../../style/GlobalStyles';
 import { isOfType, StorageKey } from '@equinor/procosys-webapp-components';
 import { LocalStorage, OfflineStatus } from '../../typings/enums';
 import packageJson from '../../../package.json';
+import { NavButton } from '../../pages/Checklist/ChecklistPage';
 
 const SideMenuWrapper = styled.aside<{ isActive: boolean }>`
     width: 297px;
@@ -90,7 +91,11 @@ const VersionInfo = styled.div`
     }
 `;
 
-const SideMenu = (): JSX.Element => {
+interface SideMenuProps {
+    isOffline?: boolean;
+}
+
+const SideMenu = ({ isOffline = false }: SideMenuProps): JSX.Element => {
     const { auth, history, params, offlineState } = useCommonHooks();
     const { currentPlant, currentProject } = useContext(PlantContext);
     const [drawerIsOpen, setDrawerIsOpen] = useState(false);
@@ -108,10 +113,17 @@ const SideMenu = (): JSX.Element => {
 
     return (
         <>
-            <Button variant="ghost" onClick={(): void => setDrawerIsOpen(true)}>
-                <EdsIcon name={'menu'} color={COLORS.darkGrey} title="Menu" />
+            <NavButton
+                variant="ghost"
+                onClick={(): void => setDrawerIsOpen(true)}
+            >
+                <EdsIcon
+                    name={'menu'}
+                    title="Menu"
+                    color={isOffline ? COLORS.moss : COLORS.darkGrey}
+                />
                 Menu
-            </Button>
+            </NavButton>
             <Backdrop
                 isActive={drawerIsOpen}
                 onClick={(): void => setDrawerIsOpen(false)}

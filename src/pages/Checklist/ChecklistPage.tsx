@@ -28,6 +28,10 @@ const ContentWrapper = styled.div`
     padding-bottom: 66px;
 `;
 
+export const NavButton = styled(Button)`
+    color: inherit;
+`;
+
 const ChecklistPage = (): JSX.Element => {
     const { history, url, path, api, params, offlineState } = useCommonHooks();
     const { permissions } = useContext(PlantContext);
@@ -114,7 +118,7 @@ const ChecklistPage = (): JSX.Element => {
                     history.location.pathname.includes(
                         '/new-punch'
                     ) ? undefined : (
-                        <Button
+                        <NavButton
                             variant="ghost"
                             onClick={(): void =>
                                 history.push(`${url}/punch-list/new-punch`)
@@ -124,7 +128,7 @@ const ChecklistPage = (): JSX.Element => {
                             }
                         >
                             New punch
-                        </Button>
+                        </NavButton>
                     )
                 }
                 isOffline={offlineState == OfflineStatus.OFFLINE}
