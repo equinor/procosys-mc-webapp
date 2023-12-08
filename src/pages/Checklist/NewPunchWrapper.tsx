@@ -159,6 +159,7 @@ const NewPunchWrapper = ({
                     query={query}
                     setQuery={setQuery}
                     disablePersonsSearch={offlineState == OfflineStatus.OFFLINE}
+                    disableAttahments={true}
                 />
             </AsyncPage>
         </>
