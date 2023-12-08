@@ -94,7 +94,8 @@ export const syncronizeOfflineUpdatesWithBackend = async (
                             const updated = updateIdOnEntityRequest(
                                 newEntityId,
                                 update,
-                                update.temporaryId
+                                update.temporaryId,
+                                offlineUpdate.entityId
                             );
                             await offlineUpdateRepository.updateOfflineUpdateRequest(
                                 updated
@@ -424,7 +425,8 @@ const setEntityToSynchronized = async (
 const updateIdOnEntityRequest = (
     newId: number,
     offlineUpdate: OfflineUpdateRequest,
-    temporaryId?: number
+    temporaryId?: number,
+    PunchItemId?: number | null
 ): OfflineUpdateRequest => {
     const method = offlineUpdate.method.toUpperCase();
 
@@ -476,11 +478,13 @@ const updateIdOnEntityRequest = (
                 offlineUpdate.bodyData.CustomCheckItemId = newId.toString();
             }
         } else if (
-            offlineUpdate.url.startsWith('PunchListItem/Attachment?') ||
             offlineUpdate.url.startsWith('CheckList/Attachment?') ||
             offlineUpdate.url.startsWith('WorkOrder/Attachment?')
         ) {
             offlineUpdate.bodyData.AttachmentId = newId;
+        } else if (offlineUpdate.url.startsWith('PunchListItem/Attachment?')) {
+            offlineUpdate.bodyData.AttachmentId = newId;
+            offlineUpdate.bodyData.PunchItemId = PunchItemId;
         }
     } else {
         console.error(
