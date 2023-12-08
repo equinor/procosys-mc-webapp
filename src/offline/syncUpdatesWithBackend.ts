@@ -84,6 +84,7 @@ export const syncronizeOfflineUpdatesWithBackend = async (
                         api
                     );
                     if (newEntityId) {
+                        console.log(offlineUpdate);
                         //Backend has created a new ID. All updates for the entity must be updated.
                         for (let update of updatesForEntity) {
                             //Reload the offline update to get changes (performOfflineUpdate will make updates)
@@ -94,7 +95,8 @@ export const syncronizeOfflineUpdatesWithBackend = async (
                             const updated = updateIdOnEntityRequest(
                                 newEntityId,
                                 update,
-                                update.temporaryId
+                                update.temporaryId,
+                                offlineUpdate.entityId
                             );
                             await offlineUpdateRepository.updateOfflineUpdateRequest(
                                 updated
@@ -334,6 +336,7 @@ const performOfflineUpdate = async (
                 fd,
                 true
             );
+            console.log(offlineUpdate);
             if (
                 response != undefined &&
                 isOfType<LowerCaseEntityId>(response, 'id')
@@ -424,7 +427,8 @@ const setEntityToSynchronized = async (
 const updateIdOnEntityRequest = (
     newId: number,
     offlineUpdate: OfflineUpdateRequest,
-    temporaryId?: number
+    temporaryId?: number,
+    PunchItemId?: number | null
 ): OfflineUpdateRequest => {
     const method = offlineUpdate.method.toUpperCase();
 
@@ -476,11 +480,13 @@ const updateIdOnEntityRequest = (
                 offlineUpdate.bodyData.CustomCheckItemId = newId.toString();
             }
         } else if (
-            offlineUpdate.url.startsWith('PunchListItem/Attachment?') ||
             offlineUpdate.url.startsWith('CheckList/Attachment?') ||
             offlineUpdate.url.startsWith('WorkOrder/Attachment?')
         ) {
             offlineUpdate.bodyData.AttachmentId = newId;
+        } else if (offlineUpdate.url.startsWith('PunchListItem/Attachment?')) {
+            offlineUpdate.bodyData.AttachmentId = newId;
+            offlineUpdate.bodyData.PunchItemId = PunchItemId;
         }
     } else {
         console.error(
