@@ -84,7 +84,6 @@ export const syncronizeOfflineUpdatesWithBackend = async (
                         api
                     );
                     if (newEntityId) {
-                        console.log(offlineUpdate);
                         //Backend has created a new ID. All updates for the entity must be updated.
                         for (let update of updatesForEntity) {
                             //Reload the offline update to get changes (performOfflineUpdate will make updates)
@@ -336,7 +335,6 @@ const performOfflineUpdate = async (
                 fd,
                 true
             );
-            console.log(offlineUpdate);
             if (
                 response != undefined &&
                 isOfType<LowerCaseEntityId>(response, 'id')
