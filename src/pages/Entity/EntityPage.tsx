@@ -62,7 +62,7 @@ const EntityPage = (): JSX.Element => {
     const controller = new AbortController();
     const abortSignal = controller.signal;
     const isOnPunchListPage = history.location.pathname.includes('/punch-list');
-    const isOnWoInfoPage = history.location.pathname.includes('/wo-info');
+    const isOnWoInfoPage = history.location.pathname.includes('/WO-info');
     const isOnIpoInfoPage = history.location.pathname.includes('/IPO-info');
 
     useEffect(() => {
