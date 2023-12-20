@@ -454,8 +454,9 @@ const updateIdOnEntityRequest = (
             offlineUpdate.url.startsWith('PunchListItem/Verify') ||
             offlineUpdate.url.startsWith('PunchListItem/Unverify')
         ) {
-            offlineUpdate.entityId = newId;
-            offlineUpdate.bodyData = newId.toString();
+            offlineUpdate.entityId = PunchItemId ?? newId;
+            offlineUpdate.bodyData =
+                PunchItemId?.toString() ?? newId.toString();
         } else if (offlineUpdate.url.startsWith('PunchListItem/Attachment?')) {
             const { entityId: oldId } = offlineUpdate;
             if (oldId) {
