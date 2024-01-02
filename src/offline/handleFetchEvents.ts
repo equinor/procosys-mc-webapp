@@ -62,7 +62,12 @@ export const handleFetchUpdate = async (
 
         const data = await updateOfflineDatabase(offlinePostRequest);
         if (data) {
-            return new Response(JSON.stringify(data));
+            const res = new Response(JSON.stringify(data), {
+                headers: {
+                    'content-Type': 'application/json',
+                },
+            });
+            return res;
         } else {
             return new Response();
         }
