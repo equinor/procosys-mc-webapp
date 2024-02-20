@@ -16,6 +16,8 @@ import {
 import { OfflineStatus } from '../../typings/enums';
 import { SearchType } from '@equinor/procosys-webapp-components';
 
+const user = userEvent.setup();
+
 const renderEntityPage = (
     searchType: SearchType,
     punchList?: boolean
@@ -158,6 +160,7 @@ describe('<EntityPage> general and Scope component', () => {
 });
 
 describe('<EntityPage> in-page routing', () => {
+    
     it('Renders the PunchList component if the punch list button is clicked', async () => {
         renderEntityPage(SearchType.MC);
         expect(
@@ -168,7 +171,7 @@ describe('<EntityPage> in-page routing', () => {
             name: `Punch list ${dummyPunchListResponse.length}`,
         });
         expect(punchListButton).toBeInTheDocument();
-        userEvent.click(punchListButton);
+        await user.click(punchListButton);
         expect(
             await screen.findByText(testMcPkgPreview[0].mcPkgNo)
         ).toBeInTheDocument();
@@ -193,7 +196,7 @@ describe('<EntityPage> in-page routing', () => {
             name: `Scope ${testScope.length}`,
         });
         expect(scopeButton).toBeInTheDocument();
-        userEvent.click(scopeButton);
+        await user.click(scopeButton);
         expect(
             await screen.findByText(testMcPkgPreview[0].mcPkgNo)
         ).toBeInTheDocument();
@@ -209,7 +212,7 @@ describe('<EntityPage> in-page routing', () => {
             name: 'WO info',
         });
         expect(workOrderButton).toBeInTheDocument();
-        userEvent.click(workOrderButton);
+        await user.click(workOrderButton);
         expect(
             await screen.findByText(testWoPreview[0].workOrderNo)
         ).toBeInTheDocument();
@@ -311,10 +314,10 @@ describe('<Filter> component', () => {
             name: 'filter button',
         });
         expect(filterButton).toBeInTheDocument();
-        userEvent.click(filterButton);
+        await user.click(filterButton);
         const okStatusCheckbox = await screen.findByLabelText('OK');
         expect(okStatusCheckbox).toBeInTheDocument();
-        userEvent.click(okStatusCheckbox);
+        await user.click(okStatusCheckbox);
         expect(firstChecklistPreview).toBeInTheDocument();
         expect(secondChecklistPreview).not.toBeInTheDocument();
     });
@@ -332,12 +335,12 @@ describe('<Filter> component', () => {
             name: 'filter button',
         });
         expect(filterButton).toBeInTheDocument();
-        userEvent.click(filterButton);
+        await user.click(filterButton);
         const clearedSignatureRadioButton = await screen.findByLabelText(
             'Cleared not verified'
         );
         expect(clearedSignatureRadioButton).toBeInTheDocument();
-        userEvent.click(clearedSignatureRadioButton);
+        await user.click(clearedSignatureRadioButton);
         expect(firstPunchItemPreview).toBeInTheDocument();
         expect(secondPuncItemPreview).not.toBeInTheDocument();
     });

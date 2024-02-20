@@ -107,9 +107,9 @@ export const FakerPerson = (): Person => {
     return {
         id: FakerId(),
         azureOid: faker.datatype.uuid(),
-        username: faker.name.findName(),
-        firstName: faker.name.firstName(),
-        lastName: faker.name.lastName(),
+        username: faker.person.fullName(),
+        firstName: faker.person.firstName(),
+        lastName: faker.person.lastName(),
         email: faker.internet.email(),
     };
 };
@@ -119,7 +119,7 @@ export const FakerSavedSearch = (
 ): SavedSearch => {
     return {
         id: FakerId(),
-        name: faker.name.findName(),
+        name: faker.person.fullName(),
         description: FakerDescription(),
         type: type,
     };
@@ -196,7 +196,7 @@ export const FakerChecklistSavedSearchResult =
             isSigned: FakerRandomBoolean(),
             isVerified: FakerRandomBoolean(),
             updatedAt: faker.date.past(1),
-            updatedByUser: faker.name.findName(),
+            updatedByUser: faker.person.fullName(),
             updatedByFirstName: faker.name.firstName(),
             updatedByLastName: faker.name.firstName(),
         };
@@ -453,7 +453,7 @@ export const FakerNewPunch = (): NewPunch => {
     };
 };
 
-export const FakerFullname = () => faker.name.findName();
+export const FakerFullname = () => faker.person.fullName();
 export const FakerBetweenDates = (from: Date, to: Date) => {
     return faker.date.between(from.toDateString(), to.toDateString());
 };
@@ -573,12 +573,12 @@ export const FakeChecklistDetails = (id: number): ChecklistDetails => {
         signedByFirstName: faker.name.firstName(),
         signedByLastName: faker.name.lastName(),
         signedAt: faker.date.past(2),
-        verifiedByUser: faker.name.findName(),
+        verifiedByUser: faker.person.fullName(),
         verifiedByFirstName: faker.name.firstName(),
         verifiedByLastName: faker.name.lastName(),
         verifiedAt: faker.date.past(1),
         updatedAt: faker.date.past(1),
-        updatedByUser: faker.name.findName(),
+        updatedByUser: faker.person.fullName(),
         updatedByFirstName: faker.name.firstName(),
         updatedByLastName: faker.name.lastName(),
         isRestrictedForUser: FakerRandomBoolean(),

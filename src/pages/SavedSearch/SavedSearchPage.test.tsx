@@ -13,6 +13,8 @@ import { CompletionStatus } from '../../services/apiTypes';
 import userEvent from '@testing-library/user-event';
 import { OfflineStatus, SavedSearchType } from '../../typings/enums';
 
+const user = userEvent.setup();
+
 const renderSavedSearchPage = (savedSearchType: string): void => {
     render(
         withPlantContext({
@@ -104,7 +106,7 @@ describe('<SavedSearchPage>', () => {
             name: 'Load More',
         });
         expect(loadMoreButton).toBeInTheDocument();
-        userEvent.click(loadMoreButton);
+        await user.click(loadMoreButton);
         expect(await screen.findByText(263924)).toBeInTheDocument();
     });
     it('Renders an error message if the API call fails when clicking the "Load More" button', async () => {
@@ -120,7 +122,7 @@ describe('<SavedSearchPage>', () => {
             name: 'Load More',
         });
         expect(loadMoreButton).toBeInTheDocument();
-        userEvent.click(loadMoreButton);
+        await user.click(loadMoreButton);
         expect(
             await screen.findByText(
                 'Could not load more results. Try again or reload the page.'
@@ -147,7 +149,7 @@ describe('<SavedSearchPage>', () => {
             name: 'Load More',
         });
         expect(loadMoreButton).toBeInTheDocument();
-        userEvent.click(loadMoreButton);
+        await user.click(loadMoreButton);
         expect(
             await screen.findByRole('button', {
                 name: 'Load More',

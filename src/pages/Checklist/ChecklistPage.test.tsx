@@ -7,6 +7,9 @@ import ChecklistPage from './ChecklistPage';
 import { dummyChecklistResponse } from '../../test/dummyData';
 import userEvent from '@testing-library/user-event';
 import { OfflineStatus } from '../../typings/enums';
+import '@testing-library/jest-dom'
+
+const user = userEvent.setup();
 
 const renderChecklistPage = (contentType?: string): void => {
     render(
@@ -103,14 +106,14 @@ describe('<ChecklistPage> Tag info', () => {
         renderChecklistPage('tag-info');
         const mainInfoPanel = await screen.findByText('Main tag info');
         expect(screen.getByText('Tag info')).toBeInTheDocument();
-        userEvent.click(mainInfoPanel);
+        await user.click(mainInfoPanel);
         expect(screen.getByText('Tag number')).not.toBeVisible();
     });
     it('Shows additional fields with value and unit when panel is open, and hide it when its closd', async () => {
         renderChecklistPage('tag-info');
         const detailsPanel = await screen.findByText('Details');
         expect(screen.getByText('dummy-field-value ms')).toBeInTheDocument();
-        userEvent.click(detailsPanel);
+        await user.click(detailsPanel);
         expect(screen.getByText('dummy-field-value ms')).not.toBeVisible();
     });
 });
