@@ -7,7 +7,7 @@ import ChecklistPage from './ChecklistPage';
 import { dummyChecklistResponse } from '../../test/dummyData';
 import userEvent from '@testing-library/user-event';
 import { OfflineStatus } from '../../typings/enums';
-import '@testing-library/jest-dom'
+import '@testing-library/jest-dom';
 
 const user = userEvent.setup();
 

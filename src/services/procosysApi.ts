@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
 import {
     FetchOperationProps,
     HTTPError,
@@ -63,7 +64,6 @@ export const typeGuardErrorMessage = (expectedType: string): string => {
     return `Unable to retrieve ${expectedType}. Please try again.`;
 };
 
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const procosysApiService = (
     { baseURL, apiVersion }: ProcosysApiServiceProps,
     token: string

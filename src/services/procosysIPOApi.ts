@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
 import {
     HTTPError,
     getErrorMessage,
@@ -20,7 +21,6 @@ type GetOperationProps = {
     responseType?: string;
 };
 
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const procosysIPOApiService = (
     { baseURL }: ProcosysIPOApiServiceProps,
     token: string

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
 // import { faker } from '@faker-js/faker';
 import { FakerAlphaCode } from './faker';
 import { FindSubPatterns } from './findSubPatterns';

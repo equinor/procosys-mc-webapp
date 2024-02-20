@@ -1,4 +1,4 @@
-import '@testing-library/jest-dom'
+import '@testing-library/jest-dom';
 import '@equinor/eds-core-react';
 import './setupServer';
 import { configure } from '@testing-library/react';

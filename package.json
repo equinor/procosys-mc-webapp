@@ -31,12 +31,6 @@
     "eject": "react-scripts eject",
     "lint-all": "./node_modules/.bin/eslint --ext .ts,.tsx src/"
   },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
-  },
   "browserslist": {
     "production": [
       ">0.2%",

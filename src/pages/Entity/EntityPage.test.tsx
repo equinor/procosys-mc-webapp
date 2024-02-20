@@ -160,7 +160,6 @@ describe('<EntityPage> general and Scope component', () => {
 });
 
 describe('<EntityPage> in-page routing', () => {
-    
     it('Renders the PunchList component if the punch list button is clicked', async () => {
         renderEntityPage(SearchType.MC);
         expect(

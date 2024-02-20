@@ -26,6 +26,7 @@
         "sourceType": "module"
     },
     "plugins": [
+        "react",
         "prettier"
     ],
     "overrides": [

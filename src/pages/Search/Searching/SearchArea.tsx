@@ -73,8 +73,8 @@ const SearchArea = ({
                     searchType === SearchType.PO
                         ? 'Type to search PO no'
                         : searchType === SearchType.IPO
-                        ? 'Type to search IPO no'
-                        : `For example: "${getPlaceholderText()}"`
+                          ? 'Type to search IPO no'
+                          : `For example: "${getPlaceholderText()}"`
                 }
                 value={query}
                 onChange={(e: ChangeEvent<HTMLInputElement>): void =>

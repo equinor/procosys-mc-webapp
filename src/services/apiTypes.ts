@@ -218,7 +218,7 @@ export interface IpoDetails {
             description: string;
             commPkgNo: string;
             system: string;
-        }
+        },
     ];
     commPkgScope: [
         {
@@ -226,7 +226,7 @@ export interface IpoDetails {
             description: string;
             status: string;
             system: string;
-        }
+        },
     ];
 }
 
@@ -275,7 +275,7 @@ export interface IpoParticipant {
                 email: string;
                 required: boolean;
                 rowVersion: string;
-            }
+            },
         ];
         response: string;
     };
