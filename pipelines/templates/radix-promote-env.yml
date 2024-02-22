@@ -33,7 +33,7 @@ parameters:
   default: 6dae42f8-4368-4678-94ff-3960e28e3630
 
 - name: radixApplication
-  default: procosys-commissioning-webapp
+  default: procosys-mc-webapp
 
 - name: radixUrl
   default: https://api.radix.equinor.com/api/v1
