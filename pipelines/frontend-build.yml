@@ -69,7 +69,7 @@ stages:
     envName: 'dev'
     envGroupName: '$(globalPrefix)-$(fullAppName)-${{ variables.envName }}'
 
-jobs:
+  jobs:
     - deployment: Deploy
       displayName: Deploy Frontend
       environment: '${{ variables.envGroupName }}'
