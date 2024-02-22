@@ -1,7 +1,7 @@
 trigger:
   branches:
     include:
-    - main
+    - pbi/104955_Move_MC_App_to_Radix
     - dev
 
 resources:
