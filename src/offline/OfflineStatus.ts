@@ -5,9 +5,9 @@ export const getOfflineStatusfromLocalStorage = (): OfflineStatus => {
     const offlineStatus = localStorage.getItem(LocalStorage.OFFLINE_STATUS);
     console.log('--------------oFFLINE STATUS: ' + offlineStatus);
     if (offlineStatus == null) return OfflineStatus.ONLINE;
-    console.log("JEG HER HER!");
+    console.log('JEG HER HER!');
     const offlineStatusNum = parseInt(offlineStatus);
-    console.log("JEG HER HER! " + offlineStatusNum);
+    console.log('JEG HER HER! ' + offlineStatusNum);
 
     if (offlineStatusNum in OfflineStatus) {
         return offlineStatusNum;
@@ -49,7 +49,7 @@ export const updateOfflineStatus = (
 };
 
 export const getOfflineProjectIdfromLocalStorage = (): number => {
-    console.log("getOfflineProjectIdfromLocalStorage");
+    console.log('getOfflineProjectIdfromLocalStorage');
     const projectId = localStorage.getItem(LocalStorage.OFFLINE_PROJECT_ID);
     if (projectId) {
         return Number.parseInt(projectId);
