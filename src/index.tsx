@@ -53,7 +53,6 @@ const render = (content: JSX.Element): void => {
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const initialize = async () => {
-    console.log('INITIALIZE 1');
     render(<LoadingPage loadingText={'Initializing service worker...'} />);
     console.log('Application is initializing');
     await navigator.serviceWorker.ready; //wait until service worker is active
@@ -363,15 +362,15 @@ const renderApp = async (): Promise<void> => {
 };
 
 (async (): Promise<void> => {
-    console.log('--------0');
     render(<LoadingPage loadingText={'Initializing...'} />);
+    console.log('--------0');
     console.log('--------1');
 
     await navigator.serviceWorker.ready; //wait until service worker is active
     try {
-        console.log('-----------2')
+        console.log('-----------2');
         const status = getOfflineStatusfromLocalStorage();
-        console.log('-----------3')
+        console.log('-----------3');
         if (status != OfflineStatus.ONLINE) {
             render(<OfflinePin setUserPin={setUserPin} />);
         }
