@@ -35,24 +35,25 @@ stages:
 
   jobs:
   # Docker Build
-  - template: /templates/pipelines/dockerbuild-mc-webapp.yml@templates
-    parameters:
-      dependsOn: ''
-      deploymentName: 'docker_build'
-      condition: and(always(), eq(variables['Build.Reason'], 'PullRequest'))
-      buildCommand: build
-      envGroup: '${{ variables.envGroupName }}'
-      dockerfilePath: '${{ variables.dockerfilePath }}'
-      buildContext: '$(Build.SourcesDirectory)'
-      repository: '${{ variables.repositoryName }}'
-      dockerRegistryServiceConnection: '$(dockerRegistryServiceConnectionName)'
+  #- template: /templates/pipelines/dockerbuild-mc-webapp.yml@templates
+  #  parameters:
+  #    dependsOn: ''
+  #    deploymentName: 'docker_build'
+  #    condition: and(always(), eq(variables['Build.Reason'], 'PullRequest'))
+  #    buildCommand: build
+  #    envGroup: '${{ variables.envGroupName }}'
+  #    dockerfilePath: '${{ variables.dockerfilePath }}'
+  #    buildContext: '$(Build.SourcesDirectory)'
+  #    repository: '${{ variables.repositoryName }}'
+  #    dockerRegistryServiceConnection: '$(dockerRegistryServiceConnectionName)'
 
   # Docker Build and Push
   - template: /templates/pipelines/dockerbuild-mc-webapp.yml@templates
     parameters:
       dependsOn: ''
       deploymentName: 'docker_build_push'
-      condition: and(always(), ne(variables['Build.Reason'], 'PullRequest'))
+      #condition: and(always(), ne(variables['Build.Reason'], 'PullRequest'))
+      condition: and(always(), eq(variables['Build.SourceBranch'], 'refs/heads/pbi/104955_Move_MC_App_to_Radix')) #todo   
       buildCommand: buildAndPush
       envGroup: '${{ variables.envGroupName }}'
       dockerfilePath: '${{ variables.dockerfilePath }}'
