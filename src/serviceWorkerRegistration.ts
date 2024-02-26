@@ -159,7 +159,6 @@ function checkValidServiceWorker(swUrl: string, config?: Config): void {
             );
         });
         console.log('---- checkValidServiceworker.  4');
-
 }
 
 export function unregister(): void {
