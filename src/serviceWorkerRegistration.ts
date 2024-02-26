@@ -116,7 +116,7 @@ function registerValidSW(swUrl: string, config?: Config): void {
                     }
                 };
             };
-            console.log("------registered valid WS 2");
+            console.log('------registered valid WS 2');
         })
         .catch((error) => {
             console.error('Error during service worker registration:', error);
