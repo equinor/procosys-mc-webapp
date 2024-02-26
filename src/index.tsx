@@ -367,8 +367,8 @@ const renderApp = async (): Promise<void> => {
     console.log('--------1');
 
     await navigator.serviceWorker.ready; //wait until service worker is active
+    console.log('-----------2');
     try {
-        console.log('-----------2');
         const status = getOfflineStatusfromLocalStorage();
         console.log('-----------3');
         if (status != OfflineStatus.ONLINE) {
