@@ -127,7 +127,7 @@ self.addEventListener('install', (event) => {
  * Handle fetch events. Will check if we are in offline mode.
  */
 self.addEventListener('fetch', function (event: FetchEvent) {
-    console.log('self.addEventListener'); 
+    console.log('self.addEventListener');
     const url = event.request.url;
     if (
         offlineStatus == OfflineStatus.OFFLINE &&
