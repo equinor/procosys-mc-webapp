@@ -23,7 +23,7 @@ spec:
           clientId: 9f056ccb-c53e-4e15-859f-95027bff2ae5
       imageTagName: latest  
       variables:
-        pcs_authSettingsEndpoint: 'https://pcs-config-non-prod-func.azurewebsites.net/api/MCWebApp/Auth'
+        pcs_authSettingsEndpoint: 'https://pcs-config-non-prod-func.azurewebsites.net/api/McWebApp/Auth'
       monitoring: true
       resources:
         requests:
@@ -38,7 +38,7 @@ spec:
         azure:
           clientId: 912690c2-dbea-4174-a9fd-3c85f113435c
       variables:
-        pcs_authSettingsEndpoint: 'https://pcs-config-non-prod-func.azurewebsites.net/api/MCWebApp/Auth'
+        pcs_authSettingsEndpoint: 'https://pcs-config-non-prod-func.azurewebsites.net/api/McWebApp/Auth'
       resources:
         requests:
           memory: '256Mi'
@@ -52,7 +52,7 @@ spec:
         azure:
           clientId: 437b9c0c-fe8f-4388-ab9e-ca2d5b53530e
       variables:
-        pcs_authSettingsEndpoint: 'https://pcs-config-prod-func.azurewebsites.net/api/MCWebApp/Auth'
+        pcs_authSettingsEndpoint: 'https://pcs-config-prod-func.azurewebsites.net/api/McWebApp/Auth'
       resources:
         requests:
           memory: '256Mi'
