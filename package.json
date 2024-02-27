@@ -43,6 +43,9 @@
       "last 1 safari version"
     ]
   },
+  "resolutions": {
+    "eslint-plugin-react": "^7.33.2"
+  },
   "plugins": [
     "react",
       "@typescript-eslint"
