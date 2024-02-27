@@ -6,8 +6,8 @@
   "dependencies": {
     "@azure/msal-browser": "3.10.0",
     "@equinor/eds-core-react": "0.31.0",
-    "@equinor/eds-icons": "0.10.0",
-    "@equinor/procosys-webapp-components": "5.0.2",
+    "@equinor/eds-icons": "0.14.0",
+    "@equinor/procosys-webapp-components": "5.0.4",
     "@koale/useworker": "^4.0.2",
     "@microsoft/applicationinsights-react-js": "^17.1.0",
     "@microsoft/applicationinsights-web": "^3.1.0",
@@ -43,6 +43,10 @@
       "last 1 safari version"
     ]
   },
+  "plugins": [
+    "react",
+      "@typescript-eslint"
+  ],
   "devDependencies": {
     "@faker-js/faker": "^8.4.1",
     "@testing-library/jest-dom": "^6.4.2",
@@ -54,8 +58,8 @@
     "@types/react-dom": "^18.0.11",
     "@types/react-router-dom": "^5.3.3",
     "@types/styled-components": "^5.1.26",
-    "@typescript-eslint/eslint-plugin": "^7.0.2",
-    "@typescript-eslint/parser": "^7.0.2",
+    "@typescript-eslint/eslint-plugin": "^7.1.0",
+    "@typescript-eslint/parser": "^7.1.0",
     "eslint": "^8.56.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.1.3",
