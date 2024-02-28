@@ -54,7 +54,7 @@ const App = ({
                 configurationAccessToken={configurationAccessToken}
                 ipoApi={procosysIPOApiInstance}
             >
-                <Router basename={'/mc'}>
+                <Router basename={'/'}>
                     <ErrorBoundary>
                         <Switch>
                             <Route
