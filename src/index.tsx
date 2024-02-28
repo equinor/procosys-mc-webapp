@@ -206,7 +206,7 @@ const renderApp = async (): Promise<void> => {
             updateOfflineStatus(OfflineStatus.ONLINE, '');
 
             render(
-                <   
+                <App
                     authInstance={authInstance}
                     procosysApiInstance={procosysApiInstance}
                     appInsightsReactPlugin={appInsightsReactPlugin}
@@ -366,7 +366,7 @@ const renderApp = async (): Promise<void> => {
     console.log('--------0');
     console.log('--------1');
 
-    //await navigator.serviceWorker.ready; //wait until service worker is active
+    await navigator.serviceWorker.ready; //wait until service worker is active
     console.log('-----------2');
     try {
         const status = getOfflineStatusfromLocalStorage();
