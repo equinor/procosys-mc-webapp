@@ -4,8 +4,7 @@ import { EntityIndexes } from './EntityIndexes';
 import { OfflineUpdateRequest } from './OfflineUpdateRequest';
 import { applyEncryptionMiddleware, cryptoOptions } from 'dexie-encrypted';
 import { IEntity } from '@equinor/procosys-webapp-components';
-
-const nacl = require('tweetnacl');
+import * as nacl from "tweetnacl"
 
 export default class OfflineStorage extends Dexie {
     offlineContent!: Table<IEntity, EntityIndexes>;

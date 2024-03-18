@@ -3,8 +3,7 @@
 import { IEntity } from '@equinor/procosys-webapp-components';
 import removeBaseUrlFromUrl from '../utils/removeBaseUrlFromUrl';
 import { handleFetchGet } from '../offline/handleFetchEvents';
-
-const Settings = require('../settings.json');
+import * as Settings from '../settings.json'
 
 export type AuthSettings = {
     clientId: string;
