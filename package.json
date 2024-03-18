@@ -4,7 +4,7 @@
   "homepage": "https://apps.procosys.com/mc",
   "private": true,
   "dependencies": {
-    "@azure/msal-browser": "2.32.2",
+    "@azure/msal-browser": "3.10.0",
     "@equinor/eds-core-react": "0.29.1",
     "@equinor/eds-icons": "0.10.0",
     "@equinor/procosys-webapp-components": "5.0.2",
