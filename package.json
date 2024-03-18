@@ -5,25 +5,29 @@
   "private": true,
   "dependencies": {
     "@azure/msal-browser": "3.10.0",
-    "@equinor/eds-core-react": "0.29.1",
-    "@equinor/eds-icons": "0.10.0",
-    "@equinor/procosys-webapp-components": "5.0.2",
+    "@equinor/eds-core-react": "0.31.0",
+    "@equinor/eds-icons": "0.14.0",
+    "@equinor/procosys-webapp-components": "5.0.4",
     "@koale/useworker": "^4.0.2",
-    "@microsoft/applicationinsights-react-js": "^3.4.1",
-    "@microsoft/applicationinsights-web": "^2.8.10",
+    "@microsoft/applicationinsights-react-js": "^17.1.0",
+    "@microsoft/applicationinsights-web": "^3.1.0",
     "@vitejs/plugin-react": "^4.2.1",
     "axios": "1.6.8",
     "dexie": "^3.2.6",
     "dexie-encrypted": "^2.0.0",
-    "generic-type-guard": "^3.7.0",
+    "generic-type-guard": "^4.0.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router": "^5.3.4",
     "react-router-dom": "^5.3.4",
-    "styled-components": "^5.3.6",
+    "styled-components": "^6.1.8",
     "tweetnacl": "^1.0.3",
     "vite": "^5.1.6",
-    "vite-tsconfig-paths": "^4.3.2"
+    "vite-tsconfig-paths": "^4.3.2",
+    "workbox": "^0.0.0",
+    "workbox-core": "^7.0.0",
+    "workbox-expiration": "^7.0.0",
+    "workbox-precaching": "^7.0.0"
   },
   "scripts": {
     "start": "vite",
@@ -69,9 +73,11 @@
     "eslint-config-prettier": "^8.1.0",
     "eslint-plugin-prettier": "^4.2.1",
     "eslint-plugin-react": "^7.32.2",
+    "jest": "27.5.1",
     "msw": "^1.0.0",
     "prettier": "^2.7.1",
     "ts-jest": "^27.0.0",
-    "typescript": "^5.0.4"
+    "typescript": "^5.0.4",
+    "whatwg-fetch": "^3.6.20"
   }
 }
