@@ -20,7 +20,6 @@
     "react-router": "^5.3.4",
     "react-router-dom": "^5.3.4",
     "react-scripts": "5.0.1",
-    "serve": "^14.2.1",
     "styled-components": "^5.3.6",
     "tweetnacl": "^1.0.3"
   },
