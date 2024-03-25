@@ -71,6 +71,7 @@ export const syncronizeOfflineUpdatesWithBackend = async (
         //the updates will be marked with 'error'.
         //If the update is already set to synchronized, or an error code is set, it will be skipped.
         let newEntityId;
+        const newEntityIdMap = new Map<any, any>();
         for (let offlineUpdate of updatesForEntity) {
             //Reload the offlineUpdate in case there are changes (new entityid)
             offlineUpdate = await offlineUpdateRepository.getUpdateRequest(
@@ -84,6 +85,10 @@ export const syncronizeOfflineUpdatesWithBackend = async (
                         api
                     );
                     if (newEntityId) {
+                        newEntityIdMap.set(
+                            offlineUpdate.temporaryId,
+                            newEntityId
+                        );
                         //Backend has created a new ID. All updates for the entity must be updated.
                         for (let update of updatesForEntity) {
                             //Reload the offline update to get changes (performOfflineUpdate will make updates)
@@ -91,15 +96,20 @@ export const syncronizeOfflineUpdatesWithBackend = async (
                                 await offlineUpdateRepository.getUpdateRequest(
                                     update.uniqueId
                                 );
-                            const updated = updateIdOnEntityRequest(
-                                newEntityId,
-                                update,
-                                update.temporaryId,
-                                offlineUpdate.entityId
+                            const newEntityIdMapped = newEntityIdMap.get(
+                                update.temporaryId
                             );
-                            await offlineUpdateRepository.updateOfflineUpdateRequest(
-                                updated
-                            );
+                            if (newEntityIdMapped) {
+                                const updated = updateIdOnEntityRequest(
+                                    newEntityIdMapped,
+                                    update,
+                                    update.temporaryId,
+                                    offlineUpdate.entityId
+                                );
+                                await offlineUpdateRepository.updateOfflineUpdateRequest(
+                                    updated
+                                );
+                            }
                         }
                     }
                 } catch (error) {
@@ -443,8 +453,7 @@ const updateIdOnEntityRequest = (
             offlineUpdate.url.startsWith('CheckList/CustomItem/Clear')
         ) {
             //postCustomClear and postCustomSetOK
-            if (offlineUpdate.bodyData.CustomCheckItemId == temporaryId) {
-                //Ensure that only the specific custom check item is updated (not all on the given checklist)
+            if (offlineUpdate.bodyData.CustomCheckItemId === temporaryId) {
                 offlineUpdate.bodyData.CustomCheckItemId = newId.toString();
             }
         } else if (
