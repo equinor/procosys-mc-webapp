@@ -30,6 +30,8 @@ export function register(config?: Config): void {
         console.log('Starting service-worker registration.');
         // The URL constructor is available in all browsers that support SW.
         const publicUrl = new URL(process.env.PUBLIC_URL, window.location.href);
+        console.log('---- Starting service-worker registration.  2', publicUrl);
+
         if (publicUrl.origin !== window.location.origin) {
             // Our service worker won't work if PUBLIC_URL is on a different origin
             // from what our page is served on. This might happen if a CDN is used to
@@ -38,12 +40,17 @@ export function register(config?: Config): void {
             return;
         }
 
+        console.log('---- Starting service-worker registration.  3');
+
         window.addEventListener('load', () => {
+            console.log('---- Starting service-worker registration.  9');
             const swUrl = `${process.env.PUBLIC_URL}/service-worker.js`;
 
             if (isLocalhost) {
+                console.log('---- Starting service-worker registration.  8');
                 // This is running on localhost. Let's check if a service worker still exists or not.
                 checkValidServiceWorker(swUrl, config);
+                console.log('---- Starting service-worker registration.  8.1');
 
                 // Add some additional logging to localhost, pointing developers to the
                 // service worker/PWA documentation.
@@ -55,10 +62,14 @@ export function register(config?: Config): void {
                 });
             } else {
                 // Is not localhost. Just register service worker
+                console.log('---- Starting service-worker registration.  4');
                 registerValidSW(swUrl, config);
+                console.log('---- Starting service-worker registration.  5');
             }
         });
+        console.log('---- Starting service-worker registration.  6');
     }
+    console.log('---- Starting service-worker registration.  7');
 }
 
 function registerValidSW(swUrl: string, config?: Config): void {
@@ -106,6 +117,7 @@ function registerValidSW(swUrl: string, config?: Config): void {
                     }
                 };
             };
+            console.log('------registered valid WS 2');
         })
         .catch((error) => {
             console.error('Error during service worker registration:', error);
@@ -113,12 +125,15 @@ function registerValidSW(swUrl: string, config?: Config): void {
 }
 
 function checkValidServiceWorker(swUrl: string, config?: Config): void {
+    console.log('---- checkValidServiceworker.  1');
+
     // Check if the service worker can be found. If it can't reload the page.
     fetch(swUrl, {
         headers: { 'Service-Worker': 'script' },
     })
         .then((response) => {
             // Ensure service worker exists, and that we really are getting a JS file.
+            console.log('---- checkValidServiceworker.  2');
             const contentType = response.headers.get('content-type');
             if (
                 response.status === 404 ||
@@ -134,7 +149,9 @@ function checkValidServiceWorker(swUrl: string, config?: Config): void {
                 });
             } else {
                 // Service worker found. Proceed as normal.
+                console.log('---- checkValidServiceworker.  3');
                 registerValidSW(swUrl, config);
+                console.log('---- checkValidServiceworker.  4');
             }
         })
         .catch(() => {
@@ -142,6 +159,7 @@ function checkValidServiceWorker(swUrl: string, config?: Config): void {
                 'No internet connection found. App is running in offline mode.'
             );
         });
+    console.log('---- checkValidServiceworker. 4');
 }
 
 export function unregister(): void {

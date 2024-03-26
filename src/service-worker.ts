@@ -118,13 +118,16 @@ self.addEventListener('message', async (event: MessageEventInit) => {
  * This ensures that the user will get the new version automatically, without restart of the browser window.
  */
 self.addEventListener('install', (event) => {
+    console.log('addEventlistener install1');
     self.skipWaiting();
+    console.log('addEventlistener install2');
 });
 
 /**
  * Handle fetch events. Will check if we are in offline mode.
  */
 self.addEventListener('fetch', function (event: FetchEvent) {
+    console.log('self.addEventListener');
     const url = event.request.url;
     if (
         offlineStatus == OfflineStatus.OFFLINE &&

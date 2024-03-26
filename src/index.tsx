@@ -91,6 +91,8 @@ const initialize = async () => {
         );
     }
 
+    console.log('INITIALIZE 2');
+
     // Get config from App Configuration
     render(<LoadingPage loadingText={'Initializing app config...'} />);
     const { appConfig, featureFlags } = await getAppConfig(
@@ -156,12 +158,16 @@ const setIsSure = (): void => {
 
 const renderApp = async (): Promise<void> => {
     //If user is offline, the rendering of the app will be stalled, until pin is provided.
+    console.log('renderApp 1');
     const status = getOfflineStatusfromLocalStorage();
+    console.log('renderApp 2: ' + status);
     if (status != OfflineStatus.ONLINE && userPin == '') {
+        console.log('renderApp 3');
         setTimeout(renderApp, 1000);
         return;
     }
 
+    console.log('renderApp 4: ' + status);
     if (status == OfflineStatus.CANCELLING) {
         let api = null;
 
@@ -328,6 +334,8 @@ const renderApp = async (): Promise<void> => {
         }
     } else {
         //We are either in online or offline mode, and will render the application
+        console.log('renderApp  7: ');
+
         const {
             authInstance,
             procosysApiInstance,
@@ -337,6 +345,7 @@ const renderApp = async (): Promise<void> => {
             configurationAccessToken,
             procosysIPOApiInstance,
         } = await initialize();
+        console.log('renderApp 8: ');
 
         render(
             <App
@@ -354,9 +363,15 @@ const renderApp = async (): Promise<void> => {
 
 (async (): Promise<void> => {
     render(<LoadingPage loadingText={'Initializing...'} />);
+    console.log('--------0');
+    console.log('--------1');
+
     await navigator.serviceWorker.ready; //wait until service worker is active
+
+    console.log('-----------2');
     try {
         const status = getOfflineStatusfromLocalStorage();
+        console.log('-----------3');
         if (status != OfflineStatus.ONLINE) {
             render(<OfflinePin setUserPin={setUserPin} />);
         }
