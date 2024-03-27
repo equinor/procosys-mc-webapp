@@ -2,12 +2,16 @@
     "compilerOptions": {
     "noImplicitAny": true,
     "strictNullChecks": true,
-    "target": "es2017",
+    "target": "ESNext",
     "lib": [
         "dom",
         "dom.iterable",
         "esnext"
     ],
+    "paths": {
+        "react": [ "./node_modules/@types/react" ]
+    },
+    "types": ["vite/client"],
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
