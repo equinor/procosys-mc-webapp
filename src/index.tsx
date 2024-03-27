@@ -57,8 +57,8 @@ const initialize = async () => {
     console.log('Application is initializing');
     await navigator.serviceWorker.ready; //wait until service worker is active
     if (!('serviceWorker' in navigator)) {
-    console.log('The service worker is not active.');
-    alert('Service worker is not ready.');
+        console.log('The service worker is not active.');
+        alert('Service worker is not ready.');
     }
 
     const offline = getOfflineStatusfromLocalStorage();
@@ -75,7 +75,6 @@ const initialize = async () => {
     } = await getAuthConfig();
 
     const authClient = new MSAL.PublicClientApplication(clientSettings);
-    await authClient.initialize();
 
     const authInstance = authService({
         MSAL: authClient,

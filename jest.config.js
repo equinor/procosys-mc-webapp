@@ -1,11 +1,10 @@
 module.exports = {
     collectCoverageFrom: ['src/**/*.{ts,tsx}'],
     verbose: true,
-    preset: 'ts-jest/presets/js-with-ts',
+    preset: 'ts-jest',
     testEnvironment: 'jsdom',
     moduleNameMapper: {
-        "axios": "axios/dist/node/axios.cjs",
-        "^dexie$": "dexie",
+        "axios": "axios/dist/node/axios.cjs"
     },
     transformIgnorePatterns: [
         '/node_modules/(?!(@equinor/eds-tokens|@equinor/eds-icons))'
