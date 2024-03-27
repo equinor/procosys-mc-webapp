@@ -1,5 +1,5 @@
 # build environment
-FROM node:20.0.0 as build
+FROM node:14.17.0 as build
 WORKDIR /app
 COPY . /app
 RUN yarn install
@@ -9,7 +9,7 @@ RUN yarn build --mode=production
 FROM nginx:1.21.6-alpine
 ## add permissions for nginx user
 RUN apk add python3
-COPY --from=build /app/dist /usr/share/nginx/html/mc
+COPY --from=build /app/build /usr/share/nginx/html/mc
 COPY .docker/nginx/ /etc/nginx/
 COPY  .docker/scripts/ /etc/scripts/
 EXPOSE 5000
