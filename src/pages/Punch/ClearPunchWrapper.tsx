@@ -18,6 +18,7 @@ import {
 } from '@equinor/procosys-webapp-components';
 import usePersonsSearchFacade from '../../utils/usePersonsSearchFacade';
 import { OfflineStatus } from '../../typings/enums';
+import { PunchListItem } from '../../services/apiTypesCompletionApi';
 
 const punchEndpoints: PunchEndpoints = {
     updateCategory: 'SetCategory',
@@ -33,8 +34,8 @@ const punchEndpoints: PunchEndpoints = {
 };
 
 type ClearPunchWrapperProps = {
-    punchItem: PunchItem;
-    setPunchItem: React.Dispatch<React.SetStateAction<PunchItem>>;
+    punchItem: PunchListItem;
+    setPunchItem: React.Dispatch<React.SetStateAction<PunchListItem>>;
     canEdit: boolean;
     canClear: boolean;
 };
@@ -45,7 +46,9 @@ const ClearPunchWrapper = ({
     canEdit,
     canClear,
 }: ClearPunchWrapperProps): JSX.Element => {
-    const { api, params, history, url, offlineState } = useCommonHooks();
+    console.log('rendering ClearPunchWrapper');
+    const { api, params, history, url, offlineState, completionApi } =
+        useCommonHooks();
     const { snackbar, setSnackbarText } = useSnackbar();
     const [categories, setCategories] = useState<PunchCategory[]>([]);
     const [types, setTypes] = useState<PunchType[]>([]);
@@ -76,10 +79,13 @@ const ClearPunchWrapper = ({
                     prioritiesFromApi,
                 ] = await Promise.all([
                     api.getPunchCategories(params.plant, abortSignal),
-                    api.getPunchTypes(params.plant, abortSignal),
-                    api.getPunchOrganizations(params.plant, abortSignal),
-                    api.getPunchSorts(params.plant, abortSignal),
-                    api.getPunchPriorities(params.plant, abortSignal),
+                    completionApi.getPunchTypes(params.plant, abortSignal),
+                    completionApi.getPunchOrganizations(
+                        params.plant,
+                        abortSignal
+                    ),
+                    completionApi.getPunchSorts(params.plant, abortSignal),
+                    completionApi.getPunchPriorities(params.plant, abortSignal),
                 ]);
                 setCategories(categoriesFromApi);
                 setTypes(typesFromApi);
@@ -161,7 +167,7 @@ const ClearPunchWrapper = ({
             getPunchAttachments={api.getPunchAttachments}
             getPunchAttachment={api.getPunchAttachment}
             postPunchAttachment={api.postPunchAttachment}
-            getPunchComments={api.getPunchComments}
+            getPunchComments={completionApi.getPunchComments}
             postPunchComment={api.postPunchComment}
             deletePunchAttachment={api.deletePunchAttachment}
             snackbar={snackbar}

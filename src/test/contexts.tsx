@@ -17,6 +17,10 @@ import procosysIPOApiService, {
 } from '../services/procosysIPOApi';
 import { OfflineStatus } from '../typings/enums';
 import { AsyncStatus } from '@equinor/procosys-webapp-components';
+import completionApiService, {
+    CompletionApiService,
+} from '../services/completionApi';
+import { c } from 'msw/lib/glossary-de6278a9';
 
 const client = new Msal.PublicClientApplication({
     auth: { clientId: 'testId', authority: 'testAuthority' },
@@ -54,6 +58,13 @@ const procosysApiInstance = procosysApiService(
     'dummy-bearer-token'
 );
 
+const completionApiInstance = completionApiService(
+    {
+        baseURL: baseURL,
+    },
+    'dummy-bearer-token'
+);
+
 const dummyConfigurationAccessToken = 'dummytoken';
 
 const ipoApiInstance = procosysIPOApiService(
@@ -69,6 +80,7 @@ type WithMcAppContextProps = {
     plants?: Plant[];
     auth?: IAuthService;
     api?: ProcosysApiService;
+    completionApi?: CompletionApiService;
     ipoApi?: ProcosysIPOApiService;
     offlineState?: OfflineStatus;
     setOfflineState: React.Dispatch<React.SetStateAction<OfflineStatus>>;
@@ -81,6 +93,7 @@ export const withMcAppContext = ({
     plants = testPlants,
     auth = authInstance,
     api = procosysApiInstance,
+    completionApi = completionApiInstance,
     ipoApi = ipoApiInstance,
     offlineState = OfflineStatus.ONLINE,
     setOfflineState,
@@ -95,6 +108,7 @@ export const withMcAppContext = ({
                     auth: auth,
                     api: api,
                     ipoApi: ipoApi,
+                    completionApi: completionApi,
                     appConfig: dummyAppConfig,
                     featureFlags: dummyFeatureFlags,
                     offlineState: offlineState,

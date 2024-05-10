@@ -345,6 +345,7 @@ export interface PunchPreview {
     statusControlledBySwcr: boolean;
     attachmentCount: number;
     callOffNo?: string;
+    proCoSysGuid?: string;
 }
 
 export interface ColumnLabel {

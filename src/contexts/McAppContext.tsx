@@ -11,6 +11,7 @@ import { AppConfig, FeatureFlags } from '../services/appConfiguration';
 import { IAuthService } from '../services/authService';
 import { ProcosysApiService } from '../services/procosysApi';
 import { ProcosysIPOApiService } from '../services/procosysIPOApi';
+import { CompletionApiService } from '../services/completionApi';
 import { getOfflineStatusfromLocalStorage } from '../offline/OfflineStatus';
 import { OfflineStatus } from '../typings/enums';
 
@@ -18,6 +19,7 @@ type McAppContextProps = {
     availablePlants: Plant[];
     fetchPlantsStatus: AsyncStatus;
     api: ProcosysApiService;
+    completionApi: CompletionApiService;
     auth: IAuthService;
     appConfig: AppConfig;
     offlineState: OfflineStatus;
@@ -37,6 +39,7 @@ type McAppContextProviderProps = {
     featureFlags: FeatureFlags;
     configurationAccessToken: string;
     ipoApi: ProcosysIPOApiService;
+    completionApi: CompletionApiService;
 };
 
 export const McAppContextProvider: React.FC<McAppContextProviderProps> = ({
@@ -47,6 +50,7 @@ export const McAppContextProvider: React.FC<McAppContextProviderProps> = ({
     featureFlags,
     configurationAccessToken,
     ipoApi,
+    completionApi,
 }: McAppContextProviderProps) => {
     const [availablePlants, setAvailablePlants] = useState<Plant[]>([]);
     const [fetchPlantsStatus, setFetchPlantsStatus] = useState<AsyncStatus>(
@@ -107,6 +111,7 @@ export const McAppContextProvider: React.FC<McAppContextProviderProps> = ({
                 featureFlags,
                 configurationAccessToken,
                 ipoApi,
+                completionApi,
             }}
         >
             {children}

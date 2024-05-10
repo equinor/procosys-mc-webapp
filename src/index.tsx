@@ -31,6 +31,9 @@ import {
 import hasConnectionToServer from './utils/hasConnectionToServer';
 import ConfirmSync from './ConfirmSync';
 import { db } from './offline/db';
+import { c } from 'msw/lib/glossary-de6278a9';
+import { combine } from 'generic-type-guard';
+import completionApiService from './services/completionApi';
 
 const onUpdate = (registration: ServiceWorkerRegistration): void => {
     localStorage.setItem(LocalStorage.SW_UPDATE, 'true');
@@ -42,12 +45,12 @@ const container = document.getElementById('root');
 const root = createRoot(container!);
 const render = (content: JSX.Element): void => {
     root.render(
-        <React.StrictMode>
-            <>
-                <GlobalStyles />
-                {content}
-            </>
-        </React.StrictMode>
+        //<React.StrictMode>
+        <>
+            <GlobalStyles />
+            {content}
+        </>
+        // </React.StrictMode>
     );
 };
 
@@ -55,7 +58,7 @@ const render = (content: JSX.Element): void => {
 const initialize = async () => {
     render(<LoadingPage loadingText={'Initializing service worker...'} />);
     console.log('Application is initializing');
-    await navigator.serviceWorker.ready; //wait until service worker is active
+    //await navigator.serviceWorker.ready; //wait until service worker is active
     if (!('serviceWorker' in navigator)) {
         console.log('The service worker is not active.');
         alert('Service worker is not ready.');
@@ -74,6 +77,8 @@ const initialize = async () => {
         configurationEndpoint,
     } = await getAuthConfig();
 
+    console.log('scope', scopes);
+
     const authClient = new MSAL.PublicClientApplication(clientSettings);
 
     const authInstance = authService({
@@ -86,6 +91,7 @@ const initialize = async () => {
     if (offline != OfflineStatus.OFFLINE) {
         const isRedirecting = await authInstance.handleLogin();
         if (isRedirecting) return Promise.reject('redirecting');
+
         configurationAccessToken = await authInstance.getAccessToken(
             configurationScope
         );
@@ -97,22 +103,48 @@ const initialize = async () => {
         configurationEndpoint,
         configurationAccessToken
     );
+    console.log('App  ', appConfig);
 
     render(<LoadingPage loadingText={'Initializing access token...'} />);
     let accessToken = '';
+    let accessTokenCompletionApi = '';
+    const completionScope = [
+        'api://e8c158a9-a200-4897-9d5f-660e377bddc1/.default',
+    ];
+    const appConfigScopes = [
+        'api://dd38f169-bccf-4d0e-a4ad-d830893cfa75/web_api',
+    ];
+
+    console.log('app config scop for procosyssAPI', appConfigScopes);
     if (offline != OfflineStatus.OFFLINE) {
-        accessToken = await authInstance.getAccessToken(
-            appConfig.procosysWebApi.scope
+        accessToken = await authInstance.getAccessToken(appConfigScopes);
+
+        accessTokenCompletionApi = await authInstance.getAccessToken(
+            completionScope
         );
     }
 
+    console.log(
+        'app config scop for procosyssAPI',
+        appConfig.procosysWebApi.scope
+    );
     const procosysApiInstance = procosysApiService(
         {
-            baseURL: appConfig.procosysWebApi.baseUrl,
+            baseURL: 'https://pcs-main-api-dev-pr.azurewebsites.net/api',
             apiVersion: appConfig.procosysWebApi.apiVersion,
         },
         accessToken
     );
+
+    const completionApiInstance = completionApiService(
+        {
+            baseURL:
+                'https://backend-procosys-completion-api-dev.radix.equinor.com',
+        },
+        accessTokenCompletionApi
+    );
+
+    console.log(completionApiInstance);
 
     render(<LoadingPage loadingText={'Initializing IPO access token...'} />);
     let accessTokenIPO = '';
@@ -141,6 +173,7 @@ const initialize = async () => {
         featureFlags,
         configurationAccessToken,
         procosysIPOApiInstance,
+        completionApiInstance,
     };
 };
 
@@ -169,6 +202,7 @@ const renderApp = async (): Promise<void> => {
             const {
                 authInstance,
                 procosysApiInstance,
+                completionApiInstance,
                 appInsightsReactPlugin,
                 appConfig,
                 featureFlags,
@@ -208,6 +242,7 @@ const renderApp = async (): Promise<void> => {
                     featureFlags={featureFlags}
                     configurationAccessToken={configurationAccessToken}
                     procosysIPOApiInstance={procosysIPOApiInstance}
+                    completionApiInstance={completionApiInstance}
                 />
             );
         } catch (error) {
@@ -247,6 +282,7 @@ const renderApp = async (): Promise<void> => {
                 featureFlags,
                 configurationAccessToken,
                 procosysIPOApiInstance,
+                completionApiInstance,
             } = await initialize();
 
             api = procosysApiInstance;
@@ -300,6 +336,7 @@ const renderApp = async (): Promise<void> => {
                     featureFlags={featureFlags}
                     configurationAccessToken={configurationAccessToken}
                     procosysIPOApiInstance={procosysIPOApiInstance}
+                    completionApiInstance={completionApiInstance}
                 />
             );
         } catch (error) {
@@ -336,6 +373,7 @@ const renderApp = async (): Promise<void> => {
             featureFlags,
             configurationAccessToken,
             procosysIPOApiInstance,
+            completionApiInstance,
         } = await initialize();
 
         render(
@@ -347,6 +385,7 @@ const renderApp = async (): Promise<void> => {
                 featureFlags={featureFlags}
                 configurationAccessToken={configurationAccessToken}
                 procosysIPOApiInstance={procosysIPOApiInstance}
+                completionApiInstance={completionApiInstance}
             />
         );
     }
@@ -354,7 +393,7 @@ const renderApp = async (): Promise<void> => {
 
 (async (): Promise<void> => {
     render(<LoadingPage loadingText={'Initializing...'} />);
-    await navigator.serviceWorker.ready; //wait until service worker is active
+    //await navigator.serviceWorker.ready; //wait until service worker is active
     try {
         const status = getOfflineStatusfromLocalStorage();
         if (status != OfflineStatus.ONLINE) {

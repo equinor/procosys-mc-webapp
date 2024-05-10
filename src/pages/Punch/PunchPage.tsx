@@ -24,42 +24,42 @@ import TagInfoWrapper from '../../components/TagInfoWrapper';
 import PlantContext from '../../contexts/PlantContext';
 import { DetailsWrapper } from '../Entity/EntityPageDetailsCard';
 import { OfflineStatus } from '../../typings/enums';
+import { abort } from 'process';
+import { PunchListItem } from '../../services/apiTypesCompletionApi';
 
 const PunchPage = (): JSX.Element => {
-    const { api, params, path, history, url, offlineState } = useCommonHooks();
+    const { api, params, path, history, url, offlineState, completionApi } =
+        useCommonHooks();
     const { snackbar, setSnackbarText } = useSnackbar();
-    const [punch, setPunch] = useState<PunchItem>();
+    const [punch, setPunch] = useState<PunchListItem>();
     const [fetchPunchStatus, setFetchPunchStatus] = useState<AsyncStatus>(
         AsyncStatus.LOADING
     );
     const { permissions } = useContext(PlantContext);
 
     useEffect(() => {
-        const controller = new AbortController();
-        const abortSignal = controller.signal;
-        (async (): Promise<void> => {
-            try {
-                const punchFromApi = await api.getPunchItem(
-                    params.plant,
-                    params.punchItemId,
-                    abortSignal
-                );
-                setPunch(punchFromApi);
-                setFetchPunchStatus(AsyncStatus.SUCCESS);
-            } catch (error) {
-                if (!(error instanceof Error)) return;
-                setSnackbarText(error.message);
-                setFetchPunchStatus(AsyncStatus.ERROR);
-            }
-        })();
-        return (): void => {
-            controller.abort();
-        };
+        fetchPunchItem();
     }, [api, params]);
+
+    const fetchPunchItem = async (): Promise<void> => {
+        try {
+            const punchFromApi = await completionApi.getPunchItem(
+                params.proCoSysGuid
+            );
+            console.log(params.proCoSysGuid);
+            console.log('punch item from api: ', punchFromApi);
+            setPunch(punchFromApi);
+            setFetchPunchStatus(AsyncStatus.SUCCESS);
+        } catch (error) {
+            if (!(error instanceof Error)) return;
+            setSnackbarText(error.message);
+            setFetchPunchStatus(AsyncStatus.ERROR);
+        }
+    };
 
     const determineComponentToRender = (): JSX.Element => {
         if (punch === undefined) return <SkeletonLoadingPage />;
-        if (punch.clearedAt != null) {
+        if (punch.clearedAtUtc != null) {
             return (
                 <VerifyPunchWrapper
                     punchItem={punch}
@@ -73,7 +73,7 @@ const PunchPage = (): JSX.Element => {
                     punchItem={punch}
                     setPunchItem={
                         setPunch as React.Dispatch<
-                            React.SetStateAction<PunchItem>
+                            React.SetStateAction<PunchListItem>
                         >
                     }
                     canEdit={permissions.includes('PUNCHLISTITEM/WRITE')}
@@ -93,10 +93,10 @@ const PunchPage = (): JSX.Element => {
                         punch.clearedByFirstName ? 'C' : null,
                         punch.verifiedByFirstName ? 'V' : null,
                     ]}
-                    headerText={punch.tagNo}
-                    description={punch.tagDescription}
-                    attachments={punch.attachmentCount}
-                    chips={[punch.id.toString(), punch.formularType]}
+                    headerText={punch.tagNo || 'TagNo'}
+                    description={punch.tagDescription || 'tagDescription'}
+                    attachments={punch.attachmentCount || 'attachmentCount'}
+                    chips={[punch.itemNo.toString(), punch.formularType]}
                 />
             );
         } else if (fetchPunchStatus === AsyncStatus.LOADING) {

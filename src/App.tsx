@@ -13,6 +13,7 @@ import { AppConfig, FeatureFlags } from './services/appConfiguration';
 import { SavedSearchType } from './typings/enums';
 import { ProcosysIPOApiService } from './services/procosysIPOApi';
 import { SearchType } from '@equinor/procosys-webapp-components';
+import { CompletionApiService } from './services/completionApi';
 
 export type McParams = {
     plant: string;
@@ -23,11 +24,13 @@ export type McParams = {
     entityId: string;
     savedSearchType: SavedSearchType;
     savedSearchId: string;
+    proCoSysGuid: string;
 };
 
 type AppProps = {
     authInstance: IAuthService;
     procosysApiInstance: ProcosysApiService;
+    completionApiInstance: CompletionApiService;
     appInsightsReactPlugin: ReactPlugin;
     appConfig: AppConfig;
     featureFlags: FeatureFlags;
@@ -43,6 +46,7 @@ const App = ({
     featureFlags,
     configurationAccessToken,
     procosysIPOApiInstance,
+    completionApiInstance,
 }: AppProps): JSX.Element => {
     return (
         <AppInsightsContext.Provider value={reactPlugin}>
@@ -53,6 +57,7 @@ const App = ({
                 featureFlags={featureFlags}
                 configurationAccessToken={configurationAccessToken}
                 ipoApi={procosysIPOApiInstance}
+                completionApi={completionApiInstance}
             >
                 <Router basename={'/mc'}>
                     <ErrorBoundary>

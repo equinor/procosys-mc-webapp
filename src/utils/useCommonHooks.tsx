@@ -14,6 +14,7 @@ const useCommonHooks = () => {
         setOfflineState,
         configurationAccessToken,
         ipoApi,
+        completionApi,
     } = useContext(McAppContext);
     const params = useParams<McParams>();
     const history = useHistory();
@@ -33,6 +34,7 @@ const useCommonHooks = () => {
         procosysApiSettings: appConfig.procosysWebApi,
         ipoApiSettings: appConfig.ipoApi,
         configurationAccessToken,
+        completionApi,
     };
 };
 

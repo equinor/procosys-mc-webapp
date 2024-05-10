@@ -28,13 +28,13 @@ const McRouter = (): JSX.Element => {
                 />
                 <Route
                     path={
-                        '/:plant/:project/:searchType/:entityId/punch-item/:punchItemId'
+                        '/:plant/:project/:searchType/:entityId/punch-item/:proCoSysGuid'
                     }
                     component={PunchPage}
                 />
                 <Route
                     path={
-                        '/:plant/:project/:searchType/:entityId/checklist/:checklistId/punch-item/:punchItemId'
+                        '/:plant/:project/:searchType/:entityId/checklist/:checklistId/punch-item/:proCoSysGuid'
                     }
                     component={PunchPage}
                 />

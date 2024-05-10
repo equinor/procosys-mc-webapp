@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { PunchItem } from '../../services/apiTypes';
 import useCommonHooks from '../../utils/useCommonHooks';
 import {
@@ -8,9 +8,10 @@ import {
     PunchAction,
     AsyncStatus,
 } from '@equinor/procosys-webapp-components';
+import { PunchListItem } from '../../services/apiTypesCompletionApi';
 
 type VerifyPunchProps = {
-    punchItem: PunchItem;
+    punchItem: PunchListItem;
     canUnclear: boolean;
     canVerify: boolean;
 };
@@ -20,7 +21,8 @@ const VerifyPunchWrapper = ({
     canUnclear,
     canVerify,
 }: VerifyPunchProps): JSX.Element => {
-    const { url, history, params, api } = useCommonHooks();
+    console.log('rendering VerifyPunchWrapper');
+    const { url, history, params, api, completionApi } = useCommonHooks();
     const [punchActionStatus, setPunchActionStatus] = useState(
         AsyncStatus.INACTIVE
     );
@@ -47,9 +49,14 @@ const VerifyPunchWrapper = ({
         }
     };
 
+    useEffect(() => {
+        console.log(params.proCoSysGuid);
+    }, [params.proCoSysGuid]);
+
     return (
         <VerifyPunch
             plantId={params.plant}
+            proCoSysGuid={params.proCoSysGuid}
             punchItem={punchItem}
             canUnclear={canUnclear}
             canVerify={canVerify}
@@ -74,7 +81,7 @@ const VerifyPunchWrapper = ({
             punchActionStatus={punchActionStatus}
             getPunchAttachments={api.getPunchAttachments}
             getPunchAttachment={api.getPunchAttachment}
-            getPunchComments={api.getPunchComments}
+            getPunchComments={completionApi.getPunchComments}
             snackbar={snackbar}
             setSnackbarText={setSnackbarText}
             abortController={abortController}

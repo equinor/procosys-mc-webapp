@@ -38,8 +38,16 @@ const ContentWrapper = styled.div`
 `;
 
 const EntityPage = (): JSX.Element => {
-    const { api, ipoApi, params, path, history, url, offlineState } =
-        useCommonHooks();
+    const {
+        api,
+        completionApi,
+        ipoApi,
+        params,
+        path,
+        history,
+        url,
+        offlineState,
+    } = useCommonHooks();
     const { snackbar, setSnackbarText } = useSnackbar();
     const [scope, setScope] = useState<ChecklistPreview[]>();
     const [punchList, setPunchList] = useState<PunchPreview[]>();
@@ -93,6 +101,7 @@ const EntityPage = (): JSX.Element => {
                     ]);
 
                     setPunchList(punchListFromApi);
+                    console.log('punchListFromApi: ', punchListFromApi);
                     if (punchListFromApi.length > 0) {
                         setFetchPunchListStatus(AsyncStatus.SUCCESS);
                     } else {
@@ -115,6 +124,10 @@ const EntityPage = (): JSX.Element => {
             }
         })();
     }, [api, params, details]);
+
+    useEffect(() => {
+        console.log('params: ', params);
+    }, [params]);
 
     useEffect(() => {
         (async (): Promise<void> => {
@@ -190,13 +203,13 @@ const EntityPage = (): JSX.Element => {
                         render={(): JSX.Element => (
                             <PunchList
                                 fetchPunchListStatus={fetchPunchListStatus}
-                                onPunchClick={(punch: PunchPreview): void =>
+                                onPunchClick={(punch: PunchPreview): void => {
                                     history.push(
                                         `${removeSubdirectories(
                                             history.location.pathname
-                                        )}/punch-item/${punch.id}`
-                                    )
-                                }
+                                        )}/punch-item/${punch.proCoSysGuid}`
+                                    );
+                                }}
                                 punchList={punchList}
                                 isPoPunchList={history.location.pathname.includes(
                                     '/PO/'
@@ -207,6 +220,7 @@ const EntityPage = (): JSX.Element => {
                             />
                         )}
                     />
+
                     <Route
                         exact
                         path={`${path}/WO-info`}
