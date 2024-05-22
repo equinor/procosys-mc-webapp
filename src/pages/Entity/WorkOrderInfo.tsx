@@ -12,13 +12,13 @@ import styled from 'styled-components';
 import AsyncPage from '../../components/AsyncPage';
 import { isOfType } from '../../services/apiTypeGuards';
 import {
-    Attachment,
     IpoDetails,
     McPkgPreview,
     PoPreview,
     Tag,
     WoPreview,
 } from '../../services/apiTypes';
+import { Attachment } from '../../services/apiTypesCompletionApi';
 import { removeHtmlFromText } from '../../utils/removeHtmlFromText';
 import useCommonHooks from '../../utils/useCommonHooks';
 import PlantContext from '../../contexts/PlantContext';
@@ -48,7 +48,8 @@ const WorkOrderInfo = ({
     fetchWorkOrderStatus,
     workOrder,
 }: WorkOrderInfoProps): JSX.Element => {
-    const { history, url, api, params, offlineState } = useCommonHooks();
+    const { history, url, api, params, offlineState, completionApi } =
+        useCommonHooks();
     const { permissions } = useContext(PlantContext);
     const abortController = new AbortController();
     const abortSignal = abortController.signal;
@@ -75,17 +76,18 @@ const WorkOrderInfo = ({
                     <h5>Attachments</h5>
                     <Attachments
                         getAttachments={(): Promise<Attachment[]> =>
-                            api.getWorkOrderAttachments(
+                            completionApi.getPunchAttachments(
                                 params.plant,
-                                params.entityId,
-                                abortSignal
+                                params.punchItemId
                             )
                         }
-                        getAttachment={(attachmentId: number): Promise<Blob> =>
+                        getAttachment={(
+                            attachmentGuid: string
+                        ): Promise<Blob> =>
                             api.getWorkOrderAttachment(
                                 params.plant,
                                 params.entityId,
-                                attachmentId,
+                                attachmentGuid,
                                 abortSignal
                             )
                         }
@@ -101,12 +103,12 @@ const WorkOrderInfo = ({
                             )
                         }
                         deleteAttachment={(
-                            attachmentId: number
+                            attachmentId: string | number
                         ): Promise<void> =>
                             api.deleteWorkOrderAttachment(
                                 params.plant,
                                 params.entityId,
-                                attachmentId
+                                attachmentId as number
                             )
                         }
                         setSnackbarText={setSnackbarText}

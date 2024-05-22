@@ -1,23 +1,20 @@
-import React, { useEffect, useState } from 'react';
-import {
-    PunchCategory,
-    PunchOrganization,
-    PunchPriority,
-    PunchSort,
-    PunchType,
-} from '../../services/apiTypes';
+import React, { useCallback, useEffect, useState } from 'react';
+import { PunchCategory } from '../../services/apiTypes';
 import { NewPunch as NewPunchType } from '../../services/apiTypes';
 import useCommonHooks from '../../utils/useCommonHooks';
 import {
     AsyncStatus,
     ChosenPerson,
     NewPunch,
+    isArrayOfType,
     removeSubdirectories,
     useFormFields,
 } from '@equinor/procosys-webapp-components';
 import AsyncPage from '../../components/AsyncPage';
 import usePersonsSearchFacade from '../../utils/usePersonsSearchFacade';
 import { OfflineStatus } from '../../typings/enums';
+import { LibrayTypes } from '../../services/apiTypesCompletionApi';
+import Axios from 'axios';
 
 const newPunchInitialValues = {
     category: '',
@@ -39,15 +36,16 @@ interface NewPunchWrapperProps {
 const NewPunchWrapper = ({
     setSnackbarText,
 }: NewPunchWrapperProps): JSX.Element => {
-    const { api, params, url, history, offlineState } = useCommonHooks();
+    const { api, params, url, history, offlineState, completionApi } =
+        useCommonHooks();
     const { formFields, createChangeHandler } = useFormFields(
         newPunchInitialValues
     );
     const [categories, setCategories] = useState<PunchCategory[]>([]);
-    const [types, setTypes] = useState<PunchType[]>([]);
-    const [organizations, setOrganizations] = useState<PunchOrganization[]>([]);
-    const [sortings, setSortings] = useState<PunchSort[]>([]);
-    const [priorities, setPriorities] = useState<PunchPriority[]>([]);
+    const [types, setTypes] = useState<LibrayTypes[]>([]);
+    const [organizations, setOrganizations] = useState<LibrayTypes[]>([]);
+    const [sortings, setSortings] = useState<LibrayTypes[]>([]);
+    const [priorities, setPriorities] = useState<LibrayTypes[]>([]);
     const [chosenPerson, setChosenPerson] = useState<ChosenPerson>({
         id: null,
         name: '',
@@ -60,39 +58,39 @@ const NewPunchWrapper = ({
     );
     const [tempIds, setTempIds] = useState<string[]>([]);
     const { hits, searchStatus, query, setQuery } = usePersonsSearchFacade();
-    const controller = new AbortController();
-    const abortSignal = controller.signal;
+    const source = Axios.CancelToken.source();
+
+    const getLibraryTypes = useCallback(async () => {
+        const categoriesFromApi = await api
+            .getPunchCategories(params.plant, source.token)
+            .catch(() => setFetchNewPunchStatus(AsyncStatus.ERROR));
+
+        const libraryTypes = await completionApi
+            .getLibraryItems(params.plant, source.token)
+            .catch(() => setFetchNewPunchStatus(AsyncStatus.ERROR));
+
+        if (isArrayOfType<LibrayTypes>(libraryTypes, 'guid')) {
+            const types = libraryTypes.reduce((acc, type) => {
+                const group = acc.get(type.libraryType) || [];
+                acc.set(type.libraryType, [...group, type]);
+                return acc;
+            }, new Map());
+
+            setOrganizations(types.get('COMPLETION_ORGANIZATION'));
+            setTypes(types.get('PUNCHLIST_TYPE'));
+            setSortings(types.get('PUNCHLIST_SORTING'));
+            setPriorities(types.get('PUNCHLIST_PRIORITY'));
+        }
+        if (isArrayOfType<PunchCategory>(categoriesFromApi, 'id')) {
+            setCategories(categoriesFromApi);
+        }
+        setFetchNewPunchStatus(AsyncStatus.SUCCESS);
+    }, [params.plant]);
 
     useEffect(() => {
-        (async (): Promise<void> => {
-            try {
-                const [
-                    categoriesFromApi,
-                    typesFromApi,
-                    organizationsFromApi,
-                    sortsFromApi,
-                    prioritiesFromApi,
-                ] = await Promise.all([
-                    api.getPunchCategories(params.plant, abortSignal),
-                    api.getPunchTypes(params.plant, abortSignal),
-                    api.getPunchOrganizations(params.plant, abortSignal),
-                    api.getPunchSorts(params.plant, abortSignal),
-                    api.getPunchPriorities(params.plant, abortSignal),
-                ]);
-                setCategories(categoriesFromApi);
-                setTypes(typesFromApi);
-                setOrganizations(organizationsFromApi);
-                setSortings(sortsFromApi);
-                setPriorities(prioritiesFromApi);
-                setFetchNewPunchStatus(AsyncStatus.SUCCESS);
-            } catch (error) {
-                if (!(error instanceof Error)) return;
-                setSnackbarText(error.message);
-                setFetchNewPunchStatus(AsyncStatus.ERROR);
-            }
-        })();
+        getLibraryTypes();
         return (): void => {
-            controller.abort();
+            source.cancel();
         };
     }, [params.plant, api]);
 
@@ -105,26 +103,25 @@ const NewPunchWrapper = ({
     const handleSubmit = async (e: React.FormEvent): Promise<void> => {
         e.preventDefault();
         const NewPunchDTO: NewPunchType = {
-            CheckListId: parseInt(params.checklistId),
-            CategoryId: parseInt(formFields.category),
-            Description: formFields.description,
-            TypeId: parseInt(formFields.type),
-            RaisedByOrganizationId: parseInt(formFields.raisedBy),
-            ClearingByOrganizationId: parseInt(formFields.clearingBy),
-            SortingId: parseInt(formFields.sorting),
-            PriorityId: parseInt(formFields.priority),
-            Estimate: parseInt(formFields.estimate),
-            DueDate: formFields.dueDate,
-            ActionByPerson: chosenPerson.id,
-            TemporaryFileIds: tempIds,
+            checkListGuid: params.checklistId,
+            category: formFields.category,
+            description: formFields.description,
+            typeGuid: formFields.type,
+            raisedByOrgGuid: formFields.raisedBy,
+            clearingByOrgGuid: formFields.clearingBy,
+            sortingGuid: formFields.sorting,
+            priorityGuid: formFields.priority,
+            estimate: parseInt(formFields.estimate),
+            dueTimeUtc: formFields.dueDate,
+            actionByPersonOid: `${chosenPerson.id}`,
         };
         setSubmitPunchStatus(AsyncStatus.LOADING);
         try {
-            await api.postNewPunch(params.plant, NewPunchDTO);
+            await completionApi.postNewPunch(params.plant, NewPunchDTO);
             setSubmitPunchStatus(AsyncStatus.SUCCESS);
         } catch (error) {
-            if (!(error instanceof Error)) return;
-            setSnackbarText(error.message);
+            const pcsError = error as Error;
+            setSnackbarText(pcsError.toString());
             setSubmitPunchStatus(AsyncStatus.ERROR);
         }
     };

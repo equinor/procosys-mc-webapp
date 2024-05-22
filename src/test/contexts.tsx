@@ -21,6 +21,7 @@ import completionApiService, {
     CompletionApiService,
 } from '../services/completionApi';
 import { c } from 'msw/lib/glossary-de6278a9';
+import axios, { AxiosInstance } from 'axios';
 
 const client = new Msal.PublicClientApplication({
     auth: { clientId: 'testId', authority: 'testAuthority' },
@@ -57,13 +58,14 @@ const procosysApiInstance = procosysApiService(
     },
     'dummy-bearer-token'
 );
-
-const completionApiInstance = completionApiService(
-    {
-        baseURL: baseURL,
+const axiosInstance: AxiosInstance = axios.create({
+    baseURL: baseURL,
+    headers: {
+        Authorization: 'Bearer dummy-bearer-token',
     },
-    'dummy-bearer-token'
-);
+});
+
+const completionApiInstance = completionApiService({ axios: axiosInstance });
 
 const dummyConfigurationAccessToken = 'dummytoken';
 
@@ -81,6 +83,7 @@ type WithMcAppContextProps = {
     auth?: IAuthService;
     api?: ProcosysApiService;
     completionApi?: CompletionApiService;
+    completionBaseApiInstance?: AxiosInstance;
     ipoApi?: ProcosysIPOApiService;
     offlineState?: OfflineStatus;
     setOfflineState: React.Dispatch<React.SetStateAction<OfflineStatus>>;
@@ -94,6 +97,7 @@ export const withMcAppContext = ({
     auth = authInstance,
     api = procosysApiInstance,
     completionApi = completionApiInstance,
+    completionBaseApiInstance = axiosInstance,
     ipoApi = ipoApiInstance,
     offlineState = OfflineStatus.ONLINE,
     setOfflineState,
@@ -109,6 +113,7 @@ export const withMcAppContext = ({
                     api: api,
                     ipoApi: ipoApi,
                     completionApi: completionApi,
+                    completionBaseApiInstance: completionBaseApiInstance,
                     appConfig: dummyAppConfig,
                     featureFlags: dummyFeatureFlags,
                     offlineState: offlineState,

@@ -5,7 +5,6 @@ import withAccessControl from '../../services/withAccessControl';
 import { COLORS } from '../../style/GlobalStyles';
 import useCommonHooks from '../../utils/useCommonHooks';
 import ClearPunchWrapper from './ClearPunchWrapper';
-import { PunchItem } from '../../services/apiTypes';
 import VerifyPunchWrapper from './VerifyPunchWrapper';
 import {
     SkeletonLoadingPage,
@@ -17,6 +16,7 @@ import {
     removeSubdirectories,
     useSnackbar,
     AsyncStatus,
+    CompletionStatus,
 } from '@equinor/procosys-webapp-components';
 import { DotProgress } from '@equinor/eds-core-react';
 import AsyncPage from '../../components/AsyncPage';
@@ -25,17 +25,18 @@ import PlantContext from '../../contexts/PlantContext';
 import { DetailsWrapper } from '../Entity/EntityPageDetailsCard';
 import { OfflineStatus } from '../../typings/enums';
 import { abort } from 'process';
-import { PunchListItem } from '../../services/apiTypesCompletionApi';
+import { PunchItem } from '../../services/apiTypesCompletionApi';
 
 const PunchPage = (): JSX.Element => {
     const { api, params, path, history, url, offlineState, completionApi } =
         useCommonHooks();
     const { snackbar, setSnackbarText } = useSnackbar();
-    const [punch, setPunch] = useState<PunchListItem>();
+    const [punch, setPunch] = useState<PunchItem>();
     const [fetchPunchStatus, setFetchPunchStatus] = useState<AsyncStatus>(
         AsyncStatus.LOADING
     );
     const { permissions } = useContext(PlantContext);
+    const [rowVersion, setRowVersion] = useState<string>();
 
     useEffect(() => {
         fetchPunchItem();
@@ -44,11 +45,11 @@ const PunchPage = (): JSX.Element => {
     const fetchPunchItem = async (): Promise<void> => {
         try {
             const punchFromApi = await completionApi.getPunchItem(
+                params.plant,
                 params.proCoSysGuid
             );
-            console.log(params.proCoSysGuid);
-            console.log('punch item from api: ', punchFromApi);
             setPunch(punchFromApi);
+            setRowVersion(punchFromApi.rowVersion);
             setFetchPunchStatus(AsyncStatus.SUCCESS);
         } catch (error) {
             if (!(error instanceof Error)) return;
@@ -73,7 +74,7 @@ const PunchPage = (): JSX.Element => {
                     punchItem={punch}
                     setPunchItem={
                         setPunch as React.Dispatch<
-                            React.SetStateAction<PunchListItem>
+                            React.SetStateAction<PunchItem>
                         >
                     }
                     canEdit={permissions.includes('PUNCHLISTITEM/WRITE')}
@@ -88,14 +89,14 @@ const PunchPage = (): JSX.Element => {
             return (
                 <InfoItem
                     isDetailsCard
-                    status={punch.status}
+                    status={punch.category as CompletionStatus}
                     statusLetters={[
                         punch.clearedByFirstName ? 'C' : null,
                         punch.verifiedByFirstName ? 'V' : null,
                     ]}
-                    headerText={punch.tagNo || 'TagNo'}
-                    description={punch.tagDescription || 'tagDescription'}
-                    attachments={punch.attachmentCount || 'attachmentCount'}
+                    headerText={punch.tagNo}
+                    description={punch.tagDescription}
+                    attachments={punch.attachmentCount || 0}
                     chips={[punch.itemNo.toString(), punch.formularType]}
                 />
             );

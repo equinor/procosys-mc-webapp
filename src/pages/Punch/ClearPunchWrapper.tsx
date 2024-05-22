@@ -1,13 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import useCommonHooks from '../../utils/useCommonHooks';
-import {
-    PunchCategory,
-    PunchItem,
-    PunchOrganization,
-    PunchPriority,
-    PunchSort,
-    PunchType,
-} from '../../services/apiTypes';
+import { PunchCategory } from '../../services/apiTypes';
 import {
     ClearPunch,
     PunchEndpoints,
@@ -15,29 +8,38 @@ import {
     useSnackbar,
     PunchAction,
     AsyncStatus,
+    isArrayOfType,
 } from '@equinor/procosys-webapp-components';
 import usePersonsSearchFacade from '../../utils/usePersonsSearchFacade';
 import { OfflineStatus } from '../../typings/enums';
-import { PunchListItem } from '../../services/apiTypesCompletionApi';
+import { PunchItem } from '../../services/apiTypesCompletionApi';
+import { LibrayTypes } from '@equinor/procosys-webapp-components/dist/typings/apiTypes';
+import Axios, { AxiosError, AxiosResponse } from 'axios';
 
 const punchEndpoints: PunchEndpoints = {
-    updateCategory: 'SetCategory',
-    updateDescription: 'SetDescription',
-    updateRaisedBy: 'SetRaisedBy',
-    updateClearingBy: 'SetClearingBy',
-    updateActionByPerson: 'SetActionByPerson',
-    updateDueDate: 'setDueDate',
-    updateType: 'SetType',
-    updateSorting: 'SetSorting',
-    updatePriority: 'SetPriority',
-    updateEstimate: 'setEstimate',
+    updateCategory: 'UpdateCategory',
+    updateDescription: '/Description',
+    updateRaisedBy: '/RaisedByOrgGuid',
+    updateClearingBy: '/ClearingByOrgGuid',
+    updateActionByPerson: '/ActionByPersonOid',
+    updateDueDate: '/DueTimeUtc',
+    updateType: '/TypeGuid',
+    updateSorting: '/SortingGuid',
+    updatePriority: '/PriorityGuid',
+    updateEstimate: '/Estimate',
 };
 
 type ClearPunchWrapperProps = {
-    punchItem: PunchListItem;
-    setPunchItem: React.Dispatch<React.SetStateAction<PunchListItem>>;
+    punchItem: PunchItem;
+    setPunchItem: React.Dispatch<React.SetStateAction<PunchItem>>;
     canEdit: boolean;
     canClear: boolean;
+};
+
+type Queue = {
+    patchDocument?: UpdatePunchData;
+    rowVersion: string;
+    category?: string;
 };
 
 const ClearPunchWrapper = ({
@@ -46,15 +48,23 @@ const ClearPunchWrapper = ({
     canEdit,
     canClear,
 }: ClearPunchWrapperProps): JSX.Element => {
-    console.log('rendering ClearPunchWrapper');
-    const { api, params, history, url, offlineState, completionApi } =
-        useCommonHooks();
+    const {
+        api,
+        params,
+        history,
+        url,
+        offlineState,
+        completionApi,
+        completionBaseApiInstance,
+    } = useCommonHooks();
+    const [updateQueue, setUpdateQueue] = useState<Queue[]>([]);
+    const [rowVersion, setRowVersion] = useState<string>();
     const { snackbar, setSnackbarText } = useSnackbar();
     const [categories, setCategories] = useState<PunchCategory[]>([]);
-    const [types, setTypes] = useState<PunchType[]>([]);
-    const [organizations, setOrganizations] = useState<PunchOrganization[]>([]);
-    const [sortings, setSortings] = useState<PunchSort[]>([]);
-    const [priorities, setPriorities] = useState<PunchPriority[]>([]);
+    const [types, setTypes] = useState<LibrayTypes[]>([]);
+    const [organizations, setOrganizations] = useState<LibrayTypes[]>([]);
+    const [sortings, setSortings] = useState<LibrayTypes[]>([]);
+    const [priorities, setPriorities] = useState<LibrayTypes[]>([]);
     const [fetchOptionsStatus, setFetchOptionsStatus] = useState(
         AsyncStatus.INACTIVE
     );
@@ -64,75 +74,121 @@ const ClearPunchWrapper = ({
     const [clearPunchStatus, setClearPunchStatus] = useState(
         AsyncStatus.INACTIVE
     );
-    const abortController = new AbortController();
-    const abortSignal = abortController.signal;
+    const source = Axios.CancelToken.source();
     const { hits, searchStatus, query, setQuery } = usePersonsSearchFacade();
 
+    const getLibraryItems = useCallback(async () => {
+        const categoriesFromApi = await api
+            .getPunchCategories(params.plant, source.token)
+            .catch(() => setFetchOptionsStatus(AsyncStatus.ERROR));
+
+        const librayItems = await completionApi
+            .getLibraryItems(params.plant, source.token)
+            .catch(() => setFetchOptionsStatus(AsyncStatus.ERROR));
+
+        if (isArrayOfType<LibrayTypes>(librayItems, 'guid')) {
+            const types = librayItems.reduce((acc, type) => {
+                const group = acc.get(type.libraryType) || [];
+                acc.set(type.libraryType, [...group, type]);
+                return acc;
+            }, new Map());
+
+            setOrganizations(types.get('COMPLETION_ORGANIZATION'));
+            setTypes(types.get('PUNCHLIST_TYPE'));
+            setSortings(types.get('PUNCHLIST_SORTING'));
+            setPriorities(types.get('PUNCHLIST_PRIORITY'));
+        }
+
+        if (isArrayOfType<PunchCategory>(categoriesFromApi, 'id')) {
+            setCategories(categoriesFromApi);
+        }
+        setFetchOptionsStatus(AsyncStatus.SUCCESS);
+    }, [params.plant]);
+
     useEffect(() => {
-        (async (): Promise<void> => {
-            try {
-                const [
-                    categoriesFromApi,
-                    typesFromApi,
-                    organizationsFromApi,
-                    sortsFromApi,
-                    prioritiesFromApi,
-                ] = await Promise.all([
-                    api.getPunchCategories(params.plant, abortSignal),
-                    completionApi.getPunchTypes(params.plant, abortSignal),
-                    completionApi.getPunchOrganizations(
-                        params.plant,
-                        abortSignal
-                    ),
-                    completionApi.getPunchSorts(params.plant, abortSignal),
-                    completionApi.getPunchPriorities(params.plant, abortSignal),
-                ]);
-                setCategories(categoriesFromApi);
-                setTypes(typesFromApi);
-                setOrganizations(organizationsFromApi);
-                setSortings(sortsFromApi);
-                setPriorities(prioritiesFromApi);
-                setFetchOptionsStatus(AsyncStatus.SUCCESS);
-            } catch (error) {
-                if (!(error instanceof Error)) return;
-                setSnackbarText(error.message);
-                setFetchOptionsStatus(AsyncStatus.ERROR);
-            }
-        })();
+        getLibraryItems();
         return (): void => {
-            abortController.abort();
+            source.cancel();
         };
     }, [params.plant, api, params.punchItemId]);
 
-    const updateDatabase = async (
-        endpoint: string,
-        updateData: UpdatePunchData
-    ): Promise<void> => {
-        setUpdatePunchStatus(AsyncStatus.LOADING);
-        setSnackbarText('Saving change.');
-        try {
-            await api.putUpdatePunch(
-                params.plant,
-                params.punchItemId,
-                updateData,
-                endpoint
-            );
-            setUpdatePunchStatus(AsyncStatus.SUCCESS);
-            setSnackbarText('Change successfully saved.');
-        } catch (error) {
-            if (!(error instanceof Error)) return;
-            setSnackbarText(error.message);
-            setUpdatePunchStatus(AsyncStatus.ERROR);
+    useEffect(() => {
+        if (punchItem) setRowVersion(punchItem.rowVersion);
+    }, []);
+
+    const processQueue = useCallback(async () => {
+        if (updatePunchStatus === AsyncStatus.LOADING) {
+            return;
         }
-    };
+        setUpdatePunchStatus(AsyncStatus.LOADING);
+        const { patchDocument, category } = updateQueue[0];
+        const data = category
+            ? { category, rowVersion }
+            : { patchDocument, rowVersion };
+        const updatedData: AxiosResponse<string> | void =
+            await completionBaseApiInstance
+                .patch(
+                    `PunchItems/${punchItem?.guid}${
+                        category ? `/${punchEndpoints.updateCategory}` : ''
+                    }`,
+                    data,
+                    { headers: { 'x-plant': `PCS$${params.plant}` } }
+                )
+                .catch((error: AxiosError) => {
+                    setUpdatePunchStatus(AsyncStatus.ERROR);
+                    setSnackbarText(error.message);
+                })
+                .finally(() => {
+                    setUpdatePunchStatus(AsyncStatus.SUCCESS);
+                });
+        setUpdateQueue((prevQueue) => prevQueue.slice(1));
+        if (updatedData?.data) {
+            setRowVersion(updatedData.data);
+        }
+    }, [updatePunchStatus, updateQueue, rowVersion]);
+
+    useEffect(() => {
+        if (
+            updatePunchStatus !== AsyncStatus.ERROR &&
+            updatePunchStatus !== AsyncStatus.LOADING &&
+            updateQueue.length
+        ) {
+            processQueue();
+        }
+    }, [updatePunchStatus, updateQueue, rowVersion]);
+
+    const updateDatabase = useCallback(
+        async (
+            endpoint: string,
+            updateData: UpdatePunchData
+        ): Promise<void> => {
+            setUpdateQueue((prev: any) => [
+                ...prev,
+                endpoint === punchEndpoints.updateCategory
+                    ? { category: updateData, rowVersion }
+                    : {
+                          patchDocument: [
+                              {
+                                  value: updateData,
+                                  path: endpoint,
+                                  op: 'replace',
+                              },
+                          ],
+                          rowVersion,
+                      },
+            ]);
+        },
+        [rowVersion, updatePunchStatus]
+    );
 
     const clearPunch = async (): Promise<void> => {
         setClearPunchStatus(AsyncStatus.LOADING);
         try {
-            await api.postPunchAction(
+            await completionApi.postPunchAction(
                 params.plant,
-                params.punchItemId,
-                PunchAction.CLEAR
+                params.proCoSysGuid,
+                PunchAction.CLEAR,
+                punchItem.rowVersion
             );
             setClearPunchStatus(AsyncStatus.SUCCESS);
         } catch (error) {
@@ -164,19 +220,18 @@ const ClearPunchWrapper = ({
             }}
             fetchOptionsStatus={fetchOptionsStatus}
             updatePunchStatus={updatePunchStatus}
-            getPunchAttachments={api.getPunchAttachments}
-            getPunchAttachment={api.getPunchAttachment}
-            postPunchAttachment={api.postPunchAttachment}
+            getPunchAttachments={completionApi.getPunchAttachments}
+            getPunchAttachment={completionApi.getPunchAttachment}
+            postPunchAttachment={completionApi.postPunchAttachment}
             getPunchComments={completionApi.getPunchComments}
-            postPunchComment={api.postPunchComment}
-            deletePunchAttachment={api.deletePunchAttachment}
+            postPunchComment={completionApi.postPunchComment}
+            deletePunchAttachment={completionApi.deletePunchAttachment}
             snackbar={snackbar}
             setSnackbarText={setSnackbarText}
             hits={hits}
             searchStatus={searchStatus}
             query={query}
             setQuery={setQuery}
-            abortController={abortController}
             disablePersonsSearch={offlineState == OfflineStatus.OFFLINE}
         />
     );

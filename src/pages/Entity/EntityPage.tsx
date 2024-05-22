@@ -101,7 +101,6 @@ const EntityPage = (): JSX.Element => {
                     ]);
 
                     setPunchList(punchListFromApi);
-                    console.log('punchListFromApi: ', punchListFromApi);
                     if (punchListFromApi.length > 0) {
                         setFetchPunchListStatus(AsyncStatus.SUCCESS);
                     } else {
@@ -124,10 +123,6 @@ const EntityPage = (): JSX.Element => {
             }
         })();
     }, [api, params, details]);
-
-    useEffect(() => {
-        console.log('params: ', params);
-    }, [params]);
 
     useEffect(() => {
         (async (): Promise<void> => {

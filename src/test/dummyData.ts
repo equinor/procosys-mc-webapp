@@ -256,6 +256,7 @@ export const testScope: ChecklistPreview[] = [
 export const testPunchList: PunchPreview[] = [
     {
         id: 1,
+        proCoSysGuid: 'test-procosys-guid',
         status: CompletionStatus.OK,
         description: 'Test punch description',
         systemModule: 'Test punch system module',
@@ -270,6 +271,7 @@ export const testPunchList: PunchPreview[] = [
         verified: false,
         statusControlledBySwcr: true,
         attachmentCount: 2,
+
     },
 ];
 

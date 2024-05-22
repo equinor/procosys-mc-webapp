@@ -34,6 +34,8 @@ import { db } from './offline/db';
 import { c } from 'msw/lib/glossary-de6278a9';
 import { combine } from 'generic-type-guard';
 import completionApiService from './services/completionApi';
+import baseIPOApiService from './services/baseIPOApi';
+import axios from 'axios';
 
 const onUpdate = (registration: ServiceWorkerRegistration): void => {
     localStorage.setItem(LocalStorage.SW_UPDATE, 'true');
@@ -124,10 +126,13 @@ const initialize = async () => {
         );
     }
 
-    console.log(
-        'app config scop for procosyssAPI',
-        appConfig.procosysWebApi.scope
-    );
+    const completionBaseApiInstance = baseIPOApiService({
+        authInstance,
+        baseURL:
+            'https://backend-procosys-completion-api-dev.radix.equinor.com',
+        scope: ['api://e8c158a9-a200-4897-9d5f-660e377bddc1/.default'],
+    });
+
     const procosysApiInstance = procosysApiService(
         {
             baseURL: 'https://pcs-main-api-dev-pr.azurewebsites.net/api',
@@ -136,13 +141,9 @@ const initialize = async () => {
         accessToken
     );
 
-    const completionApiInstance = completionApiService(
-        {
-            baseURL:
-                'https://backend-procosys-completion-api-dev.radix.equinor.com',
-        },
-        accessTokenCompletionApi
-    );
+    const completionApiInstance = completionApiService({
+        axios: completionBaseApiInstance,
+    });
 
     console.log(completionApiInstance);
 
@@ -174,6 +175,7 @@ const initialize = async () => {
         configurationAccessToken,
         procosysIPOApiInstance,
         completionApiInstance,
+        completionBaseApiInstance,
     };
 };
 
@@ -203,6 +205,7 @@ const renderApp = async (): Promise<void> => {
                 authInstance,
                 procosysApiInstance,
                 completionApiInstance,
+                completionBaseApiInstance,
                 appInsightsReactPlugin,
                 appConfig,
                 featureFlags,
@@ -237,6 +240,7 @@ const renderApp = async (): Promise<void> => {
                 <App
                     authInstance={authInstance}
                     procosysApiInstance={procosysApiInstance}
+                    completionBaseApiInstance={completionBaseApiInstance}
                     appInsightsReactPlugin={appInsightsReactPlugin}
                     appConfig={appConfig}
                     featureFlags={featureFlags}
@@ -283,6 +287,7 @@ const renderApp = async (): Promise<void> => {
                 configurationAccessToken,
                 procosysIPOApiInstance,
                 completionApiInstance,
+                completionBaseApiInstance,
             } = await initialize();
 
             api = procosysApiInstance;
@@ -337,6 +342,7 @@ const renderApp = async (): Promise<void> => {
                     configurationAccessToken={configurationAccessToken}
                     procosysIPOApiInstance={procosysIPOApiInstance}
                     completionApiInstance={completionApiInstance}
+                    completionBaseApiInstance={completionBaseApiInstance}
                 />
             );
         } catch (error) {
@@ -374,6 +380,7 @@ const renderApp = async (): Promise<void> => {
             configurationAccessToken,
             procosysIPOApiInstance,
             completionApiInstance,
+            completionBaseApiInstance,
         } = await initialize();
 
         render(
@@ -386,6 +393,7 @@ const renderApp = async (): Promise<void> => {
                 configurationAccessToken={configurationAccessToken}
                 procosysIPOApiInstance={procosysIPOApiInstance}
                 completionApiInstance={completionApiInstance}
+                completionBaseApiInstance={completionBaseApiInstance}
             />
         );
     }

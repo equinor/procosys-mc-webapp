@@ -15,6 +15,7 @@ const useCommonHooks = () => {
         configurationAccessToken,
         ipoApi,
         completionApi,
+        completionBaseApiInstance,
     } = useContext(McAppContext);
     const params = useParams<McParams>();
     const history = useHistory();
@@ -35,6 +36,7 @@ const useCommonHooks = () => {
         ipoApiSettings: appConfig.ipoApi,
         configurationAccessToken,
         completionApi,
+        completionBaseApiInstance,
     };
 };
 

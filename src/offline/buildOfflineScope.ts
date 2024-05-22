@@ -13,6 +13,7 @@ import {
     IEntity,
     SearchType,
 } from '@equinor/procosys-webapp-components';
+import axios, { Axios } from 'axios';
 
 /**
  * This function will be called when user want to go offline with given bookmarks.
@@ -292,9 +293,13 @@ const buildOfflineScope = async (
     await api.getProjectsForPlant(`PCS$${plantId}`, projectsForPlantEntity);
     addEntityToMap(projectsForPlantEntity);
 
+
+    const cancelTokenSource = axios.CancelToken.source();
+    const cancelToken = cancelTokenSource.token;
+    
     //Punch categories
     const punchCategoriesEntity = createEntityObj(EntityType.PunchCategories);
-    await api.getPunchCategories(plantId, abortSignal, punchCategoriesEntity);
+    await api.getPunchCategories(plantId, cancelToken, punchCategoriesEntity);
     addEntityToMap(punchCategoriesEntity);
 
     //Punch organization
@@ -409,7 +414,7 @@ const buildOfflineScope = async (
                 await api.getWorkOrderAttachment(
                     plantId,
                     entityId.toString(),
-                    attachment.id,
+                    attachment.id as unknown as string,
                     abortSignal,
                     woOrderAttachmentEntity
                 );

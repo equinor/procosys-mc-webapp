@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { PunchItem } from '../../services/apiTypes';
 import useCommonHooks from '../../utils/useCommonHooks';
 import {
     removeSubdirectories,
@@ -8,10 +7,10 @@ import {
     PunchAction,
     AsyncStatus,
 } from '@equinor/procosys-webapp-components';
-import { PunchListItem } from '../../services/apiTypesCompletionApi';
+import { PunchItem } from '../../services/apiTypesCompletionApi';
 
 type VerifyPunchProps = {
-    punchItem: PunchListItem;
+    punchItem: PunchItem;
     canUnclear: boolean;
     canVerify: boolean;
 };
@@ -21,7 +20,6 @@ const VerifyPunchWrapper = ({
     canUnclear,
     canVerify,
 }: VerifyPunchProps): JSX.Element => {
-    console.log('rendering VerifyPunchWrapper');
     const { url, history, params, api, completionApi } = useCommonHooks();
     const [punchActionStatus, setPunchActionStatus] = useState(
         AsyncStatus.INACTIVE
@@ -34,11 +32,13 @@ const VerifyPunchWrapper = ({
         newUrl: string
     ): Promise<void> => {
         setPunchActionStatus(AsyncStatus.LOADING);
+
         try {
-            await api.postPunchAction(
+            await completionApi.postPunchAction(
                 params.plant,
-                params.punchItemId,
-                punchAction
+                params.proCoSysGuid,
+                punchAction,
+                punchItem.rowVersion
             );
             setPunchActionStatus(AsyncStatus.SUCCESS);
             history.push(newUrl);
@@ -49,14 +49,9 @@ const VerifyPunchWrapper = ({
         }
     };
 
-    useEffect(() => {
-        console.log(params.proCoSysGuid);
-    }, [params.proCoSysGuid]);
-
     return (
         <VerifyPunch
             plantId={params.plant}
-            proCoSysGuid={params.proCoSysGuid}
             punchItem={punchItem}
             canUnclear={canUnclear}
             canVerify={canVerify}
@@ -79,8 +74,8 @@ const VerifyPunchWrapper = ({
                 )
             }
             punchActionStatus={punchActionStatus}
-            getPunchAttachments={api.getPunchAttachments}
-            getPunchAttachment={api.getPunchAttachment}
+            getPunchAttachments={completionApi.getPunchAttachments}
+            getPunchAttachment={completionApi.getPunchAttachment}
             getPunchComments={completionApi.getPunchComments}
             snackbar={snackbar}
             setSnackbarText={setSnackbarText}

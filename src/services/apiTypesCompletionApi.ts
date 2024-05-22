@@ -1,15 +1,6 @@
 type Guid = string;
 type DateTimeString = string;  // ISO 8601 date time string
 
-interface User {
-  guid: Guid;
-  firstName: string;
-  lastName: string;
-  userName: string;
-  email: string;
-}
-
-
 interface OrganizationDetail {
   guid: Guid;
   code: string;
@@ -22,9 +13,50 @@ interface PriorityAndSorting {
   description: string;
 }
 
+export interface PunchOrganization {
+  id: number;
+  parentId: number;
+  code: string;
+  description: string;
+}
+
+export interface LibrayTypes {
+  guid: string;
+  libraryType: string;
+  code: string;
+  description: string;
+}
+
 export interface Document {
   guid: Guid;
   no: string;
+  title: string;
+  revisionNo: string;
+  revisionId: number;
+  documentId: number;
+  documentNo: string;
+  relationType: DocumentRelationType;
+  attachments: DocumentAttachment[];
+}
+
+export interface DocumentData {
+  guid: Guid;
+  no: string;
+}
+
+export enum DocumentRelationType {
+  BOUNDARY = 'Boundary',
+  OTHER = 'Other',
+}
+
+export interface DocumentAttachment {
+  id: number;
+  fileName: string;
+  title: string;
+  mimeType: string;
+  fileId: number;
+  sortKey: number;
+  uri?: string;
 }
 
 export interface SWCR {
@@ -32,12 +64,13 @@ export interface SWCR {
   no: number;
 }
 
-export type NewPunchItem = Pick<PunchListItem, "category" | "description"> & {
+export type NewPunchItem = Pick<PunchItem, "category" | "description"> & {
   clearingByOrgGuid: string;
   raisedByOrgGuid: string;
 };
 
-export interface PunchListItem {
+
+export interface PunchItem {
   [index: string]: any;
   guid: Guid;
   projectName: string;
@@ -76,7 +109,8 @@ export interface PunchListItem {
   document: Document;
   swcr: SWCR;
   rowVersion: string;
-  attachments?: AttachmentData[];
+  attachments?: Attachment[];
+  attachmentCount: number;
 }
 
 export interface TagInfo {
@@ -88,24 +122,36 @@ export interface TagInfo {
 }
 
 interface User {
-  Id: number;
-  UserName: string;
-  FirstName: string;
-  LastName: string;
-  EmailAddress: string;
-  OfficePhoneNo: null;
-  MobilePhoneNo: null;
-  IsVoided: boolean;
-  NameAndUserNameAsString: string;
-  FullName: string;
-  FullNameFormal: string;
+  id: number;
+  userName: string;
+  firstName: string;
+  lastName: string;
+  emailAddress: string;
+  officePhoneNo: null;
+  mobilePhoneNo: null;
+  isVoided: boolean;
+  nameAndUserNameAsString: string;
+  fullName: string;
+  fullNameFormal: string;
+}
+
+export interface Attachment extends AttachmentData {
+  id: number;
+  uri: string;
+  title: string;
+  createdAt: Date;
+  classification: string;
+  mimeType: string;
+  thumbnailAsBase64: string;
+  hasFile: boolean;
+  fileName: string;
 }
 
 export interface AttachmentData {
   parentGuid: string;
   guid: string;
   fullBlobPath: string;
-  sasUri: string;
+  sasUri?: string;
   fileName: string;
   description: string;
   labels: string[];
@@ -127,6 +173,8 @@ export interface AttachmentData {
   modifiedAtUtc: string | null;
   rowVersion: string;
 }
+
+
 export type MessageType = {
   [index: string]: any;
   show: boolean;
@@ -139,8 +187,8 @@ export type PunchContextType = {
     showLoading?: boolean,
     skipCalls?: SkipCallsType
   ) => Promise<unknown>;
-  punchData: PunchListItem;
-  setPunchData: (p: PunchListItem) => void;
+  punchData: PunchItem;
+  setPunchData: (p: PunchItem) => void;
   labels: { picture: string[]; comment: string[] };
   isNewPunch: boolean;
   tagInfo: TagInfo;
