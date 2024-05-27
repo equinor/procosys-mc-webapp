@@ -42,7 +42,6 @@ const PunchPage = (): JSX.Element => {
         'checkListGuid'
     );
     const tagId = new URLSearchParams(location.search).get('tagId');
-
     useEffect(() => {
         fetchPunchItem();
     }, [api, params]);

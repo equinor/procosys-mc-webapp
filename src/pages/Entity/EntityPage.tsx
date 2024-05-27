@@ -202,7 +202,9 @@ const EntityPage = (): JSX.Element => {
                                     history.push(
                                         `${removeSubdirectories(
                                             history.location.pathname
-                                        )}/punch-item/${punch.proCoSysGuid}`
+                                        )}/punch-item/${
+                                            punch.proCoSysGuid
+                                        }?tagId=${punch.tagId}`
                                     );
                                 }}
                                 punchList={punchList}
@@ -288,7 +290,11 @@ const EntityPage = (): JSX.Element => {
                 )}
                 <FooterButton
                     active={isOnPunchListPage}
-                    goTo={(): void => history.push(`${url}/punch-list`)}
+                    goTo={(): void =>
+                        history.push(
+                            `${url}/punch-list?tagId=${punchList?.at(0)?.tagId}`
+                        )
+                    }
                     icon={
                         <EdsIcon
                             name="warning_outlined"
