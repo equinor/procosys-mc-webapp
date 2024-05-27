@@ -13,10 +13,10 @@ module.exports = {
         "^react-router-dom$": "<rootDir>/node_modules/react-router-dom"
     },
     transformIgnorePatterns: [
-        '/node_modules/(?!(@equinor/eds-tokens|@equinor/eds-icons|axios)/)'
+        '/node_modules/(?!(@equinor/eds-tokens|@equinor/eds-icons|axios|@equinor/procosys-webapp-components)/)'
     ],
     transform: {
-        '^.+\\.(js|ts|tsx)$': 'ts-jest',
+        '^.+\\.(js|jsx|ts|tsx)$': 'babel-jest',
         '^.+\\.(svg|png)$': '<rootDir>/src/test/imgTransform.js',
     },
     globals: {
