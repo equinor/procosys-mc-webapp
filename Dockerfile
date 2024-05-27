@@ -1,17 +1,17 @@
-# build environment
+# Build environment
 FROM node:20.0.0 as build
 WORKDIR /app
 COPY . /app
 RUN yarn install
 RUN yarn build --mode=production
 
-# production environment
+# Production environment
 FROM nginxinc/nginx-unprivileged
-## add permissions for nginx user
+## Add permissions for nginx user
 
 WORKDIR /app
-## add permissions for nginx user
-COPY --from=build /app/dist /usr/share/nginx/html/mc
+## Add permissions for nginx user
+COPY --from=build /app/static /usr/share/nginx/html/mc
 COPY .docker/nginx/ /etc/nginx/
 COPY .docker/scripts/ /etc/scripts/
 
