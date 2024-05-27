@@ -183,7 +183,9 @@ const ChecklistPage = (): JSX.Element => {
                                             history.location.pathname
                                         )}/punch-item/${
                                             punch.proCoSysGuid
-                                        }?checkListGuid=${checkListGuid}`
+                                        }?checkListGuid=${checkListGuid}&tagId=${
+                                            punchList?.at(0)?.tagId
+                                        }`
                                     )
                                 }
                                 punchList={punchList}

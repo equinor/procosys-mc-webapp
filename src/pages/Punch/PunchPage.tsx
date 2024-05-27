@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Route, Switch, useLocation } from 'react-router-dom';
+import { Route, Switch, useLocation, useParams } from 'react-router-dom';
 import EdsIcon from '../../components/icons/EdsIcon';
 import withAccessControl from '../../services/withAccessControl';
 import { COLORS } from '../../style/GlobalStyles';
@@ -37,11 +37,11 @@ const PunchPage = (): JSX.Element => {
     );
     const { permissions } = useContext(PlantContext);
     const [rowVersion, setRowVersion] = useState<string>();
-
     const location = useLocation();
     const checkListGuid = new URLSearchParams(location.search).get(
         'checkListGuid'
     );
+    const tagId = new URLSearchParams(location.search).get('tagId');
 
     useEffect(() => {
         fetchPunchItem();
@@ -147,7 +147,7 @@ const PunchPage = (): JSX.Element => {
                         path={`${path}/tag-info`}
                         render={(): JSX.Element => (
                             <TagInfoWrapper
-                                tagId={punch?.tagId}
+                                tagId={parseInt(`${tagId}`)}
                                 setSnackbarText={setSnackbarText}
                             />
                         )}
@@ -163,7 +163,7 @@ const PunchPage = (): JSX.Element => {
             <NavigationFooter>
                 <FooterButton
                     active={!history.location.pathname.includes('/tag-info')}
-                    goTo={(): void => history.push(url)}
+                    goTo={(): void => history.push(url + `?tagId=${tagId}`)}
                     icon={
                         <EdsIcon
                             name="warning_filled"
@@ -174,7 +174,9 @@ const PunchPage = (): JSX.Element => {
                 />
                 <FooterButton
                     active={history.location.pathname.includes('/tag-info')}
-                    goTo={(): void => history.push(`${url}/tag-info`)}
+                    goTo={(): void =>
+                        history.push(`${url}/tag-info?tagId=${tagId}`)
+                    }
                     icon={<EdsIcon name="tag" />}
                     label={'Tag info'}
                 />
