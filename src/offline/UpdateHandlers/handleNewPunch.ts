@@ -184,7 +184,7 @@ export const handleNewPunch = async (
     // Add the new punch item to the checklist punchlist and replace the object in the offline content database.
     const newPunchReview = {
         id: responseObj.id,
-        proCoSysGuid: "",
+        proCoSysGuid: '',
         status: completionStatus,
         description: responseObj.description,
         systemModule: responseObj.systemModule,

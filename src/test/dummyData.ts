@@ -80,8 +80,18 @@ export const dummyPermissions: string[] = [
 ];
 
 export const testProjects: Project[] = [
-    { id: 1, title: 'Test project 1', proCoSysGuid: "guid", description: 'this-is-a-description' },
-    { id: 2, title: 'Test project 2', proCoSysGuid: "guid", description: 'yet-another-description' },
+    {
+        id: 1,
+        title: 'Test project 1',
+        proCoSysGuid: 'guid',
+        description: 'this-is-a-description',
+    },
+    {
+        id: 2,
+        title: 'Test project 2',
+        proCoSysGuid: 'guid',
+        description: 'yet-another-description',
+    },
 ];
 
 export const testDetails: CommPkg = {
@@ -273,7 +283,6 @@ export const testPunchList: PunchPreview[] = [
         verified: false,
         statusControlledBySwcr: true,
         attachmentCount: 2,
-
     },
 ];
 

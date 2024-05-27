@@ -907,14 +907,14 @@ const procosysApiService = (
         }
         return data;
     };
-  
+
     const getPunchCategories = async (
         plantId: string,
         cancelToken: CancelToken,
         entity?: IEntity
     ): Promise<PunchCategory[]> => {
         const data = await getByFetch(
-            `PunchListItem/Categories?plantId=PCS$${plantId}${apiVersion}`,
+            `PunchListItem/Categories?plantId=PCS$${plantId}${apiVersion}`
         );
         if (!isArrayOfType<PunchCategory>(data, 'code')) {
             throw new Error(typeGuardErrorMessage('punch categories'));
@@ -1213,8 +1213,6 @@ const procosysApiService = (
             dto
         );
     };
-
-    
 
     const getChecklistAttachments = async (
         plantId: string,

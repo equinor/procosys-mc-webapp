@@ -38,7 +38,6 @@ export type Project = {
     id: number;
     proCoSysGuid: string;
     title: string;
-
 };
 
 export interface Plant {
@@ -331,7 +330,7 @@ export interface ChecklistPreview {
 }
 export interface PunchPreview {
     id: number;
-    proCoSysGuid : string;
+    proCoSysGuid: string;
     status: CompletionStatus;
     description: string;
     systemModule: string;
@@ -369,9 +368,7 @@ export interface PunchPreview {
     statusControlledBySwcr: boolean;
     attachmentCount: number; // Not in Comm punches
     callOffNo?: string; // Not in Comm punches
-  }
-  
-
+}
 
 export interface ColumnLabel {
     id: number;
@@ -443,7 +440,6 @@ export interface PunchPriority {
 
 type DateTimeString = string; // Assuming ISO 8601 format for dates
 
-
 export interface NewPunch {
     checkListGuid: string;
     projectGuid: string;
@@ -458,7 +454,7 @@ export interface NewPunch {
     dueTimeUtc?: DateTimeString;
     estimate?: number;
     temporaryFileIds?: string[];
-  }
+}
 
 export interface PunchItem {
     id: number;

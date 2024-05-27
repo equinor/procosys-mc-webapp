@@ -7,13 +7,15 @@ module.exports = {
     preset: 'ts-jest',
     testEnvironment: 'jsdom',
     moduleNameMapper: {
-        ...pathsToModuleNameMapper(compilerOptions.paths || {}, { prefix: '<rootDir>/' }),
-        "^react$": "<rootDir>/node_modules/react",
-        "^react-dom$": "<rootDir>/node_modules/react-dom",
-        "^react-router-dom$": "<rootDir>/node_modules/react-router-dom"
+        ...pathsToModuleNameMapper(compilerOptions.paths || {}, {
+            prefix: '<rootDir>/',
+        }),
+        '^react$': '<rootDir>/node_modules/react',
+        '^react-dom$': '<rootDir>/node_modules/react-dom',
+        '^react-router-dom$': '<rootDir>/node_modules/react-router-dom',
     },
     transformIgnorePatterns: [
-        '/node_modules/(?!(@equinor/eds-tokens|@equinor/eds-icons|axios|@equinor/procosys-webapp-components)/)'
+        '/node_modules/(?!(@equinor/eds-tokens|@equinor/eds-icons|axios|@equinor/procosys-webapp-components)/)',
     ],
     transform: {
         '^.+\\.(js|jsx|ts|tsx)$': 'babel-jest',

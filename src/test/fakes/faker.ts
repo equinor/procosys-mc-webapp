@@ -258,7 +258,7 @@ export const FakerChecklistPreview = (): ChecklistPreview => {
         attachmentCount: 10,
         isSigned: FakerRandomBoolean(),
         isVerified: FakerRandomBoolean(),
-        proCoSysGuid: "test-procosys-guid"
+        proCoSysGuid: 'test-procosys-guid',
     };
 };
 
@@ -443,7 +443,7 @@ export const FakerPunchPriority = (): PunchPriority => {
 export const FakerNewPunch = (): NewPunch => {
     return {
         checkListGuid: faker.datatype.uuid(),
-        projectGuid: "test-procosys-guid",
+        projectGuid: 'test-procosys-guid',
         category: faker.random.word(),
         description: faker.lorem.paragraph(3),
         typeGuid: faker.datatype.uuid(),
@@ -454,7 +454,11 @@ export const FakerNewPunch = (): NewPunch => {
         actionByPersonOid: faker.datatype.uuid(),
         dueTimeUtc: faker.date.future().toISOString(),
         estimate: faker.datatype.number({ min: 1, max: 100 }),
-        temporaryFileIds: [faker.datatype.uuid(), faker.datatype.uuid(), faker.datatype.uuid()],
+        temporaryFileIds: [
+            faker.datatype.uuid(),
+            faker.datatype.uuid(),
+            faker.datatype.uuid(),
+        ],
     };
 };
 
@@ -546,7 +550,6 @@ export const FakerPunchItem = (): PunchItem => {
     };
 };
 
-
 export const FakerAttachment = (): Attachment => {
     return {
         id: FakerId(),
@@ -568,7 +571,7 @@ export const FakerAttachment = (): Attachment => {
             firstName: faker.name.firstName(),
             lastName: faker.name.lastName(),
             userName: faker.internet.userName(),
-            email: faker.internet.email()
+            email: faker.internet.email(),
         },
         createdAtUtc: faker.date.past().toISOString(),
         modifiedBy: {
@@ -576,10 +579,10 @@ export const FakerAttachment = (): Attachment => {
             firstName: faker.name.firstName(),
             lastName: faker.name.lastName(),
             userName: faker.internet.userName(),
-            email: faker.internet.email()
+            email: faker.internet.email(),
         },
         modifiedAtUtc: faker.date.recent().toISOString(),
-        rowVersion: faker.datatype.uuid()
+        rowVersion: faker.datatype.uuid(),
     };
 };
 
@@ -613,7 +616,7 @@ export const FakeChecklistDetails = (id: number): ChecklistDetails => {
         hasElectronicForm: FakerRandomBoolean(),
         attachmentCount: 10,
         partOfCertificateSentToCommissioning: false,
-        proCoSysGuid: "test-procosys-guid"
+        proCoSysGuid: 'test-procosys-guid',
     };
 };
 
@@ -638,7 +641,7 @@ export const FakerProject = (): Project => {
     return {
         description: FakerDescription(),
         id: FakerId(),
-        proCoSysGuid: "test-procosys-guid",
+        proCoSysGuid: 'test-procosys-guid',
         title: FakerTitle(),
     };
 };

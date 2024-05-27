@@ -293,10 +293,9 @@ const buildOfflineScope = async (
     await api.getProjectsForPlant(`PCS$${plantId}`, projectsForPlantEntity);
     addEntityToMap(projectsForPlantEntity);
 
-
     const cancelTokenSource = axios.CancelToken.source();
     const cancelToken = cancelTokenSource.token;
-    
+
     //Punch categories
     const punchCategoriesEntity = createEntityObj(EntityType.PunchCategories);
     await api.getPunchCategories(plantId, cancelToken, punchCategoriesEntity);
