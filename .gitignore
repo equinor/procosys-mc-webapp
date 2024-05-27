@@ -31,6 +31,7 @@ dist
 build
 node_modules
 **/src/**/*.json
+!src/settings.json
 /testing/integration/node_modules/**
 /testing/integration/.nyc_output/**
 /testing/**/*.js
