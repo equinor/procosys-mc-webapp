@@ -38,16 +38,8 @@ const ContentWrapper = styled.div`
 `;
 
 const EntityPage = (): JSX.Element => {
-    const {
-        api,
-        completionApi,
-        ipoApi,
-        params,
-        path,
-        history,
-        url,
-        offlineState,
-    } = useCommonHooks();
+    const { api, ipoApi, params, path, history, url, offlineState } =
+        useCommonHooks();
     const { snackbar, setSnackbarText } = useSnackbar();
     const [scope, setScope] = useState<ChecklistPreview[]>();
     const [punchList, setPunchList] = useState<PunchPreview[]>();
@@ -177,11 +169,19 @@ const EntityPage = (): JSX.Element => {
                         render={(): JSX.Element => (
                             <Scope
                                 fetchScopeStatus={fetchScopeStatus}
-                                onChecklistClick={(checklistId: number): void =>
-                                    history.push(
-                                        `${history.location.pathname}/checklist/${checklistId}`
-                                    )
-                                }
+                                onChecklistClick={(
+                                    checklistId: string | number
+                                ): void => {
+                                    const checkListGuid = scope?.find(
+                                        (s) =>
+                                            s.id === parseInt(`${checklistId}`)
+                                    )?.proCoSysGuid;
+                                    {
+                                        history.push(
+                                            `${history.location.pathname}/checklist/${checklistId}?checkListGuid=${checkListGuid}`
+                                        );
+                                    }
+                                }}
                                 scope={scope}
                                 isPoScope={history.location.pathname.includes(
                                     '/PO/'

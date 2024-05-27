@@ -82,7 +82,6 @@ const completionApiService = ({  axios }: CompletionApiServiceProps ) => {
         return data as PunchItem;
     }
 
-
     const getPunchAttachments = async (
         plantId: string,
         guid: string

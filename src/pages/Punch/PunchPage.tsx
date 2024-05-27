@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Route, Switch } from 'react-router-dom';
+import { Route, Switch, useLocation } from 'react-router-dom';
 import EdsIcon from '../../components/icons/EdsIcon';
 import withAccessControl from '../../services/withAccessControl';
 import { COLORS } from '../../style/GlobalStyles';
@@ -38,6 +38,11 @@ const PunchPage = (): JSX.Element => {
     const { permissions } = useContext(PlantContext);
     const [rowVersion, setRowVersion] = useState<string>();
 
+    const location = useLocation();
+    const checkListGuid = new URLSearchParams(location.search).get(
+        'checkListGuid'
+    );
+
     useEffect(() => {
         fetchPunchItem();
     }, [api, params]);
@@ -48,6 +53,7 @@ const PunchPage = (): JSX.Element => {
                 params.plant,
                 params.proCoSysGuid
             );
+
             setPunch(punchFromApi);
             setRowVersion(punchFromApi.rowVersion);
             setFetchPunchStatus(AsyncStatus.SUCCESS);
@@ -121,7 +127,10 @@ const PunchPage = (): JSX.Element => {
                 noBorder
                 leftContent={
                     <BackButton
-                        to={`${removeSubdirectories(url, 2)}/punch-list`}
+                        to={`${removeSubdirectories(
+                            url,
+                            2
+                        )}/punch-list?checkListGuid=${checkListGuid}`}
                     />
                 }
                 midContent="Punch Item"

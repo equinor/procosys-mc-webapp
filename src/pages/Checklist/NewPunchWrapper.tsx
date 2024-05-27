@@ -1,5 +1,5 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import { PunchCategory } from '../../services/apiTypes';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
+import { ChecklistPreview, PunchCategory } from '../../services/apiTypes';
 import { NewPunch as NewPunchType } from '../../services/apiTypes';
 import useCommonHooks from '../../utils/useCommonHooks';
 import {
@@ -7,14 +7,15 @@ import {
     ChosenPerson,
     NewPunch,
     isArrayOfType,
-    removeSubdirectories,
     useFormFields,
+    useSnackbar,
 } from '@equinor/procosys-webapp-components';
 import AsyncPage from '../../components/AsyncPage';
 import usePersonsSearchFacade from '../../utils/usePersonsSearchFacade';
 import { OfflineStatus } from '../../typings/enums';
 import { LibrayTypes } from '../../services/apiTypesCompletionApi';
 import Axios from 'axios';
+import PlantContext from '../../contexts/PlantContext';
 
 const newPunchInitialValues = {
     category: '',
@@ -29,25 +30,28 @@ const newPunchInitialValues = {
     estimate: '',
 };
 
-interface NewPunchWrapperProps {
-    setSnackbarText: React.Dispatch<React.SetStateAction<string>>;
-}
-
-const NewPunchWrapper = ({
-    setSnackbarText,
-}: NewPunchWrapperProps): JSX.Element => {
+const NewPunchWrapper = (): JSX.Element => {
     const { api, params, url, history, offlineState, completionApi } =
         useCommonHooks();
+    const { availableProjects } = useContext(PlantContext);
+    const currentProject = availableProjects?.find(
+        (p) => p.title === params.project
+    );
+    let checkListGuid = location.search.split('checkListGuid=').at(1);
+
     const { formFields, createChangeHandler } = useFormFields(
         newPunchInitialValues
     );
+    const { snackbar, setSnackbarText } = useSnackbar();
+    const controller = new AbortController();
+    const abortSignal = controller.signal;
     const [categories, setCategories] = useState<PunchCategory[]>([]);
     const [types, setTypes] = useState<LibrayTypes[]>([]);
     const [organizations, setOrganizations] = useState<LibrayTypes[]>([]);
     const [sortings, setSortings] = useState<LibrayTypes[]>([]);
     const [priorities, setPriorities] = useState<LibrayTypes[]>([]);
     const [chosenPerson, setChosenPerson] = useState<ChosenPerson>({
-        id: null,
+        id: '',
         name: '',
     });
     const [fetchNewPunchStatus, setFetchNewPunchStatus] = useState(
@@ -59,6 +63,7 @@ const NewPunchWrapper = ({
     const [tempIds, setTempIds] = useState<string[]>([]);
     const { hits, searchStatus, query, setQuery } = usePersonsSearchFacade();
     const source = Axios.CancelToken.source();
+    const [details, setDetails] = useState<any>();
 
     const getLibraryTypes = useCallback(async () => {
         const categoriesFromApi = await api
@@ -94,16 +99,58 @@ const NewPunchWrapper = ({
         };
     }, [params.plant, api]);
 
+    const removeNewPunchSegment = (url: string) => {
+        const [baseUrl, query] = url.split('?');
+        const segments = baseUrl
+            .split('/')
+            .filter((segment) => segment !== 'new-punch');
+        const newUrl = segments.join('/');
+        return query ? `${newUrl}?${query}` : newUrl;
+    };
+
     useEffect(() => {
         if (submitPunchStatus === AsyncStatus.SUCCESS) {
-            history.push(removeSubdirectories(url, 1));
+            const newUrl = removeNewPunchSegment(url);
+            history.push(`${newUrl}?checkListGuid=${checkListGuid}`);
         }
-    }, [submitPunchStatus]);
+    }, [submitPunchStatus, url, checkListGuid, history]);
+
+    // if user routes to new punch page directly without choosing a checklist
+    useEffect(() => {
+        const fetchDetails = async () => {
+            if (
+                !checkListGuid ||
+                checkListGuid === 'undefined' ||
+                checkListGuid === 'null'
+            ) {
+                const response = (await api.getScope(
+                    params.plant,
+                    params.searchType,
+                    params.entityId,
+                    details,
+                    abortSignal
+                )) as ChecklistPreview[];
+                if (response.length > 0) {
+                    checkListGuid = response[0].proCoSysGuid;
+                }
+                const newUrl = new URL(window.location.href);
+                newUrl.searchParams.set(
+                    'checkListGuid',
+                    checkListGuid as string
+                );
+                window.history.pushState({}, '', newUrl.toString());
+            }
+        };
+        fetchDetails();
+    }, [checkListGuid]);
 
     const handleSubmit = async (e: React.FormEvent): Promise<void> => {
         e.preventDefault();
+
+        if (!currentProject || !checkListGuid) return;
         const NewPunchDTO: NewPunchType = {
-            checkListGuid: params.checklistId,
+            checkListGuid,
+            projectGuid: currentProject.proCoSysGuid,
             category: formFields.category,
             description: formFields.description,
             typeGuid: formFields.type,
@@ -112,8 +159,10 @@ const NewPunchWrapper = ({
             sortingGuid: formFields.sorting,
             priorityGuid: formFields.priority,
             estimate: parseInt(formFields.estimate),
-            dueTimeUtc: formFields.dueDate,
-            actionByPersonOid: `${chosenPerson.id}`,
+            dueTimeUtc: formFields.dueDate
+                ? ` ${new Date(formFields.dueDate).toISOString()}`
+                : '',
+            actionByPersonOid: chosenPerson.id ? `${chosenPerson.id}` : '',
         };
         setSubmitPunchStatus(AsyncStatus.LOADING);
         try {
@@ -121,7 +170,7 @@ const NewPunchWrapper = ({
             setSubmitPunchStatus(AsyncStatus.SUCCESS);
         } catch (error) {
             const pcsError = error as Error;
-            setSnackbarText(pcsError.toString());
+            setSnackbarText(pcsError.toString() || 'An error occurred');
             setSubmitPunchStatus(AsyncStatus.ERROR);
         }
     };
@@ -159,6 +208,7 @@ const NewPunchWrapper = ({
                     disableAttahments={true}
                 />
             </AsyncPage>
+            {snackbar}
         </>
     );
 };

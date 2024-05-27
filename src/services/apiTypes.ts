@@ -36,7 +36,9 @@ export enum CompletionStatus {
 export type Project = {
     description: string;
     id: number;
+    proCoSysGuid: string;
     title: string;
+
 };
 
 export interface Plant {
@@ -50,6 +52,7 @@ export const isProject: tg.TypeGuard<Project> = new tg.IsInterface()
     .withProperties({
         description: tg.isString,
         id: tg.isNumber,
+        proCoSysGuid: tg.isString,
         title: tg.isString,
     })
     .get();
@@ -324,6 +327,7 @@ export interface ChecklistPreview {
     attachmentCount: number;
     isSigned: boolean;
     isVerified: boolean;
+    proCoSysGuid: string;
 }
 export interface PunchPreview {
     id: number;
@@ -442,6 +446,7 @@ type DateTimeString = string; // Assuming ISO 8601 format for dates
 
 export interface NewPunch {
     checkListGuid: string;
+    projectGuid: string;
     category: string;
     description: string;
     typeGuid: string;

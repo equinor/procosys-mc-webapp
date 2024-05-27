@@ -258,6 +258,7 @@ export const FakerChecklistPreview = (): ChecklistPreview => {
         attachmentCount: 10,
         isSigned: FakerRandomBoolean(),
         isVerified: FakerRandomBoolean(),
+        proCoSysGuid: "test-procosys-guid"
     };
 };
 
@@ -442,6 +443,7 @@ export const FakerPunchPriority = (): PunchPriority => {
 export const FakerNewPunch = (): NewPunch => {
     return {
         checkListGuid: faker.datatype.uuid(),
+        projectGuid: "test-procosys-guid",
         category: faker.random.word(),
         description: faker.lorem.paragraph(3),
         typeGuid: faker.datatype.uuid(),
@@ -611,6 +613,7 @@ export const FakeChecklistDetails = (id: number): ChecklistDetails => {
         hasElectronicForm: FakerRandomBoolean(),
         attachmentCount: 10,
         partOfCertificateSentToCommissioning: false,
+        proCoSysGuid: "test-procosys-guid"
     };
 };
 
@@ -635,6 +638,7 @@ export const FakerProject = (): Project => {
     return {
         description: FakerDescription(),
         id: FakerId(),
+        proCoSysGuid: "test-procosys-guid",
         title: FakerTitle(),
     };
 };

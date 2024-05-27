@@ -80,8 +80,8 @@ export const dummyPermissions: string[] = [
 ];
 
 export const testProjects: Project[] = [
-    { id: 1, title: 'Test project 1', description: 'this-is-a-description' },
-    { id: 2, title: 'Test project 2', description: 'yet-another-description' },
+    { id: 1, title: 'Test project 1', proCoSysGuid: "guid", description: 'this-is-a-description' },
+    { id: 2, title: 'Test project 2', proCoSysGuid: "guid", description: 'yet-another-description' },
 ];
 
 export const testDetails: CommPkg = {
@@ -233,6 +233,7 @@ export const testScope: ChecklistPreview[] = [
         attachmentCount: 1,
         isSigned: false,
         isVerified: false,
+        proCoSysGuid: 'test-procosys-guid',
     },
     {
         id: 2,
@@ -250,6 +251,7 @@ export const testScope: ChecklistPreview[] = [
         attachmentCount: 1,
         isSigned: false,
         isVerified: false,
+        proCoSysGuid: 'test-procosys-guid',
     },
 ];
 
