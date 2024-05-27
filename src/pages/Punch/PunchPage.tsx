@@ -97,12 +97,12 @@ const PunchPage = (): JSX.Element => {
                     isDetailsCard
                     status={punch.category as CompletionStatus}
                     statusLetters={[
-                        punch.clearedByFirstName ? 'C' : null,
-                        punch.verifiedByFirstName ? 'V' : null,
+                        punch.clearedBy?.firstName ? 'C' : null,
+                        punch.verifiedBy?.firstName ? 'V' : null,
                     ]}
                     headerText={punch.tagNo}
                     description={punch.tagDescription}
-                    attachments={punch.attachmentCount || 0}
+                    attachments={punch.attachmentCount}
                     chips={[punch.itemNo.toString(), punch.formularType]}
                 />
             );
