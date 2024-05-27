@@ -11,11 +11,11 @@ FROM nginxinc/nginx-unprivileged
 
 WORKDIR /app
 ## Add permissions for nginx user
-COPY --from=build /app/static /usr/share/nginx/html/mc
+COPY --from=build /app/build /usr/share/nginx/html/mc
 COPY .docker/nginx/ /etc/nginx/
 COPY .docker/scripts/ /etc/scripts/
 
-# Change the user from root to non-root- From now on, all Docker commands are run as non-root user (except for COPY)
+# Change the user from root to non-root - From now on, all Docker commands are run as non-root user (except for COPY)
 USER 0
 RUN chown -R nginx /usr/share/nginx/html/mc \
     && chown -R nginx /etc/nginx/conf.d
