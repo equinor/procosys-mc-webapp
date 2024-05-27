@@ -1,0 +1,38 @@
+apiVersion: radix.equinor.com/v1
+kind: RadixApplication
+metadata:
+  name: procosys-mc-webapp
+spec:
+  environments:
+  - name: dev-test
+    build:
+      from: refactorToUseCompletionApi
+  - name: dev
+    build:
+      from: main
+  - name: test
+    build:
+      from: main
+  - name: prod
+    build:
+      from: main
+  components:
+  - name: frontend
+    publicPort: http
+    ports:
+    - name: http
+      port: 5000
+    environmentConfig:
+    # Development environment
+    - environment: dev
+      variables:
+        pcs_authSettingsEndpoint: 'https://pcs-config-non-prod-func.azurewebsites.net/api/MCWebApp/Auth?'
+    - environment: dev-test
+      variables:
+        pcs_authSettingsEndpoint: 'https://pcs-config-non-prod-func.azurewebsites.net/api/MCWebApp/Auth?'
+    - environment: test
+      variables:
+        pcs_authSettingsEndpoint: 'https://pcs-config-non-prod-func.azurewebsites.net/api/MCWebApp/Auth?'
+    - environment: prod
+      variables:
+        pcs_authSettingsEndpoint: 'https://pcs-config-non-prod-func.azurewebsites.net/api/MCWebApp/Auth?
