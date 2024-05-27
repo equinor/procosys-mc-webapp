@@ -35,6 +35,4 @@ spec:
         pcs_authSettingsEndpoint: 'https://pcs-config-non-prod-func.azurewebsites.net/api/MCWebApp/Auth?'
     - environment: prod
       variables:
-        pcs_authSettingsEndpoint: 'https://pcs-config-non-prod-func.azurewebsites.net/api/MCWebApp/Auth?
-
-        #test 2
+        pcs_authSettingsEndpoint: 'https://pcs-config-non-prod-func.azurewebsites.net/api/MCWebApp/Auth?'
