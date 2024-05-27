@@ -79,8 +79,6 @@ const initialize = async () => {
         configurationEndpoint,
     } = await getAuthConfig();
 
-    console.log('scope', scopes);
-
     const authClient = new MSAL.PublicClientApplication(clientSettings);
 
     const authInstance = authService({
@@ -105,7 +103,6 @@ const initialize = async () => {
         configurationEndpoint,
         configurationAccessToken
     );
-    console.log('App  ', appConfig);
 
     render(<LoadingPage loadingText={'Initializing access token...'} />);
     let accessToken = '';
@@ -144,8 +141,6 @@ const initialize = async () => {
     const completionApiInstance = completionApiService({
         axios: completionBaseApiInstance,
     });
-
-    console.log(completionApiInstance);
 
     render(<LoadingPage loadingText={'Initializing IPO access token...'} />);
     let accessTokenIPO = '';
