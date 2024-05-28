@@ -4,15 +4,12 @@ metadata:
   name: procosys-mc-webapp
 spec:
   environments:
-  - name: dev-test
-    build:
-      from: refactorToUseCompletionApi
   - name: dev
     build:
-      from: main
+      from: develop
   - name: test
     build:
-      from: main
+      from: test
   - name: prod
     build:
       from: main
@@ -27,9 +24,6 @@ spec:
     - environment: dev
       variables:
         pcs_authSettingsEndpoint: 'https://pcs-config-non-prod-func.azurewebsites.net/api/MCWebApp/Auth'
-    - environment: dev-test
-      variables:
-        pcs_authSettingsEndpoint: 'https://pcs-config-non-prod-func.azurewebsites.net/api/MCWebApp/Auth?'
     - environment: test
       variables:
         pcs_authSettingsEndpoint: 'https://pcs-config-non-prod-func.azurewebsites.net/api/MCWebApp/Auth?'
