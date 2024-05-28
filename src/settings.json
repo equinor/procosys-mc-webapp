@@ -1,5 +1,5 @@
 
 {
-  "authSettingsEndpoint": "https://pcs-config-non-prod-func.azurewebsites.net/api/MCWebApp/Auth?"
+  "authSettingsEndpoint": "https://pcs-config-non-prod-func.azurewebsites.net/api/MCWebApp/Auth"
 }
 
