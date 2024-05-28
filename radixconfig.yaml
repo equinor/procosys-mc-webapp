@@ -26,7 +26,7 @@ spec:
     # Development environment
     - environment: dev
       variables:
-        pcs_authSettingsEndpoint: 'https://pcs-config-non-prod-func.azurewebsites.net/api/MCWebApp/Auth?'
+        pcs_authSettingsEndpoint: 'https://pcs-config-non-prod-func.azurewebsites.net/api/MCWebApp/Auth'
     - environment: dev-test
       variables:
         pcs_authSettingsEndpoint: 'https://pcs-config-non-prod-func.azurewebsites.net/api/MCWebApp/Auth?'
