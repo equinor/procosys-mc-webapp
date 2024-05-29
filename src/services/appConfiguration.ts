@@ -74,8 +74,8 @@ export const getAuthConfig = async () => {
             redirectUri: window.location.origin + '/mc',
         },
     };
-    const scopes = ["User.Read"];
-    const configurationScope = [process.env.REACT_APP_CONFIG_SCOPE]
+    const scopes = ['User.Read'];
+    const configurationScope = [process.env.REACT_APP_CONFIG_SCOPE];
     const configurationEndpoint = process.env.REACT_APP_CONFIG_ENDPOINT;
 
     return {
