@@ -64,8 +64,6 @@ export const fetchAuthConfig = async (
 };
 
 export const getAuthConfig = async () => {
-    const authConfigResp = await fetchAuthConfig();
-
     // Todo: TypeGuard authsettings
     const clientSettings = {
         auth: {
