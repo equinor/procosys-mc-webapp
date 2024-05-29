@@ -79,7 +79,7 @@ const initialize = async () => {
         configurationEndpoint,
     } = await getAuthConfig();
 
-    const authClient = new MSAL.PublicClientApplication(clientSettings);
+    const authClient = new MSAL.PublicClientApplication(clientSettings as any);
 
     const authInstance = authService({
         MSAL: authClient,
@@ -93,47 +93,40 @@ const initialize = async () => {
         if (isRedirecting) return Promise.reject('redirecting');
 
         configurationAccessToken = await authInstance.getAccessToken(
-            configurationScope
+            configurationScope as any
         );
     }
 
     // Get config from App Configuration
     render(<LoadingPage loadingText={'Initializing app config...'} />);
     const { appConfig, featureFlags } = await getAppConfig(
-        configurationEndpoint,
+        configurationEndpoint as any,
         configurationAccessToken
     );
 
     render(<LoadingPage loadingText={'Initializing access token...'} />);
     let accessToken = '';
     let accessTokenCompletionApi = '';
-    const completionScope = [
-        'api://e8c158a9-a200-4897-9d5f-660e377bddc1/.default',
-    ];
-    const appConfigScopes = [
-        'api://dd38f169-bccf-4d0e-a4ad-d830893cfa75/web_api',
-    ];
 
-    console.log('app config scop for procosyssAPI', appConfigScopes);
     if (offline != OfflineStatus.OFFLINE) {
-        accessToken = await authInstance.getAccessToken(appConfigScopes);
-
-        accessTokenCompletionApi = await authInstance.getAccessToken(
-            completionScope
-        );
+        accessToken = await authInstance.getAccessToken([
+            process.env.REACT_APP_WEBAPI_SCOPE as any,
+        ]);
+        accessTokenCompletionApi = await authInstance.getAccessToken([
+            process.env.REACT_APP_COMP_SCOPE as any,
+        ]);
     }
 
     const completionBaseApiInstance = baseIPOApiService({
         authInstance,
-        baseURL:
-            'https://backend-procosys-completion-api-dev.radix.equinor.com',
-        scope: ['api://e8c158a9-a200-4897-9d5f-660e377bddc1/.default'],
+        baseURL: process.env.REACT_APP_BASE_URL_COMP as string,
+        scope: [process.env.REACT_APP_COMP_SCOPE] as string[],
     });
 
     const procosysApiInstance = procosysApiService(
         {
-            baseURL: 'https://pcs-main-api-dev-pr.azurewebsites.net/api',
-            apiVersion: appConfig.procosysWebApi.apiVersion,
+            baseURL: process.env.REACT_APP_BASE_URL_MAIN as string,
+            apiVersion: process.env.REACT_APP_API_VERSION as string,
         },
         accessToken
     );

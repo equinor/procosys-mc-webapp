@@ -69,14 +69,14 @@ export const getAuthConfig = async () => {
     // Todo: TypeGuard authsettings
     const clientSettings = {
         auth: {
-            clientId: authConfigResp.clientId,
-            authority: authConfigResp.authority,
+            clientId: process.env.REACT_APP_CLIENT,
+            authority: process.env.REACT_APP_AUTHORITY,
             redirectUri: window.location.origin + '/mc',
         },
     };
-    const scopes = authConfigResp.scopes;
-    const configurationScope = authConfigResp.configurationScope;
-    const configurationEndpoint = authConfigResp.configurationEndpoint;
+    const scopes = ["User.Read"];
+    const configurationScope = [process.env.REACT_APP_CONFIG_SCOPE]
+    const configurationEndpoint = process.env.REACT_APP_CONFIG_ENDPOINT;
 
     return {
         clientSettings,
