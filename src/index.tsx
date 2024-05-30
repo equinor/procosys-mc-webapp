@@ -55,7 +55,7 @@ const render = (content: JSX.Element): void => {
 const initialize = async () => {
     render(<LoadingPage loadingText={'Initializing service worker...'} />);
     console.log('Application is initializing');
-    await navigator.serviceWorker.ready; //wait until service worker is active
+    //await navigator.serviceWorker.ready; //wait until service worker is active
     if (!('serviceWorker' in navigator)) {
         console.log('The service worker is not active.');
         alert('Service worker is not ready.');
@@ -366,7 +366,7 @@ const renderApp = async (): Promise<void> => {
     console.log('--------0');
     console.log('--------1');
 
-    await navigator.serviceWorker.ready; //wait until service worker is active
+    //await navigator.serviceWorker.ready; //wait until service worker is active
 
     console.log('-----------2');
     try {
