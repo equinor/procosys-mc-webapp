@@ -24,7 +24,6 @@ yarn-error.log*
 
 .env
 settings.template.json
-settings.json
 
 #Visual Studio Garbage (files etc.)
 .vs
@@ -32,6 +31,7 @@ dist
 build
 node_modules
 **/src/**/*.json
+!settings.json
 /testing/integration/node_modules/**
 /testing/integration/.nyc_output/**
 /testing/**/*.js
