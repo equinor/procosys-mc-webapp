@@ -1,4 +1,4 @@
-# Build environment
+# Build environment force build
 FROM node:20.0.0 as build
 WORKDIR /app
 COPY . /app
@@ -18,7 +18,7 @@ ENV API_VERSION="&api-version=4.1"
 
 RUN yarn build --mode=production
 
-# Production environment
+# Production environment.
 FROM nginxinc/nginx-unprivileged
 ## Add permissions for nginx user
 
