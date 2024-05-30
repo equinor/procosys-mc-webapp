@@ -20,7 +20,6 @@ spec:
     - name: http
       port: 5000
     environmentConfig:
-    # Development environment
     - environment: dev
       dockerfileName: Dockerfile.dev
       variables:
