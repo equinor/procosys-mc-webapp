@@ -6,7 +6,7 @@ RUN yarn install
 RUN yarn build --mode=production
 
 # production environment
-FROM docker.io/nginxinc/nginx-unprivileged:1.21.6-alpine
+FROM docker.io/nginxinc/nginx-unprivileged:alpine
 user 0
 ## add permissions for nginx user
 RUN apk add python3
