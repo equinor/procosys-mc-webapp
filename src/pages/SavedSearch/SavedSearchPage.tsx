@@ -1,12 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
+    ChecklistPreview,
     ChecklistSavedSearchResult,
     PunchItemSavedSearchResult,
     SavedSearch,
 } from '../../services/apiTypes';
 import useCommonHooks from '../../utils/useCommonHooks';
 import AsyncPage from '../../components/AsyncPage';
-import { isArrayOfType } from '../../services/apiTypeGuards';
+import { isArrayOfType, isOfType } from '../../services/apiTypeGuards';
 import {
     AsyncStatus,
     BackButton,
@@ -175,7 +176,11 @@ const SavedSearchPage = (): JSX.Element => {
                                 checklist.responsibleCode,
                             ]}
                             onClick={(): void =>
-                                history.push(`${url}/checklist/${checklist.id}`)
+                                history.push(
+                                    `${url}/checklist/${
+                                        checklist.id
+                                    }?checkListGuid=${'test'}`
+                                )
                             }
                         />
                     ))}
