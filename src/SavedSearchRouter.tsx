@@ -10,13 +10,13 @@ const SavedSearchRouter = (): JSX.Element => {
         <Switch>
             <Route
                 path={
-                    '/:plant/:project/saved-search/:savedSearchType/:savedSearchId/punch-item/:punchItemId'
+                    '/:plant/:project/saved-search/:savedSearchType/:savedSearchId/punch-item/:proCoSysGuid'
                 }
                 component={PunchPage}
             />
             <Route
                 path={
-                    '/:plant/:project/saved-search/:savedSearchType/:savedSearchId/checklist/:checklistId/punch-item/:punchItemId'
+                    '/:plant/:project/saved-search/:savedSearchType/:savedSearchId/checklist/:checklistId/punch-item/:proCoSysGuid'
                 }
                 component={PunchPage}
             />

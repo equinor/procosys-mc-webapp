@@ -20,7 +20,6 @@ spec:
     - name: http
       port: 5000
     environmentConfig:
-    # Development environment
     - environment: dev
       dockerfileName: Dockerfile.dev
       variables:
@@ -28,8 +27,8 @@ spec:
     - environment: test
       dockerfileName: Dockerfile.test
       variables:
-        pcs_authSettingsEndpoint: 'https://pcs-config-non-prod-func.azurewebsites.net/api/MCWebApp/Auth?'
+        pcs_authSettingsEndpoint: 'https://pcs-config-non-prod-func.azurewebsites.net/api/MCWebApp/Auth'
     - environment: prod
       dockerfileName: Dockerfile.prod
       variables:
-        pcs_authSettingsEndpoint: 'https://pcs-config-non-prod-func.azurewebsites.net/api/MCWebApp/Auth?'
+        pcs_authSettingsEndpoint: 'https://pcs-config-non-prod-func.azurewebsites.net/api/MCWebApp/Auth'
