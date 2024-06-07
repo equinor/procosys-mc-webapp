@@ -4,17 +4,16 @@ WORKDIR /app
 COPY . /app
 RUN yarn install
 
-ENV CLIENT='fd33ade5-557b-41c2-aea8-8c24f983ffcb'
-ENV AUTHORITY='https://login.microsoftonline.com/3aa4a235-b6e2-48d5-9195-7fcf05b459b0'
-ENV CONFIG_SCOPE='api://0708e202-b5ad-4d95-9735-a631c715d6a9/Read'
-ENV BASE_URL_MAIN='https://pcs-main-api-dev-pr.azurewebsites.net/api'
-ENV BASE_URL_COMP='https://backend-procosys-completion-api-test.radix.equinor.com'
-ENV CONFIG_ENDPOINT='https://pcs-config-non-prod-func.azurewebsites.net/api/MCWebApp/Configuration?'
-ENV WEBAPI_SCOPE='api://dd38f169-bccf-4d0e-a4ad-d830893cfa75/web_api'
-ENV COMP_SCOPE='api://e8c158a9-a200-4897-9d5f-660e377bddc1/ReadWrite'
-ENV APP_INSIGHTS='cf22f65-a717-421f-935d-4853dbcbe8e5'
-ENV API_VERSION="&api-version=4.1"
-
+ENV REACT_APP_CLIENT='912690c2-dbea-4174-a9fd-3c85f113435c'
+ENV REACT_APP_AUTHORITY='https://login.microsoftonline.com/3aa4a235-b6e2-48d5-9195-7fcf05b459b0'
+ENV REACT_APP_CONFIG_SCOPE='api://0708e202-b5ad-4d95-9735-a631c715d6a9/Read'
+ENV REACT_APP_BASE_URL_MAIN='https://pcs-main-api-test.azurewebsites.net/api'
+ENV REACT_APP_BASE_URL_COMP='https://backend-procosys-completion-api-test.radix.equinor.com'
+ENV REACT_APP_CONFIG_ENDPOINT='https://pcs-config-non-prod-func.azurewebsites.net/api/MCWebApp/Configuration?'
+ENV REACT_APP_WEBAPI_SCOPE='api://2d0ed80f-3013-422d-b8bd-2b8ac70b2ce1/web_api'
+ENV REACT_APP_COMP_SCOPE='api://cf2e4cc0-39fe-4604-ad64-98e392987821/ReadWrite'
+ENV REACT_APP_APP_INSIGHTS='cf22f65-a717-421f-935d-4853dbcbe8e5'
+ENV REACT_APP_API_VERSION="&api-version=4.1"
 
 RUN yarn build --mode=production
 
