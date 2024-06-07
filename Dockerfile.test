@@ -1,4 +1,4 @@
-# Build environment force build
+# Build environment
 FROM node:20.0.0 as build
 WORKDIR /app
 COPY . /app
@@ -15,10 +15,9 @@ ENV REACT_APP_COMP_SCOPE='api://cf2e4cc0-39fe-4604-ad64-98e392987821/ReadWrite'
 ENV REACT_APP_APP_INSIGHTS='cf22f65-a717-421f-935d-4853dbcbe8e5'
 ENV REACT_APP_API_VERSION="&api-version=4.1"
 
-
 RUN yarn build --mode=production
 
-# Production environment.
+# Production environment
 FROM nginxinc/nginx-unprivileged
 ## Add permissions for nginx user
 
