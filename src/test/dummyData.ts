@@ -207,6 +207,7 @@ export const testChecklistSavedSearch: ChecklistSavedSearchResult[] = [
         updatedByUser: 'test',
         updatedByFirstName: 'Jane',
         updatedByLastName: 'Doe',
+        proCoSysGuid: 'test-procosys-guid',
     },
 ];
 
@@ -223,6 +224,7 @@ export const testPunchListItemSavedSearch: PunchItemSavedSearchResult[] = [
         isVerified: false,
         statusControlledBySwcr: false,
         attachmentCount: 2,
+        proCoSysGuid: 'test-procosys-guid',
     },
 ];
 

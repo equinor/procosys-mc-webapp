@@ -177,9 +177,7 @@ const SavedSearchPage = (): JSX.Element => {
                             ]}
                             onClick={(): void =>
                                 history.push(
-                                    `${url}/checklist/${
-                                        checklist.id
-                                    }?checkListGuid=${'test'}`
+                                    `${url}/checklist/${checklist.id}?checkListGuid=${checklist.proCoSysGuid}`
                                 )
                             }
                         />
@@ -206,7 +204,9 @@ const SavedSearchPage = (): JSX.Element => {
                             chips={[punch.formularType, punch.responsibleCode]}
                             tag={punch.tagNo}
                             onClick={(): void =>
-                                history.push(`${url}/punch-item/${punch.id}`)
+                                history.push(
+                                    `${url}/punch-item/${punch.proCoSysGuid}`
+                                )
                             }
                         />
                     ))}

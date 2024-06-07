@@ -199,6 +199,7 @@ export const FakerChecklistSavedSearchResult =
             updatedByUser: faker.name.findName(),
             updatedByFirstName: faker.name.firstName(),
             updatedByLastName: faker.name.firstName(),
+            proCoSysGuid: 'test-procosys-guid',
         };
     };
 
@@ -218,6 +219,7 @@ export const FakerPunchItemSavedSearchResult =
             isVerified: FakerRandomBoolean(),
             statusControlledBySwcr: FakerRandomBoolean(),
             attachmentCount: 10,
+            proCoSysGuid: "test-procosys-guid",
         };
     };
 
