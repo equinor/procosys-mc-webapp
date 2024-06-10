@@ -163,6 +163,7 @@ export interface ChecklistSavedSearchResult {
     updatedByUser: string;
     updatedByFirstName: string;
     updatedByLastName: string;
+    proCoSysGuid: string;
 }
 
 export interface PunchItemSavedSearchResult {
@@ -177,6 +178,7 @@ export interface PunchItemSavedSearchResult {
     isVerified: boolean;
     statusControlledBySwcr: boolean;
     attachmentCount: number;
+    proCoSysGuid: string;
 }
 
 // IPO
