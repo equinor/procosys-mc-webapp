@@ -15,6 +15,7 @@ import { OfflineStatus } from '../../typings/enums';
 import { PunchItem } from '../../services/apiTypesCompletionApi';
 import { LibrayTypes } from '@equinor/procosys-webapp-components/dist/typings/apiTypes';
 import Axios, { AxiosError, AxiosResponse } from 'axios';
+import { hasErrors, renderErrors } from '../../utils/renderErrors';
 
 const punchEndpoints: PunchEndpoints = {
     updateCategory: 'UpdateCategory',
@@ -135,8 +136,12 @@ const ClearPunchWrapper = ({
                     { headers: { 'x-plant': `PCS$${params.plant}` } }
                 )
                 .catch((error: AxiosError) => {
+                    setSnackbarText(
+                        hasErrors(error)
+                            ? renderErrors(error)
+                            : 'Something went wrong while saving the punch'
+                    );
                     setUpdatePunchStatus(AsyncStatus.ERROR);
-                    setSnackbarText(error.message);
                 })
                 .finally(() => {
                     setUpdatePunchStatus(AsyncStatus.SUCCESS);
@@ -144,6 +149,7 @@ const ClearPunchWrapper = ({
         setUpdateQueue((prevQueue) => prevQueue.slice(1));
         if (updatedData?.data) {
             setRowVersion(updatedData.data);
+            setSnackbarText('Saved successfully');
         }
     }, [updatePunchStatus, updateQueue, rowVersion]);
 
