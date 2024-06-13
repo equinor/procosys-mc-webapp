@@ -43,12 +43,10 @@ const container = document.getElementById('root');
 const root = createRoot(container!);
 const render = (content: JSX.Element): void => {
     root.render(
-        //<React.StrictMode>
-        <>
+        <React.StrictMode>
             <GlobalStyles />
             {content}
-        </>
-        // </React.StrictMode>
+        </React.StrictMode>
     );
 };
 
@@ -110,7 +108,7 @@ const initialize = async () => {
 
     const authInstance = authService({
         MSAL: authClient,
-        scopes: [process.env.REACT_APP_SCOPE] as any,
+        scopes: [process.env.REACT_APP_SCOPE] as string[],
     });
 
     let configurationAccessToken = '';
@@ -121,7 +119,7 @@ const initialize = async () => {
 
         configurationAccessToken = await authInstance.getAccessToken([
             process.env.REACT_APP_CONFIG_SCOPE,
-        ] as any);
+        ] as string[]);
     }
 
     render(<LoadingPage loadingText={'Initializing access token...'} />);
@@ -130,10 +128,10 @@ const initialize = async () => {
 
     if (offline != OfflineStatus.OFFLINE) {
         accessToken = await authInstance.getAccessToken([
-            process.env.REACT_APP_WEBAPI_SCOPE as any,
+            process.env.REACT_APP_WEBAPI_SCOPE as string,
         ]);
         accessTokenCompletionApi = await authInstance.getAccessToken([
-            process.env.REACT_APP_COMP_SCOPE as any,
+            process.env.REACT_APP_COMP_SCOPE as string,
         ]);
     }
 
@@ -160,7 +158,7 @@ const initialize = async () => {
     if (offline != OfflineStatus.OFFLINE) {
         accessTokenIPO = await authInstance.getAccessToken([
             process.env.REACT_APP_IPO_API_SCOPE,
-        ] as any);
+        ] as string[]);
     }
     const procosysIPOApiInstance = procosysIPOApiService(
         {
