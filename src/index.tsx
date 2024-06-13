@@ -5,7 +5,7 @@ import App from './App';
 import authService from './services/authService';
 import * as MSAL from '@azure/msal-browser';
 import procosysApiService from './services/procosysApi';
-import { getAppConfig, getAuthConfig } from './services/appConfiguration';
+import { AppConfig, getAuthConfig } from './services/appConfiguration';
 import initializeAppInsights from './services/appInsights';
 import {
     ErrorPage,
@@ -56,6 +56,37 @@ const render = (content: JSX.Element): void => {
     );
 };
 
+const appConfig: any = {
+    procosysWebApi: {
+        baseUrl: process.env.REACT_APP_WEBAPI_BASE_URL,
+        apiVersion: process.env.REACT_APP_WEBAPI_API_VERSION,
+        scope: [process.env.REACT_APP_WEBAPI_SCOPE],
+    },
+    ocrFunctionEndpoint: process.env.REACT_APP_OCR_FUNCTION_ENDPOINT,
+    ipoApi: {
+        baseUrl: process.env.REACT_APP_IPO_API_BASE_URL,
+        apiVersion: process.env.REACT_APP_API_VERSION,
+        scope: [process.env.REACT_APP_IPO_API_SCOPE],
+    },
+    auth: {
+        clientId: process.env.REACT_APP_AUTH_CLIENT_ID,
+        authority: process.env.REACT_APP_AUTH_AUTHORITY,
+        configurationEndpoint: process.env.REACT_APP_AUTH_CONFIG_ENDPOINT,
+        scopes: [process.env.REACT_APP_AUTH_SCOPES],
+        configurationScope: [process.env.REACT_APP_AUTH_CONFIG_SCOPE],
+    },
+    appInsights: {
+        instrumentationKey:
+            process.env.REACT_APP_APP_INSIGHTS_INSTRUMENTATION_KEY,
+    },
+};
+
+const featureFlags = {
+    offlineFunctionalityIsEnabled:
+        process.env.REACT_APP_FEATURE_OFFLINE_ENABLED === 'true',
+    mcAppIsEnabled: process.env.REACT_APP_FEATURE_MC_APP_ENABLED === 'true',
+};
+
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const initialize = async () => {
     render(<LoadingPage loadingText={'Initializing service worker...'} />);
@@ -72,12 +103,8 @@ const initialize = async () => {
     updateOfflineStatus(offline, userPin);
     // Get auth config, setup auth client and handle login
     render(<LoadingPage loadingText={'Initializing authentication...'} />);
-    const {
-        clientSettings,
-        scopes,
-        configurationScope,
-        configurationEndpoint,
-    } = await getAuthConfig();
+    const { clientSettings, scopes, configurationScope } =
+        await getAuthConfig();
 
     const authClient = new MSAL.PublicClientApplication(clientSettings as any);
 
@@ -96,13 +123,6 @@ const initialize = async () => {
             configurationScope as any
         );
     }
-
-    // Get config from App Configuration
-    render(<LoadingPage loadingText={'Initializing app config...'} />);
-    const { appConfig, featureFlags } = await getAppConfig(
-        configurationEndpoint as any,
-        configurationAccessToken
-    );
 
     render(<LoadingPage loadingText={'Initializing access token...'} />);
     let accessToken = '';
@@ -138,19 +158,19 @@ const initialize = async () => {
     render(<LoadingPage loadingText={'Initializing IPO access token...'} />);
     let accessTokenIPO = '';
     if (offline != OfflineStatus.OFFLINE) {
-        accessTokenIPO = await authInstance.getAccessToken(
-            appConfig.ipoApi.scope
-        );
+        accessTokenIPO = await authInstance.getAccessToken([
+            process.env.REACT_APP_IPO_API_SCOPE,
+        ] as any);
     }
     const procosysIPOApiInstance = procosysIPOApiService(
         {
-            baseURL: appConfig.ipoApi.baseUrl,
+            baseURL: process.env.REACT_APP_IPO_API_BASE_URL as string,
         },
         accessTokenIPO
     );
 
     const { appInsightsReactPlugin } = initializeAppInsights(
-        appConfig.appInsights.instrumentationKey
+        process.env.REACT_APP_APP_INSIGHTS_INSTRUMENTATION_KEY as string
     );
     console.log('Initializing done.');
 

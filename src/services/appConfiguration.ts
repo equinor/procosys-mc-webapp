@@ -42,27 +42,6 @@ export type AppConfig = {
     ipoApi: ProcosysApiSettings;
 };
 
-type AppConfigResponse = {
-    configuration: AppConfig;
-    featureFlags: FeatureFlags;
-};
-
-/**
- * Fetch auth config
- * @param callbackFunc  This function is used to create offline scope
- */
-export const fetchAuthConfig = async (
-    entity?: IEntity
-): Promise<AuthConfigResponse> => {
-    const data = await handleFetchGet(Settings.authSettingsEndpoint);
-    const authConfigResp: AuthConfigResponse = await data.json();
-    if (entity) {
-        entity.responseObj = authConfigResp;
-        entity.apipath = removeBaseUrlFromUrl(Settings.authSettingsEndpoint);
-    }
-    return authConfigResp;
-};
-
 export const getAuthConfig = async () => {
     // Todo: TypeGuard authsettings
     const clientSettings = {
@@ -82,33 +61,4 @@ export const getAuthConfig = async () => {
         configurationScope,
         configurationEndpoint,
     };
-};
-
-export const fetchAppConfig = async (
-    endpoint: string,
-    accessToken: string,
-    entity?: IEntity
-): Promise<AppConfigResponse> => {
-    const data = await handleFetchGet(endpoint, {
-        method: 'GET',
-        headers: {
-            Authorization: 'Bearer ' + accessToken,
-        },
-    });
-    const resp = await data.json();
-
-    if (entity) {
-        entity.responseObj = resp;
-        entity.apipath = removeBaseUrlFromUrl(endpoint);
-    }
-
-    return resp;
-};
-
-export const getAppConfig = async (endpoint: string, accessToken: string) => {
-    const appConfigResponse = await fetchAppConfig(endpoint, accessToken);
-
-    const appConfig: AppConfig = appConfigResponse.configuration;
-    const featureFlags: FeatureFlags = appConfigResponse.featureFlags;
-    return { appConfig, featureFlags };
 };

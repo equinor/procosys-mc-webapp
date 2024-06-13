@@ -4,16 +4,36 @@ WORKDIR /app
 COPY . /app
 RUN yarn install
 
-ENV REACT_APP_CLIENT='9f056ccb-c53e-4e15-859f-95027bff2ae5'
-ENV REACT_APP_AUTHORITY='https://login.microsoftonline.com/3aa4a235-b6e2-48d5-9195-7fcf05b459b0'
-ENV REACT_APP_CONFIG_SCOPE='api://0708e202-b5ad-4d95-9735-a631c715d6a9/Read'
 ENV REACT_APP_BASE_URL_MAIN='https://pcs-main-api-dev-pr.azurewebsites.net/api'
 ENV REACT_APP_BASE_URL_COMP='https://backend-procosys-completion-api-dev.radix.equinor.com'
 ENV REACT_APP_CONFIG_ENDPOINT='https://pcs-config-non-prod-func.azurewebsites.net/api/MCWebApp/Configuration?'
-ENV REACT_APP_WEBAPI_SCOPE='api://dd38f169-bccf-4d0e-a4ad-d830893cfa75/web_api'
 ENV REACT_APP_COMP_SCOPE='api://e8c158a9-a200-4897-9d5f-660e377bddc1/ReadWrite'
-ENV REACT_APP_APP_INSIGHTS='cf22f65-a717-421f-935d-4853dbcbe8e5'
 ENV REACT_APP_API_VERSION="&api-version=4.1"
+
+# Application Insights Configuration
+ENV REACT_APP_APP_INSIGHTS_INSTRUMENTATION_KEY='bbefe850-9964-41a5-b449-c41519115c56'
+
+# procosysWebApi Configuration
+ENV REACT_APP_WEBAPI_BASE_URL='https://pcs-main-api-dev.azurewebsites.net/api'
+ENV REACT_APP_WEBAPI_API_VERSION='&api-version=4.1'
+ENV REACT_APP_WEBAPI_SCOPE='api://dd38f169-bccf-4d0e-a4ad-d830893cfa75/web_api'
+
+# OCR Function Endpoint
+ENV REACT_APP_OCR_FUNCTION_ENDPOINT='https://pcs-mc-webapp-non-prod-funcs.azurewebsites.net/api/pcs_ocr?'
+
+# IPO API Configuration
+ENV REACT_APP_IPO_API_BASE_URL='https://backend-procosys-ipo-api-test.radix.equinor.com'
+ENV REACT_APP_IPO_API_SCOPE='api://2e1868db-3024-45a9-b3f1-568e85586244/ReadWrite'
+
+# Auth Configuration
+ENV REACT_APP_CLIENT='9f056ccb-c53e-4e15-859f-95027bff2ae5'
+ENV REACT_APP_AUTHORITY='https://login.microsoftonline.com/3aa4a235-b6e2-48d5-9195-7fcf05b459b0'
+ENV REACT_APP_SCOPE='User.Read'
+ENV REACT_APP_CONFIG_SCOPE='api://0708e202-b5ad-4d95-9735-a631c715d6a9/Read'
+
+# Feature Flags
+ENV REACT_APP_FEATURE_OFFLINE_ENABLED='false'
+ENV REACT_APP_FEATURE_MC_APP_ENABLED='true'
 
 RUN yarn build --mode=production
 
