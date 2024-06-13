@@ -5,7 +5,6 @@ import App from './App';
 import authService from './services/authService';
 import * as MSAL from '@azure/msal-browser';
 import procosysApiService from './services/procosysApi';
-import { AppConfig, getAuthConfig } from './services/appConfiguration';
 import initializeAppInsights from './services/appInsights';
 import {
     ErrorPage,
@@ -72,7 +71,7 @@ const appConfig: any = {
         clientId: process.env.REACT_APP_AUTH_CLIENT_ID,
         authority: process.env.REACT_APP_AUTH_AUTHORITY,
         configurationEndpoint: process.env.REACT_APP_AUTH_CONFIG_ENDPOINT,
-        scopes: [process.env.REACT_APP_AUTH_SCOPES],
+        scope: [process.env.REACT_APP_AUTH_SCOPE],
         configurationScope: [process.env.REACT_APP_AUTH_CONFIG_SCOPE],
     },
     appInsights: {
@@ -103,14 +102,18 @@ const initialize = async () => {
     updateOfflineStatus(offline, userPin);
     // Get auth config, setup auth client and handle login
     render(<LoadingPage loadingText={'Initializing authentication...'} />);
-    const { clientSettings, scopes, configurationScope } =
-        await getAuthConfig();
 
-    const authClient = new MSAL.PublicClientApplication(clientSettings as any);
+    const authClient = new MSAL.PublicClientApplication({
+        auth: {
+            clientId: process.env.REACT_APP_CLIENT as string,
+            authority: process.env.REACT_APP_AUTHORITY,
+            redirectUri: window.location.origin + '/mc',
+        },
+    });
 
     const authInstance = authService({
         MSAL: authClient,
-        scopes: scopes,
+        scopes: [process.env.REACT_APP_SCOPE] as any,
     });
 
     let configurationAccessToken = '';
@@ -119,9 +122,9 @@ const initialize = async () => {
         const isRedirecting = await authInstance.handleLogin();
         if (isRedirecting) return Promise.reject('redirecting');
 
-        configurationAccessToken = await authInstance.getAccessToken(
-            configurationScope as any
-        );
+        configurationAccessToken = await authInstance.getAccessToken([
+            process.env.REACT_APP_CONFIG_SCOPE,
+        ] as any);
     }
 
     render(<LoadingPage loadingText={'Initializing access token...'} />);

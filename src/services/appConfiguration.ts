@@ -41,24 +41,3 @@ export type AppConfig = {
     ocrFunctionEndpoint: string;
     ipoApi: ProcosysApiSettings;
 };
-
-export const getAuthConfig = async () => {
-    // Todo: TypeGuard authsettings
-    const clientSettings = {
-        auth: {
-            clientId: process.env.REACT_APP_CLIENT,
-            authority: process.env.REACT_APP_AUTHORITY,
-            redirectUri: window.location.origin + '/mc',
-        },
-    };
-    const scopes = ['User.Read'];
-    const configurationScope = [process.env.REACT_APP_CONFIG_SCOPE];
-    const configurationEndpoint = process.env.REACT_APP_CONFIG_ENDPOINT;
-
-    return {
-        clientSettings,
-        scopes,
-        configurationScope,
-        configurationEndpoint,
-    };
-};

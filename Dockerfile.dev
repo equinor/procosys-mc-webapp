@@ -6,7 +6,6 @@ RUN yarn install
 
 ENV REACT_APP_BASE_URL_MAIN='https://pcs-main-api-dev-pr.azurewebsites.net/api'
 ENV REACT_APP_BASE_URL_COMP='https://backend-procosys-completion-api-dev.radix.equinor.com'
-ENV REACT_APP_CONFIG_ENDPOINT='https://pcs-config-non-prod-func.azurewebsites.net/api/MCWebApp/Configuration?'
 ENV REACT_APP_COMP_SCOPE='api://e8c158a9-a200-4897-9d5f-660e377bddc1/ReadWrite'
 ENV REACT_APP_API_VERSION="&api-version=4.1"
 
@@ -15,7 +14,6 @@ ENV REACT_APP_APP_INSIGHTS_INSTRUMENTATION_KEY='bbefe850-9964-41a5-b449-c4151911
 
 # procosysWebApi Configuration
 ENV REACT_APP_WEBAPI_BASE_URL='https://pcs-main-api-dev.azurewebsites.net/api'
-ENV REACT_APP_WEBAPI_API_VERSION='&api-version=4.1'
 ENV REACT_APP_WEBAPI_SCOPE='api://dd38f169-bccf-4d0e-a4ad-d830893cfa75/web_api'
 
 # OCR Function Endpoint
