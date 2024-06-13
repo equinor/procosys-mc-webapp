@@ -30,11 +30,8 @@ import {
 import hasConnectionToServer from './utils/hasConnectionToServer';
 import ConfirmSync from './ConfirmSync';
 import { db } from './offline/db';
-import { c } from 'msw/lib/glossary-de6278a9';
-import { combine } from 'generic-type-guard';
 import completionApiService from './services/completionApi';
 import baseIPOApiService from './services/baseIPOApi';
-import axios from 'axios';
 
 const onUpdate = (registration: ServiceWorkerRegistration): void => {
     localStorage.setItem(LocalStorage.SW_UPDATE, 'true');

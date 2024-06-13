@@ -16,7 +16,7 @@ import { OfflineStatus } from '../../typings/enums';
 import { LibrayTypes } from '../../services/apiTypesCompletionApi';
 import Axios, { AxiosError } from 'axios';
 import PlantContext from '../../contexts/PlantContext';
-import { hasErrors, renderErrors } from 'utils/renderErrors';
+import { hasErrors, renderErrors } from '../../utils/renderErrors';
 
 const newPunchInitialValues = {
     category: '',
