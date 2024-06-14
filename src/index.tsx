@@ -32,6 +32,7 @@ import ConfirmSync from './ConfirmSync';
 import { db } from './offline/db';
 import completionApiService from './services/completionApi';
 import baseIPOApiService from './services/baseIPOApi';
+import { appConfig, featureFlags } from './services/appConfiguration';
 
 const onUpdate = (registration: ServiceWorkerRegistration): void => {
     localStorage.setItem(LocalStorage.SW_UPDATE, 'true');
@@ -48,37 +49,6 @@ const render = (content: JSX.Element): void => {
             {content}
         </React.StrictMode>
     );
-};
-
-const appConfig: any = {
-    procosysWebApi: {
-        baseUrl: process.env.REACT_APP_WEBAPI_BASE_URL,
-        apiVersion: process.env.REACT_APP_WEBAPI_API_VERSION,
-        scope: [process.env.REACT_APP_WEBAPI_SCOPE],
-    },
-    ocrFunctionEndpoint: process.env.REACT_APP_OCR_FUNCTION_ENDPOINT,
-    ipoApi: {
-        baseUrl: process.env.REACT_APP_IPO_API_BASE_URL,
-        apiVersion: process.env.REACT_APP_API_VERSION,
-        scope: [process.env.REACT_APP_IPO_API_SCOPE],
-    },
-    auth: {
-        clientId: process.env.REACT_APP_AUTH_CLIENT_ID,
-        authority: process.env.REACT_APP_AUTH_AUTHORITY,
-        configurationEndpoint: process.env.REACT_APP_AUTH_CONFIG_ENDPOINT,
-        scope: [process.env.REACT_APP_AUTH_SCOPE],
-        configurationScope: [process.env.REACT_APP_AUTH_CONFIG_SCOPE],
-    },
-    appInsights: {
-        instrumentationKey:
-            process.env.REACT_APP_APP_INSIGHTS_INSTRUMENTATION_KEY,
-    },
-};
-
-const featureFlags = {
-    offlineFunctionalityIsEnabled:
-        process.env.REACT_APP_FEATURE_OFFLINE_ENABLED === 'true',
-    mcAppIsEnabled: process.env.REACT_APP_FEATURE_MC_APP_ENABLED === 'true',
 };
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
