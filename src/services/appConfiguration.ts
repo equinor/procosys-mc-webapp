@@ -42,73 +42,33 @@ export type AppConfig = {
     ipoApi: ProcosysApiSettings;
 };
 
-type AppConfigResponse = {
-    configuration: AppConfig;
-    featureFlags: FeatureFlags;
+export const appConfig: any = {
+    procosysWebApi: {
+        baseUrl: process.env.REACT_APP_WEBAPI_BASE_URL,
+        apiVersion: process.env.REACT_APP_WEBAPI_API_VERSION,
+        scope: [process.env.REACT_APP_WEBAPI_SCOPE],
+    },
+    ocrFunctionEndpoint: process.env.REACT_APP_OCR_FUNCTION_ENDPOINT,
+    ipoApi: {
+        baseUrl: process.env.REACT_APP_IPO_API_BASE_URL,
+        apiVersion: process.env.REACT_APP_API_VERSION,
+        scope: [process.env.REACT_APP_IPO_API_SCOPE],
+    },
+    auth: {
+        clientId: process.env.REACT_APP_AUTH_CLIENT_ID,
+        authority: process.env.REACT_APP_AUTH_AUTHORITY,
+        configurationEndpoint: process.env.REACT_APP_AUTH_CONFIG_ENDPOINT,
+        scope: [process.env.REACT_APP_AUTH_SCOPE],
+        configurationScope: [process.env.REACT_APP_AUTH_CONFIG_SCOPE],
+    },
+    appInsights: {
+        instrumentationKey:
+            process.env.REACT_APP_APP_INSIGHTS_INSTRUMENTATION_KEY,
+    },
 };
 
-/**
- * Fetch auth config
- * @param callbackFunc  This function is used to create offline scope
- */
-export const fetchAuthConfig = async (
-    entity?: IEntity
-): Promise<AuthConfigResponse> => {
-    const data = await handleFetchGet(Settings.authSettingsEndpoint);
-    const authConfigResp: AuthConfigResponse = await data.json();
-    if (entity) {
-        entity.responseObj = authConfigResp;
-        entity.apipath = removeBaseUrlFromUrl(Settings.authSettingsEndpoint);
-    }
-    return authConfigResp;
-};
-
-export const getAuthConfig = async () => {
-    // Todo: TypeGuard authsettings
-    const clientSettings = {
-        auth: {
-            clientId: process.env.REACT_APP_CLIENT,
-            authority: process.env.REACT_APP_AUTHORITY,
-            redirectUri: window.location.origin + '/mc',
-        },
-    };
-    const scopes = ['User.Read'];
-    const configurationScope = [process.env.REACT_APP_CONFIG_SCOPE];
-    const configurationEndpoint = process.env.REACT_APP_CONFIG_ENDPOINT;
-
-    return {
-        clientSettings,
-        scopes,
-        configurationScope,
-        configurationEndpoint,
-    };
-};
-
-export const fetchAppConfig = async (
-    endpoint: string,
-    accessToken: string,
-    entity?: IEntity
-): Promise<AppConfigResponse> => {
-    const data = await handleFetchGet(endpoint, {
-        method: 'GET',
-        headers: {
-            Authorization: 'Bearer ' + accessToken,
-        },
-    });
-    const resp = await data.json();
-
-    if (entity) {
-        entity.responseObj = resp;
-        entity.apipath = removeBaseUrlFromUrl(endpoint);
-    }
-
-    return resp;
-};
-
-export const getAppConfig = async (endpoint: string, accessToken: string) => {
-    const appConfigResponse = await fetchAppConfig(endpoint, accessToken);
-
-    const appConfig: AppConfig = appConfigResponse.configuration;
-    const featureFlags: FeatureFlags = appConfigResponse.featureFlags;
-    return { appConfig, featureFlags };
+export const featureFlags = {
+    offlineFunctionalityIsEnabled:
+        process.env.REACT_APP_FEATURE_OFFLINE_ENABLED === 'true',
+    mcAppIsEnabled: process.env.REACT_APP_FEATURE_MC_APP_ENABLED === 'true',
 };

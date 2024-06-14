@@ -5,7 +5,6 @@ import App from './App';
 import authService from './services/authService';
 import * as MSAL from '@azure/msal-browser';
 import procosysApiService from './services/procosysApi';
-import { getAppConfig, getAuthConfig } from './services/appConfiguration';
 import initializeAppInsights from './services/appInsights';
 import {
     ErrorPage,
@@ -31,11 +30,9 @@ import {
 import hasConnectionToServer from './utils/hasConnectionToServer';
 import ConfirmSync from './ConfirmSync';
 import { db } from './offline/db';
-import { c } from 'msw/lib/glossary-de6278a9';
-import { combine } from 'generic-type-guard';
 import completionApiService from './services/completionApi';
 import baseIPOApiService from './services/baseIPOApi';
-import axios from 'axios';
+import { appConfig, featureFlags } from './services/appConfiguration';
 
 const onUpdate = (registration: ServiceWorkerRegistration): void => {
     localStorage.setItem(LocalStorage.SW_UPDATE, 'true');
@@ -47,12 +44,10 @@ const container = document.getElementById('root');
 const root = createRoot(container!);
 const render = (content: JSX.Element): void => {
     root.render(
-        //<React.StrictMode>
-        <>
+        <React.StrictMode>
             <GlobalStyles />
             {content}
-        </>
-        // </React.StrictMode>
+        </React.StrictMode>
     );
 };
 
@@ -72,18 +67,18 @@ const initialize = async () => {
     updateOfflineStatus(offline, userPin);
     // Get auth config, setup auth client and handle login
     render(<LoadingPage loadingText={'Initializing authentication...'} />);
-    const {
-        clientSettings,
-        scopes,
-        configurationScope,
-        configurationEndpoint,
-    } = await getAuthConfig();
 
-    const authClient = new MSAL.PublicClientApplication(clientSettings as any);
+    const authClient = new MSAL.PublicClientApplication({
+        auth: {
+            clientId: process.env.REACT_APP_CLIENT as string,
+            authority: process.env.REACT_APP_AUTHORITY,
+            redirectUri: window.location.origin + '/mc',
+        },
+    });
 
     const authInstance = authService({
         MSAL: authClient,
-        scopes: scopes,
+        scopes: [process.env.REACT_APP_SCOPE] as string[],
     });
 
     let configurationAccessToken = '';
@@ -92,17 +87,10 @@ const initialize = async () => {
         const isRedirecting = await authInstance.handleLogin();
         if (isRedirecting) return Promise.reject('redirecting');
 
-        configurationAccessToken = await authInstance.getAccessToken(
-            configurationScope as any
-        );
+        configurationAccessToken = await authInstance.getAccessToken([
+            process.env.REACT_APP_CONFIG_SCOPE,
+        ] as string[]);
     }
-
-    // Get config from App Configuration
-    render(<LoadingPage loadingText={'Initializing app config...'} />);
-    const { appConfig, featureFlags } = await getAppConfig(
-        configurationEndpoint as any,
-        configurationAccessToken
-    );
 
     render(<LoadingPage loadingText={'Initializing access token...'} />);
     let accessToken = '';
@@ -110,10 +98,10 @@ const initialize = async () => {
 
     if (offline != OfflineStatus.OFFLINE) {
         accessToken = await authInstance.getAccessToken([
-            process.env.REACT_APP_WEBAPI_SCOPE as any,
+            process.env.REACT_APP_WEBAPI_SCOPE as string,
         ]);
         accessTokenCompletionApi = await authInstance.getAccessToken([
-            process.env.REACT_APP_COMP_SCOPE as any,
+            process.env.REACT_APP_COMP_SCOPE as string,
         ]);
     }
 
@@ -138,19 +126,19 @@ const initialize = async () => {
     render(<LoadingPage loadingText={'Initializing IPO access token...'} />);
     let accessTokenIPO = '';
     if (offline != OfflineStatus.OFFLINE) {
-        accessTokenIPO = await authInstance.getAccessToken(
-            appConfig.ipoApi.scope
-        );
+        accessTokenIPO = await authInstance.getAccessToken([
+            process.env.REACT_APP_IPO_API_SCOPE,
+        ] as string[]);
     }
     const procosysIPOApiInstance = procosysIPOApiService(
         {
-            baseURL: appConfig.ipoApi.baseUrl,
+            baseURL: process.env.REACT_APP_IPO_API_BASE_URL as string,
         },
         accessTokenIPO
     );
 
     const { appInsightsReactPlugin } = initializeAppInsights(
-        appConfig.appInsights.instrumentationKey
+        process.env.REACT_APP_APP_INSIGHTS_INSTRUMENTATION_KEY as string
     );
     console.log('Initializing done.');
 
