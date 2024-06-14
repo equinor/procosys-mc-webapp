@@ -192,6 +192,12 @@ const SideMenu = ({ isOffline = false }: SideMenuProps): JSX.Element => {
                     <p>
                         Versions <br />
                         MC App: {packageJson.version} <br />
+                        MC Webapp components:{' '}
+                        {
+                            packageJson.dependencies[
+                                '@equinor/procosys-webapp-components'
+                            ]
+                        }
                     </p>
                     {localStorage.getItem(LocalStorage.SW_UPDATE) == 'true' ? (
                         <Button onClick={updateServiceWorker}>
