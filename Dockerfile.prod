@@ -4,16 +4,35 @@ WORKDIR /app
 COPY . /app
 RUN yarn install
 
-ENV CLIENT='fb57fb35-f927-4271-9976-342070cb9f54'
-ENV AUTHORITY='https://login.microsoftonline.com/3aa4a235-b6e2-48d5-9195-7fcf05b459b0'
-ENV CONFIG_SCOPE='api://0708e202-b5ad-4d95-9735-a631c715d6a9/Read'
-ENV BASE_URL_MAIN='https://pcs-main-api-dev-pr.azurewebsites.net/api'
-ENV BASE_URL_COMP='https://backend-procosys-completion-api-dev.radix.equinor.com'
-ENV CONFIG_ENDPOINT='https://pcs-config-non-prod-func.azurewebsites.net/api/CommWebApp/Configuration?'
-ENV WEBAPI_SCOPE='api://47641c40-0135-459b-8ab4-459e68dc8d08/web_api'
-ENV COMP_SCOPE='api://e8c158a9-a200-4897-9d5f-660e377bddc1/ReadWrite'
-ENV APP_INSIGHTS='cf22f65-a717-421f-935d-4853dbcbe8e5'
-ENV API_VERSION="&api-version=4.1"
+ENV REACT_APP_BASE_URL_MAIN='https://pcs-main-prod.azurewebsites.net/api'
+ENV REACT_APP_BASE_URL_COMP='https://backend-procosys-completion-api.radix.equinor.com'
+ENV REACT_APP_COMP_SCOPE='api://dee65816-6e0b-4816-bafe-ebd7179d5933/ReadWrite'
+ENV REACT_APP_API_VERSION="&api-version=4.1"
+
+# Application Insights Configuration
+ENV REACT_APP_APP_INSIGHTS_INSTRUMENTATION_KEY='17f706a6-641d-40ee-bb69-97732dbec879'
+
+# procosysWebApi Configuration
+ENV REACT_APP_WEBAPI_BASE_URL='https://pcs-main-api-dev.azurewebsites.net/api'
+ENV REACT_APP_WEBAPI_SCOPE='api://47641c40-0135-459b-8ab4-459e68dc8d08/web_api'
+
+# OCR Function Endpoint
+ENV REACT_APP_OCR_FUNCTION_ENDPOINT='https://pcs-mc-webapp-non-prod-funcs.azurewebsites.net/api/pcs_ocr?'
+
+# IPO API Configuration
+ENV REACT_APP_IPO_API_BASE_URL='https://backend-procosys-ipo-api-prod.radix.equinor.com'
+ENV REACT_APP_IPO_API_SCOPE='api://b3399356-b2b6-44d4-a7b6-323eefc8a173/ReadWrite'
+
+# Auth Configuration
+ENV REACT_APP_CLIENT='437b9c0c-fe8f-4388-ab9e-ca2d5b53530e'
+ENV REACT_APP_AUTHORITY='https://login.microsoftonline.com/3aa4a235-b6e2-48d5-9195-7fcf05b459b0'
+ENV REACT_APP_SCOPE='User.Read'
+ENV REACT_APP_CONFIG_SCOPE='api://756f2a23-f54d-4643-bb49-62c0db4802ae/Read'
+
+# Feature Flags
+ENV REACT_APP_FEATURE_OFFLINE_ENABLED='false'
+ENV REACT_APP_FEATURE_MC_APP_ENABLED='true'
+
 
 RUN yarn build --mode=production
 

@@ -7,7 +7,6 @@ import {
 import { ProcosysApiService } from '../services/procosysApi';
 import { EntityType } from '../typings/enums';
 import { OfflineContentRepository } from './OfflineContentRepository';
-import { fetchAppConfig, fetchAuthConfig } from '../services/appConfiguration';
 import {
     ChecklistResponse,
     IEntity,
@@ -137,7 +136,6 @@ const buildOfflineScope = async (
             );
             addEntityToMap(punchAttachmentEntity);
         }
-        console.log('Nå har jeg gjort fetch punch');
     };
 
     /**
@@ -251,16 +249,10 @@ const buildOfflineScope = async (
 
     //auth config
     const authConfigEntity = createEntityObj(EntityType.AuthConfig);
-    const authConfig = await fetchAuthConfig(authConfigEntity);
     addEntityToMap(authConfigEntity);
 
     //App config
     const appConfigEntity = createEntityObj(EntityType.AppConfig);
-    await fetchAppConfig(
-        authConfig.configurationEndpoint,
-        configurationAccessToken,
-        appConfigEntity
-    );
     addEntityToMap(appConfigEntity);
 
     //Bookmarks
