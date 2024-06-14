@@ -14,8 +14,9 @@ import AsyncPage from '../../components/AsyncPage';
 import usePersonsSearchFacade from '../../utils/usePersonsSearchFacade';
 import { OfflineStatus } from '../../typings/enums';
 import { LibrayTypes } from '../../services/apiTypesCompletionApi';
-import Axios from 'axios';
+import Axios, { AxiosError } from 'axios';
 import PlantContext from '../../contexts/PlantContext';
+import { hasErrors, renderErrors } from 'utils/renderErrors';
 
 const newPunchInitialValues = {
     category: '',
@@ -165,14 +166,19 @@ const NewPunchWrapper = (): JSX.Element => {
             actionByPersonOid: chosenPerson.id ? `${chosenPerson.id}` : '',
         };
         setSubmitPunchStatus(AsyncStatus.LOADING);
-        try {
-            await completionApi.postNewPunch(params.plant, NewPunchDTO);
-            setSubmitPunchStatus(AsyncStatus.SUCCESS);
-        } catch (error) {
-            const pcsError = error as Error;
-            setSnackbarText(pcsError.toString() || 'An error occurred');
-            setSubmitPunchStatus(AsyncStatus.ERROR);
-        }
+        await completionApi
+            .postNewPunch(params.plant, NewPunchDTO)
+            .then(() => {
+                setSnackbarText('Punch created successfully');
+                setSubmitPunchStatus(AsyncStatus.SUCCESS);
+            })
+            .catch((error: AxiosError) => {
+                setSnackbarText(
+                    hasErrors(error)
+                        ? renderErrors(error)
+                        : 'Something went wrong while creating punch'
+                );
+            });
     };
 
     return (
