@@ -1526,10 +1526,10 @@
     babel-jest "^29.1.2"
     react-popper "2.3.0"
 
-"@equinor/procosys-webapp-components@5.0.2":
-  version "5.0.2"
-  resolved "https://registry.yarnpkg.com/@equinor/procosys-webapp-components/-/procosys-webapp-components-5.0.2.tgz#891dcb09dfdde22728cf89cd77705e3198a6d5cc"
-  integrity sha512-QJtBH9ipJ03cv2qgPBw1Y/+UPU+HGUhGs/ZegVYOYV/4ur22qTnTxkaE9SkjYW2lDjm6nxbTwKxtNLRYrpCDWw==
+"@equinor/procosys-webapp-components@5.0.5":
+  version "5.0.5"
+  resolved "https://registry.yarnpkg.com/@equinor/procosys-webapp-components/-/procosys-webapp-components-5.0.5.tgz#159ea71e6225917b85cdf50015d2abd2cb018cf0"
+  integrity sha512-xyBj9hT2MsOhbsX9j5HWmqSEyt+Bz08dWaKzjYNW2OEngoWVNNPNyc1aeSW/8yL0UB13/esAyTbmsT5B8k1wBA==
 
 "@eslint-community/eslint-utils@^4.2.0":
   version "4.4.0"
