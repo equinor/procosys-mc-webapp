@@ -250,24 +250,6 @@ const completionApiService = ({ axios }: CompletionApiServiceProps) => {
         return data;
     };
 
-    const changeCategory = async (
-        punchGuid: string,
-        category: string,
-        rowVersion: string
-    ) => {
-        const { data } = await axios.patch(
-            `PunchItems/${punchGuid}/updateCategory`,
-            {
-                category,
-                rowVersion,
-            },
-            {
-                ...headers,
-            }
-        );
-        return data;
-    };
-
     const postNewPunch = async (
         plantId: string,
         newPunchData: NewPunch
@@ -310,7 +292,6 @@ const completionApiService = ({ axios }: CompletionApiServiceProps) => {
         getLibraryItems,
         postPunchAttachment,
         postPunchComment,
-        changeCategory,
         postNewPunch,
         deletePunchAttachment,
     };
