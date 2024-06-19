@@ -1469,10 +1469,10 @@
     "@babel/runtime" "^7.23.8"
     "@equinor/eds-tokens" "0.9.2"
 
-"@equinor/procosys-webapp-components@^6.1.0":
-  version "6.1.0"
-  resolved "https://registry.yarnpkg.com/@equinor/procosys-webapp-components/-/procosys-webapp-components-6.1.0.tgz#3294786158d0d030e6ab67f31efb51aeda961c25"
-  integrity sha512-tDVDi4PzDPPRgA40Wr5U7uZh0yASwSBpDqXndlC0GWrvDnU2UO+lIl9vaC/rPoKdDLCEByko69yiml8xJevMUw==
+"@equinor/procosys-webapp-components@^6.1.1":
+  version "6.1.1"
+  resolved "https://registry.yarnpkg.com/@equinor/procosys-webapp-components/-/procosys-webapp-components-6.1.1.tgz#eaad39cdaf7efd661c51413dd70f3d695445d59e"
+  integrity sha512-OiO3NRIeOUxmB7cZb/xN9cUXGDIwbjQz4YATF2Jm8kn0VfmjEl6L/7PLm5t3q2GflFJ48csWW5nLw20CrEwXog==
 
 "@eslint-community/eslint-utils@^4.2.0":
   version "4.4.0"
