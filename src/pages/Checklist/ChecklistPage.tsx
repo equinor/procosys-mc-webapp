@@ -52,14 +52,15 @@ const ChecklistPage = (): JSX.Element => {
     const isOnNewPunchPage = history.location.pathname.includes('/new-punch');
     const isOnPunchListPage = history.location.pathname.includes('/punch-list');
     const isOnTagInfoPage = history.location.pathname.includes('/tag-info');
-    const goBackToPunchListPage = removeSubdirectories(
-        history.location.pathname
-    );
-    const goBackToEntityPage = removeSubdirectories(url, 2);
     const { snackbar, setSnackbarText } = useSnackbar();
     const source = Axios.CancelToken.source();
     const searchParams = new URLSearchParams(window.location.search);
     const checkListGuid = searchParams.get('checkListGuid');
+
+    const goBackToPunchListPage = removeSubdirectories(
+        history.location.pathname
+    );
+    const goBackToEntityPage = removeSubdirectories(url, 2);
 
     const getCheckList = useCallback(async () => {
         try {
@@ -116,8 +117,10 @@ const ChecklistPage = (): JSX.Element => {
                     <BackButton
                         to={
                             isOnNewPunchPage
-                                ? goBackToPunchListPage
-                                : goBackToEntityPage
+                                ? goBackToPunchListPage +
+                                  `?checkListGuid=${checkListGuid}`
+                                : goBackToEntityPage +
+                                  `?checkListGuid=${checkListGuid}`
                         }
                     />
                 }
