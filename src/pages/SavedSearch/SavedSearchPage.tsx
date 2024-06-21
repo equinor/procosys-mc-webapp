@@ -205,7 +205,7 @@ const SavedSearchPage = (): JSX.Element => {
                             tag={punch.tagNo}
                             onClick={(): void =>
                                 history.push(
-                                    `${url}/punch-item/${punch.proCoSysGuid}`
+                                    `${url}/punch-item/${punch.proCoSysGuid}?tagId=${punch.tagId}`
                                 )
                             }
                         />
