@@ -1,73 +1,58 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-import { McAppContextProvider } from './contexts/McAppContext';
-import GeneralRouter from './GeneralRouter';
-import ErrorBoundary from './components/error/ErrorBoundary';
-import { IAuthService } from './services/authService';
-import { ProcosysApiService } from './services/procosysApi';
-import {
-    AppInsightsContext,
-    ReactPlugin,
-} from '@microsoft/applicationinsights-react-js';
-import { AppConfig, FeatureFlags } from './services/appConfiguration';
-import { SavedSearchType } from './typings/enums';
-import { ProcosysIPOApiService } from './services/procosysIPOApi';
-import { SearchType } from '@equinor/procosys-webapp-components';
+import { Button, Typography } from '@equinor/eds-core-react';
+import styled from 'styled-components';
 
-export type McParams = {
-    plant: string;
-    project: string;
-    checklistId: string;
-    punchItemId: string;
-    searchType: SearchType;
-    entityId: string;
-    savedSearchType: SavedSearchType;
-    savedSearchId: string;
-};
+const LandingPageWrapper = styled.main`
+    width: 100vw;
+    & h4 {
+        margin-top: 0;
+        margin-bottom: 12px;
+    }
+`;
+const AppSection = styled.section`
+    height: 50vh;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+`;
+const CommAppSection = styled(AppSection)`
+    background-color: #ffecf0;
+`;
 
-type AppProps = {
-    authInstance: IAuthService;
-    procosysApiInstance: ProcosysApiService;
-    appInsightsReactPlugin: ReactPlugin;
-    appConfig: AppConfig;
-    featureFlags: FeatureFlags;
-    configurationAccessToken: string;
-    procosysIPOApiInstance: ProcosysIPOApiService;
-};
-
-const App = ({
-    procosysApiInstance,
-    authInstance,
-    appConfig,
-    appInsightsReactPlugin: reactPlugin,
-    featureFlags,
-    configurationAccessToken,
-    procosysIPOApiInstance,
-}: AppProps): JSX.Element => {
+function App() {
     return (
-        <AppInsightsContext.Provider value={reactPlugin}>
-            <McAppContextProvider
-                api={procosysApiInstance}
-                auth={authInstance}
-                appConfig={appConfig}
-                featureFlags={featureFlags}
-                configurationAccessToken={configurationAccessToken}
-                ipoApi={procosysIPOApiInstance}
-            >
-                <Router basename={'/mc'}>
-                    <ErrorBoundary>
-                        <Switch>
-                            <Route
-                                path="/:plant?/:project?"
-                                component={GeneralRouter}
-                            />
-                            <Route render={(): JSX.Element => <h1>404</h1>} />
-                        </Switch>
-                    </ErrorBoundary>
-                </Router>
-            </McAppContextProvider>
-        </AppInsightsContext.Provider>
+        <LandingPageWrapper>
+            <CommAppSection>
+                <div
+                    style={{
+                        display: 'flex',
+                        textAlign: 'center',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        padding: 36,
+                        backgroundColor: 'white',
+                        borderRadius: '10px',
+                    }}
+                >
+                    <Typography variant={'h4'}>
+                        This domain has been retired, click on the button below
+                        to be redirected to the new page
+                    </Typography>
+                    <Typography variant={'h4'}>
+                        If you have this page as a favorite, please change it to
+                        the new URL
+                    </Typography>
+                    <a href={'https://apps.procosys.equinor.com'}>
+                        <Button color={'danger'}>
+                            Go to apps.procosys.equinor.com
+                        </Button>
+                    </a>
+                </div>
+            </CommAppSection>
+        </LandingPageWrapper>
     );
-};
+}
 
 export default App;
