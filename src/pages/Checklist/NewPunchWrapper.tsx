@@ -85,7 +85,7 @@ const NewPunchWrapper = (): JSX.Element => {
             setOrganizations(types.get('COMPLETION_ORGANIZATION'));
             setTypes(types.get('PUNCHLIST_TYPE'));
             setSortings(types.get('PUNCHLIST_SORTING'));
-            setPriorities(types.get('PUNCHLIST_PRIORITY'));
+            setPriorities(types.get('COMM_PRIORITY'));
         }
         if (isArrayOfType<PunchCategory>(categoriesFromApi, 'id')) {
             setCategories(categoriesFromApi);
@@ -95,9 +95,6 @@ const NewPunchWrapper = (): JSX.Element => {
 
     useEffect(() => {
         getLibraryTypes();
-        return (): void => {
-            source.cancel();
-        };
     }, [params.plant, api]);
 
     const removeNewPunchSegment = (url: string) => {
