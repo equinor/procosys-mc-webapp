@@ -90,6 +90,7 @@ const SelectPlant = (): JSX.Element => {
                     />
                 }
                 isOffline={offlineState == OfflineStatus.OFFLINE}
+                testColor
             />
             <SelectPlantWrapper>{content()}</SelectPlantWrapper>
         </>
