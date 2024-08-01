@@ -145,7 +145,7 @@ const ChecklistPage = (): JSX.Element => {
                     )
                 }
                 isOffline={offlineState == OfflineStatus.OFFLINE}
-                testColor
+                testColor={true}
             />
             <ChecklistDetailsCard
                 fetchDetailsStatus={fetchDetailsStatus}

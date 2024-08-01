@@ -33,7 +33,7 @@ const ConfirmSync = ({ setIsSure }: ConfirmSyncProps): JSX.Element => {
             <Navbar
                 leftContent={<ProcosysButton />}
                 isOffline={true}
-                testColor
+                testColor={true}
             />
             <ContentWrapper>
                 <h3>

@@ -62,7 +62,7 @@ const OfflinePin = ({ setUserPin }: OfflinePinProps): JSX.Element => {
             <Navbar
                 leftContent={<ProcosysButton />}
                 isOffline={true}
-                testColor
+                testColor={true}
             />
             <ContentWrapper>
                 <h3>Input your offline pin</h3>

@@ -134,7 +134,7 @@ const PunchPage = (): JSX.Element => {
                 }
                 midContent="Punch Item"
                 isOffline={offlineState == OfflineStatus.OFFLINE}
-                testColor
+                testColor={true}
             />
             {determineDetailsCard()}
             <AsyncPage

@@ -136,7 +136,7 @@ export const PlantContextProvider: React.FC<{ children: ReactNode }> = ({
                     <Navbar
                         leftContent={<ProcosysButton />}
                         isOffline={offlineState == OfflineStatus.OFFLINE}
-                        testColor
+                        testColor={true}
                     />
                     <ErrorPage
                         title={'Unable to obtain permissions.'}
