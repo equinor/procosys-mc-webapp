@@ -79,6 +79,7 @@ const SearchPage = (): JSX.Element => {
                         />
                     }
                     isOffline={offlineState == OfflineStatus.OFFLINE}
+                    testColor
                 />
                 <ContentWrapper>
                     <Switch>
