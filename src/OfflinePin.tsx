@@ -34,7 +34,7 @@ const OfflinePin = ({ setUserPin }: OfflinePinProps): JSX.Element => {
             return;
         }
 
-        //Not able to initialize database. Probably wrong pin.
+        //Not able to initialize database. Probably wrong pin
         const loginTries = localStorage.getItem(LocalStorage.LOGIN_TRIES);
         if (loginTries == null) {
             localStorage.setItem(LocalStorage.LOGIN_TRIES, '1');
