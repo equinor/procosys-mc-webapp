@@ -248,7 +248,7 @@ const procosysApiService = (
     };
 
     /**
-     * Generic method for doing a PUT call.
+     * Generic method for doing a PUT call
      */
     const putByFetch = async (
         url: string,
