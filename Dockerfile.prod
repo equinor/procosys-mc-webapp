@@ -4,7 +4,7 @@ WORKDIR /app
 COPY . /app
 RUN yarn install
 
-ENV REACT_APP_BASE_URL_MAIN='https://pcs-main-prod.azurewebsites.net/api'
+ENV REACT_APP_BASE_URL_MAIN='https://pcs-main-api-prod.azurewebsites.net/api'
 ENV REACT_APP_BASE_URL_COMP='https://backend-procosys-completion-api.radix.equinor.com'
 ENV REACT_APP_COMP_SCOPE='api://dee65816-6e0b-4816-bafe-ebd7179d5933/ReadWrite'
 ENV REACT_APP_API_VERSION="&api-version=4.1"
