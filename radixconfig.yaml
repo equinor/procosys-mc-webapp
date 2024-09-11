@@ -22,13 +22,7 @@ spec:
     environmentConfig:
     - environment: dev
       dockerfileName: Dockerfile.dev
-      variables:
-        pcs_authSettingsEndpoint: 'https://pcs-config-non-prod-func.azurewebsites.net/api/MCWebApp/Auth'
     - environment: test
       dockerfileName: Dockerfile.test
-      variables:
-        pcs_authSettingsEndpoint: 'https://pcs-config-non-prod-func.azurewebsites.net/api/MCWebApp/Auth'
     - environment: prod
       dockerfileName: Dockerfile.prod
-      variables:
-        pcs_authSettingsEndpoint: 'https://pcs-config-non-prod-func.azurewebsites.net/api/MCWebApp/Auth'

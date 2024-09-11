@@ -22,7 +22,6 @@ import {
     PunchPreview,
     PunchSort,
 } from './apiTypes';
-import { R } from 'msw/lib/glossary-de6278a9';
 import { Attachment, PunchItem } from './apiTypesCompletionApi';
 import { PunchType } from './apiTypes';
 import { handleFetchUpdate } from '../offline/handleFetchEvents';

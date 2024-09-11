@@ -20,7 +20,6 @@ import { AsyncStatus } from '@equinor/procosys-webapp-components';
 import completionApiService, {
     CompletionApiService,
 } from '../services/completionApi';
-import { c } from 'msw/lib/glossary-de6278a9';
 import axios, { AxiosInstance } from 'axios';
 
 const client = new Msal.PublicClientApplication({
@@ -28,11 +27,6 @@ const client = new Msal.PublicClientApplication({
 });
 
 const dummyAppConfig: AppConfig = {
-    procosysWebApi: {
-        baseUrl: 'https://test-url.com',
-        scope: ['testScope'],
-        apiVersion: '&dummy-version',
-    },
     appInsights: {
         instrumentationKey: '',
     },
@@ -67,8 +61,6 @@ const axiosInstance: AxiosInstance = axios.create({
 
 const completionApiInstance = completionApiService({ axios: axiosInstance });
 
-const dummyConfigurationAccessToken = 'dummytoken';
-
 const ipoApiInstance = procosysIPOApiService(
     {
         baseURL: baseURL,
@@ -87,7 +79,6 @@ type WithMcAppContextProps = {
     ipoApi?: ProcosysIPOApiService;
     offlineState?: OfflineStatus;
     setOfflineState: React.Dispatch<React.SetStateAction<OfflineStatus>>;
-    configurationAccessToken: string;
 };
 
 export const withMcAppContext = ({
@@ -101,7 +92,6 @@ export const withMcAppContext = ({
     ipoApi = ipoApiInstance,
     offlineState = OfflineStatus.ONLINE,
     setOfflineState,
-    configurationAccessToken,
 }: WithMcAppContextProps): JSX.Element => {
     return (
         <MemoryRouter initialEntries={['/test/sub/directory']}>
@@ -118,7 +108,6 @@ export const withMcAppContext = ({
                     featureFlags: dummyFeatureFlags,
                     offlineState: offlineState,
                     setOfflineState: setOfflineState,
-                    configurationAccessToken: configurationAccessToken,
                 }}
             >
                 {Component}
@@ -166,6 +155,5 @@ export const withPlantContext = ({
         ),
         offlineState: offlineState,
         setOfflineState: setOfflineState,
-        configurationAccessToken: dummyConfigurationAccessToken,
     });
 };

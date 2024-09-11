@@ -22,8 +22,7 @@ import axios, { Axios } from 'axios';
 const buildOfflineScope = async (
     api: ProcosysApiService,
     plantId: string,
-    projectId: number,
-    configurationAccessToken: string
+    projectId: number
 ): Promise<void> => {
     const controller = new AbortController();
     const abortSignal = controller.signal;
