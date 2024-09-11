@@ -14,7 +14,6 @@ describe('<SelectPlant />', () => {
                 asyncStatus: AsyncStatus.SUCCESS,
                 offlineState: OfflineStatus.ONLINE,
                 setOfflineState: jest.fn(),
-                configurationAccessToken: 'dummy',
             })
         );
         expect(getByText(testPlants[0].title)).toBeInTheDocument();
@@ -27,7 +26,6 @@ describe('<SelectPlant />', () => {
                 plants: [],
                 offlineState: OfflineStatus.ONLINE,
                 setOfflineState: jest.fn(),
-                configurationAccessToken: 'dummy',
             })
         );
         expect(getByText('No plants to show')).toBeInTheDocument();

@@ -24,8 +24,7 @@ const ChecklistWrapper = ({
     refreshChecklistStatus,
     setSnackbarText,
 }: ChecklistWrapperProps): JSX.Element => {
-    const { auth, params, procosysApiSettings, offlineState, api } =
-        useCommonHooks();
+    const { params, offlineState, api } = useCommonHooks();
     const { permissions } = useContext(PlantContext);
     const checklistApi: ChecklistV2Api = {
         postMultiVerify: api.postMultiVerify,

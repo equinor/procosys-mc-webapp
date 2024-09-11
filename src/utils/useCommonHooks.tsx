@@ -12,7 +12,6 @@ const useCommonHooks = () => {
         featureFlags,
         offlineState,
         setOfflineState,
-        configurationAccessToken,
         ipoApi,
         completionApi,
         completionBaseApiInstance,
@@ -32,9 +31,7 @@ const useCommonHooks = () => {
         featureFlags,
         offlineState,
         setOfflineState,
-        procosysApiSettings: appConfig.procosysWebApi,
         ipoApiSettings: appConfig.ipoApi,
-        configurationAccessToken,
         completionApi,
         completionBaseApiInstance,
     };
