@@ -156,6 +156,7 @@ const EntityPage = (): JSX.Element => {
                         : params.searchType
                 }
                 isOffline={offlineState == OfflineStatus.OFFLINE}
+                testColor={true}
             />
             <EntityPageDetailsCard
                 fetchDetailsStatus={fetchDetailsStatus}

@@ -260,6 +260,7 @@ const SavedSearchPage = (): JSX.Element => {
                     <BackButton to={`${removeSubdirectories(url, 3)}`} />
                 }
                 isOffline={offlineState == OfflineStatus.OFFLINE}
+                testColor={true}
             />
             <AsyncPage
                 errorMessage={
