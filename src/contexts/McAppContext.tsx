@@ -27,7 +27,6 @@ type McAppContextProps = {
     offlineState: OfflineStatus;
     setOfflineState: React.Dispatch<React.SetStateAction<OfflineStatus>>;
     featureFlags: FeatureFlags;
-    configurationAccessToken: string;
     ipoApi: ProcosysIPOApiService;
 };
 
@@ -39,7 +38,6 @@ type McAppContextProviderProps = {
     api: ProcosysApiService;
     appConfig: AppConfig;
     featureFlags: FeatureFlags;
-    configurationAccessToken: string;
     ipoApi: ProcosysIPOApiService;
     completionApi: CompletionApiService;
     completionBaseApiInstance: AxiosInstance;
@@ -51,7 +49,6 @@ export const McAppContextProvider: React.FC<McAppContextProviderProps> = ({
     api,
     appConfig,
     featureFlags,
-    configurationAccessToken,
     ipoApi,
     completionApi,
     completionBaseApiInstance,
@@ -113,7 +110,6 @@ export const McAppContextProvider: React.FC<McAppContextProviderProps> = ({
                 offlineState,
                 setOfflineState,
                 featureFlags,
-                configurationAccessToken,
                 ipoApi,
                 completionApi,
                 completionBaseApiInstance,

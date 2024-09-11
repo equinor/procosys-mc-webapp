@@ -13,11 +13,10 @@ ENV REACT_APP_API_VERSION="&api-version=4.1"
 ENV REACT_APP_APP_INSIGHTS_INSTRUMENTATION_KEY='17f706a6-641d-40ee-bb69-97732dbec879'
 
 # procosysWebApi Configuration
-ENV REACT_APP_WEBAPI_BASE_URL='https://pcs-main-api-dev.azurewebsites.net/api'
 ENV REACT_APP_WEBAPI_SCOPE='api://47641c40-0135-459b-8ab4-459e68dc8d08/web_api'
 
 # OCR Function Endpoint
-ENV REACT_APP_OCR_FUNCTION_ENDPOINT='https://pcs-mc-webapp-non-prod-funcs.azurewebsites.net/api/pcs_ocr?'
+ENV REACT_APP_OCR_FUNCTION_ENDPOINT='https://pcs-mc-webapp-prod-funcs.azurewebsites.net/api/pcs_ocr?'
 
 # IPO API Configuration
 ENV REACT_APP_IPO_API_BASE_URL='https://backend-procosys-ipo-api-prod.radix.equinor.com'
@@ -27,7 +26,6 @@ ENV REACT_APP_IPO_API_SCOPE='api://b3399356-b2b6-44d4-a7b6-323eefc8a173/ReadWrit
 ENV REACT_APP_CLIENT='437b9c0c-fe8f-4388-ab9e-ca2d5b53530e'
 ENV REACT_APP_AUTHORITY='https://login.microsoftonline.com/3aa4a235-b6e2-48d5-9195-7fcf05b459b0'
 ENV REACT_APP_SCOPE='User.Read'
-ENV REACT_APP_CONFIG_SCOPE='api://756f2a23-f54d-4643-bb49-62c0db4802ae/Read'
 
 # Feature Flags
 ENV REACT_APP_FEATURE_OFFLINE_ENABLED='false'

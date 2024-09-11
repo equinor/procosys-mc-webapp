@@ -37,7 +37,6 @@ type AppProps = {
     appInsightsReactPlugin: ReactPlugin;
     appConfig: AppConfig;
     featureFlags: FeatureFlags;
-    configurationAccessToken: string;
     procosysIPOApiInstance: ProcosysIPOApiService;
 };
 
@@ -47,7 +46,6 @@ const App = ({
     appConfig,
     appInsightsReactPlugin: reactPlugin,
     featureFlags,
-    configurationAccessToken,
     procosysIPOApiInstance,
     completionApiInstance,
     completionBaseApiInstance,
@@ -59,7 +57,6 @@ const App = ({
                 auth={authInstance}
                 appConfig={appConfig}
                 featureFlags={featureFlags}
-                configurationAccessToken={configurationAccessToken}
                 ipoApi={procosysIPOApiInstance}
                 completionApi={completionApiInstance}
                 completionBaseApiInstance={completionBaseApiInstance}

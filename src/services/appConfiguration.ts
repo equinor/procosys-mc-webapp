@@ -36,18 +36,12 @@ export type FeatureFlags = {
 };
 
 export type AppConfig = {
-    procosysWebApi: ProcosysApiSettings;
     appInsights: AppInsightsConfig;
     ocrFunctionEndpoint: string;
     ipoApi: ProcosysApiSettings;
 };
 
 export const appConfig: any = {
-    procosysWebApi: {
-        baseUrl: process.env.REACT_APP_WEBAPI_BASE_URL,
-        apiVersion: process.env.REACT_APP_WEBAPI_API_VERSION,
-        scope: [process.env.REACT_APP_WEBAPI_SCOPE],
-    },
     ocrFunctionEndpoint: process.env.REACT_APP_OCR_FUNCTION_ENDPOINT,
     ipoApi: {
         baseUrl: process.env.REACT_APP_IPO_API_BASE_URL,
@@ -69,6 +63,6 @@ export const appConfig: any = {
 
 export const featureFlags = {
     offlineFunctionalityIsEnabled:
-        process.env.REACT_APP_FEATURE_OFFLINE_ENABLED === 'true',
+        process.env.REACT_APP_FEATURE_OFFLINE_ENABLED === 'false',
     mcAppIsEnabled: process.env.REACT_APP_FEATURE_MC_APP_ENABLED === 'true',
 };

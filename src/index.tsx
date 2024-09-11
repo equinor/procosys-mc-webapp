@@ -81,15 +81,9 @@ const initialize = async () => {
         scopes: [process.env.REACT_APP_SCOPE] as string[],
     });
 
-    let configurationAccessToken = '';
-
     if (offline != OfflineStatus.OFFLINE) {
         const isRedirecting = await authInstance.handleLogin();
         if (isRedirecting) return Promise.reject('redirecting');
-
-        configurationAccessToken = await authInstance.getAccessToken([
-            process.env.REACT_APP_CONFIG_SCOPE,
-        ] as string[]);
     }
 
     render(<LoadingPage loadingText={'Initializing access token...'} />);
@@ -148,7 +142,6 @@ const initialize = async () => {
         appInsightsReactPlugin,
         appConfig,
         featureFlags,
-        configurationAccessToken,
         procosysIPOApiInstance,
         completionApiInstance,
         completionBaseApiInstance,
@@ -185,7 +178,6 @@ const renderApp = async (): Promise<void> => {
                 appInsightsReactPlugin,
                 appConfig,
                 featureFlags,
-                configurationAccessToken,
                 procosysIPOApiInstance,
             } = await initialize();
 
@@ -220,7 +212,6 @@ const renderApp = async (): Promise<void> => {
                     appInsightsReactPlugin={appInsightsReactPlugin}
                     appConfig={appConfig}
                     featureFlags={featureFlags}
-                    configurationAccessToken={configurationAccessToken}
                     procosysIPOApiInstance={procosysIPOApiInstance}
                     completionApiInstance={completionApiInstance}
                 />
@@ -260,7 +251,6 @@ const renderApp = async (): Promise<void> => {
                 appInsightsReactPlugin,
                 appConfig,
                 featureFlags,
-                configurationAccessToken,
                 procosysIPOApiInstance,
                 completionApiInstance,
                 completionBaseApiInstance,
@@ -315,7 +305,6 @@ const renderApp = async (): Promise<void> => {
                     appInsightsReactPlugin={appInsightsReactPlugin}
                     appConfig={appConfig}
                     featureFlags={featureFlags}
-                    configurationAccessToken={configurationAccessToken}
                     procosysIPOApiInstance={procosysIPOApiInstance}
                     completionApiInstance={completionApiInstance}
                     completionBaseApiInstance={completionBaseApiInstance}
@@ -353,7 +342,6 @@ const renderApp = async (): Promise<void> => {
             appInsightsReactPlugin,
             appConfig,
             featureFlags,
-            configurationAccessToken,
             procosysIPOApiInstance,
             completionApiInstance,
             completionBaseApiInstance,
@@ -366,7 +354,6 @@ const renderApp = async (): Promise<void> => {
                 appInsightsReactPlugin={appInsightsReactPlugin}
                 appConfig={appConfig}
                 featureFlags={featureFlags}
-                configurationAccessToken={configurationAccessToken}
                 procosysIPOApiInstance={procosysIPOApiInstance}
                 completionApiInstance={completionApiInstance}
                 completionBaseApiInstance={completionBaseApiInstance}
