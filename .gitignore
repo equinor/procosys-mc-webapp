@@ -37,4 +37,4 @@ node_modules
 /testing/**/*.js
 /testing/integration/src/**/*.js
 #Exclude
-yarn.lock
+
