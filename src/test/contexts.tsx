@@ -20,7 +20,6 @@ import { AsyncStatus } from '@equinor/procosys-webapp-components';
 import completionApiService, {
     CompletionApiService,
 } from '../services/completionApi';
-import { c } from 'msw/lib/glossary-de6278a9';
 import axios, { AxiosInstance } from 'axios';
 
 const client = new Msal.PublicClientApplication({
