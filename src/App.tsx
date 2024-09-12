@@ -38,7 +38,6 @@ type AppProps = {
     appConfig: AppConfig;
     featureFlags: FeatureFlags;
     procosysIPOApiInstance: ProcosysIPOApiService;
-    useTestColorIfOnTest: boolean;
 };
 
 const App = ({
@@ -50,7 +49,6 @@ const App = ({
     procosysIPOApiInstance,
     completionApiInstance,
     completionBaseApiInstance,
-    useTestColorIfOnTest,
 }: AppProps): JSX.Element => {
     return (
         <AppInsightsContext.Provider value={reactPlugin}>
@@ -62,7 +60,6 @@ const App = ({
                 ipoApi={procosysIPOApiInstance}
                 completionApi={completionApiInstance}
                 completionBaseApiInstance={completionBaseApiInstance}
-                useTestColorIfOnTest={useTestColorIfOnTest}
             >
                 <Router basename={'/mc'}>
                     <ErrorBoundary>

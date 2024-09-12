@@ -220,7 +220,6 @@ const renderApp = async (): Promise<void> => {
                     featureFlags={featureFlags}
                     procosysIPOApiInstance={procosysIPOApiInstance}
                     completionApiInstance={completionApiInstance}
-                    useTestColorIfOnTest={useTestColorIfOnTest}
                 />
             );
         } catch (error) {
@@ -261,7 +260,6 @@ const renderApp = async (): Promise<void> => {
                 procosysIPOApiInstance,
                 completionApiInstance,
                 completionBaseApiInstance,
-                useTestColorIfOnTest,
             } = await initialize();
 
             api = procosysApiInstance;
@@ -316,7 +314,6 @@ const renderApp = async (): Promise<void> => {
                     procosysIPOApiInstance={procosysIPOApiInstance}
                     completionApiInstance={completionApiInstance}
                     completionBaseApiInstance={completionBaseApiInstance}
-                    useTestColorIfOnTest={useTestColorIfOnTest}
                 />
             );
         } catch (error) {
@@ -367,7 +364,6 @@ const renderApp = async (): Promise<void> => {
                 procosysIPOApiInstance={procosysIPOApiInstance}
                 completionApiInstance={completionApiInstance}
                 completionBaseApiInstance={completionBaseApiInstance}
-                useTestColorIfOnTest={useTestColorIfOnTest}
             />
         );
     }
