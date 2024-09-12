@@ -5,6 +5,9 @@ import McAppContext from '../contexts/McAppContext';
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const useCommonHooks = () => {
+    const useTestColorIfOnTest = window.location.hostname.includes(
+        'frontend-procosys-mc-webapp-test'
+    );
     const {
         api,
         auth,
@@ -34,6 +37,7 @@ const useCommonHooks = () => {
         ipoApiSettings: appConfig.ipoApi,
         completionApi,
         completionBaseApiInstance,
+        useTestColorIfOnTest,
     };
 };
 

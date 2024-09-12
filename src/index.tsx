@@ -33,6 +33,7 @@ import { db } from './offline/db';
 import completionApiService from './services/completionApi';
 import baseIPOApiService from './services/baseIPOApi';
 import { appConfig, featureFlags } from './services/appConfiguration';
+import { u } from 'msw/lib/glossary-2792c6da';
 
 const onUpdate = (registration: ServiceWorkerRegistration): void => {
     localStorage.setItem(LocalStorage.SW_UPDATE, 'true');

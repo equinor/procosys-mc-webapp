@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import { db } from './offline/db';
 import { updateOfflineStatus } from './offline/OfflineStatus';
 import { LocalStorage, OfflineStatus } from './typings/enums';
+import useCommonHooks from 'utils/useCommonHooks';
 
 const ContentWrapper = styled.main`
     margin: 16px;
@@ -24,6 +25,7 @@ const OfflinePin = ({ setUserPin }: OfflinePinProps): JSX.Element => {
     const [enteredPin, setEnteredPin] = useState<string>('');
     const [failedPin, setFailedPin] = useState<boolean>(false);
     const [loginTriesLeft, setLoginTriesLeft] = useState<number>(3);
+    const { useTestColorIfOnTest } = useCommonHooks();
 
     const testUserPin = async (): Promise<void> => {
         //todo: Hvis kode her kaster exception, så må vi sørge for å vise feilmelding
@@ -62,7 +64,7 @@ const OfflinePin = ({ setUserPin }: OfflinePinProps): JSX.Element => {
             <Navbar
                 leftContent={<ProcosysButton />}
                 isOffline={true}
-                testColor={true}
+                testColor={useTestColorIfOnTest}
             />
             <ContentWrapper>
                 <h3>Input your offline pin</h3>

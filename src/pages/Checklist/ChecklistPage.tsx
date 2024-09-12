@@ -36,7 +36,15 @@ export const NavButton = styled(Button)`
 `;
 
 const ChecklistPage = (): JSX.Element => {
-    const { history, url, path, api, params, offlineState } = useCommonHooks();
+    const {
+        history,
+        url,
+        path,
+        api,
+        params,
+        offlineState,
+        useTestColorIfOnTest,
+    } = useCommonHooks();
     const { permissions } = useContext(PlantContext);
     const [punchList, setPunchList] = useState<PunchPreview[]>();
     const [details, setDetails] = useState<ChecklistResponse>();
@@ -145,7 +153,7 @@ const ChecklistPage = (): JSX.Element => {
                     )
                 }
                 isOffline={offlineState == OfflineStatus.OFFLINE}
-                testColor={true}
+                testColor={useTestColorIfOnTest}
             />
             <ChecklistDetailsCard
                 fetchDetailsStatus={fetchDetailsStatus}

@@ -41,7 +41,8 @@ const ButtonWrapper = styled.div`
 `;
 
 const SavedSearchPage = (): JSX.Element => {
-    const { url, params, api, history, offlineState } = useCommonHooks();
+    const { url, params, api, history, offlineState, useTestColorIfOnTest } =
+        useCommonHooks();
     const { snackbar, setSnackbarText } = useSnackbar();
     const [savedSearch, setSavedSearch] = useState<SavedSearch>();
     const [results, setResults] = useState<
@@ -260,7 +261,7 @@ const SavedSearchPage = (): JSX.Element => {
                     <BackButton to={`${removeSubdirectories(url, 3)}`} />
                 }
                 isOffline={offlineState == OfflineStatus.OFFLINE}
-                testColor={true}
+                testColor={useTestColorIfOnTest}
             />
             <AsyncPage
                 errorMessage={
