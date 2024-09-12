@@ -36,6 +36,7 @@ export enum CompletionStatus {
 export type Project = {
     description: string;
     id: number;
+    proCoSysGuid: string;
     title: string;
 };
 
@@ -50,6 +51,7 @@ export const isProject: tg.TypeGuard<Project> = new tg.IsInterface()
     .withProperties({
         description: tg.isString,
         id: tg.isNumber,
+        proCoSysGuid: tg.isString,
         title: tg.isString,
     })
     .get();
@@ -161,6 +163,7 @@ export interface ChecklistSavedSearchResult {
     updatedByUser: string;
     updatedByFirstName: string;
     updatedByLastName: string;
+    proCoSysGuid: string;
 }
 
 export interface PunchItemSavedSearchResult {
@@ -175,6 +178,7 @@ export interface PunchItemSavedSearchResult {
     isVerified: boolean;
     statusControlledBySwcr: boolean;
     attachmentCount: number;
+    proCoSysGuid: string;
 }
 
 // IPO
@@ -324,10 +328,11 @@ export interface ChecklistPreview {
     attachmentCount: number;
     isSigned: boolean;
     isVerified: boolean;
+    proCoSysGuid: string;
 }
-
 export interface PunchPreview {
     id: number;
+    proCoSysGuid: string;
     status: CompletionStatus;
     description: string;
     systemModule: string;
@@ -345,6 +350,26 @@ export interface PunchPreview {
     statusControlledBySwcr: boolean;
     attachmentCount: number;
     callOffNo?: string;
+}
+
+export interface PunchPreview {
+    id: number;
+    proCoSysGuid: string;
+    status: CompletionStatus;
+    description: string;
+    systemModule: string;
+    tagDescription: string;
+    tagId: number;
+    tagNo: string;
+    formularType: string; // Not in Comm punches
+    responsibleCode: string; // Not in Comm punches
+    isRestrictedForUser: boolean;
+    cleared: boolean;
+    rejected: boolean;
+    verified: boolean; // Not in Comm punches
+    statusControlledBySwcr: boolean;
+    attachmentCount: number; // Not in Comm punches
+    callOffNo?: string; // Not in Comm punches
 }
 
 export interface ColumnLabel {
@@ -415,19 +440,22 @@ export interface PunchPriority {
     description: string;
 }
 
+type DateTimeString = string; // Assuming ISO 8601 format for dates
+
 export interface NewPunch {
-    CheckListId: number;
-    CategoryId: number;
-    Description: string;
-    TypeId?: number;
-    RaisedByOrganizationId: number;
-    ClearingByOrganizationId: number;
-    SortingId?: number;
-    PriorityId?: number;
-    ActionByPerson: number | null;
-    DueDate: string | null;
-    Estimate: number | null;
-    TemporaryFileIds: string[];
+    checkListGuid: string;
+    projectGuid: string;
+    category: string;
+    description: string;
+    typeGuid: string;
+    raisedByOrgGuid: string;
+    clearingByOrgGuid: string;
+    sortingGuid?: string;
+    priorityGuid?: string;
+    actionByPersonOid?: string;
+    dueTimeUtc?: DateTimeString;
+    estimate?: number;
+    temporaryFileIds?: string[];
 }
 
 export interface PunchItem {
@@ -487,6 +515,28 @@ export interface Attachment {
     thumbnailAsBase64: string;
     hasFile: boolean;
     fileName: string;
+    parentGuid: string;
+    guid: string;
+    fullBlobPath: string;
+    description: string;
+    labels: string[];
+    createdBy: {
+        guid: string;
+        firstName: string;
+        lastName: string;
+        userName: string;
+        email: string;
+    } | null;
+    createdAtUtc: string | null;
+    modifiedBy: {
+        guid: string;
+        firstName: string;
+        lastName: string;
+        userName: string;
+        email: string;
+    } | null;
+    modifiedAtUtc: string | null;
+    rowVersion: string;
 }
 
 export interface TagDetails {

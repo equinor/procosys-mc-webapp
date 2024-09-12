@@ -27,6 +27,7 @@ const SelectProject = (): JSX.Element => {
                     />
                 }
                 isOffline={offlineState == OfflineStatus.OFFLINE}
+                testColor={true}
             />
             <SelectPlantWrapper>
                 <AsyncPage

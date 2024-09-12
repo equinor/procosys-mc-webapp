@@ -4,26 +4,26 @@ WORKDIR /app
 COPY . /app
 RUN yarn install
 
-ENV REACT_APP_BASE_URL_MAIN='https://pcs-main-api-prod.azurewebsites.net/api'
-ENV REACT_APP_BASE_URL_COMP='https://backend-procosys-completion-api.radix.equinor.com'
-ENV REACT_APP_COMP_SCOPE='api://dee65816-6e0b-4816-bafe-ebd7179d5933/ReadWrite'
+ENV REACT_APP_BASE_URL_MAIN='https://pcs-main-api-test.azurewebsites.net/api'
+ENV REACT_APP_BASE_URL_COMP='https://backend-procosys-completion-api-test.radix.equinor.com'
+ENV REACT_APP_COMP_SCOPE='api://cf2e4cc0-39fe-4604-ad64-98e392987821/ReadWrite'
 ENV REACT_APP_API_VERSION="&api-version=4.1"
 
 # Application Insights Configuration
-ENV REACT_APP_APP_INSIGHTS_INSTRUMENTATION_KEY='17f706a6-641d-40ee-bb69-97732dbec879'
+ENV REACT_APP_APP_INSIGHTS_INSTRUMENTATION_KEY='c7c769fb-c898-4663-bdd3-5de143a7723b'
 
 # procosysWebApi Configuration
-ENV REACT_APP_WEBAPI_SCOPE='api://47641c40-0135-459b-8ab4-459e68dc8d08/web_api'
+ENV REACT_APP_WEBAPI_SCOPE='api://2d0ed80f-3013-422d-b8bd-2b8ac70b2ce1/web_api'
 
 # OCR Function Endpoint
-ENV REACT_APP_OCR_FUNCTION_ENDPOINT='https://pcs-mc-webapp-prod-funcs.azurewebsites.net/api/pcs_ocr?'
+ENV REACT_APP_OCR_FUNCTION_ENDPOINT='https://pcs-mc-webapp-non-prod-funcs.azurewebsites.net/api/pcs_ocr?'
 
 # IPO API Configuration
-ENV REACT_APP_IPO_API_BASE_URL='https://backend-procosys-ipo-api-prod.radix.equinor.com'
-ENV REACT_APP_IPO_API_SCOPE='api://b3399356-b2b6-44d4-a7b6-323eefc8a173/ReadWrite'
+ENV REACT_APP_IPO_API_BASE_URL='https://backend-procosys-ipo-api-test.radix.equinor.com'
+ENV REACT_APP_IPO_API_SCOPE='api://b2b8b455-f2c5-4db9-bce5-62202e64fb31/ReadWrite'
 
 # Auth Configuration
-ENV REACT_APP_CLIENT='437b9c0c-fe8f-4388-ab9e-ca2d5b53530e'
+ENV REACT_APP_CLIENT='912690c2-dbea-4174-a9fd-3c85f113435c'
 ENV REACT_APP_AUTHORITY='https://login.microsoftonline.com/3aa4a235-b6e2-48d5-9195-7fcf05b459b0'
 ENV REACT_APP_SCOPE='User.Read'
 

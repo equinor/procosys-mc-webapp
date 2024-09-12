@@ -53,6 +53,8 @@ import {
     handleFetchGet,
     handleFetchUpdate,
 } from '../offline/handleFetchEvents';
+import { CancelToken } from 'axios';
+import Axios, { AxiosError, AxiosResponse } from 'axios';
 
 type ProcosysApiServiceProps = {
     baseURL: string;
@@ -246,7 +248,7 @@ const procosysApiService = (
     };
 
     /**
-     * Generic method for doing a PUT call.
+     * Generic method for doing a PUT call
      */
     const putByFetch = async (
         url: string,
@@ -908,13 +910,11 @@ const procosysApiService = (
 
     const getPunchCategories = async (
         plantId: string,
-        abortSignal: AbortSignal,
+        cancelToken: CancelToken,
         entity?: IEntity
     ): Promise<PunchCategory[]> => {
         const data = await getByFetch(
-            `PunchListItem/Categories?plantId=PCS$${plantId}${apiVersion}`,
-            abortSignal,
-            entity
+            `PunchListItem/Categories?plantId=PCS$${plantId}${apiVersion}`
         );
         if (!isArrayOfType<PunchCategory>(data, 'code')) {
             throw new Error(typeGuardErrorMessage('punch categories'));
@@ -1018,7 +1018,7 @@ const procosysApiService = (
         updateData: UpdatePunchData,
         endpoint: string
     ): Promise<void> => {
-        const dto = { PunchItemId: punchItemId, ...updateData };
+        const dto = { PunchItemId: punchItemId, updateData };
         await putByFetch(
             `PunchListItem/${endpoint}?plantId=PCS$${plantId}${apiVersion}`,
             dto,
@@ -1174,7 +1174,7 @@ const procosysApiService = (
     const getWorkOrderAttachment = async (
         plantId: string,
         workOrderId: string,
-        attachmentId: number,
+        attachmentId: any,
         abortSignal?: AbortSignal,
         entity?: IEntity
     ): Promise<Blob> => {
@@ -1231,7 +1231,7 @@ const procosysApiService = (
     const getChecklistAttachment = async (
         plantId: string,
         checklistId: string,
-        attachmentId: number,
+        attachmentId: any,
         abortSignal?: AbortSignal,
         entity?: IEntity
     ): Promise<Blob> => {

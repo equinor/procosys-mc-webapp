@@ -30,7 +30,11 @@ interface ConfirmSyncProps {
 const ConfirmSync = ({ setIsSure }: ConfirmSyncProps): JSX.Element => {
     return (
         <>
-            <Navbar leftContent={<ProcosysButton />} isOffline={true} />
+            <Navbar
+                leftContent={<ProcosysButton />}
+                isOffline={true}
+                testColor={true}
+            />
             <ContentWrapper>
                 <h3>
                     You have already uploaded changes to the selected bookmarks

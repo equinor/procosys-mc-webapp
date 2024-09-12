@@ -37,12 +37,22 @@ const addAttachmentToAttachmentList = async (
         id: newAttachmentId,
         uri: '',
         title: title ? title : '',
-        createdAt: new Date(),
+        createdAtUtc: '',
         classification: '',
         mimeType: mimeType ?? '',
         thumbnailAsBase64: '',
         hasFile: true,
         fileName: title ? title : '',
+        parentGuid: '',
+        guid: '',
+        fullBlobPath: '',
+        description: '',
+        labels: [],
+        createdBy: null,
+        modifiedBy: null,
+        modifiedAtUtc: null,
+        rowVersion: '',
+        createdAt: new Date(),
     };
     attachmentList.push(attachment);
     await offlineContentRepository.replaceEntity(attachmentListEntity);

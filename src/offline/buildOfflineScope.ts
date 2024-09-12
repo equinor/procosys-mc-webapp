@@ -7,12 +7,12 @@ import {
 import { ProcosysApiService } from '../services/procosysApi';
 import { EntityType } from '../typings/enums';
 import { OfflineContentRepository } from './OfflineContentRepository';
-import { fetchAppConfig, fetchAuthConfig } from '../services/appConfiguration';
 import {
     ChecklistResponse,
     IEntity,
     SearchType,
 } from '@equinor/procosys-webapp-components';
+import axios, { Axios } from 'axios';
 
 /**
  * This function will be called when user want to go offline with given bookmarks.
@@ -22,8 +22,7 @@ import {
 const buildOfflineScope = async (
     api: ProcosysApiService,
     plantId: string,
-    projectId: number,
-    configurationAccessToken: string
+    projectId: number
 ): Promise<void> => {
     const controller = new AbortController();
     const abortSignal = controller.signal;
@@ -136,7 +135,6 @@ const buildOfflineScope = async (
             );
             addEntityToMap(punchAttachmentEntity);
         }
-        console.log('Nå har jeg gjort fetch punch');
     };
 
     /**
@@ -250,16 +248,10 @@ const buildOfflineScope = async (
 
     //auth config
     const authConfigEntity = createEntityObj(EntityType.AuthConfig);
-    const authConfig = await fetchAuthConfig(authConfigEntity);
     addEntityToMap(authConfigEntity);
 
     //App config
     const appConfigEntity = createEntityObj(EntityType.AppConfig);
-    await fetchAppConfig(
-        authConfig.configurationEndpoint,
-        configurationAccessToken,
-        appConfigEntity
-    );
     addEntityToMap(appConfigEntity);
 
     //Bookmarks
@@ -292,9 +284,12 @@ const buildOfflineScope = async (
     await api.getProjectsForPlant(`PCS$${plantId}`, projectsForPlantEntity);
     addEntityToMap(projectsForPlantEntity);
 
+    const cancelTokenSource = axios.CancelToken.source();
+    const cancelToken = cancelTokenSource.token;
+
     //Punch categories
     const punchCategoriesEntity = createEntityObj(EntityType.PunchCategories);
-    await api.getPunchCategories(plantId, abortSignal, punchCategoriesEntity);
+    await api.getPunchCategories(plantId, cancelToken, punchCategoriesEntity);
     addEntityToMap(punchCategoriesEntity);
 
     //Punch organization
@@ -409,7 +404,7 @@ const buildOfflineScope = async (
                 await api.getWorkOrderAttachment(
                     plantId,
                     entityId.toString(),
-                    attachment.id,
+                    attachment.id as unknown as string,
                     abortSignal,
                     woOrderAttachmentEntity
                 );

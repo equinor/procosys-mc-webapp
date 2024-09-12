@@ -1,29 +1,35 @@
 {
     "compilerOptions": {
-    "noImplicitAny": true,
-    "strictNullChecks": true,
-    "target": "es2017",
-    "lib": [
-        "dom",
-        "dom.iterable",
-        "esnext"
-    ],
-    "allowJs": true,
-    "skipLibCheck": true,
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "strict": true,
-    "forceConsistentCasingInFileNames": true,
-    "noFallthroughCasesInSwitch": true,
-    "module": "esnext",
-    "moduleResolution": "node",
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "noEmit": true,
-    "jsx": "react-jsx"
+      "noImplicitAny": true,
+      "strictNullChecks": true,
+      "target": "ESNext",
+      "lib": ["dom", "dom.iterable", "esnext"],
+      "allowJs": true,
+      "skipLibCheck": true,
+      "esModuleInterop": true,
+      "allowSyntheticDefaultImports": true,
+      "strict": true,
+      "forceConsistentCasingInFileNames": true,
+      "noFallthroughCasesInSwitch": true,
+      "module": "esnext",
+      "moduleResolution": "node",
+      "resolveJsonModule": true,
+      "isolatedModules": true,
+      "baseUrl": "./src",
+      "paths": {
+        "@models/*": ["./models/*"],
+        "@inputs/*": ["./inputs/*"],
+        "@tests/*": ["./__tests__/*"],
+        "@resolvers/*": ["./resolvers/*"],
+        "@seeds/*": ["./seeds/*"],
+        "@index": ["./index.ts"],
+        "@ormconfig": ["../ormconfig.ts"],
+        "react/jsx-runtime": ["./node_modules/react/jsx-runtime"],
+        "react-router-dom": ["./node_modules/react-router-dom"]
+      },
+      "noEmit": true,
+      "jsx": "react-jsx"
     },
-    "include": [
-        "src",
-        "src/test/setupTests.ts"
-    ]
-}
+    "include": ["src", "src/test/setupTests.ts"]
+  }
+  

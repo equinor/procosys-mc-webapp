@@ -28,12 +28,27 @@ export const handlePostComment = async (
             punchId
         );
 
-    const newComment = {
-        id: newCommentId,
-        text: comment,
-        firstName: '<offline user>',
-        lastName: '<offline user>',
+    const newComment: APIComment = {
         createdAt: new Date(),
+        createdAtUtc: new Date(),
+        firstName: 'John',
+        lastName: 'Doe',
+        text: comment,
+        id: newCommentId,
+        guid: 'some-guid',
+        createdBy: {
+            id: 1,
+            firstName: 'John',
+            lastName: 'Doe',
+            userName: 'johndoe',
+            emailAddress: 'john.doe@example.com',
+            officePhoneNo: null,
+            mobilePhoneNo: null,
+            isVoided: false,
+            nameAndUserNameAsString: 'John Doe (johndoe)',
+            fullName: 'John Doe',
+            fullNameFormal: 'Doe, John',
+        },
     };
 
     const commentList: APIComment[] = commentListEntity.responseObj;

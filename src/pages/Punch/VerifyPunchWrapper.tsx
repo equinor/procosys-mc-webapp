@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-import { PunchItem } from '../../services/apiTypes';
+import React, { useEffect, useState } from 'react';
 import useCommonHooks from '../../utils/useCommonHooks';
 import {
     removeSubdirectories,
@@ -8,6 +7,7 @@ import {
     PunchAction,
     AsyncStatus,
 } from '@equinor/procosys-webapp-components';
+import { PunchItem } from '../../services/apiTypesCompletionApi';
 
 type VerifyPunchProps = {
     punchItem: PunchItem;
@@ -20,7 +20,7 @@ const VerifyPunchWrapper = ({
     canUnclear,
     canVerify,
 }: VerifyPunchProps): JSX.Element => {
-    const { url, history, params, api } = useCommonHooks();
+    const { url, history, params, api, completionApi } = useCommonHooks();
     const [punchActionStatus, setPunchActionStatus] = useState(
         AsyncStatus.INACTIVE
     );
@@ -32,11 +32,13 @@ const VerifyPunchWrapper = ({
         newUrl: string
     ): Promise<void> => {
         setPunchActionStatus(AsyncStatus.LOADING);
+
         try {
-            await api.postPunchAction(
+            await completionApi.postPunchAction(
                 params.plant,
-                params.punchItemId,
-                punchAction
+                params.proCoSysGuid,
+                punchAction,
+                punchItem.rowVersion
             );
             setPunchActionStatus(AsyncStatus.SUCCESS);
             history.push(newUrl);
@@ -72,9 +74,9 @@ const VerifyPunchWrapper = ({
                 )
             }
             punchActionStatus={punchActionStatus}
-            getPunchAttachments={api.getPunchAttachments}
-            getPunchAttachment={api.getPunchAttachment}
-            getPunchComments={api.getPunchComments}
+            getPunchAttachments={completionApi.getPunchAttachments}
+            getPunchAttachment={completionApi.getPunchAttachment}
+            getPunchComments={completionApi.getPunchComments}
             snackbar={snackbar}
             setSnackbarText={setSnackbarText}
             abortController={abortController}

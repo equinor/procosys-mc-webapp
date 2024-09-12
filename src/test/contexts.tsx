@@ -17,17 +17,16 @@ import procosysIPOApiService, {
 } from '../services/procosysIPOApi';
 import { OfflineStatus } from '../typings/enums';
 import { AsyncStatus } from '@equinor/procosys-webapp-components';
+import completionApiService, {
+    CompletionApiService,
+} from '../services/completionApi';
+import axios, { AxiosInstance } from 'axios';
 
 const client = new Msal.PublicClientApplication({
     auth: { clientId: 'testId', authority: 'testAuthority' },
 });
 
 const dummyAppConfig: AppConfig = {
-    procosysWebApi: {
-        baseUrl: 'https://test-url.com',
-        scope: ['testScope'],
-        apiVersion: '&dummy-version',
-    },
     appInsights: {
         instrumentationKey: '',
     },
@@ -53,8 +52,14 @@ const procosysApiInstance = procosysApiService(
     },
     'dummy-bearer-token'
 );
+const axiosInstance: AxiosInstance = axios.create({
+    baseURL: baseURL,
+    headers: {
+        Authorization: 'Bearer dummy-bearer-token',
+    },
+});
 
-const dummyConfigurationAccessToken = 'dummytoken';
+const completionApiInstance = completionApiService({ axios: axiosInstance });
 
 const ipoApiInstance = procosysIPOApiService(
     {
@@ -69,10 +74,11 @@ type WithMcAppContextProps = {
     plants?: Plant[];
     auth?: IAuthService;
     api?: ProcosysApiService;
+    completionApi?: CompletionApiService;
+    completionBaseApiInstance?: AxiosInstance;
     ipoApi?: ProcosysIPOApiService;
     offlineState?: OfflineStatus;
     setOfflineState: React.Dispatch<React.SetStateAction<OfflineStatus>>;
-    configurationAccessToken: string;
 };
 
 export const withMcAppContext = ({
@@ -81,10 +87,11 @@ export const withMcAppContext = ({
     plants = testPlants,
     auth = authInstance,
     api = procosysApiInstance,
+    completionApi = completionApiInstance,
+    completionBaseApiInstance = axiosInstance,
     ipoApi = ipoApiInstance,
     offlineState = OfflineStatus.ONLINE,
     setOfflineState,
-    configurationAccessToken,
 }: WithMcAppContextProps): JSX.Element => {
     return (
         <MemoryRouter initialEntries={['/test/sub/directory']}>
@@ -95,11 +102,12 @@ export const withMcAppContext = ({
                     auth: auth,
                     api: api,
                     ipoApi: ipoApi,
+                    completionApi: completionApi,
+                    completionBaseApiInstance: completionBaseApiInstance,
                     appConfig: dummyAppConfig,
                     featureFlags: dummyFeatureFlags,
                     offlineState: offlineState,
                     setOfflineState: setOfflineState,
-                    configurationAccessToken: configurationAccessToken,
                 }}
             >
                 {Component}
@@ -147,6 +155,5 @@ export const withPlantContext = ({
         ),
         offlineState: offlineState,
         setOfflineState: setOfflineState,
-        configurationAccessToken: dummyConfigurationAccessToken,
     });
 };

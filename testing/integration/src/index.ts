@@ -13,9 +13,7 @@ describe('Typescript usage suite', () => {
     });
 });
 
-
 //https://sinonjs.org/
 // require("chai/register-should");
 
 //http://www.wheresrhys.co.uk/fetch-mock/
-

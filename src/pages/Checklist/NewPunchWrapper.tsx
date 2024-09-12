@@ -1,23 +1,22 @@
-import React, { useEffect, useState } from 'react';
-import {
-    PunchCategory,
-    PunchOrganization,
-    PunchPriority,
-    PunchSort,
-    PunchType,
-} from '../../services/apiTypes';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
+import { ChecklistPreview, PunchCategory } from '../../services/apiTypes';
 import { NewPunch as NewPunchType } from '../../services/apiTypes';
 import useCommonHooks from '../../utils/useCommonHooks';
 import {
     AsyncStatus,
     ChosenPerson,
     NewPunch,
-    removeSubdirectories,
+    isArrayOfType,
     useFormFields,
+    useSnackbar,
 } from '@equinor/procosys-webapp-components';
 import AsyncPage from '../../components/AsyncPage';
 import usePersonsSearchFacade from '../../utils/usePersonsSearchFacade';
 import { OfflineStatus } from '../../typings/enums';
+import { LibrayTypes } from '../../services/apiTypesCompletionApi';
+import Axios, { AxiosError } from 'axios';
+import PlantContext from '../../contexts/PlantContext';
+import { hasErrors, renderErrors } from '../../utils/renderErrors';
 
 const newPunchInitialValues = {
     category: '',
@@ -32,24 +31,28 @@ const newPunchInitialValues = {
     estimate: '',
 };
 
-interface NewPunchWrapperProps {
-    setSnackbarText: React.Dispatch<React.SetStateAction<string>>;
-}
+const NewPunchWrapper = (): JSX.Element => {
+    const { api, params, url, history, offlineState, completionApi } =
+        useCommonHooks();
+    const { availableProjects } = useContext(PlantContext);
+    const currentProject = availableProjects?.find(
+        (p) => p.title === params.project
+    );
+    let checkListGuid = location.search.split('checkListGuid=').at(1);
 
-const NewPunchWrapper = ({
-    setSnackbarText,
-}: NewPunchWrapperProps): JSX.Element => {
-    const { api, params, url, history, offlineState } = useCommonHooks();
     const { formFields, createChangeHandler } = useFormFields(
         newPunchInitialValues
     );
+    const { snackbar, setSnackbarText } = useSnackbar();
+    const controller = new AbortController();
+    const abortSignal = controller.signal;
     const [categories, setCategories] = useState<PunchCategory[]>([]);
-    const [types, setTypes] = useState<PunchType[]>([]);
-    const [organizations, setOrganizations] = useState<PunchOrganization[]>([]);
-    const [sortings, setSortings] = useState<PunchSort[]>([]);
-    const [priorities, setPriorities] = useState<PunchPriority[]>([]);
+    const [types, setTypes] = useState<LibrayTypes[]>([]);
+    const [organizations, setOrganizations] = useState<LibrayTypes[]>([]);
+    const [sortings, setSortings] = useState<LibrayTypes[]>([]);
+    const [priorities, setPriorities] = useState<LibrayTypes[]>([]);
     const [chosenPerson, setChosenPerson] = useState<ChosenPerson>({
-        id: null,
+        id: '',
         name: '',
     });
     const [fetchNewPunchStatus, setFetchNewPunchStatus] = useState(
@@ -60,73 +63,119 @@ const NewPunchWrapper = ({
     );
     const [tempIds, setTempIds] = useState<string[]>([]);
     const { hits, searchStatus, query, setQuery } = usePersonsSearchFacade();
-    const controller = new AbortController();
-    const abortSignal = controller.signal;
+    const source = Axios.CancelToken.source();
+    const [details, setDetails] = useState<any>();
+
+    const getLibraryTypes = useCallback(async () => {
+        const categoriesFromApi = await api
+            .getPunchCategories(params.plant, source.token)
+            .catch(() => setFetchNewPunchStatus(AsyncStatus.ERROR));
+
+        const libraryTypes = await completionApi
+            .getLibraryItems(params.plant, source.token)
+            .catch(() => setFetchNewPunchStatus(AsyncStatus.ERROR));
+
+        if (isArrayOfType<LibrayTypes>(libraryTypes, 'guid')) {
+            const types = libraryTypes.reduce((acc, type) => {
+                const group = acc.get(type.libraryType) || [];
+                acc.set(type.libraryType, [...group, type]);
+                return acc;
+            }, new Map());
+
+            setOrganizations(types.get('COMPLETION_ORGANIZATION'));
+            setTypes(types.get('PUNCHLIST_TYPE'));
+            setSortings(types.get('PUNCHLIST_SORTING'));
+            setPriorities(types.get('COMM_PRIORITY'));
+        }
+        if (isArrayOfType<PunchCategory>(categoriesFromApi, 'id')) {
+            setCategories(categoriesFromApi);
+        }
+        setFetchNewPunchStatus(AsyncStatus.SUCCESS);
+    }, [params.plant]);
 
     useEffect(() => {
-        (async (): Promise<void> => {
-            try {
-                const [
-                    categoriesFromApi,
-                    typesFromApi,
-                    organizationsFromApi,
-                    sortsFromApi,
-                    prioritiesFromApi,
-                ] = await Promise.all([
-                    api.getPunchCategories(params.plant, abortSignal),
-                    api.getPunchTypes(params.plant, abortSignal),
-                    api.getPunchOrganizations(params.plant, abortSignal),
-                    api.getPunchSorts(params.plant, abortSignal),
-                    api.getPunchPriorities(params.plant, abortSignal),
-                ]);
-                setCategories(categoriesFromApi);
-                setTypes(typesFromApi);
-                setOrganizations(organizationsFromApi);
-                setSortings(sortsFromApi);
-                setPriorities(prioritiesFromApi);
-                setFetchNewPunchStatus(AsyncStatus.SUCCESS);
-            } catch (error) {
-                if (!(error instanceof Error)) return;
-                setSnackbarText(error.message);
-                setFetchNewPunchStatus(AsyncStatus.ERROR);
-            }
-        })();
-        return (): void => {
-            controller.abort();
-        };
+        getLibraryTypes();
     }, [params.plant, api]);
+
+    const removeNewPunchSegment = (url: string) => {
+        const [baseUrl, query] = url.split('?');
+        const segments = baseUrl
+            .split('/')
+            .filter((segment) => segment !== 'new-punch');
+        const newUrl = segments.join('/');
+        return query ? `${newUrl}?${query}` : newUrl;
+    };
 
     useEffect(() => {
         if (submitPunchStatus === AsyncStatus.SUCCESS) {
-            history.push(removeSubdirectories(url, 1));
+            const newUrl = removeNewPunchSegment(url);
+            history.push(`${newUrl}?checkListGuid=${checkListGuid}`);
         }
-    }, [submitPunchStatus]);
+    }, [submitPunchStatus, url, checkListGuid, history]);
+
+    // if user routes to new punch page directly without choosing a checklist
+    useEffect(() => {
+        const fetchDetails = async () => {
+            if (
+                !checkListGuid ||
+                checkListGuid === 'undefined' ||
+                checkListGuid === 'null'
+            ) {
+                const response = (await api.getScope(
+                    params.plant,
+                    params.searchType,
+                    params.entityId,
+                    details,
+                    abortSignal
+                )) as ChecklistPreview[];
+                if (response.length > 0) {
+                    checkListGuid = response[0].proCoSysGuid;
+                }
+                const newUrl = new URL(window.location.href);
+                newUrl.searchParams.set(
+                    'checkListGuid',
+                    checkListGuid as string
+                );
+                window.history.pushState({}, '', newUrl.toString());
+            }
+        };
+        fetchDetails();
+    }, [checkListGuid]);
 
     const handleSubmit = async (e: React.FormEvent): Promise<void> => {
         e.preventDefault();
+
+        if (!currentProject || !checkListGuid) return;
         const NewPunchDTO: NewPunchType = {
-            CheckListId: parseInt(params.checklistId),
-            CategoryId: parseInt(formFields.category),
-            Description: formFields.description,
-            TypeId: parseInt(formFields.type),
-            RaisedByOrganizationId: parseInt(formFields.raisedBy),
-            ClearingByOrganizationId: parseInt(formFields.clearingBy),
-            SortingId: parseInt(formFields.sorting),
-            PriorityId: parseInt(formFields.priority),
-            Estimate: parseInt(formFields.estimate),
-            DueDate: formFields.dueDate,
-            ActionByPerson: chosenPerson.id,
-            TemporaryFileIds: tempIds,
+            checkListGuid,
+            projectGuid: currentProject.proCoSysGuid,
+            category: formFields.category,
+            description: formFields.description,
+            typeGuid: formFields.type,
+            raisedByOrgGuid: formFields.raisedBy,
+            clearingByOrgGuid: formFields.clearingBy,
+            sortingGuid: formFields.sorting,
+            priorityGuid: formFields.priority,
+            estimate: parseInt(formFields.estimate),
+            dueTimeUtc: formFields.dueDate
+                ? ` ${new Date(formFields.dueDate).toISOString()}`
+                : '',
+            actionByPersonOid: chosenPerson.id ? `${chosenPerson.id}` : '',
         };
         setSubmitPunchStatus(AsyncStatus.LOADING);
-        try {
-            await api.postNewPunch(params.plant, NewPunchDTO);
-            setSubmitPunchStatus(AsyncStatus.SUCCESS);
-        } catch (error) {
-            if (!(error instanceof Error)) return;
-            setSnackbarText(error.message);
-            setSubmitPunchStatus(AsyncStatus.ERROR);
-        }
+        await completionApi
+            .postNewPunch(params.plant, NewPunchDTO)
+            .then(() => {
+                setSnackbarText('Punch created successfully');
+                setSubmitPunchStatus(AsyncStatus.SUCCESS);
+            })
+            .catch((error: AxiosError) => {
+                setSnackbarText(
+                    hasErrors(error)
+                        ? renderErrors(error)
+                        : 'Something went wrong while creating punch'
+                );
+            });
     };
 
     return (
@@ -162,6 +211,7 @@ const NewPunchWrapper = ({
                     disableAttahments={true}
                 />
             </AsyncPage>
+            {snackbar}
         </>
     );
 };

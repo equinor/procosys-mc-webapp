@@ -1,12 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
+    ChecklistPreview,
     ChecklistSavedSearchResult,
     PunchItemSavedSearchResult,
     SavedSearch,
 } from '../../services/apiTypes';
 import useCommonHooks from '../../utils/useCommonHooks';
 import AsyncPage from '../../components/AsyncPage';
-import { isArrayOfType } from '../../services/apiTypeGuards';
+import { isArrayOfType, isOfType } from '../../services/apiTypeGuards';
 import {
     AsyncStatus,
     BackButton,
@@ -175,7 +176,9 @@ const SavedSearchPage = (): JSX.Element => {
                                 checklist.responsibleCode,
                             ]}
                             onClick={(): void =>
-                                history.push(`${url}/checklist/${checklist.id}`)
+                                history.push(
+                                    `${url}/checklist/${checklist.id}?checkListGuid=${checklist.proCoSysGuid}`
+                                )
                             }
                         />
                     ))}
@@ -201,7 +204,9 @@ const SavedSearchPage = (): JSX.Element => {
                             chips={[punch.formularType, punch.responsibleCode]}
                             tag={punch.tagNo}
                             onClick={(): void =>
-                                history.push(`${url}/punch-item/${punch.id}`)
+                                history.push(
+                                    `${url}/punch-item/${punch.proCoSysGuid}?tagId=${punch.tagId}`
+                                )
                             }
                         />
                     ))}
@@ -255,6 +260,7 @@ const SavedSearchPage = (): JSX.Element => {
                     <BackButton to={`${removeSubdirectories(url, 3)}`} />
                 }
                 isOffline={offlineState == OfflineStatus.OFFLINE}
+                testColor={true}
             />
             <AsyncPage
                 errorMessage={

@@ -1,11 +1,10 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Route, Switch } from 'react-router-dom';
+import { Route, Switch, useLocation, useParams } from 'react-router-dom';
 import EdsIcon from '../../components/icons/EdsIcon';
 import withAccessControl from '../../services/withAccessControl';
 import { COLORS } from '../../style/GlobalStyles';
 import useCommonHooks from '../../utils/useCommonHooks';
 import ClearPunchWrapper from './ClearPunchWrapper';
-import { PunchItem } from '../../services/apiTypes';
 import VerifyPunchWrapper from './VerifyPunchWrapper';
 import {
     SkeletonLoadingPage,
@@ -17,6 +16,7 @@ import {
     removeSubdirectories,
     useSnackbar,
     AsyncStatus,
+    CompletionStatus,
 } from '@equinor/procosys-webapp-components';
 import { DotProgress } from '@equinor/eds-core-react';
 import AsyncPage from '../../components/AsyncPage';
@@ -24,42 +24,48 @@ import TagInfoWrapper from '../../components/TagInfoWrapper';
 import PlantContext from '../../contexts/PlantContext';
 import { DetailsWrapper } from '../Entity/EntityPageDetailsCard';
 import { OfflineStatus } from '../../typings/enums';
+import { abort } from 'process';
+import { PunchItem } from '../../services/apiTypesCompletionApi';
 
 const PunchPage = (): JSX.Element => {
-    const { api, params, path, history, url, offlineState } = useCommonHooks();
+    const { api, params, path, history, url, offlineState, completionApi } =
+        useCommonHooks();
     const { snackbar, setSnackbarText } = useSnackbar();
     const [punch, setPunch] = useState<PunchItem>();
     const [fetchPunchStatus, setFetchPunchStatus] = useState<AsyncStatus>(
         AsyncStatus.LOADING
     );
     const { permissions } = useContext(PlantContext);
-
+    const [rowVersion, setRowVersion] = useState<string>();
+    const location = useLocation();
+    const checkListGuid = new URLSearchParams(location.search).get(
+        'checkListGuid'
+    );
+    const tagId = new URLSearchParams(location.search).get('tagId');
     useEffect(() => {
-        const controller = new AbortController();
-        const abortSignal = controller.signal;
-        (async (): Promise<void> => {
-            try {
-                const punchFromApi = await api.getPunchItem(
-                    params.plant,
-                    params.punchItemId,
-                    abortSignal
-                );
-                setPunch(punchFromApi);
-                setFetchPunchStatus(AsyncStatus.SUCCESS);
-            } catch (error) {
-                if (!(error instanceof Error)) return;
-                setSnackbarText(error.message);
-                setFetchPunchStatus(AsyncStatus.ERROR);
-            }
-        })();
-        return (): void => {
-            controller.abort();
-        };
+        fetchPunchItem();
     }, [api, params]);
+
+    const fetchPunchItem = async (): Promise<void> => {
+        try {
+            const punchFromApi = await completionApi.getPunchItem(
+                params.plant,
+                params.proCoSysGuid
+            );
+
+            setPunch(punchFromApi);
+            setRowVersion(punchFromApi.rowVersion);
+            setFetchPunchStatus(AsyncStatus.SUCCESS);
+        } catch (error) {
+            if (!(error instanceof Error)) return;
+            setSnackbarText(error.message);
+            setFetchPunchStatus(AsyncStatus.ERROR);
+        }
+    };
 
     const determineComponentToRender = (): JSX.Element => {
         if (punch === undefined) return <SkeletonLoadingPage />;
-        if (punch.clearedAt != null) {
+        if (punch.clearedAtUtc != null) {
             return (
                 <VerifyPunchWrapper
                     punchItem={punch}
@@ -88,15 +94,15 @@ const PunchPage = (): JSX.Element => {
             return (
                 <InfoItem
                     isDetailsCard
-                    status={punch.status}
+                    status={punch.category as CompletionStatus}
                     statusLetters={[
-                        punch.clearedByFirstName ? 'C' : null,
-                        punch.verifiedByFirstName ? 'V' : null,
+                        punch.clearedBy?.firstName ? 'C' : null,
+                        punch.verifiedBy?.firstName ? 'V' : null,
                     ]}
                     headerText={punch.tagNo}
                     description={punch.tagDescription}
                     attachments={punch.attachmentCount}
-                    chips={[punch.id.toString(), punch.formularType]}
+                    chips={[punch.itemNo.toString(), punch.formularType]}
                 />
             );
         } else if (fetchPunchStatus === AsyncStatus.LOADING) {
@@ -120,11 +126,15 @@ const PunchPage = (): JSX.Element => {
                 noBorder
                 leftContent={
                     <BackButton
-                        to={`${removeSubdirectories(url, 2)}/punch-list`}
+                        to={`${removeSubdirectories(
+                            url,
+                            2
+                        )}/punch-list?checkListGuid=${checkListGuid}`}
                     />
                 }
                 midContent="Punch Item"
                 isOffline={offlineState == OfflineStatus.OFFLINE}
+                testColor={true}
             />
             {determineDetailsCard()}
             <AsyncPage
@@ -137,7 +147,7 @@ const PunchPage = (): JSX.Element => {
                         path={`${path}/tag-info`}
                         render={(): JSX.Element => (
                             <TagInfoWrapper
-                                tagId={punch?.tagId}
+                                tagId={parseInt(`${tagId}`)}
                                 setSnackbarText={setSnackbarText}
                             />
                         )}
@@ -153,7 +163,7 @@ const PunchPage = (): JSX.Element => {
             <NavigationFooter>
                 <FooterButton
                     active={!history.location.pathname.includes('/tag-info')}
-                    goTo={(): void => history.push(url)}
+                    goTo={(): void => history.push(url + `?tagId=${tagId}`)}
                     icon={
                         <EdsIcon
                             name="warning_filled"
@@ -164,7 +174,9 @@ const PunchPage = (): JSX.Element => {
                 />
                 <FooterButton
                     active={history.location.pathname.includes('/tag-info')}
-                    goTo={(): void => history.push(`${url}/tag-info`)}
+                    goTo={(): void =>
+                        history.push(`${url}/tag-info?tagId=${tagId}`)
+                    }
                     icon={<EdsIcon name="tag" />}
                     label={'Tag info'}
                 />

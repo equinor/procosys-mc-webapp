@@ -34,8 +34,7 @@ interface UseBookmarks {
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const useBookmarks = ({ setSnackbarText }: UseBookmarks) => {
     const { currentPlant, currentProject } = useContext(PlantContext);
-    const { params, api, setOfflineState, configurationAccessToken } =
-        useCommonHooks();
+    const { params, api, setOfflineState } = useCommonHooks();
     const [currentBookmarks, setCurrentBookmarks] = useState<Bookmarks | null>(
         null
     );
@@ -198,8 +197,7 @@ const useBookmarks = ({ setSnackbarText }: UseBookmarks) => {
                 await buildOfflineScope(
                     api,
                     currentPlant.slug,
-                    currentProject.id,
-                    configurationAccessToken
+                    currentProject.id
                 );
             }
             await sendOfflineStatusToBackend();
