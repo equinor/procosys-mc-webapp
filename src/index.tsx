@@ -62,9 +62,6 @@ const initialize = async () => {
         alert('Service worker is not ready.');
     }
 
-    const useTestColorIfOnTest = window.location.hostname.includes(
-        'frontend-procosys-mc-webapp-test'
-    );
     const offline = getOfflineStatusfromLocalStorage();
     console.log('Offline status is ', offline);
 
@@ -149,7 +146,6 @@ const initialize = async () => {
         procosysIPOApiInstance,
         completionApiInstance,
         completionBaseApiInstance,
-        useTestColorIfOnTest,
     };
 };
 
@@ -184,7 +180,6 @@ const renderApp = async (): Promise<void> => {
                 appConfig,
                 featureFlags,
                 procosysIPOApiInstance,
-                useTestColorIfOnTest,
             } = await initialize();
 
             render(
@@ -351,7 +346,6 @@ const renderApp = async (): Promise<void> => {
             procosysIPOApiInstance,
             completionApiInstance,
             completionBaseApiInstance,
-            useTestColorIfOnTest,
         } = await initialize();
 
         render(

@@ -46,7 +46,7 @@ export const SelectorButton = styled(Link)`
 
 const SelectPlant = (): JSX.Element => {
     const { availablePlants } = useContext(CommAppContext);
-    const { auth, offlineState } = useCommonHooks();
+    const { auth, offlineState, useTestColorIfOnTest } = useCommonHooks();
 
     const content = (): JSX.Element => {
         if (availablePlants.length < 1) {
@@ -90,7 +90,7 @@ const SelectPlant = (): JSX.Element => {
                     />
                 }
                 isOffline={offlineState == OfflineStatus.OFFLINE}
-                testColor
+                testColor={useTestColorIfOnTest}
             />
             <SelectPlantWrapper>{content()}</SelectPlantWrapper>
         </>
