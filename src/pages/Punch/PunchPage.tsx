@@ -28,8 +28,16 @@ import { abort } from 'process';
 import { PunchItem } from '../../services/apiTypesCompletionApi';
 
 const PunchPage = (): JSX.Element => {
-    const { api, params, path, history, url, offlineState, completionApi } =
-        useCommonHooks();
+    const {
+        api,
+        params,
+        path,
+        history,
+        url,
+        offlineState,
+        completionApi,
+        useTestColorIfOnTest,
+    } = useCommonHooks();
     const { snackbar, setSnackbarText } = useSnackbar();
     const [punch, setPunch] = useState<PunchItem>();
     const [fetchPunchStatus, setFetchPunchStatus] = useState<AsyncStatus>(
@@ -134,7 +142,7 @@ const PunchPage = (): JSX.Element => {
                 }
                 midContent="Punch Item"
                 isOffline={offlineState == OfflineStatus.OFFLINE}
-                testColor={true}
+                testColor={useTestColorIfOnTest}
             />
             {determineDetailsCard()}
             <AsyncPage
