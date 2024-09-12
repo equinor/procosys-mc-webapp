@@ -99,6 +99,7 @@ export const McAppContextProvider: React.FC<McAppContextProviderProps> = ({
             </>
         );
     }
+
     return (
         <McAppContext.Provider
             value={{

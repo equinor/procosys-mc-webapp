@@ -38,8 +38,16 @@ const ContentWrapper = styled.div`
 `;
 
 const EntityPage = (): JSX.Element => {
-    const { api, ipoApi, params, path, history, url, offlineState } =
-        useCommonHooks();
+    const {
+        api,
+        ipoApi,
+        params,
+        path,
+        history,
+        url,
+        offlineState,
+        useTestColorIfOnTest,
+    } = useCommonHooks();
     const { snackbar, setSnackbarText } = useSnackbar();
     const [scope, setScope] = useState<ChecklistPreview[]>();
     const [punchList, setPunchList] = useState<PunchPreview[]>();
@@ -156,7 +164,7 @@ const EntityPage = (): JSX.Element => {
                         : params.searchType
                 }
                 isOffline={offlineState == OfflineStatus.OFFLINE}
-                testColor={true}
+                testColor={useTestColorIfOnTest}
             />
             <EntityPageDetailsCard
                 fetchDetailsStatus={fetchDetailsStatus}

@@ -79,6 +79,7 @@ type WithMcAppContextProps = {
     ipoApi?: ProcosysIPOApiService;
     offlineState?: OfflineStatus;
     setOfflineState: React.Dispatch<React.SetStateAction<OfflineStatus>>;
+    useTestColorIfOnTest?: boolean;
 };
 
 export const withMcAppContext = ({
