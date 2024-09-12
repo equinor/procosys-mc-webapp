@@ -35,7 +35,8 @@ const ContentWrapper = styled.div`
 
 const SearchPage = (): JSX.Element => {
     const { snackbar, setSnackbarText } = useSnackbar();
-    const { history, url, path, offlineState } = useCommonHooks();
+    const { history, url, path, offlineState, useTestColorIfOnTest } =
+        useCommonHooks();
     const [syncErrors, setSyncErrors] =
         useState<OfflineSynchronizationErrors | null>(null);
 
@@ -79,7 +80,7 @@ const SearchPage = (): JSX.Element => {
                         />
                     }
                     isOffline={offlineState == OfflineStatus.OFFLINE}
-                    testColor={true}
+                    testColor={useTestColorIfOnTest}
                 />
                 <ContentWrapper>
                     <Switch>

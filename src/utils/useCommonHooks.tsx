@@ -15,6 +15,7 @@ const useCommonHooks = () => {
         ipoApi,
         completionApi,
         completionBaseApiInstance,
+        useTestColorIfOnTest,
     } = useContext(McAppContext);
     const params = useParams<McParams>();
     const history = useHistory();
@@ -34,6 +35,7 @@ const useCommonHooks = () => {
         ipoApiSettings: appConfig.ipoApi,
         completionApi,
         completionBaseApiInstance,
+        useTestColorIfOnTest,
     };
 };
 

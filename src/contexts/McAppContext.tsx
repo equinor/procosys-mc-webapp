@@ -28,6 +28,7 @@ type McAppContextProps = {
     setOfflineState: React.Dispatch<React.SetStateAction<OfflineStatus>>;
     featureFlags: FeatureFlags;
     ipoApi: ProcosysIPOApiService;
+    useTestColorIfOnTest?: boolean;
 };
 
 const McAppContext = React.createContext({} as McAppContextProps);
@@ -41,6 +42,7 @@ type McAppContextProviderProps = {
     ipoApi: ProcosysIPOApiService;
     completionApi: CompletionApiService;
     completionBaseApiInstance: AxiosInstance;
+    useTestColorIfOnTest?: boolean;
 };
 
 export const McAppContextProvider: React.FC<McAppContextProviderProps> = ({
@@ -52,6 +54,7 @@ export const McAppContextProvider: React.FC<McAppContextProviderProps> = ({
     ipoApi,
     completionApi,
     completionBaseApiInstance,
+    useTestColorIfOnTest,
 }: McAppContextProviderProps) => {
     const [availablePlants, setAvailablePlants] = useState<Plant[]>([]);
     const [fetchPlantsStatus, setFetchPlantsStatus] = useState<AsyncStatus>(
@@ -99,6 +102,7 @@ export const McAppContextProvider: React.FC<McAppContextProviderProps> = ({
             </>
         );
     }
+
     return (
         <McAppContext.Provider
             value={{
@@ -113,6 +117,7 @@ export const McAppContextProvider: React.FC<McAppContextProviderProps> = ({
                 ipoApi,
                 completionApi,
                 completionBaseApiInstance,
+                useTestColorIfOnTest,
             }}
         >
             {children}

@@ -33,6 +33,7 @@ import { db } from './offline/db';
 import completionApiService from './services/completionApi';
 import baseIPOApiService from './services/baseIPOApi';
 import { appConfig, featureFlags } from './services/appConfiguration';
+import { u } from 'msw/lib/glossary-2792c6da';
 
 const onUpdate = (registration: ServiceWorkerRegistration): void => {
     localStorage.setItem(LocalStorage.SW_UPDATE, 'true');
@@ -61,6 +62,9 @@ const initialize = async () => {
         alert('Service worker is not ready.');
     }
 
+    const useTestColorIfOnTest = window.location.hostname.includes(
+        'frontend-procosys-mc-webapp-test'
+    );
     const offline = getOfflineStatusfromLocalStorage();
     console.log('Offline status is ', offline);
 
@@ -145,6 +149,7 @@ const initialize = async () => {
         procosysIPOApiInstance,
         completionApiInstance,
         completionBaseApiInstance,
+        useTestColorIfOnTest,
     };
 };
 
@@ -179,6 +184,7 @@ const renderApp = async (): Promise<void> => {
                 appConfig,
                 featureFlags,
                 procosysIPOApiInstance,
+                useTestColorIfOnTest,
             } = await initialize();
 
             render(
@@ -214,6 +220,7 @@ const renderApp = async (): Promise<void> => {
                     featureFlags={featureFlags}
                     procosysIPOApiInstance={procosysIPOApiInstance}
                     completionApiInstance={completionApiInstance}
+                    useTestColorIfOnTest={useTestColorIfOnTest}
                 />
             );
         } catch (error) {
@@ -254,6 +261,7 @@ const renderApp = async (): Promise<void> => {
                 procosysIPOApiInstance,
                 completionApiInstance,
                 completionBaseApiInstance,
+                useTestColorIfOnTest,
             } = await initialize();
 
             api = procosysApiInstance;
@@ -308,6 +316,7 @@ const renderApp = async (): Promise<void> => {
                     procosysIPOApiInstance={procosysIPOApiInstance}
                     completionApiInstance={completionApiInstance}
                     completionBaseApiInstance={completionBaseApiInstance}
+                    useTestColorIfOnTest={useTestColorIfOnTest}
                 />
             );
         } catch (error) {
@@ -345,6 +354,7 @@ const renderApp = async (): Promise<void> => {
             procosysIPOApiInstance,
             completionApiInstance,
             completionBaseApiInstance,
+            useTestColorIfOnTest,
         } = await initialize();
 
         render(
@@ -357,6 +367,7 @@ const renderApp = async (): Promise<void> => {
                 procosysIPOApiInstance={procosysIPOApiInstance}
                 completionApiInstance={completionApiInstance}
                 completionBaseApiInstance={completionBaseApiInstance}
+                useTestColorIfOnTest={useTestColorIfOnTest}
             />
         );
     }
