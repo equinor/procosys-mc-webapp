@@ -10,7 +10,7 @@
     "glob": "^8.0.3",
     "html-webpack-plugin": "^5.5.0",
     "mocha-cli": "^1.0.1",
-    "sinon": "^14.0.0",
+    "sinon": "^19.0.0",
     "styled-components": "^5.3.3",
     "ts-node": "^10.9.1",
     "unit-coverage": "^4.0.3"
