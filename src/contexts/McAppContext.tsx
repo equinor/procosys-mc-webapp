@@ -11,19 +11,22 @@ import { AppConfig, FeatureFlags } from '../services/appConfiguration';
 import { IAuthService } from '../services/authService';
 import { ProcosysApiService } from '../services/procosysApi';
 import { ProcosysIPOApiService } from '../services/procosysIPOApi';
+import { CompletionApiService } from '../services/completionApi';
 import { getOfflineStatusfromLocalStorage } from '../offline/OfflineStatus';
 import { OfflineStatus } from '../typings/enums';
+import { AxiosInstance } from 'axios';
 
 type McAppContextProps = {
     availablePlants: Plant[];
     fetchPlantsStatus: AsyncStatus;
     api: ProcosysApiService;
+    completionApi: CompletionApiService;
+    completionBaseApiInstance: AxiosInstance;
     auth: IAuthService;
     appConfig: AppConfig;
     offlineState: OfflineStatus;
     setOfflineState: React.Dispatch<React.SetStateAction<OfflineStatus>>;
     featureFlags: FeatureFlags;
-    configurationAccessToken: string;
     ipoApi: ProcosysIPOApiService;
 };
 
@@ -35,8 +38,9 @@ type McAppContextProviderProps = {
     api: ProcosysApiService;
     appConfig: AppConfig;
     featureFlags: FeatureFlags;
-    configurationAccessToken: string;
     ipoApi: ProcosysIPOApiService;
+    completionApi: CompletionApiService;
+    completionBaseApiInstance: AxiosInstance;
 };
 
 export const McAppContextProvider: React.FC<McAppContextProviderProps> = ({
@@ -45,8 +49,9 @@ export const McAppContextProvider: React.FC<McAppContextProviderProps> = ({
     api,
     appConfig,
     featureFlags,
-    configurationAccessToken,
     ipoApi,
+    completionApi,
+    completionBaseApiInstance,
 }: McAppContextProviderProps) => {
     const [availablePlants, setAvailablePlants] = useState<Plant[]>([]);
     const [fetchPlantsStatus, setFetchPlantsStatus] = useState<AsyncStatus>(
@@ -94,6 +99,7 @@ export const McAppContextProvider: React.FC<McAppContextProviderProps> = ({
             </>
         );
     }
+
     return (
         <McAppContext.Provider
             value={{
@@ -105,8 +111,9 @@ export const McAppContextProvider: React.FC<McAppContextProviderProps> = ({
                 offlineState,
                 setOfflineState,
                 featureFlags,
-                configurationAccessToken,
                 ipoApi,
+                completionApi,
+                completionBaseApiInstance,
             }}
         >
             {children}

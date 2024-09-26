@@ -38,8 +38,16 @@ const ContentWrapper = styled.div`
 `;
 
 const EntityPage = (): JSX.Element => {
-    const { api, ipoApi, params, path, history, url, offlineState } =
-        useCommonHooks();
+    const {
+        api,
+        ipoApi,
+        params,
+        path,
+        history,
+        url,
+        offlineState,
+        useTestColorIfOnTest,
+    } = useCommonHooks();
     const { snackbar, setSnackbarText } = useSnackbar();
     const [scope, setScope] = useState<ChecklistPreview[]>();
     const [punchList, setPunchList] = useState<PunchPreview[]>();
@@ -156,6 +164,7 @@ const EntityPage = (): JSX.Element => {
                         : params.searchType
                 }
                 isOffline={offlineState == OfflineStatus.OFFLINE}
+                testColor={useTestColorIfOnTest}
             />
             <EntityPageDetailsCard
                 fetchDetailsStatus={fetchDetailsStatus}
@@ -169,11 +178,19 @@ const EntityPage = (): JSX.Element => {
                         render={(): JSX.Element => (
                             <Scope
                                 fetchScopeStatus={fetchScopeStatus}
-                                onChecklistClick={(checklistId: number): void =>
-                                    history.push(
-                                        `${history.location.pathname}/checklist/${checklistId}`
-                                    )
-                                }
+                                onChecklistClick={(
+                                    checklistId: string | number
+                                ): void => {
+                                    const checkListGuid = scope?.find(
+                                        (s) =>
+                                            s.id === parseInt(`${checklistId}`)
+                                    )?.proCoSysGuid;
+                                    {
+                                        history.push(
+                                            `${history.location.pathname}/checklist/${checklistId}?checkListGuid=${checkListGuid}`
+                                        );
+                                    }
+                                }}
                                 scope={scope}
                                 isPoScope={history.location.pathname.includes(
                                     '/PO/'
@@ -190,13 +207,15 @@ const EntityPage = (): JSX.Element => {
                         render={(): JSX.Element => (
                             <PunchList
                                 fetchPunchListStatus={fetchPunchListStatus}
-                                onPunchClick={(punch: PunchPreview): void =>
+                                onPunchClick={(punch: PunchPreview): void => {
                                     history.push(
                                         `${removeSubdirectories(
                                             history.location.pathname
-                                        )}/punch-item/${punch.id}`
-                                    )
-                                }
+                                        )}/punch-item/${
+                                            punch.proCoSysGuid
+                                        }?tagId=${punch.tagId}`
+                                    );
+                                }}
                                 punchList={punchList}
                                 isPoPunchList={history.location.pathname.includes(
                                     '/PO/'
@@ -207,6 +226,7 @@ const EntityPage = (): JSX.Element => {
                             />
                         )}
                     />
+
                     <Route
                         exact
                         path={`${path}/WO-info`}
@@ -279,7 +299,11 @@ const EntityPage = (): JSX.Element => {
                 )}
                 <FooterButton
                     active={isOnPunchListPage}
-                    goTo={(): void => history.push(`${url}/punch-list`)}
+                    goTo={(): void =>
+                        history.push(
+                            `${url}/punch-list?tagId=${punchList?.at(0)?.tagId}`
+                        )
+                    }
                     icon={
                         <EdsIcon
                             name="warning_outlined"

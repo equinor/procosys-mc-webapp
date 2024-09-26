@@ -80,8 +80,18 @@ export const dummyPermissions: string[] = [
 ];
 
 export const testProjects: Project[] = [
-    { id: 1, title: 'Test project 1', description: 'this-is-a-description' },
-    { id: 2, title: 'Test project 2', description: 'yet-another-description' },
+    {
+        id: 1,
+        title: 'Test project 1',
+        proCoSysGuid: 'guid',
+        description: 'this-is-a-description',
+    },
+    {
+        id: 2,
+        title: 'Test project 2',
+        proCoSysGuid: 'guid',
+        description: 'yet-another-description',
+    },
 ];
 
 export const testDetails: CommPkg = {
@@ -197,6 +207,7 @@ export const testChecklistSavedSearch: ChecklistSavedSearchResult[] = [
         updatedByUser: 'test',
         updatedByFirstName: 'Jane',
         updatedByLastName: 'Doe',
+        proCoSysGuid: 'test-procosys-guid',
     },
 ];
 
@@ -213,6 +224,7 @@ export const testPunchListItemSavedSearch: PunchItemSavedSearchResult[] = [
         isVerified: false,
         statusControlledBySwcr: false,
         attachmentCount: 2,
+        proCoSysGuid: 'test-procosys-guid',
     },
 ];
 
@@ -233,6 +245,7 @@ export const testScope: ChecklistPreview[] = [
         attachmentCount: 1,
         isSigned: false,
         isVerified: false,
+        proCoSysGuid: 'test-procosys-guid',
     },
     {
         id: 2,
@@ -250,12 +263,14 @@ export const testScope: ChecklistPreview[] = [
         attachmentCount: 1,
         isSigned: false,
         isVerified: false,
+        proCoSysGuid: 'test-procosys-guid',
     },
 ];
 
 export const testPunchList: PunchPreview[] = [
     {
         id: 1,
+        proCoSysGuid: 'test-procosys-guid',
         status: CompletionStatus.OK,
         description: 'Test punch description',
         systemModule: 'Test punch system module',

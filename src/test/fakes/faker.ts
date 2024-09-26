@@ -199,6 +199,7 @@ export const FakerChecklistSavedSearchResult =
             updatedByUser: faker.name.findName(),
             updatedByFirstName: faker.name.firstName(),
             updatedByLastName: faker.name.firstName(),
+            proCoSysGuid: 'test-procosys-guid',
         };
     };
 
@@ -218,6 +219,7 @@ export const FakerPunchItemSavedSearchResult =
             isVerified: FakerRandomBoolean(),
             statusControlledBySwcr: FakerRandomBoolean(),
             attachmentCount: 10,
+            proCoSysGuid: "test-procosys-guid",
         };
     };
 
@@ -258,6 +260,7 @@ export const FakerChecklistPreview = (): ChecklistPreview => {
         attachmentCount: 10,
         isSigned: FakerRandomBoolean(),
         isVerified: FakerRandomBoolean(),
+        proCoSysGuid: 'test-procosys-guid',
     };
 };
 
@@ -272,6 +275,7 @@ export const FakerListChecklistPreview = (
 export const FakePunchPreview = (): PunchPreview => {
     return {
         id: FakerId(),
+        proCoSysGuid: FakerDescription(),
         status: apiTypes.CompletionStatus.OK, //FakerRandomEnum(apiTypes.CompletionStatus),
         description: FakerDescription(),
         systemModule: FakerSystemModule(5),
@@ -440,16 +444,23 @@ export const FakerPunchPriority = (): PunchPriority => {
 
 export const FakerNewPunch = (): NewPunch => {
     return {
-        CheckListId: FakerId(),
-        CategoryId: FakerId(),
-        Description: FakerDescription(),
-        TypeId: FakerTypeId(),
-        RaisedByOrganizationId: FakerId(),
-        ClearingByOrganizationId: FakerId(),
-        TemporaryFileIds: new Array<string>().concat('101', '102', '103'),
-        ActionByPerson: null,
-        DueDate: null,
-        Estimate: null,
+        checkListGuid: faker.datatype.uuid(),
+        projectGuid: 'test-procosys-guid',
+        category: faker.random.word(),
+        description: faker.lorem.paragraph(3),
+        typeGuid: faker.datatype.uuid(),
+        raisedByOrgGuid: faker.datatype.uuid(),
+        clearingByOrgGuid: faker.datatype.uuid(),
+        sortingGuid: faker.datatype.uuid(),
+        priorityGuid: faker.datatype.uuid(),
+        actionByPersonOid: faker.datatype.uuid(),
+        dueTimeUtc: faker.date.future().toISOString(),
+        estimate: faker.datatype.number({ min: 1, max: 100 }),
+        temporaryFileIds: [
+            faker.datatype.uuid(),
+            faker.datatype.uuid(),
+            faker.datatype.uuid(),
+        ],
     };
 };
 
@@ -547,11 +558,33 @@ export const FakerAttachment = (): Attachment => {
         uri: faker.internet.url(),
         title: FakerTitle(),
         createdAt: FakerDatesBetween2021and2022(),
-        classification: 'future',
-        mimeType: 'future',
-        thumbnailAsBase64: '2323321',
-        hasFile: true,
-        fileName: 'filename.txt',
+        classification: faker.lorem.word(),
+        mimeType: faker.system.mimeType(),
+        thumbnailAsBase64: faker.image.dataUri(),
+        hasFile: faker.datatype.boolean(),
+        fileName: faker.system.fileName(),
+        parentGuid: faker.datatype.uuid(),
+        guid: faker.datatype.uuid(),
+        fullBlobPath: faker.system.filePath(),
+        description: FakerDescription(),
+        labels: faker.lorem.words(5).split(' '),
+        createdBy: {
+            guid: faker.datatype.uuid(),
+            firstName: faker.name.firstName(),
+            lastName: faker.name.lastName(),
+            userName: faker.internet.userName(),
+            email: faker.internet.email(),
+        },
+        createdAtUtc: faker.date.past().toISOString(),
+        modifiedBy: {
+            guid: faker.datatype.uuid(),
+            firstName: faker.name.firstName(),
+            lastName: faker.name.lastName(),
+            userName: faker.internet.userName(),
+            email: faker.internet.email(),
+        },
+        modifiedAtUtc: faker.date.recent().toISOString(),
+        rowVersion: faker.datatype.uuid(),
     };
 };
 
@@ -585,6 +618,7 @@ export const FakeChecklistDetails = (id: number): ChecklistDetails => {
         hasElectronicForm: FakerRandomBoolean(),
         attachmentCount: 10,
         partOfCertificateSentToCommissioning: false,
+        proCoSysGuid: 'test-procosys-guid',
     };
 };
 
@@ -609,6 +643,7 @@ export const FakerProject = (): Project => {
     return {
         description: FakerDescription(),
         id: FakerId(),
+        proCoSysGuid: 'test-procosys-guid',
         title: FakerTitle(),
     };
 };

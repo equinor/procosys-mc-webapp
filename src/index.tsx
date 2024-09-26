@@ -5,7 +5,6 @@ import App from './App';
 import authService from './services/authService';
 import * as MSAL from '@azure/msal-browser';
 import procosysApiService from './services/procosysApi';
-import { getAppConfig, getAuthConfig } from './services/appConfiguration';
 import initializeAppInsights from './services/appInsights';
 import {
     ErrorPage,
@@ -31,6 +30,10 @@ import {
 import hasConnectionToServer from './utils/hasConnectionToServer';
 import ConfirmSync from './ConfirmSync';
 import { db } from './offline/db';
+import completionApiService from './services/completionApi';
+import baseIPOApiService from './services/baseIPOApi';
+import { appConfig, featureFlags } from './services/appConfiguration';
+import { u } from 'msw/lib/glossary-2792c6da';
 
 const onUpdate = (registration: ServiceWorkerRegistration): void => {
     localStorage.setItem(LocalStorage.SW_UPDATE, 'true');
@@ -43,10 +46,8 @@ const root = createRoot(container!);
 const render = (content: JSX.Element): void => {
     root.render(
         <React.StrictMode>
-            <>
-                <GlobalStyles />
-                {content}
-            </>
+            <GlobalStyles />
+            {content}
         </React.StrictMode>
     );
 };
@@ -67,71 +68,72 @@ const initialize = async () => {
     updateOfflineStatus(offline, userPin);
     // Get auth config, setup auth client and handle login
     render(<LoadingPage loadingText={'Initializing authentication...'} />);
-    const {
-        clientSettings,
-        scopes,
-        configurationScope,
-        configurationEndpoint,
-    } = await getAuthConfig();
 
-    const authClient = new MSAL.PublicClientApplication(clientSettings);
+    const authClient = new MSAL.PublicClientApplication({
+        auth: {
+            clientId: process.env.REACT_APP_CLIENT as string,
+            authority: process.env.REACT_APP_AUTHORITY,
+            redirectUri: window.location.origin + '/mc',
+        },
+    });
 
     const authInstance = authService({
         MSAL: authClient,
-        scopes: scopes,
+        scopes: [process.env.REACT_APP_SCOPE] as string[],
     });
-
-    let configurationAccessToken = '';
 
     if (offline != OfflineStatus.OFFLINE) {
         const isRedirecting = await authInstance.handleLogin();
         if (isRedirecting) return Promise.reject('redirecting');
-        configurationAccessToken = await authInstance.getAccessToken(
-            configurationScope
-        );
     }
-
-    console.log('INITIALIZE 2');
-
-    // Get config from App Configuration
-    render(<LoadingPage loadingText={'Initializing app config...'} />);
-    const { appConfig, featureFlags } = await getAppConfig(
-        configurationEndpoint,
-        configurationAccessToken
-    );
 
     render(<LoadingPage loadingText={'Initializing access token...'} />);
     let accessToken = '';
+    let accessTokenCompletionApi = '';
+
     if (offline != OfflineStatus.OFFLINE) {
-        accessToken = await authInstance.getAccessToken(
-            appConfig.procosysWebApi.scope
-        );
+        accessToken = await authInstance.getAccessToken([
+            process.env.REACT_APP_WEBAPI_SCOPE as string,
+        ]);
+        accessTokenCompletionApi = await authInstance.getAccessToken([
+            process.env.REACT_APP_COMP_SCOPE as string,
+        ]);
     }
+
+    const completionBaseApiInstance = baseIPOApiService({
+        authInstance,
+        baseURL: process.env.REACT_APP_BASE_URL_COMP as string,
+        scope: [process.env.REACT_APP_COMP_SCOPE] as string[],
+    });
 
     const procosysApiInstance = procosysApiService(
         {
-            baseURL: appConfig.procosysWebApi.baseUrl,
-            apiVersion: appConfig.procosysWebApi.apiVersion,
+            baseURL: process.env.REACT_APP_BASE_URL_MAIN as string,
+            apiVersion: process.env.REACT_APP_API_VERSION as string,
         },
         accessToken
     );
 
+    const completionApiInstance = completionApiService({
+        axios: completionBaseApiInstance,
+    });
+
     render(<LoadingPage loadingText={'Initializing IPO access token...'} />);
     let accessTokenIPO = '';
     if (offline != OfflineStatus.OFFLINE) {
-        accessTokenIPO = await authInstance.getAccessToken(
-            appConfig.ipoApi.scope
-        );
+        accessTokenIPO = await authInstance.getAccessToken([
+            process.env.REACT_APP_IPO_API_SCOPE,
+        ] as string[]);
     }
     const procosysIPOApiInstance = procosysIPOApiService(
         {
-            baseURL: appConfig.ipoApi.baseUrl,
+            baseURL: process.env.REACT_APP_IPO_API_BASE_URL as string,
         },
         accessTokenIPO
     );
 
     const { appInsightsReactPlugin } = initializeAppInsights(
-        appConfig.appInsights.instrumentationKey
+        process.env.REACT_APP_APP_INSIGHTS_INSTRUMENTATION_KEY as string
     );
     console.log('Initializing done.');
 
@@ -141,8 +143,9 @@ const initialize = async () => {
         appInsightsReactPlugin,
         appConfig,
         featureFlags,
-        configurationAccessToken,
         procosysIPOApiInstance,
+        completionApiInstance,
+        completionBaseApiInstance,
     };
 };
 
@@ -158,16 +161,12 @@ const setIsSure = (): void => {
 
 const renderApp = async (): Promise<void> => {
     //If user is offline, the rendering of the app will be stalled, until pin is provided.
-    console.log('renderApp 1');
     const status = getOfflineStatusfromLocalStorage();
-    console.log('renderApp 2: ' + status);
     if (status != OfflineStatus.ONLINE && userPin == '') {
-        console.log('renderApp 3');
         setTimeout(renderApp, 1000);
         return;
     }
 
-    console.log('renderApp 4: ' + status);
     if (status == OfflineStatus.CANCELLING) {
         let api = null;
 
@@ -175,10 +174,11 @@ const renderApp = async (): Promise<void> => {
             const {
                 authInstance,
                 procosysApiInstance,
+                completionApiInstance,
+                completionBaseApiInstance,
                 appInsightsReactPlugin,
                 appConfig,
                 featureFlags,
-                configurationAccessToken,
                 procosysIPOApiInstance,
             } = await initialize();
 
@@ -209,11 +209,12 @@ const renderApp = async (): Promise<void> => {
                 <App
                     authInstance={authInstance}
                     procosysApiInstance={procosysApiInstance}
+                    completionBaseApiInstance={completionBaseApiInstance}
                     appInsightsReactPlugin={appInsightsReactPlugin}
                     appConfig={appConfig}
                     featureFlags={featureFlags}
-                    configurationAccessToken={configurationAccessToken}
                     procosysIPOApiInstance={procosysIPOApiInstance}
+                    completionApiInstance={completionApiInstance}
                 />
             );
         } catch (error) {
@@ -251,8 +252,9 @@ const renderApp = async (): Promise<void> => {
                 appInsightsReactPlugin,
                 appConfig,
                 featureFlags,
-                configurationAccessToken,
                 procosysIPOApiInstance,
+                completionApiInstance,
+                completionBaseApiInstance,
             } = await initialize();
 
             api = procosysApiInstance;
@@ -304,8 +306,9 @@ const renderApp = async (): Promise<void> => {
                     appInsightsReactPlugin={appInsightsReactPlugin}
                     appConfig={appConfig}
                     featureFlags={featureFlags}
-                    configurationAccessToken={configurationAccessToken}
                     procosysIPOApiInstance={procosysIPOApiInstance}
+                    completionApiInstance={completionApiInstance}
+                    completionBaseApiInstance={completionBaseApiInstance}
                 />
             );
         } catch (error) {
@@ -334,18 +337,16 @@ const renderApp = async (): Promise<void> => {
         }
     } else {
         //We are either in online or offline mode, and will render the application
-        console.log('renderApp  7: ');
-
         const {
             authInstance,
             procosysApiInstance,
             appInsightsReactPlugin,
             appConfig,
             featureFlags,
-            configurationAccessToken,
             procosysIPOApiInstance,
+            completionApiInstance,
+            completionBaseApiInstance,
         } = await initialize();
-        console.log('renderApp 8: ');
 
         render(
             <App
@@ -354,8 +355,9 @@ const renderApp = async (): Promise<void> => {
                 appInsightsReactPlugin={appInsightsReactPlugin}
                 appConfig={appConfig}
                 featureFlags={featureFlags}
-                configurationAccessToken={configurationAccessToken}
                 procosysIPOApiInstance={procosysIPOApiInstance}
+                completionApiInstance={completionApiInstance}
+                completionBaseApiInstance={completionBaseApiInstance}
             />
         );
     }
@@ -363,15 +365,9 @@ const renderApp = async (): Promise<void> => {
 
 (async (): Promise<void> => {
     render(<LoadingPage loadingText={'Initializing...'} />);
-    console.log('--------0');
-    console.log('--------1');
-
     //await navigator.serviceWorker.ready; //wait until service worker is active
-
-    console.log('-----------2');
     try {
         const status = getOfflineStatusfromLocalStorage();
-        console.log('-----------3');
         if (status != OfflineStatus.ONLINE) {
             render(<OfflinePin setUserPin={setUserPin} />);
         }
@@ -391,3 +387,5 @@ const renderApp = async (): Promise<void> => {
         }
     }
 })();
+
+// Force test build

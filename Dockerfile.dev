@@ -4,33 +4,32 @@ WORKDIR /app
 COPY . /app
 RUN yarn install
 
-ENV REACT_APP_BASE_URL_MAIN='https://pcs-main-api-prod.azurewebsites.net/api'
-ENV REACT_APP_BASE_URL_COMP='https://backend-procosys-completion-api.radix.equinor.com'
-ENV REACT_APP_COMP_SCOPE='api://dee65816-6e0b-4816-bafe-ebd7179d5933/ReadWrite'
+ENV REACT_APP_BASE_URL_MAIN='https://pcs-main-api-dev.azurewebsites.net/api'
+ENV REACT_APP_BASE_URL_COMP='https://backend-procosys-completion-api-dev.radix.equinor.com'
+ENV REACT_APP_COMP_SCOPE='api://e8c158a9-a200-4897-9d5f-660e377bddc1/ReadWrite'
 ENV REACT_APP_API_VERSION="&api-version=4.1"
 
 # Application Insights Configuration
-ENV REACT_APP_APP_INSIGHTS_INSTRUMENTATION_KEY='17f706a6-641d-40ee-bb69-97732dbec879'
+ENV REACT_APP_APP_INSIGHTS_INSTRUMENTATION_KEY='bbefe850-9964-41a5-b449-c41519115c56'
 
 # procosysWebApi Configuration
-ENV REACT_APP_WEBAPI_SCOPE='api://47641c40-0135-459b-8ab4-459e68dc8d08/web_api'
+ENV REACT_APP_WEBAPI_SCOPE='api://dd38f169-bccf-4d0e-a4ad-d830893cfa75/web_api'
 
 # OCR Function Endpoint
-ENV REACT_APP_OCR_FUNCTION_ENDPOINT='https://pcs-mc-webapp-prod-funcs.azurewebsites.net/api/pcs_ocr?'
+ENV REACT_APP_OCR_FUNCTION_ENDPOINT='https://pcs-mc-webapp-non-prod-funcs.azurewebsites.net/api/pcs_ocr?'
 
 # IPO API Configuration
-ENV REACT_APP_IPO_API_BASE_URL='https://backend-procosys-ipo-api-prod.radix.equinor.com'
-ENV REACT_APP_IPO_API_SCOPE='api://b3399356-b2b6-44d4-a7b6-323eefc8a173/ReadWrite'
+ENV REACT_APP_IPO_API_BASE_URL='https://backend-procosys-ipo-api-test.radix.equinor.com'
+ENV REACT_APP_IPO_API_SCOPE='api://2e1868db-3024-45a9-b3f1-568e85586244/ReadWrite'
 
 # Auth Configuration
-ENV REACT_APP_CLIENT='437b9c0c-fe8f-4388-ab9e-ca2d5b53530e'
+ENV REACT_APP_CLIENT='9f056ccb-c53e-4e15-859f-95027bff2ae5'
 ENV REACT_APP_AUTHORITY='https://login.microsoftonline.com/3aa4a235-b6e2-48d5-9195-7fcf05b459b0'
 ENV REACT_APP_SCOPE='User.Read'
 
 # Feature Flags
 ENV REACT_APP_FEATURE_OFFLINE_ENABLED='false'
 ENV REACT_APP_FEATURE_MC_APP_ENABLED='true'
-
 
 RUN yarn build --mode=production
 

@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import { db } from './offline/db';
 import { updateOfflineStatus } from './offline/OfflineStatus';
 import { LocalStorage, OfflineStatus } from './typings/enums';
+import useCommonHooks from 'utils/useCommonHooks';
 
 const ContentWrapper = styled.main`
     margin: 16px;
@@ -24,6 +25,7 @@ const OfflinePin = ({ setUserPin }: OfflinePinProps): JSX.Element => {
     const [enteredPin, setEnteredPin] = useState<string>('');
     const [failedPin, setFailedPin] = useState<boolean>(false);
     const [loginTriesLeft, setLoginTriesLeft] = useState<number>(3);
+    const { useTestColorIfOnTest } = useCommonHooks();
 
     const testUserPin = async (): Promise<void> => {
         //todo: Hvis kode her kaster exception, så må vi sørge for å vise feilmelding
@@ -34,7 +36,7 @@ const OfflinePin = ({ setUserPin }: OfflinePinProps): JSX.Element => {
             return;
         }
 
-        //Not able to initialize database. Probably wrong pin.
+        //Not able to initialize database. Probably wrong pin
         const loginTries = localStorage.getItem(LocalStorage.LOGIN_TRIES);
         if (loginTries == null) {
             localStorage.setItem(LocalStorage.LOGIN_TRIES, '1');
@@ -59,7 +61,11 @@ const OfflinePin = ({ setUserPin }: OfflinePinProps): JSX.Element => {
 
     return (
         <>
-            <Navbar leftContent={<ProcosysButton />} isOffline={true} />
+            <Navbar
+                leftContent={<ProcosysButton />}
+                isOffline={true}
+                testColor={useTestColorIfOnTest}
+            />
             <ContentWrapper>
                 <h3>Input your offline pin</h3>
                 {failedPin ? (

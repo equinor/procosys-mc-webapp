@@ -29,7 +29,8 @@ const PlantContext = React.createContext({} as PlantContextProps);
 export const PlantContextProvider: React.FC<{ children: ReactNode }> = ({
     children,
 }) => {
-    const { params, api, history, auth, offlineState } = useCommonHooks();
+    const { params, api, history, auth, offlineState, useTestColorIfOnTest } =
+        useCommonHooks();
     const [currentPlant, setCurrentPlant] = useState<Plant | undefined>();
     const { availablePlants } = useContext(McAppContext);
     const [availableProjects, setAvailableProjects] = useState<Project[]>([]);
@@ -136,6 +137,7 @@ export const PlantContextProvider: React.FC<{ children: ReactNode }> = ({
                     <Navbar
                         leftContent={<ProcosysButton />}
                         isOffline={offlineState == OfflineStatus.OFFLINE}
+                        testColor={useTestColorIfOnTest}
                     />
                     <ErrorPage
                         title={'Unable to obtain permissions.'}

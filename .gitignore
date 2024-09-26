@@ -31,9 +31,10 @@ dist
 build
 node_modules
 **/src/**/*.json
-!settings.json
+!src/settings.json
 /testing/integration/node_modules/**
 /testing/integration/.nyc_output/**
 /testing/**/*.js
 /testing/integration/src/**/*.js
 #Exclude
+

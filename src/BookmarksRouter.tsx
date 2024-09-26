@@ -10,13 +10,13 @@ const BookmarksRouter = (): JSX.Element => {
         <Switch>
             <Route
                 path={
-                    '/:plant/:project/bookmarks/:searchType/:entityId/punch-item/:punchItemId'
+                    '/:plant/:project/bookmarks/:searchType/:entityId/punch-item/:proCoSysGuid'
                 }
                 component={PunchPage}
             />
             <Route
                 path={
-                    '/:plant/:project/bookmarks/:searchType/:entityId/checklist/:checklistId/punch-item/:punchItemId'
+                    '/:plant/:project/bookmarks/:searchType/:entityId/checklist/:checklistId/punch-item/:proCoSysGuid'
                 }
                 component={PunchPage}
             />

@@ -9,6 +9,7 @@ import styled from 'styled-components';
 import { updateOfflineStatus } from './offline/OfflineStatus';
 import { OfflineStatus } from './typings/enums';
 import { db } from './offline/db';
+import useCommonHooks from 'utils/useCommonHooks';
 
 const ContentWrapper = styled.main`
     margin: 16px;
@@ -28,9 +29,14 @@ interface ConfirmSyncProps {
 }
 
 const ConfirmSync = ({ setIsSure }: ConfirmSyncProps): JSX.Element => {
+    const { useTestColorIfOnTest } = useCommonHooks();
     return (
         <>
-            <Navbar leftContent={<ProcosysButton />} isOffline={true} />
+            <Navbar
+                leftContent={<ProcosysButton />}
+                isOffline={true}
+                testColor={useTestColorIfOnTest}
+            />
             <ContentWrapper>
                 <h3>
                     You have already uploaded changes to the selected bookmarks

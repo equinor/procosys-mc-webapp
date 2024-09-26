@@ -15,7 +15,7 @@ const SelectProject = (): JSX.Element => {
         currentPlant,
         fetchProjectsAndPermissionsStatus,
     } = useContext(PlantContext);
-    const { offlineState } = useCommonHooks();
+    const { offlineState, useTestColorIfOnTest } = useCommonHooks();
 
     return (
         <>
@@ -27,6 +27,7 @@ const SelectProject = (): JSX.Element => {
                     />
                 }
                 isOffline={offlineState == OfflineStatus.OFFLINE}
+                testColor={useTestColorIfOnTest}
             />
             <SelectPlantWrapper>
                 <AsyncPage

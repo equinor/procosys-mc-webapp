@@ -192,7 +192,7 @@ const SideMenu = ({ isOffline = false }: SideMenuProps): JSX.Element => {
                     <p>
                         Versions <br />
                         MC App: {packageJson.version} <br />
-                        WebApp Components:{' '}
+                        MC Webapp components:{' '}
                         {
                             packageJson.dependencies[
                                 '@equinor/procosys-webapp-components'

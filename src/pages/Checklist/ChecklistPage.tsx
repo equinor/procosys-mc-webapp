@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import EdsIcon from '../../components/icons/EdsIcon';
 import withAccessControl from '../../services/withAccessControl';
 import useCommonHooks from '../../utils/useCommonHooks';
@@ -18,11 +18,14 @@ import {
     removeSubdirectories,
     useSnackbar,
     ChecklistResponse,
+    isOfType,
+    isArrayOfType,
 } from '@equinor/procosys-webapp-components';
 import ChecklistDetailsCard from './ChecklistDetailsCard';
 import styled from 'styled-components';
 import PlantContext from '../../contexts/PlantContext';
 import { OfflineStatus } from '../../typings/enums';
+import Axios from 'axios';
 
 const ContentWrapper = styled.div`
     padding-bottom: 66px;
@@ -33,7 +36,15 @@ export const NavButton = styled(Button)`
 `;
 
 const ChecklistPage = (): JSX.Element => {
-    const { history, url, path, api, params, offlineState } = useCommonHooks();
+    const {
+        history,
+        url,
+        path,
+        api,
+        params,
+        offlineState,
+        useTestColorIfOnTest,
+    } = useCommonHooks();
     const { permissions } = useContext(PlantContext);
     const [punchList, setPunchList] = useState<PunchPreview[]>();
     const [details, setDetails] = useState<ChecklistResponse>();
@@ -49,57 +60,63 @@ const ChecklistPage = (): JSX.Element => {
     const isOnNewPunchPage = history.location.pathname.includes('/new-punch');
     const isOnPunchListPage = history.location.pathname.includes('/punch-list');
     const isOnTagInfoPage = history.location.pathname.includes('/tag-info');
+    const { snackbar, setSnackbarText } = useSnackbar();
+    const source = Axios.CancelToken.source();
+    const searchParams = new URLSearchParams(window.location.search);
+    const checkListGuid = searchParams.get('checkListGuid');
+
     const goBackToPunchListPage = removeSubdirectories(
         history.location.pathname
     );
     const goBackToEntityPage = removeSubdirectories(url, 2);
-    const { snackbar, setSnackbarText } = useSnackbar();
+
+    const getCheckList = useCallback(async () => {
+        try {
+            setFetchDetailsStatus(AsyncStatus.LOADING);
+            const detailsFromApi = await api.getChecklist(
+                params.plant,
+                params.checklistId,
+                abortSignal
+            );
+            if (detailsFromApi && isOfType(detailsFromApi, 'checkList')) {
+                setDetails(detailsFromApi);
+                setFetchDetailsStatus(AsyncStatus.SUCCESS);
+            } else {
+                throw new Error('Invalid checklist data');
+            }
+        } catch (error) {
+            console.error('Failed to fetch checklist:', error);
+            setFetchDetailsStatus(AsyncStatus.ERROR);
+        }
+    }, [api, params.plant, params.checklistId, abortSignal]);
+
+    const getPunchList = useCallback(async () => {
+        try {
+            setFetchPunchListStatus(AsyncStatus.LOADING);
+            const punchListFromApi = await api.getChecklistPunchList(
+                params.plant,
+                params.checklistId,
+                abortSignal
+            );
+            setPunchList(punchListFromApi);
+            setFetchPunchListStatus(
+                punchListFromApi.length === 0
+                    ? AsyncStatus.EMPTY_RESPONSE
+                    : AsyncStatus.SUCCESS
+            );
+        } catch (error) {
+            console.error('Failed to fetch punch list:', error);
+            setFetchPunchListStatus(AsyncStatus.ERROR);
+        }
+    }, [api, params.plant, params.checklistId, abortSignal]);
 
     useEffect(() => {
+        getCheckList();
+        getPunchList();
         return (): void => {
             abortController.abort();
         };
-    }, []);
-
-    useEffect(() => {
-        (async (): Promise<void> => {
-            try {
-                const detailsFromApi = await api.getChecklist(
-                    params.plant,
-                    params.checklistId,
-                    abortSignal
-                );
-                setDetails(detailsFromApi);
-                setFetchDetailsStatus(AsyncStatus.SUCCESS);
-            } catch (error) {
-                if (!(error instanceof Error)) return;
-                setSnackbarText(error.message);
-                setFetchDetailsStatus(AsyncStatus.ERROR);
-            }
-        })();
-    }, [api, params, refreshChecklistStatus]);
-
-    useEffect(() => {
-        (async (): Promise<void> => {
-            try {
-                const punchListFromApi = await api.getChecklistPunchList(
-                    params.plant,
-                    params.checklistId,
-                    abortSignal
-                );
-                setPunchList(punchListFromApi);
-                if (punchListFromApi.length === 0) {
-                    setFetchPunchListStatus(AsyncStatus.EMPTY_RESPONSE);
-                } else {
-                    setFetchPunchListStatus(AsyncStatus.SUCCESS);
-                }
-            } catch (error) {
-                if (!(error instanceof Error)) return;
-                setSnackbarText(error.message);
-                setFetchPunchListStatus(AsyncStatus.ERROR);
-            }
-        })();
-    }, [api, params]);
+    }, [history.location.pathname]);
 
     return (
         <main>
@@ -108,8 +125,10 @@ const ChecklistPage = (): JSX.Element => {
                     <BackButton
                         to={
                             isOnNewPunchPage
-                                ? goBackToPunchListPage
-                                : goBackToEntityPage
+                                ? goBackToPunchListPage +
+                                  `?checkListGuid=${checkListGuid}`
+                                : goBackToEntityPage +
+                                  `?checkListGuid=${checkListGuid}`
                         }
                     />
                 }
@@ -121,7 +140,9 @@ const ChecklistPage = (): JSX.Element => {
                         <NavButton
                             variant="ghost"
                             onClick={(): void =>
-                                history.push(`${url}/punch-list/new-punch`)
+                                history.push(
+                                    `${url}/punch-list/new-punch${location.search}`
+                                )
                             }
                             disabled={
                                 !permissions.includes('PUNCHLISTITEM/CREATE')
@@ -132,6 +153,7 @@ const ChecklistPage = (): JSX.Element => {
                     )
                 }
                 isOffline={offlineState == OfflineStatus.OFFLINE}
+                testColor={useTestColorIfOnTest}
             />
             <ChecklistDetailsCard
                 fetchDetailsStatus={fetchDetailsStatus}
@@ -171,7 +193,11 @@ const ChecklistPage = (): JSX.Element => {
                                     history.push(
                                         `${removeSubdirectories(
                                             history.location.pathname
-                                        )}/punch-item/${punch.id}`
+                                        )}/punch-item/${
+                                            punch.proCoSysGuid
+                                        }?checkListGuid=${checkListGuid}&tagId=${
+                                            punchList?.at(0)?.tagId
+                                        }`
                                     )
                                 }
                                 punchList={punchList}
@@ -190,19 +216,29 @@ const ChecklistPage = (): JSX.Element => {
             <NavigationFooter footerStatus={fetchPunchListStatus}>
                 <FooterButton
                     active={!(isOnPunchListPage || isOnTagInfoPage)}
-                    goTo={(): void => history.push(`${url}`)}
+                    goTo={(): void =>
+                        history.push(`${url}?checkListGuid=${checkListGuid}`)
+                    }
                     icon={<EdsIcon name="playlist_added" />}
                     label={'Checklist'}
                 />
                 <FooterButton
                     active={isOnTagInfoPage}
-                    goTo={(): void => history.push(`${url}/tag-info`)}
+                    goTo={(): void =>
+                        history.push(
+                            `${url}/tag-info?checkListGuid=${checkListGuid}`
+                        )
+                    }
                     icon={<EdsIcon name="tag" />}
                     label={'Tag info'}
                 />
                 <FooterButton
                     active={isOnPunchListPage}
-                    goTo={(): void => history.push(`${url}/punch-list`)}
+                    goTo={(): void =>
+                        history.push(
+                            `${url}/punch-list?checkListGuid=${checkListGuid}`
+                        )
+                    }
                     icon={<EdsIcon name="warning_outlined" />}
                     label={'Punch list'}
                     numberOfItems={punchList?.length}
