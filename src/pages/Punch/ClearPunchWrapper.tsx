@@ -95,10 +95,10 @@ const ClearPunchWrapper = ({
                 return acc;
             }, new Map());
 
-            setOrganizations(types.get('COMPLETION_ORGANIZATION'));
-            setTypes(types.get('PUNCHLIST_TYPE'));
-            setSortings(types.get('PUNCHLIST_SORTING'));
-            setPriorities(types.get('COMM_PRIORITY'));
+            setOrganizations(types.get('COMPLETION_ORGANIZATION') ?? []);
+            setTypes(types.get('PUNCHLIST_TYPE') ?? []);
+            setSortings(types.get('PUNCHLIST_SORTING') ?? []);
+            setPriorities(types.get('COMM_PRIORITY') ?? []);
         }
 
         if (isArrayOfType<PunchCategory>(categoriesFromApi, 'id')) {
