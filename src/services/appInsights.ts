@@ -14,11 +14,14 @@ const initializeAppInsights = (
     const reactPlugin = new ReactPlugin();
     const appInsights = new ApplicationInsights({
         config: {
-            connectionString: instrumentationKey,
+            instrumentationKey: instrumentationKey,
             extensions: [reactPlugin],
             extensionConfig: {
                 [reactPlugin.identifier]: { history: browserHistory },
             },
+            enableCorsCorrelation: true,
+            loggingLevelConsole: 2,
+            loggingLevelTelemetry: 2,
         },
     });
     appInsights.loadAppInsights();
