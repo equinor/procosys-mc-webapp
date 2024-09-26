@@ -14,7 +14,7 @@ const initializeAppInsights = (
     const reactPlugin = new ReactPlugin();
     const appInsights = new ApplicationInsights({
         config: {
-            instrumentationKey: instrumentationKey,
+            connectionString: instrumentationKey,
             extensions: [reactPlugin],
             extensionConfig: {
                 [reactPlugin.identifier]: { history: browserHistory },
