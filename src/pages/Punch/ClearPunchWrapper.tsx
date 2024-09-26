@@ -79,9 +79,10 @@ const ClearPunchWrapper = ({
     const { hits, searchStatus, query, setQuery } = usePersonsSearchFacade();
 
     const getLibraryItems = useCallback(async () => {
-        const categoriesFromApi = await api
-            .getPunchCategories(params.plant, source.token)
-            .catch(() => setFetchOptionsStatus(AsyncStatus.ERROR));
+        const categoriesFromApi = [
+            { id: 0, code: 'PA', description: 'PA' },
+            { id: 1, code: 'PB', description: 'PB' },
+        ];
 
         const librayItems = await completionApi
             .getLibraryItems(params.plant, source.token)
