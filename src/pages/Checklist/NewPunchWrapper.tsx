@@ -67,9 +67,10 @@ const NewPunchWrapper = (): JSX.Element => {
     const [details, setDetails] = useState<any>();
 
     const getLibraryTypes = useCallback(async () => {
-        const categoriesFromApi = await api
-            .getPunchCategories(params.plant, source.token)
-            .catch(() => setFetchNewPunchStatus(AsyncStatus.ERROR));
+        const categoriesFromApi = [
+            { id: 0, code: 'PA', description: 'PA' },
+            { id: 1, code: 'PB', description: 'PB' },
+        ];
 
         const libraryTypes = await completionApi
             .getLibraryItems(params.plant, source.token)
