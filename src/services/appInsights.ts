@@ -19,6 +19,9 @@ const initializeAppInsights = (
             extensionConfig: {
                 [reactPlugin.identifier]: { history: browserHistory },
             },
+            enableCorsCorrelation: true,
+            loggingLevelConsole: 2,
+            loggingLevelTelemetry: 2,
         },
     });
     appInsights.loadAppInsights();
