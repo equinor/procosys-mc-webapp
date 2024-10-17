@@ -6,7 +6,7 @@
   "dependencies": {
     "clean-webpack-plugin": "^4.0.0",
     "eslint-config-prettier": "^8.5.0",
-    "fetch-mock": "^9.11.0",
+    "fetch-mock": "^10.1.0",
     "glob": "^8.0.3",
     "html-webpack-plugin": "^5.5.0",
     "mocha-cli": "^1.0.1",
