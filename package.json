@@ -39,7 +39,7 @@
     "markdown-to-jsx": "7.4.7",
     "micromatch": "4.0.8",
     "minimatch": "3.0.5",
-    "mocha": "10.6.0",
+    "mocha": "10.7.3",
     "nth-check": "2.0.1",
     "path-to-regexp": "8.0.0",
     "postcss": "8.4.31",
@@ -118,7 +118,6 @@
     "braces": "3.0.3",
     "engine.io": "6.6.2",
     "express": "4.21.1",
-    "mocha": "10.6.0",
     "socket.io": "4.8.0",
     "nth-check": "2.0.1",
     "postcss": "8.4.31",
@@ -126,6 +125,7 @@
     "serialize-javascript": "6.0.2",
     "resolve-url-loader/postcss": "8.4.31",
     "workbox-webpack-plugin/rollup": "3.29.5",
-    "workbox-webpack-plugin/serialize-javascript": "6.0.2"
-  }
+    "workbox-webpack-plugin/serialize-javascript": "6.0.2",
+    "glob": "^9.0.1"
+    }
 }
