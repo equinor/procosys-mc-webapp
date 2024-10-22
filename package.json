@@ -126,6 +126,7 @@
     "serialize-javascript": "6.0.2",
     "resolve-url-loader/postcss": "8.4.31",
     "workbox-webpack-plugin/rollup": "3.29.5",
-    "workbox-webpack-plugin/serialize-javascript": "6.0.2"
-  }
+    "workbox-webpack-plugin/serialize-javascript": "6.0.2",
+    "glob": "^9.0.1"
+    }
 }
