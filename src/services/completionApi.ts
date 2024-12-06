@@ -231,7 +231,6 @@ const completionApiService = ({ axios }: CompletionApiServiceProps) => {
             },
         });
     };
-
     // Used for clearing, unclearing, rejecting and verifying a
     const postPunchAction = async (
         plantId: string,
@@ -239,14 +238,29 @@ const completionApiService = ({ axios }: CompletionApiServiceProps) => {
         punchAction: PunchAction,
         rowVersion: string
     ): Promise<string> => {
-        const { data } = await axios.post(
-            `PunchItems/${punchGuid}/${punchAction}`,
-            { rowVersion },
-            {
-                ...headers(plantId),
-            }
-        );
-        return data;
+        if (punchAction === PunchAction.REJECT) {
+            const { data } = await axios.post(
+                `PunchItems/${punchGuid}/${punchAction}`,
+                {
+                    rowVersion,
+                    comment: 'Reject',
+                    mentions: [],
+                },
+                {
+                    ...headers(plantId),
+                }
+            );
+            return data;
+        } else {
+            const { data } = await axios.post(
+                `PunchItems/${punchGuid}/${punchAction}`,
+                { rowVersion },
+                {
+                    ...headers(plantId),
+                }
+            );
+            return data;
+        }
     };
 
     const postNewPunch = async (
