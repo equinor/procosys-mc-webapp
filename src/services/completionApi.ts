@@ -43,6 +43,11 @@ type GetOperationProps = {
     body?: string;
 };
 
+type RequestBody = {
+    rowVersion: string;
+    comment?: string;
+    mentions?: any[];
+};
 const headers = (plantId: string, cancelToken?: CancelToken) => {
     return { cancelToken, headers: { 'x-plant': `PCS$${plantId}` } };
 };
@@ -238,31 +243,19 @@ const completionApiService = ({ axios }: CompletionApiServiceProps) => {
         punchAction: PunchAction,
         rowVersion: string
     ): Promise<string> => {
+        let requestBody: RequestBody = { rowVersion };
         if (punchAction === PunchAction.REJECT) {
-            const { data } = await axios.post(
-                `PunchItems/${punchGuid}/${punchAction}`,
-                {
-                    rowVersion,
-                    comment: 'Reject',
-                    mentions: [],
-                },
-                {
-                    ...headers(plantId),
-                }
-            );
-            return data;
-        } else {
-            const { data } = await axios.post(
-                `PunchItems/${punchGuid}/${punchAction}`,
-                { rowVersion },
-                {
-                    ...headers(plantId),
-                }
-            );
-            return data;
+            requestBody = { rowVersion, comment: 'Reject', mentions: [] };
         }
+        const { data } = await axios.post(
+            `PunchItems/${punchGuid}/${punchAction}`,
+            requestBody,
+            {
+                ...headers(plantId),
+            }
+        );
+        return data;
     };
-
     const postNewPunch = async (
         plantId: string,
         newPunchData: NewPunch
