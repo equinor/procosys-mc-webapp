@@ -43,6 +43,11 @@ type GetOperationProps = {
     body?: string;
 };
 
+type RequestBody = {
+    rowVersion: string;
+    comment?: string;
+    mentions?: any[];
+};
 const headers = (plantId: string, cancelToken?: CancelToken) => {
     return { cancelToken, headers: { 'x-plant': `PCS$${plantId}` } };
 };
@@ -231,7 +236,6 @@ const completionApiService = ({ axios }: CompletionApiServiceProps) => {
             },
         });
     };
-
     // Used for clearing, unclearing, rejecting and verifying a
     const postPunchAction = async (
         plantId: string,
@@ -239,16 +243,19 @@ const completionApiService = ({ axios }: CompletionApiServiceProps) => {
         punchAction: PunchAction,
         rowVersion: string
     ): Promise<string> => {
+        let requestBody: RequestBody = { rowVersion };
+        if (punchAction === PunchAction.REJECT) {
+            requestBody = { rowVersion, comment: 'Reject', mentions: [] };
+        }
         const { data } = await axios.post(
             `PunchItems/${punchGuid}/${punchAction}`,
-            { rowVersion },
+            requestBody,
             {
                 ...headers(plantId),
             }
         );
         return data;
     };
-
     const postNewPunch = async (
         plantId: string,
         newPunchData: NewPunch
